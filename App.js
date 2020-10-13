@@ -17,54 +17,145 @@ const windowWidth = Dimensions.get('window').width;
 
 const sheetRef = React.createRef();
 
+const DATA = [
+  {
+    title: "",
+    data: [
+      { type: 'User', key: 1, firstName: 'Janice', lastName: 'Wargler', imageURL: "https://bootdey.com/img/Content/avatar/avatar6.png" },
+    ]
+  },
+  {
+    title: "Menu",
+    data: [
+      { key: 1, name: 'Rice', description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ", price: 3.29, image: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=706&q=80" },
+      { key: 2, name: 'Healthy gear', description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ", price: 10.29, image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=1335&q=80" },
+      { key: 3, name: 'Tuna burger', description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ", price: 12.29, image: "https://images.unsplash.com/photo-1521305916504-4a1121188589?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80" },
+      { key: 4, name: 'Hot hoagies - Chicken strips', description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ", price: 5.69, image: "https://images.unsplash.com/photo-1490818387583-1baba5e638af?ixlib=rb-1.2.1&auto=format&fit=crop&w=1231&q=80" },
+    ]
+  }
+]
+
+const Item = ({ title }) => (
+  <View style={menuStyles.item}>
+    <Text style={menuStyles.title}>{title}</Text>
+  </View>
+);
+
 class HomeScreen extends React.Component {
   constructor() {
     super();
     this.state = {
       bagTitle: 'View Bag'
     }
+    this.showBag = this.showBag.bind(this);
+    this.renderContent = this.renderContent.bind(this);
   }
+
+  // FUNCTIONS
+  showBag = (item) => {
+    sheetRef.current.snapTo(1);
+    if (item.name !== null) {
+      this.setState({
+        bagTitle: item.name
+      })
+      console.log('ITEM: ', item);
+    }
+  }
+
+  renderContent = () => (
+    <View
+      style={{
+        backgroundColor: '#ecf0f1',
+        padding: 16,
+        fontSize: 20,
+        height: windowHeight,
+        width: windowWidth,
+        marginBottom: -200
+      }}
+    >
+      <Text onPress={this.showBag} style={{ fontSize: 17, fontWeight: '600', textAlign: 'center', position: "absolute", marginTop: 20, width: windowWidth }}>{this.state.bagTitle}</Text>
+    </View>
+  );
 
   render() {
     const title = 'View Bag'
     return (
       <View style={styles.container}>
         <StatusBar style="auto" />
+        <SectionList style={{ marginBottom: 100 }}
+          sections={DATA}
+          renderSectionHeader={({ section }) => {
+            return (
+              <View style={menuStyles.titleContainer}>
+                <Text style={menuStyles.title}>
+                  {section.title}
+                </Text>
+              </View>
+            )
+          }}
+          renderItem={({ item }) => {
+            if (item.type === 'User') {
+              return (
+                <View style={styles.container} >
+                  {/* User details View */}
+                  <Image style={styles.userImage} source={{ uri: "https://images.unsplash.com/photo-1566554273541-37a9ca77b91f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80" }} />
+                  <Text style={styles.userName}>Janice Wagner</Text>
+                  <View style={iconView.container}>
+                    <Ionicons style={iconView.icons} name="ios-timer" size={24} color="#9A9A9A" />
+                    <Text>1 day pre-order</Text>
+                  </View>
+                  <View style={iconView.container}>
+                    <Ionicons style={iconView.icons} name="ios-information-circle-outline" size={24} color="#9A9A9A" />
+                    <Text>$0.30 Delivery Fee</Text>
+                  </View>
+
+                  {/* Description View */}
+                  <View style={{ marginTop: 55 }}>
+                    <View style={styles.lineStyle} />
+                    <Text style={{ margin: 13 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Ut enim ad minim veniam, quis nostrud exercitation.</Text>
+                    <View style={styles.lineStyle} />
+                  </View>
+
+                  {/* Schedule View */}
+                  <View>
+                    <View style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', marginTop: 16.0, marginBottom: 30 }}>
+                      <Text style={{ alignSelf: 'flex-start', marginLeft: 13.0, fontSize: 16, fontWeight: '500' }}>View Schedule</Text>
+                      <Entypo name="chevron-right" size={24} color="#9A9A9A" />
+                    </View>
+                    <View style={styles.lineStyle} />
+                  </View>
+                </View>
+              )
+            };
+            return (
+              <TouchableOpacity style={menuStyles.container} onPress={() => this.showBag(item)} >
+                <View style={menuStyles.content}>
+                  <View style={menuStyles.contentHeader}>
+                    <Text style={menuStyles.name}>{item.name}</Text>
+                    <Text style={menuStyles.description}>{item.description}</Text>
+                    <Text style={menuStyles.price}>{'$' + item.price}</Text>
+                  </View>
+                </View>
+                <TouchableOpacity>
+                  <Image style={menuStyles.image} source={{ uri: item.image }} />
+                </TouchableOpacity>
+              </TouchableOpacity>
+            )
+          }}
+          stickySectionHeadersEnabled={false}
+        />
         {/* Bottomsheet View */}
 
         <BottomSheet
           ref={sheetRef}
           snapPoints={[100, 300, Dimensions.get('window').height - 100]}
           borderRadius={10}
-          renderContent={renderContent}
+          renderContent={this.renderContent}
         />
       </View>
     );
   }
 }
-
-renderContent = () => (
-  <View
-    style={{
-      backgroundColor: '#ecf0f1',
-      padding: 16,
-      fontSize: 20,
-      height: windowHeight,
-      width: windowWidth,
-      marginBottom: -200
-    }}
-  >
-    <Text onPress={showBag} style={{ fontSize: 17, fontWeight: '600', textAlign: 'center', position: "absolute", marginTop: 20, width: windowWidth }}>{this.state.bagTitle}</Text>
-  </View>
-);
-
-renderHeader = () => (
-  <View style={styles.header}>
-    <View style={styles.panelHeader}>
-      <View style={styles.panelHandle} />
-    </View>
-  </View>
-)
 
 export default class Layout extends React.Component {
   render() {
@@ -83,16 +174,6 @@ export default class Layout extends React.Component {
       </NavigationContainer>
     );
   };
-}
-
-
-// FUNCTIONS 
-function showBag(item) {
-  sheetRef.current.snapTo(1);
-  if (item.title !== null) {
-    // Show Item
-    console.log('ITEM: ', item);
-  }
 }
 
 
