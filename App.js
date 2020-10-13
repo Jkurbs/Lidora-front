@@ -54,28 +54,35 @@ class HomeScreen extends React.Component {
   // FUNCTIONS
   showBag = (item) => {
     sheetRef.current.snapTo(1);
-    if (item.name !== null) {
+    if (item.price !== undefined) {
+      console.log('ITEM', item)
       this.setState({
         bagTitle: item.name
       })
-      console.log('ITEM: ', item);
+    } else {
+      this.setState({
+        bagTitle: this.state.bagTitle
+      })
     }
   }
 
   renderContent = () => (
     <View
       style={{
-        backgroundColor: '#ecf0f1',
-        padding: 16,
+        backgroundColor: 'white',
         fontSize: 20,
         height: windowHeight,
         width: windowWidth,
         marginBottom: -200
       }}
     >
-      <Text onPress={this.showBag} style={{ fontSize: 17, fontWeight: '600', textAlign: 'center', position: "absolute", marginTop: 20, width: windowWidth }}>{this.state.bagTitle}</Text>
+      <Text onPress={this.showBag} style={{ backgroundColor: '#ecf0f1', fontSize: 17, fontWeight: '600', textAlign: 'center', position: "absolute", padding: 16, width: windowWidth, height: 60 }}>{this.state.bagTitle}</Text>
     </View>
   );
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log(prevState)
+  }
 
   render() {
     const title = 'View Bag'
