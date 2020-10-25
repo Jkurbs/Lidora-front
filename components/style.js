@@ -61,13 +61,9 @@ export default StyleSheet.create({
         marginVertical: 8,
     },
     title: {
-        marginLeft: 13,
         fontSize: 18,
-        fontWeight: '500',
         color: "#000000"
-
     },
-
     menuContainer: {
         paddingVertical: 20,
         flexDirection: 'row',
@@ -111,5 +107,5 @@ export default StyleSheet.create({
     price: {
         fontSize: 15,
         fontWeight: '600'
-    },
+    }
 });

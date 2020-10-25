@@ -9,7 +9,6 @@ import { Dimensions } from 'react-native';
 
 import { StyleSheet, Text, View, SectionList } from 'react-native';
 
-
 import ChefInfoView from '../components/chefInfoView';
 import EmptyBag from '../components/emptyBagView';
 import MenuView from '../components/menuView';
@@ -51,19 +50,22 @@ class HomeScreen extends React.Component {
     super();
     this.state = {
       bagTitle: 'View Bag',
-      bagClosed: true
+      bagClosed: true,
+      item
     }
-
     this.showBag = this.showBag.bind(this);
     this.renderContent = this.renderContent.bind(this);
   }
 
   // FUNCTIONS
   showBag = (item) => {
+    this.item = item
     sheetRef.current.snapTo(1);
     if (item.price !== undefined) {
       this.setState({
-        bagTitle: item.name
+        bagTitle: item.name,
+        bagClosed: false,
+        item: item
       })
     } else {
       this.setState({
@@ -97,16 +99,14 @@ class HomeScreen extends React.Component {
       }}
     >
       <Text onPress={this.showBag} style={{ backgroundColor: '#ecf0f1', fontSize: 17, fontWeight: '600', textAlign: 'center', position: "absolute", padding: 16, width: windowWidth, height: 60 }}>{this.state.bagTitle}</Text>
-      { this.renderElement()}
+      { this.renderElement(this.state.item)}
     </View>
   );
 
   render() {
     return (
       <View style={styles.container}>
-
         <StatusBar style="auto" />
-
         <SectionList style={{ marginBottom: 100 }}
           sections={DATA}
           renderSectionHeader={({ section }) => {
@@ -122,9 +122,7 @@ class HomeScreen extends React.Component {
             if (item.type === 'User') {
               return <ChefInfoView item={item} />;
             };
-            this.item = item
             return <MenuView item={item} showBag={this.showBag} />
-
           }}
           stickySectionHeadersEnabled={false}
         />
@@ -206,8 +204,6 @@ const menuStyles = StyleSheet.create({
   },
   container: {
     paddingVertical: 20,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
     flexDirection: 'row',
     alignItems: 'flex-start'
   },
