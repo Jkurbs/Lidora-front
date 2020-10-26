@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import Wizard from '../components/Wizard'
-import Input from '../components/Input';
+import Wizard from '../../components/Wizard'
+import Input from '../../components/Input';
 
 const forms = [
     {
