@@ -12,7 +12,7 @@ function CustomHeader({ title, isHome, navigation }) {
                 </View>
                 <View onPress={() => navigation.openDrawer()} style={{ flex: 1, justifyContent: 'center' }}>
                     <Image style={{ position: 'absolute', width: 20, height: 20, right: 16 }}
-                        source={require('../../assets/icon/menu.png')}
+                        source={require('../assets/icon/menu.png')}
                         resizeMode='contain'
                     />
                 </View>
@@ -23,7 +23,7 @@ function CustomHeader({ title, isHome, navigation }) {
             <View style={{ flexDirection: 'row', height: 50 }}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={{ flex: 1, justifyContent: 'center' }}>
                     <Image style={{ width: 20, height: 20, alignSelf: 'center' }}
-                        source={require('../../assets/icon/back.png')}
+                        source={require('../assets/icon/back.png')}
                         resizeMode='contain'
                     />
                     <Text>Back</Text>

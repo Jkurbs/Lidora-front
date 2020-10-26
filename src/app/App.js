@@ -8,7 +8,7 @@ import BottomSheet from "reanimated-bottom-sheet";
 import { Dimensions } from "react-native";
 import { DATA } from "./app.data.js";
 import { StyleSheet, Text, View, SectionList } from "react-native";
-
+import styles from './app.styles.js';
 import ChefInfoView from "../components/chefInfoView";
 import EmptyBag from "../components/emptyBagView";
 import MenuView from "../components/menuView";
@@ -70,13 +70,7 @@ class HomeScreen extends React.Component {
 
   renderContent = () => (
     <View
-      style={{
-        backgroundColor: "white",
-        fontSize: 20,
-        height: windowHeight,
-        width: windowWidth,
-        marginBottom: -200,
-      }}
+      style={styles.viewContainer}
     >
       <Text
         onPress={this.showBag}
@@ -106,8 +100,8 @@ class HomeScreen extends React.Component {
           sections={DATA}
           renderSectionHeader={({ section }) => {
             return (
-              <View style={menuStyles.titleContainer}>
-                <Text style={menuStyles.title}>{section.title}</Text>
+              <View style={styles.titleContainer}>
+                <Text style={styles.title}>{section.title}</Text>
               </View>
             );
           }}
@@ -170,41 +164,5 @@ class App extends React.Component {
     );
   }
 }
-
-// STYLES
-const styles = StyleSheet.create({
-  container: {
-    fontFamily: "System",
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-});
-
-const menuStyles = StyleSheet.create({
-  root: {
-    marginTop: 21,
-    padding: 8,
-  },
-  titleContainer: {
-    shadowColor: "#00000021",
-    shadowOffset: {
-      width: 2,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    marginVertical: 8,
-  },
-  title: {
-    marginLeft: 13,
-    fontSize: 18,
-    fontWeight: "500",
-    color: "#000000",
-  },
-  container: {
-    paddingVertical: 20,
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
-});
 
 export default registerRootComponent(App);

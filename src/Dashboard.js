@@ -38,12 +38,12 @@ function TabNavigator() {
 
                     if (route.name === 'Home') {
                         iconName = focused
-                            ? require('../assets/icon/home-black.png')
-                            : require('../assets/icon/home.png')
+                            ? require('./assets/icon/home-black.png')
+                            : require('./assets/icon/home.png')
                     } else if (route.name === 'Order') {
                         iconName = focused ?
-                            require('../assets/icon/order-black.png')
-                            : require('../assets/icon/order.png');
+                            require('./assets/icon/order-black.png')
+                            : require('./assets/icon/order.png');
                     }
 
                     // You can return any component that you like here!
