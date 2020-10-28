@@ -8,8 +8,8 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { LineChart, Grid } from 'react-native-svg-charts'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import OrdersScreen from './Order'
-import CustomHeader from '../components/customHeader'
+import OrdersScreen from '../order/Order.js';
+import CustomHeader from '../components/customHeader.js';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -38,12 +38,12 @@ function TabNavigator() {
 
                     if (route.name === 'Home') {
                         iconName = focused
-                            ? require('../assets/home-black.png')
-                            : require('../assets/home.png')
+                            ? require('../assets/icon/home-black.png')
+                            : require('../assets/icon/home.png')
                     } else if (route.name === 'Order') {
                         iconName = focused ?
-                            require('../assets/order-black.png')
-                            : require('../assets/order.png');
+                            require('../assets/icon/order-black.png')
+                            : require('../assets/icon/order.png');
                     }
 
                     // You can return any component that you like here!
