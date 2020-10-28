@@ -3,8 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { DATA } from "./apply.data.js";
 import styles from "./apply.styles.js";
 
-import Wizard from "../../components/Wizard";
-import Input from "../../components/Input";
+import Wizard from "../../components/Wizard.js";
+import Input from "../../components/Input.js";
 
 export default class App extends React.Component {
   constructor() {
@@ -30,7 +30,7 @@ export default class App extends React.Component {
           </Text>
         </View>
         <View style={styles.root}>
-          <Wizard
+          {/* <Wizard
             initialValues={{
               firstName: "",
               lastName: "",
@@ -51,7 +51,7 @@ export default class App extends React.Component {
                 )}
               </Wizard.Step>
             ))}
-          </Wizard>
+          </Wizard> */}
         </View>
       </View>
     );

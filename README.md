@@ -1,4 +1,5 @@
 extract this file (Home.js) into
+    - move apply, home, dashboard, legal into `pages` folder
     - app file (routing)
         - execute platform function (ios/android/web)
     - homescreen ✅
@@ -7,7 +8,9 @@ extract this file (Home.js) into
         - need registration page
             - connect to Firebase
             - link to login
+            - `register chev vs user`
         - need login page
             - connect to Firebase
             - link to registration/apply
+            - `login as chef vs user`
     

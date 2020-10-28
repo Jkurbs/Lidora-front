@@ -2,7 +2,7 @@ import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import * as React from 'react';
 import { Image, Text, View, SafeAreaView, ScrollView } from 'react-native';
 
-import CustomHeader from '../components/customHeader'
+import CustomHeader from '../../components/customHeader'
 import { FlatList } from 'react-native-gesture-handler';
 import { DATA } from './order.data.js';
 

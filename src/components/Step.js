@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { View, Button, StyleSheet } from 'react-native';
-import firebase from '../src/Firebase'
+import firebase from '../firebase/Firebase.js';
 import 'firebase/firestore';
 
 
