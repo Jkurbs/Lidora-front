@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native'
 
 const userImageViewSize = 120
 
-
 export default StyleSheet.create({
 
     container: {
