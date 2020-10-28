@@ -23,6 +23,7 @@ import { DATA, FEATURESDATA } from "./home.data.js";
 import ApplyScreen from "../apply/Apply.js";
 import LegalScreen from "../legal/Legal.js";
 import LoginScreen from "../login/Login.js";
+import Dashboard from "../dashboard/Dashboard";
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
@@ -385,6 +386,7 @@ function App() {
       >
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Lidora" component={HomeScreen} />
+      
         <Stack.Screen name="Apply" component={ApplyScreen} />
         <Stack.Screen name="Legal" component={LegalScreen} />
       </Stack.Navigator>

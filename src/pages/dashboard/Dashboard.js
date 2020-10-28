@@ -11,6 +11,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import OrdersScreen from '../order/Order.js';;
 import CustomHeader from '../../components/customHeader.js';
 
+
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 const StackHome = createStackNavigator();
@@ -82,7 +83,7 @@ function OrderStack() {
 }
 
 
-function App() {
+function Dashboard() {
     return (
         <NavigationContainer>
             <Drawer.Navigator drawerPosition={'right'} initialRouteName="MenuTab" drawerContent={CustomDrawerContent}>
@@ -214,6 +215,6 @@ function NotificationsScreen({ navigation }) {
     );
 }
 
-export default registerRootComponent(App);
+export default registerRootComponent(Dashboard);
 
 

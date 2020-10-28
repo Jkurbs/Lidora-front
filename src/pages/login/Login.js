@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Image, Button } from "react-native";
+import navigationRef from './RootNavigation.js'
 import styles from "./login.styles.js";
 import firebase from "../../firebase/Firebase.js";
 
@@ -17,6 +18,12 @@ const Login = () => {
       .signInWithEmailAndPassword(email, password)
       .then(data => {
         console.log(data)
+        const userName = data.user.displayName;
+        // toggle state variable
+        // useEffect hook on parent component
+        // redirect to private route
+        console.log(userName)
+        navigationRef.navigate("Legal", userName)
       })
       .catch(function (error) {
         // Handle Errors here.
