@@ -383,9 +383,9 @@ function App() {
           // headerTransparent: true,
         }}
       >
+        <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Lidora" component={HomeScreen} />
         <Stack.Screen name="Apply" component={ApplyScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Legal" component={LegalScreen} />
       </Stack.Navigator>
     </NavigationContainer>

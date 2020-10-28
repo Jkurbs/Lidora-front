@@ -20,7 +20,6 @@ export default StyleSheet.create({
   headerText: {
     fontSize: 25,
     marginTop: -200,
-
   },
   textStyle: {
     marginTop: 10,
@@ -29,13 +28,14 @@ export default StyleSheet.create({
     fontSize: 17,
   },
   emailStyle: {
+    width: 100,
     margin: 5,
   },
   passwordStyle: {
-    
+    width: 100,
     marginBottom: 20,
   },
   userLink: {
-   color: "white",
-  }
+    color: "white",
+  },
 });
