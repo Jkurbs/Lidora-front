@@ -23,7 +23,7 @@ import { DATA, FEATURESDATA } from "./home.data.js";
 import ApplyScreen from "../apply/Apply.js";
 import LegalScreen from "../legal/Legal.js";
 import LoginScreen from "../login/Login.js";
-import Dashboard from "../dashboard/Dashboard";
+import Dashboard from "../../chefPages/dashboard/Dashboard";
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";

@@ -1,4 +1,4 @@
-extract this file (Home.js) into
+- extract this file (Home.js) into
     - move apply, home, dashboard, legal into `pages` folder
     - app file (routing)
         - execute platform function (ios/android/web)
@@ -33,3 +33,15 @@ extract this file (Home.js) into
 
 
 
+- file structure
+
+- src
+    - assets
+    - components
+    - firebase
+    - pages
+        - information prior to logging in, viewable to all public
+    - chefPages
+        - chef specific pages and components after login
+    - customerPages
+        - customer specific pages and components after login
