@@ -36,6 +36,6 @@ export default StyleSheet.create({
     marginBottom: 20,
   },
   userLink: {
-    color: "skyblue",
+   color: "white",
   }
 });

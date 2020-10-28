@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image } from "react-native";
+import { View, Text, TextInput, Image, Button } from "react-native";
 import styles from "./login.styles.js";
 const Login = () => {
   const [isChef, setIsChef] = useState(false);
@@ -15,16 +15,22 @@ const Login = () => {
           <Text style={styles.textStyle}>Chef Login</Text>
           <TextInput style={styles.emailStyle} placeholder="Email" />
           <TextInput style={styles.passwordStyle} placeholder="Password" />
-          <Text style={styles.userLink} onPress={() => setIsChef(false)}>Hungry?</Text>
+          <Button
+            title="Hungry?"
+            style={styles.userLink}
+            onPress={() => setIsChef(false)}
+          />
         </View>
       ) : (
         <View>
           <Text style={styles.textStyle}>Customer Login</Text>
           <TextInput style={styles.emailStyle} placeholder="Email" />
           <TextInput style={styles.passwordStyle} placeholder="Password" />
-          <Text style={styles.userLink} onPress={() => setIsChef(true)}>
-            Are you a registered chef?
-          </Text>
+          <Button
+            title="Are you a chef?"
+            style={styles.userLink}
+            onPress={() => setIsChef(true)}
+          />
         </View>
       )}
     </View>

@@ -14,3 +14,22 @@ extract this file (Home.js) into
             - link to registration/apply
             - `login as chef vs user`
     
+- Private routing
+    - need to control
+        - user type
+        - user Id
+    - one for chefs
+    - one for customers
+    - until private routing is set up, chnage `entryPoint1` in `app.json` to access dashboard or home components
+
+
+- contributors
+    |Name|GitHub|LinkedIn|
+    |:-:|:-:|:-:|
+    ||||
+    ||||
+    ||||
+    |Nic Kendall|||
+
+
+
