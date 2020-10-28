@@ -1,17 +1,18 @@
+import React, { useState, useCallback } from 'react';
 import { registerRootComponent } from 'expo';
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useCallback } from 'react';
 import styles from '../components/style';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform, PixelRatio, Dimensions, Image, Text, View, TouchableOpacity, Linking, TextInput, FlatList } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { DATA, FEATURESDATA } from './home.data.js';
 
 import ApplyScreen from './Apply';
-import LegalScreen from './Legal';
+import LegalScreen from '../Legal';
 
-import firebase from '../src/Firebase'
+import firebase from '../firebase/Firebase'
 import 'firebase/firestore';
 
 const {
@@ -29,51 +30,6 @@ export function normalize(size) {
         return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
     }
 }
-
-const FEATURESDATA = [
-    {
-        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-        image: require('../assets/inventory.png'),
-        title: 'Fast delivery',
-        description: 'And free returns. Contact us for more info.',
-        image: require('../assets/delivery.png')
-    },
-    {
-        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-        image: require('../assets/inventory.png'),
-        title: 'Manage your inventory',
-        description: 'Add or remove from your inventory.',
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e29d72',
-        image: require('../assets/payment.svg'),
-        title: 'Payment processing',
-        description: 'All payments will be taken care for you.',
-    }
-];
-
-const DATA = [
-    {
-        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-        title: 'Bradley Harmon',
-        image: require('../assets/chef.jpg')
-    },
-    {
-        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-        title: 'Shantelle Bob',
-        image: require('../assets/chef2.jpg')
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e29d72',
-        title: 'Jose Montes',
-        image: require('../assets/chef1.jpg')
-    },
-    {
-        id: '58684a0f-3da1-471f-bd96-145571e29d72',
-        title: 'Jordi Becker',
-        image: require('../assets/chef3.jpg')
-    },
-];
 
 const url = 'https://www.instagram.com/lidoralive/'
 

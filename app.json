@@ -4,10 +4,10 @@
     "slug": "Lidora",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "entryPoint": "./src/Dashboard.js",
+    "icon": "./src/assets/icon/icon.png",
+    "entryPoint": "./src/dashboard/Dashboard.js",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./src/assets/img/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,7 +21,7 @@
       "supportsTablet": true
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./src/assets/icon/favicon.png"
     }
   }
 }
