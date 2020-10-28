@@ -10,7 +10,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { DATA, FEATURESDATA } from './home.data.js';
 
 import ApplyScreen from './Apply';
-import LegalScreen from '../Legal';
+import LegalScreen from '../legal/Legal';
 
 import firebase from '../firebase/Firebase'
 import 'firebase/firestore';
@@ -101,7 +101,7 @@ function HomeScreen({ navigation }) {
             <StatusBar style="auto" />
             {/* Provider section */}
             <View style={{ width: windowWidth, flexDirection: 'column', alignItems: 'center' }}>
-                <Image style={{ marginTop: 0, position: 'absolute', width: windowWidth, height: windowHeight }} source={require('../assets/cook.svg')} />
+                <Image style={{ marginTop: 0, position: 'absolute', width: windowWidth, height: windowHeight }} source={require('../assets/img/cook.svg')} />
                 <View style={{ marginTop: 200, alignItems: 'center', width: windowWidth, height: windowHeight - 200 }}>
                     <Text style={{ width: windowWidth, textAlign: 'center', color: 'black', fontSize: normalize(30), fontWeight: '500' }}>Ready to start cooking {"\n"} and selling?</Text>
                     <Text style={{ marginTop: 20, marginBottom: 50, textAlign: 'center', color: 'black', fontSize: 17 }}>Apply now to join the team</Text>
@@ -157,9 +157,9 @@ function HomeScreen({ navigation }) {
 
             {/* Footer */}
             <View style={{ alignItems: 'center', marginTop: 30, marginBottom: 20, padding: 20 }}>
-                <Ionicons onPress={handleSocialPress} name="logo-instagram" size={26} color="gray" />
+                {/* <Ionicons onPress={handleSocialPress} name="logo-instagram" size={26} color="gray" />
                 <Text style={{ padding: 15, color: 'black' }}>Lidora {'\u00A9'} 2020</Text>
-                <Text onPress={() => navigation.navigate('Legal')} >Privacy & Legal</Text>
+                <Text onPress={() => navigation.navigate('Legal')} >Privacy & Legal</Text> */}
             </View>
         </View>
     );
