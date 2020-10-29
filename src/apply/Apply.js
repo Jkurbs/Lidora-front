@@ -3,8 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { DATA } from "./apply.data.js";
 import styles from "./apply.styles.js";
 
-import Wizard from "../../components/Wizard";
-import Input from "../../components/Input";
+import Wizard from "../components/Wizard";
+import Input from "../components/Input";
 
 export default class App extends React.Component {
   constructor() {

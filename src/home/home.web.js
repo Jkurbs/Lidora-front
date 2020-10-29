@@ -9,7 +9,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { DATA, FEATURESDATA } from './home.data.js';
 
-import ApplyScreen from './Apply';
+import ApplyScreen from '../apply/Apply';
 import LegalScreen from '../legal/Legal';
 
 import firebase from '../firebase/Firebase'
@@ -157,9 +157,9 @@ function HomeScreen({ navigation }) {
 
             {/* Footer */}
             <View style={{ alignItems: 'center', marginTop: 30, marginBottom: 20, padding: 20 }}>
-                {/* <Ionicons onPress={handleSocialPress} name="logo-instagram" size={26} color="gray" />
+                <Ionicons onPress={handleSocialPress} name="logo-instagram" size={26} color="gray" />
                 <Text style={{ padding: 15, color: 'black' }}>Lidora {'\u00A9'} 2020</Text>
-                <Text onPress={() => navigation.navigate('Legal')} >Privacy & Legal</Text> */}
+                <Text onPress={() => navigation.navigate('Legal')} >Privacy & Legal</Text>
             </View>
         </View>
     );

@@ -9,11 +9,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { DATA, FEATURESDATA } from './home.data.js';
 
-import ApplyScreen from './Apply';
+import ApplyScreen from '../apply/Apply';
 import LegalScreen from '../legal/Legal';
 
 import firebase from '../firebase/Firebase'
-import 'firebase/firestore';
 
 const {
     width: windowWidth,
@@ -179,20 +178,22 @@ const MyTheme = {
     },
 };
 
-function App() {
-    return (
-        <NavigationContainer theme={MyTheme}>
-            <Stack.Navigator initialRouteName="Lidora" screenOptions={{
-                headerMode: 'none',
-                // headerTransparent: true,
-            }}>
-                <Stack.Screen name="Lidora" component={HomeScreen} />
-                <Stack.Screen name="Apply" component={ApplyScreen} />
-                <Stack.Screen name="Legal" component={LegalScreen} />
+class App extends React.Component {
+    render() {
+        return (
+            <NavigationContainer theme={MyTheme}>
+                <Stack.Navigator initialRouteName="Lidora" screenOptions={{
+                    headerMode: 'none',
+                    // headerTransparent: true,
+                }}>
+                    <Stack.Screen name="Lidora" component={HomeScreen} />
+                    <Stack.Screen name="Apply" component={ApplyScreen} />
+                    <Stack.Screen name="Legal" component={LegalScreen} />
 
-            </Stack.Navigator>
-        </NavigationContainer>
-    );
+                </Stack.Navigator>
+            </NavigationContainer>
+        );
+    }
 }
 
 export default registerRootComponent(App);

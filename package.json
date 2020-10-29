@@ -23,6 +23,7 @@
     "nodemailer": "^6.4.14",
     "nodemailer-react": "^0.1.0",
     "react": "16.13.1",
+    "react-device-detect": "^1.14.0",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
     "react-native-calendars": "^1.403.0",
@@ -32,6 +33,7 @@
     "react-native-svg": "12.1.0",
     "react-native-svg-charts": "^5.4.0",
     "react-native-web": "~0.13.12",
+    "react-responsive": "^8.1.0",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "stripe": "^8.108.0"
   },
