@@ -23,6 +23,7 @@ function Login({ route }) {
         // useEffect hook on parent component
         // redirect to private route
         console.log(userName)
+        console.log("userdata",data.user)
         navigation.navigate('Dashboard')
       })
       .catch(function (error) {
