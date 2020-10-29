@@ -8,12 +8,14 @@ import {
   PixelRatio,
   Dimensions,
   Image,
+  ImageBackground,
   Text,
   View,
   TouchableOpacity,
   Linking,
   TextInput,
   FlatList,
+  Button
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -23,14 +25,14 @@ import { DATA, FEATURESDATA } from "./home.data.js";
 import ApplyScreen from "../apply/Apply.js";
 import LegalScreen from "../legal/Legal.js";
 import LoginScreen from "../login/Login.js";
-import Dashboard from "../../chefPages/dashboard/Dashboard";
+import DashboardScreen from "../../chefPages/dashboard/Dashboard";
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 
-const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
+const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
-const scale = windowWidth / 320;
+const scale = windowWidth / 400;
 
 export function normalize(size) {
   const newSize = size * scale;
@@ -75,12 +77,16 @@ const Item = ({ title, image }) => (
 );
 
 function HomeScreen({ navigation }) {
+
+  // Properties 
   const [value, setValue] = useState("Looking for your favorite food?");
   const [messageValue, setMessageValue] = useState(
     "Join our waiting list And follow us on Instagram to stay updated."
   );
   const [customerEmail, setText] = useState("");
 
+
+  // Function to Add potential user to email list
   const addUser = async () => {
     var db = firebase.firestore();
     try {
@@ -101,12 +107,10 @@ function HomeScreen({ navigation }) {
     addUser();
   };
 
+  // Function to handle instagram button pressed
   const handleSocialPress = useCallback(async () => {
-    // Checking if the link is supported for links with custom URL scheme.
     const supported = await Linking.canOpenURL(url);
     if (supported) {
-      // Opening the link with some app, if the URL scheme is "http" the web link should be opened
-      // by some browser in the mobile
       await Linking.openURL(url);
     } else {
       Alert.alert(`Don't know how to open this URL: ${url}`);
@@ -126,221 +130,196 @@ function HomeScreen({ navigation }) {
   );
 
   return (
+
     <View style={styles.container}>
       <StatusBar style="auto" />
       {/* Provider section */}
-      <View
-        style={{
-          width: windowWidth,
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Image
+      <View style={{ width: '100%', height: '20%' }}>
+        <ImageBackground
           style={{
-            marginTop: 0,
-            position: "absolute",
+            resizeMode: 'cover',
             width: windowWidth,
-            height: windowHeight,
+            height: windowWidth,
           }}
           source={require("../../assets/img/cook.svg")}
-        />
-        <View
-          style={{
-            marginTop: 200,
-            alignItems: "center",
-            width: windowWidth,
-            height: windowHeight - 200,
-          }}
         >
-          <Text
-            style={{
-              width: windowWidth,
-              textAlign: "center",
-              color: "black",
-              fontSize: normalize(30),
-              fontWeight: "500",
-            }}
-          >
-            Ready to start cooking {"\n"} and selling?
-          </Text>
-          <Text
-            style={{
-              marginTop: 20,
-              marginBottom: 50,
-              textAlign: "center",
-              color: "black",
-              fontSize: 17,
-            }}
-          >
-            Apply now to join the team
-          </Text>
-        </View>
-        <View
-          style={{
-            top: 360,
-            alignSelf: "center",
-            position: "absolute",
-            justifyContent: "center",
-            alignItems: "center",
-            width: 150,
-            height: 45,
-            borderRadius: 25,
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Apply")}
-            style={{
-              alignItems: "center",
-              width: 150,
-              height: 45,
-              borderRadius: 25,
-              backgroundColor: "black",
-            }}
-          >
-            <Text
-              style={{
-                color: "white",
-                margin: 12.5,
-                textAlign: "center",
-                fontWeight: "500",
-              }}
-            >
-              Apply now
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Login")}
-            style={{
-              alignItems: "center",
-              width: 150,
-              height: 45,
-              borderRadius: 25,
-              backgroundColor: "black",
-            }}
-          >
-            <Text
-              style={{
-                color: "white",
-                margin: 12.5,
-                textAlign: "center",
-                fontWeight: "500",
-              }}
-            >
-              Login
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Provide section */}
-      <View style={{ marginTop: 60 }}>
-        <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
-          What we provide
-        </Text>
-        <FlatList
-          style={{ marginTop: 40 }}
-          data={FEATURESDATA}
-          renderItem={renderFeaturesItem}
-          keyExtractor={(item) => item.id}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
-
-      {/* Current chefs section */}
-      <View style={{ marginTop: 60 }}>
-        <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
-          Some of our chefs
-        </Text>
-        <FlatList
-          style={{ marginTop: 40 }}
-          data={DATA}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
-
-      {/* Consumer section */}
-      <View
-        style={{
-          width: windowWidth,
-          alignItems: "center",
-          alignContent: "center",
-        }}
-      >
-        <View
-          style={{ marginTop: 90, alignItems: "center", width: windowWidth }}
-        >
-          <Text
-            style={{
-              width: windowWidth,
-              textAlign: "center",
-              color: "black",
-              fontSize: normalize(30),
-              fontWeight: "500",
-            }}
-          >
-            {value}
-          </Text>
-          <Text
-            style={{
-              marginTop: 20,
-              marginBottom: 50,
-              textAlign: "center",
-              color: "black",
-              fontSize: 17,
-            }}
-          >
-            {messageValue}
-          </Text>
           <View
             style={{
-              padding: 10,
-              width: windowWidth,
-              flexDirection: "row",
+              width: '100%',
+              flexDirection: "column",
               alignItems: "center",
-            }}
-          >
-            <TextInput
+            }}>
+
+            <View
               style={{
-                backgroundColor: "#f4f9f4",
-                height: 60,
-                width: windowWidth - 50,
-                paddingHorizontal: 16,
-                borderRadius: 6,
-              }}
-              placeholder={"Email address"}
-              onChangeText={(text) => setText(text)}
-              defaultValue={customerEmail}
-            />
-            <Text
-              onPress={sendToEmailList}
-              style={{
-                borderRadius: 6,
-                marginLeft: 10,
-                padding: 20,
-                backgroundColor: "black",
-                color: "white",
+                marginTop: 200,
+                alignItems: "center",
+                width: windowWidth,
+                height: windowHeight - 200,
               }}
             >
-              Send
+              <Text
+                style={{
+                  width: windowWidth,
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: normalize(30),
+                  fontWeight: "500",
+                }}
+              >
+                Ready to start cooking {"\n"} and selling?
+          </Text>
+              <Text
+                style={{
+                  marginTop: 20,
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: 17,
+                }}
+              >
+                Apply now to join the team
+          </Text>
+            </View>
+            <View
+              style={{
+                width: 150,
+                height: 45,
+                borderRadius: 25,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Apply")}
+                style={{
+                  alignItems: "center",
+                  width: 150,
+                  height: 45,
+                  borderRadius: 25,
+                  backgroundColor: "black",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    margin: 12.5,
+                    textAlign: "center",
+                    fontWeight: "500",
+                  }}
+                >
+                  Apply now
             </Text>
+              </TouchableOpacity>
+            </View>
           </View>
+
+        </ImageBackground>
+
+        {/* Provide section */}
+        <View style={{ marginTop: 60 }}>
+          <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
+            What we provide
+            </Text>
+          <FlatList
+            style={{ marginTop: 40 }}
+            data={FEATURESDATA}
+            renderItem={renderFeaturesItem}
+            keyExtractor={(item) => item.id}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          />
         </View>
+
+        {/* Current chefs section */}
+        {/* <View style={{ marginTop: 60 }}>
+              <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
+                Some of our chefs
+        </Text>
+              <FlatList
+                style={{ marginTop: 40 }}
+                data={DATA}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+              />
+            </View> */}
+
+        {/* Consumer section */}
+        {/* <View
+              style={{
+                width: windowWidth,
+                alignItems: "center",
+                alignContent: "center",
+              }}
+            >
+              <View
+                style={{ marginTop: 90, alignItems: "center", width: windowWidth }}
+              >
+                <Text
+                  style={{
+                    width: windowWidth,
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: normalize(30),
+                    fontWeight: "500",
+                  }}
+                >
+                  {value}
+                </Text>
+                <Text
+                  style={{
+                    marginTop: 20,
+                    marginBottom: 50,
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: 17,
+                  }}
+                >
+                  {messageValue}
+                </Text>
+                <View
+                  style={{
+                    padding: 10,
+                    width: windowWidth,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <TextInput
+                    style={{
+                      backgroundColor: "#f4f9f4",
+                      height: 60,
+                      width: windowWidth - 50,
+                      paddingHorizontal: 16,
+                      borderRadius: 6,
+                    }}
+                    placeholder={"Email address"}
+                    onChangeText={(text) => setText(text)}
+                    defaultValue={customerEmail}
+                  />
+                  <Text
+                    onPress={sendToEmailList}
+                    style={{
+                      borderRadius: 6,
+                      marginLeft: 10,
+                      padding: 20,
+                      backgroundColor: "black",
+                      color: "white",
+                    }}
+                  >
+                    Send
+            </Text>
+                </View> */}
+        {/* </View> */}
       </View>
 
       {/* Footer */}
-      <View
+      {/* <View
         style={{
           alignItems: "center",
           marginTop: 30,
           marginBottom: 20,
           padding: 20,
-        }}
-      >
+        }}>
         <Ionicons
           onPress={handleSocialPress}
           name="logo-instagram"
@@ -353,7 +332,7 @@ function HomeScreen({ navigation }) {
         <Text onPress={() => navigation.navigate("Legal")}>
           Privacy & Legal
         </Text>
-      </View>
+      </View> */}
     </View>
   );
 }
@@ -381,12 +360,47 @@ function App() {
         initialRouteName="Lidora"
         screenOptions={{
           headerMode: "none",
-          // headerTransparent: true,
+          headerTransparent: true,
         }}
       >
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Lidora" component={HomeScreen} />
-      
+        <Stack.Screen name="Lidora" component={HomeScreen}
+          options={({ navigation, route }) => ({
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => {
+                  /* 1. Navigate to the Details route with params */
+                  navigation.navigate('Login', {
+                    navigation: navigation,
+                    otherParam: 'anything you want here',
+                  });
+                }}
+                style={{
+                  justifyContent: 'center',
+                  alignContent: 'center', backgroundColor: 'white', marginRight: 16, width: 90, height: 40, borderRadius: 20, shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 3,
+                  },
+                  shadowOpacity: 0.29,
+                  shadowRadius: 4.65,
+                  elevation: 7,
+                }}
+              >
+                <Text style={{ alignSelf: 'center', fontSize: 17 }}>Login</Text>
+              </TouchableOpacity>
+
+              // <Button
+              //   onPress={() => alert('This is a button!')}
+              //   title="Login"
+              //   color="white"
+              //   borderRadius="10"
+
+              // />
+            ),
+          })}
+        />
+        <Stack.Screen name="Dashboard" component={DashboardScreen} />
         <Stack.Screen name="Apply" component={ApplyScreen} />
         <Stack.Screen name="Legal" component={LegalScreen} />
       </Stack.Navigator>

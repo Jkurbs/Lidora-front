@@ -83,15 +83,17 @@ function OrderStack() {
 }
 
 
-function Dashboard() {
-    return (
-        <NavigationContainer>
-            <Drawer.Navigator drawerPosition={'right'} initialRouteName="MenuTab" drawerContent={CustomDrawerContent}>
-                <Drawer.Screen name="MenuTab" component={TabNavigator} />
-                <Drawer.Screen name="Notifications" component={NotificationsScreen} />
-            </Drawer.Navigator>
-        </NavigationContainer>
-    );
+export default class App extends React.Component {
+    render() {
+        return (
+            <NavigationContainer independent={true}>
+                <Drawer.Navigator drawerPosition={'right'} initialRouteName="MenuTab" drawerContent={CustomDrawerContent}>
+                    <Drawer.Screen name="MenuTab" component={TabNavigator} />
+                    <Drawer.Screen name="Notifications" component={NotificationsScreen} />
+                </Drawer.Navigator>
+            </NavigationContainer>
+        );
+    }
 }
 
 function HomeScreen({ navigation }) {
@@ -214,7 +216,5 @@ function NotificationsScreen({ navigation }) {
         </View>
     );
 }
-
-export default registerRootComponent(Dashboard);
 
 

@@ -1,32 +1,20 @@
 export const FEATURESDATA = [
     {
         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-<<<<<<< HEAD:src/home/home.data.js
-        image: require('../assets/img/inventory.png'),
-=======
         image: require('../../assets/icon/inventory.png'),
->>>>>>> 2f59ea7386e892d11cfdb10ca63b81796b157b73:src/pages/home/home.data.js
         title: 'Fast delivery',
         description: 'And free returns. Contact us for more info.',
         image: require('../../assets/icon/delivery.png')
     },
     {
         id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-<<<<<<< HEAD:src/home/home.data.js
-        image: require('../assets/img/inventory.png'),
-=======
         image: require('../../assets/icon/inventory.png'),
->>>>>>> 2f59ea7386e892d11cfdb10ca63b81796b157b73:src/pages/home/home.data.js
         title: 'Manage your inventory',
         description: 'Add or remove from your inventory.',
     },
     {
         id: '58694a0f-3da1-471f-bd96-145571e29d72',
-<<<<<<< HEAD:src/home/home.data.js
-        image: require('../assets/img/payment.svg'),
-=======
         image: require('../../assets/img/payment.svg'),
->>>>>>> 2f59ea7386e892d11cfdb10ca63b81796b157b73:src/pages/home/home.data.js
         title: 'Payment processing',
         description: 'All payments will be taken care for you.',
     }

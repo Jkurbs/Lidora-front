@@ -13,7 +13,13 @@ function Entrypoint() {
     const isTabletOrMobileDevice = useMediaQuery({
         maxDeviceWidth: 1224,
     })
-    return <HomeWeb />;
+
+    if (isTabletOrMobileDevice) {
+        console.log("is Tablet")
+        return <HomeMobile />;
+    } else {
+        return <HomeWeb />;
+    }
 }
 
 export default Entrypoint;

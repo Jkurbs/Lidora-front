@@ -1,7 +1,7 @@
 
 import React from 'react'
 import { StatusBar } from 'expo-status-bar';
-import styles from '../components/style';
+import styles from '../../components/style';
 import { Platform, PixelRatio, Dimensions, Text, View } from 'react-native';
 const {
     height: windowHeight,

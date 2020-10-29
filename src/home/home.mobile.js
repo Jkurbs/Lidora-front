@@ -52,7 +52,8 @@ function HomeScreen({ navigation }) {
 
     const [value, setValue] = useState('Looking for your favorite food?');
     const [messageValue, setMessageValue] = useState("Join our waiting list And follow us on Instagram to stay updated.");
-    const [customerEmail, setText] = useState('');
+    const [customerEmail, setEmailText] = useState('');
+    const [email, setText] = userState('')
 
     const addUser = async () => {
         var db = firebase.firestore();
@@ -60,6 +61,7 @@ function HomeScreen({ navigation }) {
             const potentialUserDoc = await db.collection('potential_users').add({
                 email_address: customerEmail,
             });
+
             return;
         } catch (error) {
             console.log(error)
