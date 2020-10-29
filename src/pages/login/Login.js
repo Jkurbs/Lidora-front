@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Image, Button } from "react-native";
-import navigationRef from './RootNavigation.js'
 import styles from "./login.styles.js";
 import firebase from "../../firebase/Firebase";
 
@@ -12,7 +11,7 @@ function Login({ route }) {
 
   console.log(password)
 
-  const { navigation, otherParam } = route.params;
+  const { navigation } = route.params;
 
   const onSubmit = () => {
     firebase

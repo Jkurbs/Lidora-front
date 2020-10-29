@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { registerRootComponent } from "expo";
 import { StatusBar } from "expo-status-bar";
-import styles from "../../components/style";
+import styles from "./home.style";
 import { Ionicons } from "@expo/vector-icons";
 import {
   Platform,
@@ -67,9 +67,9 @@ const FeaturesItem = ({ image, title, description }) => (
 );
 
 const Item = ({ title, image }) => (
-  <View style={{ margin: 16, width: 200, height: 240 }}>
+  <View style={{ margin: 16, width: windowWidth / 4, height: windowWidth / 4 }}>
     <Image
-      style={{ marginBottom: 10, borderRadius: 5, width: "auto", height: 200 }}
+      style={{ marginBottom: 10, borderRadius: 5, width: '100%', height: '100%' }}
       source={image}
     />
     <Text style={styles.title}>{title}</Text>
@@ -133,206 +133,60 @@ function HomeScreen({ navigation }) {
 
     <View style={styles.container}>
       <StatusBar style="auto" />
-      {/* Provider section */}
-      <View style={{ width: '100%', height: '20%' }}>
-        <ImageBackground
-          style={{
-            resizeMode: 'cover',
-            width: windowWidth,
-            height: windowWidth,
-          }}
-          source={require("../../assets/img/cook.svg")}
-        >
-          <View
-            style={{
-              width: '100%',
-              flexDirection: "column",
-              alignItems: "center",
-            }}>
 
-            <View
+      {/* Provider section */}
+
+      <View style={styles.secondaryView}>
+
+        <ImageBackground style={styles.backgroundImage} source={require("../../assets/img/cook.svg")} >
+          <View style={{ alignItems: "center", width: 'auto', height: 'auto' }}>
+            <Text style={{ width: windowWidth, textAlign: "center", color: "black", fontSize: normalize(30), fontWeight: "500" }}>
+              Ready to start cooking {"\n"} and selling?
+              </Text>
+            <Text style={{ marginTop: 20, textAlign: "center", color: "black", fontSize: 17 }}>
+              Apply now to join the team
+              </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Apply")}
               style={{
-                marginTop: 200,
                 alignItems: "center",
-                width: windowWidth,
-                height: windowHeight - 200,
-              }}
-            >
-              <Text
-                style={{
-                  width: windowWidth,
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: normalize(30),
-                  fontWeight: "500",
-                }}
-              >
-                Ready to start cooking {"\n"} and selling?
-          </Text>
-              <Text
-                style={{
-                  marginTop: 20,
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: 17,
-                }}
-              >
-                Apply now to join the team
-          </Text>
-            </View>
-            <View
-              style={{
+                marginTop: 10,
                 width: 150,
                 height: 45,
                 borderRadius: 25,
+                backgroundColor: "black",
               }}
             >
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Apply")}
+              <Text
                 style={{
-                  alignItems: "center",
-                  width: 150,
-                  height: 45,
-                  borderRadius: 25,
-                  backgroundColor: "black",
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    margin: 12.5,
-                    textAlign: "center",
-                    fontWeight: "500",
-                  }}
-                >
-                  Apply now
-            </Text>
-              </TouchableOpacity>
-            </View>
+                  color: "white",
+                  margin: 12.5,
+                  textAlign: "center",
+                  fontWeight: "500",
+                }}>
+                Apply now
+                </Text>
+            </TouchableOpacity>
           </View>
-
         </ImageBackground>
 
-        {/* Provide section */}
-        <View style={{ marginTop: 60 }}>
-          <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
-            What we provide
-            </Text>
-          <FlatList
-            style={{ marginTop: 40 }}
-            data={FEATURESDATA}
-            renderItem={renderFeaturesItem}
-            keyExtractor={(item) => item.id}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-          />
-        </View>
-
-        {/* Current chefs section */}
-        {/* <View style={{ marginTop: 60 }}>
-              <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
-                Some of our chefs
-        </Text>
-              <FlatList
-                style={{ marginTop: 40 }}
-                data={DATA}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              />
-            </View> */}
-
-        {/* Consumer section */}
-        {/* <View
-              style={{
-                width: windowWidth,
-                alignItems: "center",
-                alignContent: "center",
-              }}
-            >
-              <View
-                style={{ marginTop: 90, alignItems: "center", width: windowWidth }}
-              >
-                <Text
-                  style={{
-                    width: windowWidth,
-                    textAlign: "center",
-                    color: "black",
-                    fontSize: normalize(30),
-                    fontWeight: "500",
-                  }}
-                >
-                  {value}
-                </Text>
-                <Text
-                  style={{
-                    marginTop: 20,
-                    marginBottom: 50,
-                    textAlign: "center",
-                    color: "black",
-                    fontSize: 17,
-                  }}
-                >
-                  {messageValue}
-                </Text>
-                <View
-                  style={{
-                    padding: 10,
-                    width: windowWidth,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <TextInput
-                    style={{
-                      backgroundColor: "#f4f9f4",
-                      height: 60,
-                      width: windowWidth - 50,
-                      paddingHorizontal: 16,
-                      borderRadius: 6,
-                    }}
-                    placeholder={"Email address"}
-                    onChangeText={(text) => setText(text)}
-                    defaultValue={customerEmail}
-                  />
-                  <Text
-                    onPress={sendToEmailList}
-                    style={{
-                      borderRadius: 6,
-                      marginLeft: 10,
-                      padding: 20,
-                      backgroundColor: "black",
-                      color: "white",
-                    }}
-                  >
-                    Send
-            </Text>
-                </View> */}
-        {/* </View> */}
       </View>
 
-      {/* Footer */}
-      {/* <View
-        style={{
-          alignItems: "center",
-          marginTop: 30,
-          marginBottom: 20,
-          padding: 20,
-        }}>
-        <Ionicons
-          onPress={handleSocialPress}
-          name="logo-instagram"
-          size={26}
-          color="gray"
+
+      {/* Provide section */}
+      <View style={{ marginTop: 60 }}>
+        <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
+          What we provide
+            </Text>
+        <FlatList
+          style={{ marginTop: 40 }}
+          data={FEATURESDATA}
+          renderItem={renderFeaturesItem}
+          keyExtractor={(item) => item.id}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
         />
-        <Text style={{ padding: 15, color: "black" }}>
-          Lidora {"\u00A9"} 2020
-        </Text>
-        <Text onPress={() => navigation.navigate("Legal")}>
-          Privacy & Legal
-        </Text>
-      </View> */}
+      </View>
     </View>
   );
 }
@@ -370,10 +224,10 @@ function App() {
               <TouchableOpacity
                 onPress={() => {
                   /* 1. Navigate to the Details route with params */
-                  navigation.navigate('Login', {
-                    navigation: navigation,
-                    otherParam: 'anything you want here',
-                  });
+                  navigation.navigate('Login',
+                    {
+                      navigation: navigation,
+                    });
                 }}
                 style={{
                   justifyContent: 'center',
@@ -409,3 +263,106 @@ function App() {
 }
 
 export default registerRootComponent(App);
+
+
+
+{/* Current chefs section */ }
+{/* <View style={{ marginTop: 60, width: '100%' }}>
+          <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
+            Some of our chefs
+        </Text>
+          <FlatList
+            style={{ marginTop: 40 }}
+            data={DATA}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          />  */}
+{/* Consumer section */ }
+{/* <View
+            style={{
+              width: windowWidth,
+              alignItems: "center",
+              alignContent: "center",
+            }}
+          >
+            <View
+              style={{ marginTop: 90, alignItems: "center", width: windowWidth }}
+            >
+              <Text
+                style={{
+                  width: windowWidth,
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: normalize(30),
+                  fontWeight: "500",
+                }}
+              >
+                {value}
+              </Text>
+              <Text
+                style={{
+                  marginTop: 20,
+                  marginBottom: 50,
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: 17,
+                }}
+              >
+                {messageValue}
+              </Text>
+              <View
+                style={{
+                  padding: 10,
+                  width: windowWidth,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <TextInput
+                  style={{
+                    backgroundColor: "#f4f9f4",
+                    height: 60,
+                    width: windowWidth - 50,
+                    paddingHorizontal: 16,
+                    borderRadius: 6,
+                  }}
+                  placeholder={"Email address"}
+                  onChangeText={(text) => setText(text)}
+                  defaultValue={customerEmail}
+                />
+                <Text
+                  onPress={sendToEmailList}
+                  style={{
+                    borderRadius: 6,
+                    marginLeft: 10,
+                    padding: 20,
+                    backgroundColor: "black",
+                    color: "white",
+                  }}
+                >
+                  Send
+            </Text>
+              </View> */}
+{/* Footer */ }
+{/* <View
+        style={{
+          alignItems: "center",
+          marginTop: 30,
+          marginBottom: 20,
+          padding: 20,
+        }}>
+        <Ionicons
+          onPress={handleSocialPress}
+          name="logo-instagram"
+          size={26}
+          color="gray"
+        />
+        <Text style={{ padding: 15, color: "black" }}>
+          Lidora {"\u00A9"} 2020
+        </Text>
+        <Text onPress={() => navigation.navigate("Legal")}>
+          Privacy & Legal
+        </Text>
+      </View> */}
