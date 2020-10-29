@@ -12,6 +12,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import OrdersScreen from '../order/Order.web.js';;
 import CustomHeader from '../../components/customHeader.js';
 
+import firebase from '../../firebase/Firebase';
+import 'firebase/firestore';
+
 
 const Tab = createSideTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -33,33 +36,35 @@ function CustomDrawerContent(props) {
 }
 
 
-function TabNavigator() {
+function TabNavigator(props) {
+    console.log(props)
+
     return (
-        
+
         <Tab.Navigator
-            screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                    let iconName;
+            // screenOptions={({ route }) => ({
+            //     tabBarIcon: ({ focused, color, size }) => {
+            //         let iconName;
 
-                    if (route.name === 'Home') {
-                        iconName = focused
-                            ? require('../../assets/icon/home-black.png')
-                            : require('../../assets/icon/home.png')
-                    } else if (route.name === 'Customer Orders') {
-                        iconName = focused ?
-                            require('../../assets/icon/order-black.png')
-                            : require('../../assets/icon/order.png');
-                    }
+            //         if (route.name === 'Home') {
+            //             iconName = focused
+            //                 ? require('../../assets/icon/home-black.png')
+            //                 : require('../../assets/icon/home.png')
+            //         } else if (route.name === 'Customer Orders') {
+            //             iconName = focused ?
+            //                 require('../../assets/icon/order-black.png')
+            //                 : require('../../assets/icon/order.png');
+            //         }
 
-                    // You can return any component that you like here!
-                    return <Image source={iconName} style={{ width: 20, height: 20 }}
-                        resizeMode='contain' />;
-                },
-            })}
+            //         // You can return any component that you like here!
+            //         return <Image source={iconName} style={{ width: 20, height: 20 }}
+            //             resizeMode='contain' />;
+            //     },
+            // })}
             tabBarOptions={{
-                activeTintColor: 'tomato',
+                activeTintColor: 'rgb(48, 209, 88)',
                 inactiveTintColor: 'gray',
-                style:{width:296, paddingTop:200},
+                style:{width:296, paddingTop:320},
                 iconHorizontal: true,
                 iconSize: 32,
                 labelSize: 18,
@@ -95,20 +100,43 @@ function OrderStack() {
 }
 
 
-export default class App extends React.Component {
-    render() {
+function Dashboard({route}) {
+
+    const { user } = route.params;
+    console.log(user.email)
+    //get name and picture from firebase
+    var db = firebase.firestore();
+    const [userData,setUserData] = React.useState({user:[]})
+       React.useEffect(() => {
+        db.collection('chefs').where("email_address","==",user.email).get().then((snapshot) => {
+            snapshot.docs.forEach(doc => {
+              setUserData({user:doc.data()})
+            })
+        })
+
+        
+    }, [])
+    console.log("chefuserData",userData.user)
+
         return (
+            <>
+
             <NavigationContainer independent={true}>
+            <View style={{ flexDirection: 'column', height: 70, position: "absolute", zIndex: 100, top:100, left:30 }}>
+                <Image style={{ height: 160, width: 160, borderRadius: 80, marginRight: 8 }} source={{ uri: userData.user.imageURL }} />
+                <Text style={{ fontSize: 20, fontWeight: '700', padding: '10px' }}>Welcome {userData.user.first_name}</Text>
+            </View>
                 <Drawer.Navigator drawerPosition={'right'} initialRouteName="MenuTab" drawerContent={CustomDrawerContent}>
                     <Drawer.Screen name="MenuTab" component={TabNavigator} />
                     <Drawer.Screen name="Notifications" component={NotificationsScreen} />
                 </Drawer.Navigator>
             </NavigationContainer>
+            </>
         );
     }
-}
 
-function HomeScreen({ navigation }) {
+
+function HomeScreen({ navigation}) {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F8FA' }}>
 
@@ -229,4 +257,5 @@ function NotificationsScreen({ navigation }) {
     );
 }
 
+export default Dashboard;
 

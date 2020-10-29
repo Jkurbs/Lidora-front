@@ -25,7 +25,8 @@ function Login({ route }) {
         // redirect to private route
         console.log(userName)
         console.log("userdata",data.user)
-        navigation.navigate('Dashboard')
+
+        navigation.navigate('Dashboard',{user: data.user})
       })
       .catch(function (error) {
         // Handle Errors here.
