@@ -12,8 +12,8 @@ const MenuItemView = ({ item }) => (
         </View>
         <View style={styles.mainView}>
             <View style={styles.secondaryView}>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.price}>${item.price}</Text>
+                <Text style={styles.mainText}>{item.name}</Text>
+                <Text style={styles.mainText}>${item.price}</Text>
             </View>
             <Text style={styles.description}>{item.description}</Text>
         </View>

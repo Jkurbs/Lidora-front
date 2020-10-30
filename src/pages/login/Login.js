@@ -18,13 +18,12 @@ function Login({ route }) {
       .auth()
       .signInWithEmailAndPassword('test@gmail.com', '123456')
       .then(data => {
-        const userName = data.user.displayName;
+        const userName = data.user.uid;
         // toggle state variable
         // useEffect hook on parent component
         // redirect to private route
-        console.log(userName)
-        console.log("userdata", data.user)
-        navigation.navigate('Dashboard')
+        console.log("UID: ", userName)
+        navigation.navigate('Dashboard', { user: data.user })
       })
       .catch(function (error) {
         // Handle Errors here.

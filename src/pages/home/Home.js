@@ -150,7 +150,7 @@ function HomeScreen({ navigation }) {
               onPress={() => navigation.navigate("Apply")}
               style={{
                 alignItems: "center",
-                marginTop: 10,
+                marginTop: 20,
                 width: 150,
                 height: 45,
                 borderRadius: 25,
@@ -246,7 +246,7 @@ function App() {
             ),
           })}
         />
-        <Stack.Screen name="Dashboard" component={DashboardScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={DashboardScreen} />
         <Stack.Screen name="Apply" component={ApplyScreen} />
         <Stack.Screen name="Legal" component={LegalScreen} />
       </Stack.Navigator>

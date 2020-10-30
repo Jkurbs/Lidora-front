@@ -7,23 +7,35 @@ export default StyleSheet.create({
         fontFamily: "System",
         flex: 1,
         width: '100%',
-        backgroundColor: '#E5E5E5'
+        backgroundColor: 'white',
+        height: 'auto'
+    },
+
+
+    titleContainer: {
+        flexDirection: 'column',
+        marginBottom: 5
+    },
+
+    mainTitle: {
+        fontSize: 30,
+        fontWeight: '500'
+    },
+
+    secondaryTitle: {
+        color: 'rgb(99, 99, 102)'
     },
 
     secondContainer: {
         width: '60%',
-        height: '90%',
-        justifyContent: 'center',
-        alignContent: 'center',
-        backgroundColor: 'white',
-        margin: 50,
+        height: '100%',
         borderRadius: 10,
     },
 
     flatList: {
-        marginTop: 90,
         width: '100%',
-        backgroundColor: 'white',
+        // backgroundColor: '#F6F6F6',
+        borderRadius: 5
     },
 
     menuContent: {
@@ -31,9 +43,8 @@ export default StyleSheet.create({
         width: '90%',
         marginTop: 20,
         marginBottom: 20,
-        marginLeft: 20,
         paddingLeft: 20,
-        height: 90,
+        height: 70,
     },
 
     menuWrapper: {
@@ -52,14 +63,14 @@ export default StyleSheet.create({
         justifyContent: 'space-between',
         width: '100%',
         paddingLeft: 20,
-        paddingRight: 20,
+        paddingRight: 40,
+        marginBottom: 20
     },
 
     image: {
-        borderRadius: 5,
-        width: 80,
-        height: 80,
-        borderRadius: 40,
+        width: 70,
+        height: 70,
+        borderRadius: 35,
         backgroundColor: "#F5F5F7",
     },
 
@@ -70,20 +81,24 @@ export default StyleSheet.create({
     },
 
 
-    title: {
-        fontWeight: '500'
+    mainText: {
+        fontWeight: '500',
+        marginBottom: 15
     },
 
     buttonBackground: {
-        backgroundColor: 'green',
-        borderRadius: 10,
-        height: 50,
+        backgroundColor: '#34C759',
+        borderRadius: 5,
+        height: 25,
         width: 120,
         justifyContent: 'center',
         alignSelf: 'flex-end',
         margin: 20
     },
     buttonTitle: {
-        textAlign: 'center'
+        textAlign: 'center',
+        color: 'white',
+        fontWeight: '500',
+        alignSelf: 'center'
     }
 });

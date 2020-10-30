@@ -24,9 +24,10 @@ const FlatListItemSeparator = () => {
     return (
         <View
             style={{
-                height: 1,
-                width: "100%",
-                backgroundColor: "#000",
+                alignSelf: 'center',
+                height: 0.5,
+                width: "95%",
+                backgroundColor: '#D6D6D6',
             }}
         />
     );
@@ -37,9 +38,19 @@ function Menu() {
     return (
         <View style={styles.container}>
             <View style={styles.secondContainer}>
-                <TouchableOpacity style={styles.buttonBackground}>
-                    <Text style={styles.buttonTitle}>Add new menu item</Text>
-                </TouchableOpacity>
+                <View style={{
+                    flexDirection: 'row', justifyContent: 'space-between', padding: 20,
+                }}>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.mainTitle}>Menu</Text>
+                        <Text style={styles.secondaryTitle}>Add, update and remove a menu</Text>
+                    </View>
+                    <TouchableOpacity style={styles.buttonBackground}>
+                        <Text style={styles.buttonTitle}>Add menu item</Text>
+                    </TouchableOpacity>
+
+                </View>
+
                 <FlatList style={styles.flatList}
                     data={MENUITEMS}
                     keyExtractor={(item) => item.id}
@@ -52,4 +63,4 @@ function Menu() {
     );
 }
 
-export default registerRootComponent(Menu);
+export default Menu;
