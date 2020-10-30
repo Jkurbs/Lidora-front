@@ -125,17 +125,41 @@ function Menu() {
   };
 
   const addNewMenuItem = (name, price, desc) => {
-    console.log(name, price, desc);
-    setDetails({})
+    setData((prevData) => {
+      return [
+        {
+          key: prevData.length + 1,
+          name: name,
+          price: price,
+          description: desc,
+        },
+        ...prevData,
+      ];
+    });
   };
 
-  const editMenuItem = (key) => {
-    console.log("EditMenuItem", key, details);
+  const editMenuItem = (dets) => {
+    setData((data) => {
+      return data.map((item) => {
+        item.key === key
+          ? {
+              ...item,
+              name: dets.name,
+              price: dets.price,
+              description: dets.description,
+            }
+          : item;
+      });
+    });
   };
 
   const deleteMenuItem = (key) => {
-    console.log("deleteMenuIte", key);
+    // console.log(name, price, desc);
+    setData((prevData) => {
+      return prevData.filter((item) => item.key != key);
+    });
   };
+  console.log({ data });
 
   return (
     <View style={styles.container}>
@@ -144,7 +168,8 @@ function Menu() {
           <Text
             style={styles.buttonTitle}
             onPress={() => {
-              setEditMode(false), setDetails({});
+              setEditMode(false);
+              setDetails({});
             }}
           >
             Add new menu item
@@ -153,7 +178,6 @@ function Menu() {
         <FlatList
           style={styles.flatList}
           data={data}
-          keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
             <MenuItemView item={item} handleDetails={handleDetails} />

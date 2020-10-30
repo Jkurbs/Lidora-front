@@ -17,13 +17,13 @@ const MenuDetailsView = ({
 
   const handleEdit = (key) => {
     setDetails({
-      key: key,
-      name: newName,
-      price: newPrice,
-      description: newDescription,
+      key: key ? key : "",
+      name: newName ? newName : "",
+      price: newPrice ? newPrice: "",
+      description: newDescription ? newDescription : "",
     });
     console.log({ details });
-    // editMenuItem(details);
+    editMenuItem(details);
   };
 
   return (
