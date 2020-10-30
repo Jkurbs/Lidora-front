@@ -25,7 +25,7 @@ import { DATA, FEATURESDATA } from "./home.data.js";
 import ApplyScreen from "../apply/Apply.js";
 import LegalScreen from "../legal/Legal.js";
 import LoginScreen from "../login/Login.js";
-import DashboardScreen from "../../chefPages/dashboard/Dashboard.web";
+import DashboardScreen from "../../chefPages/dashboard/Dashboard";
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
@@ -139,7 +139,7 @@ function HomeScreen({ navigation }) {
       <View style={styles.secondaryView}>
 
         <ImageBackground style={styles.backgroundImage} source={require("../../assets/img/cook.svg")} >
-          <View style={{ alignItems: "center", width: 'auto', height: 'auto' }}>
+          <View style={{ marginTop: 110, alignItems: "center", width: 'auto', height: 'auto' }}>
             <Text style={{ width: windowWidth, textAlign: "center", color: "black", fontSize: normalize(30), fontWeight: "500" }}>
               Ready to start cooking {"\n"} and selling?
               </Text>
@@ -243,14 +243,6 @@ function App() {
               >
                 <Text style={{ alignSelf: 'center', fontSize: 17 }}>Login</Text>
               </TouchableOpacity>
-
-              // <Button
-              //   onPress={() => alert('This is a button!')}
-              //   title="Login"
-              //   color="white"
-              //   borderRadius="10"
-
-              // />
             ),
           })}
         />
