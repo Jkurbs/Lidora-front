@@ -46,14 +46,14 @@ function Login({ route }) {
             type="email"
             placeholder="Email"
             defaultValue=""
-            onChangeText={(value) => setEmail(value)}
+            onChangeText={(text) => setEmail(text)}
           />
           <TextInput
             style={styles.passwordStyle}
             type="password"
             placeholder="Password"
             defaultValue={email}
-            onChangeText={(value) => setPassword(value)}
+            onChangeText={(text) => setPassword(text)}
           />
           <Button title="Login" onPress={onSubmit} />
           <Button
