@@ -1,245 +1,194 @@
 import React, { useState, useCallback } from "react";
-import { StatusBar } from "expo-status-bar";
 import styles from "./menu.styles";
-import { registerRootComponent } from "expo";
-
 import {
   View,
   FlatList,
   Text,
-  Dimensions,
-  TouchableOpacity,
 } from "react-native";
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 
-import MenuItemView from "./menuItemView";
+import MenuItemView from './menuItemView';
 import MenuDetailsView from "./menuDetailsView";
 
-const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
+const data = [
+  {
+    key: 1,
+    name: "Rice",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
+    price: 3.29,
+    image:
+      "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=706&q=80",
+  },
+  {
+    key: 2,
+    name: "Healthy gear",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
+    price: 10.29,
+    image:
+      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=1335&q=80",
+  },
+  {
+    key: 3,
+    name: "Tuna burger",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
+    price: 12.29,
+    image:
+      "https://images.unsplash.com/photo-1521305916504-4a1121188589?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80",
+  },
+  {
+    key: 4,
+    name: "Hot hoagies - Chicken strips",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
+    price: 5.69,
+    image:
+      "https://images.unsplash.com/photo-1490818387583-1baba5e638af?ixlib=rb-1.2.1&auto=format&fit=crop&w=1231&q=80",
+  },
+  {
+    key: 5,
+    name: "Tuna burger",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
+    price: 12.29,
+    image:
+      "https://images.unsplash.com/photo-1521305916504-4a1121188589?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80",
+  },
+  {
+    key: 6,
+    name: "Hot hoagies - Chicken strips",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
+    price: 5.69,
+    image:
+      "https://images.unsplash.com/photo-1490818387583-1baba5e638af?ixlib=rb-1.2.1&auto=format&fit=crop&w=1231&q=80",
+  },
+];
 
 const FlatListItemSeparator = () => {
-<<<<<<< HEAD
-    return (
-        <View
-            style={{
-                alignSelf: 'center',
-                height: 0.5,
-                width: "95%",
-                backgroundColor: '#D6D6D6',
-            }}
-        />
-    );
-}
-=======
   return (
     <View
-      style={{
-        height: 1,
-        width: "100%",
-        backgroundColor: "#000",
-      }}
+      style={styles.flatListItemSeparator}
     />
   );
-};
->>>>>>> 5efd282503930e31c7f4df36b337de070a161cf1
+}
 
-// const MENUITEMS = [
-//     {
-//       key: 1,
-//       name: "Rice",
-//       description:
-//         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-//       price: 3.29,
-//       image:
-//         "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=706&q=80",
-//     },
-//     {
-//       key: 2,
-//       name: "Healthy gear",
-//       description:
-//         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-//       price: 10.29,
-//       image:
-//         "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=1335&q=80",
-//     },
-//     {
-//       key: 3,
-//       name: "Tuna burger",
-//       description:
-//         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-//       price: 12.29,
-//       image:
-//         "https://images.unsplash.com/photo-1521305916504-4a1121188589?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80",
-//     },
-//     {
-//       key: 4,
-//       name: "Hot hoagies - Chicken strips",
-//       description:
-//         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-//       price: 5.69,
-//       image:
-//         "https://images.unsplash.com/photo-1490818387583-1baba5e638af?ixlib=rb-1.2.1&auto=format&fit=crop&w=1231&q=80",
-//     },
-//   ];
+class Menu extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      mode: 'Details',
+      value: '',
+      data: data,
+      item: data[0],
+    };
 
-function Menu() {
-<<<<<<< HEAD
-    return (
-        <View style={styles.container}>
-            <View style={styles.secondContainer}>
-                <View style={{
-                    flexDirection: 'row', justifyContent: 'space-between', padding: 20,
-                }}>
-                    <View style={styles.titleContainer}>
-                        <Text style={styles.mainTitle}>Menu</Text>
-                        <Text style={styles.secondaryTitle}>Add, update and remove a menu</Text>
-                    </View>
-                    <TouchableOpacity style={styles.buttonBackground}>
-                        <Text style={styles.buttonTitle}>Add menu item</Text>
-                    </TouchableOpacity>
+    this.handleDetails = this.handleDetails.bind(this);
+    this.addMenuItem = this.addMenuItem.bind(this);
+    this.updateMenuItem = this.updateMenuItem.bind(this);
+    this.deleteMenuItem = this.deleteMenuItem.bind(this);
+  }
 
-                </View>
+  handleMode = (mode) => {
+    this.setState({
+      mode: mode
+    })
+  }
 
-                <FlatList style={styles.flatList}
-                    data={MENUITEMS}
-                    keyExtractor={(item) => item.id}
-                    showsHorizontalScrollIndicator={false}
-                    renderItem={MenuItemView}
-                    ItemSeparatorComponent={FlatListItemSeparator}
-                />
-            </View>
-        </View>
-    );
-=======
-  const [data, setData] = useState([
-    {
-      key: 1,
-      name: "Rice",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-      price: 3.29,
-      image:
-        "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=706&q=80",
-    },
-    {
-      key: 2,
-      name: "Healthy gear",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-      price: 10.29,
-      image:
-        "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=1335&q=80",
-    },
-    {
-      key: 3,
-      name: "Tuna burger",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-      price: 12.29,
-      image:
-        "https://images.unsplash.com/photo-1521305916504-4a1121188589?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80",
-    },
-    {
-      key: 4,
-      name: "Hot hoagies - Chicken strips",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-      price: 5.69,
-      image:
-        "https://images.unsplash.com/photo-1490818387583-1baba5e638af?ixlib=rb-1.2.1&auto=format&fit=crop&w=1231&q=80",
-    },
-  ]);
-  const [editMode, setEditMode] = useState(false);
-  const [details, setDetails] = useState({});
-
-  const handleDetails = (item) => {
-    console.log("xxx", item);
-    setEditMode(true);
-    setDetails({
-      ...details,
-      key: item.key,
-      name: item.name,
-      price: item.price,
-      description: item.description,
-    });
+  // Show menu item details 
+  handleDetails = (item) => {
+    this.setState({
+      item: item
+    })
   };
 
-  const addNewMenuItem = (name, price, desc) => {
-    setData((prevData) => {
-      return [
-        {
-          key: prevData.length + 1,
-          name: name,
-          price: price,
-          description: desc,
-        },
-        ...prevData,
-      ];
+  // Add new menu item
+  addMenuItem = (item) => {
+    this.setState(state => {
+      const data = [item, ...state.data];
+      return {
+        data,
+        value: item,
+        item: item
+      };
     });
+    // Change menu mode 
+    this.handleMode("Details")
+    // TODO: - Add menu item to Firebase 
   };
 
-  const editMenuItem = (dets) => {
-    setData((data) => {
-      return data.map((item) => {
-        item.key === key
-          ? {
-              ...item,
-              name: dets.name,
-              price: dets.price,
-              description: dets.description,
-            }
-          : item;
+  // Update menu Item 
+  updateMenuItem = (item) => {
+    this.setState(state => {
+      const data = state.data.map((previousItem, j) => {
+        if (j === item) {
+          return item;
+        } else {
+          return previousItem;
+        }
       });
+      return {
+        data,
+      };
     });
+    // TODO: - Update menu item in Firebase 
   };
 
-  const deleteMenuItem = (key) => {
-    // console.log(name, price, desc);
-    setData((prevData) => {
-      return prevData.filter((item) => item.key != key);
+  // Delete menu Item 
+  deleteMenuItem = (item) => {
+    this.setState(state => {
+      const data = state.data.filter(otherItem => otherItem.key !== item.key);
+      return {
+        data,
+        item: data[0]
+      };
     });
+    // TODO: - Delete menu item in Firebase 
   };
-  console.log({ data });
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.leftContainer}>
-        <TouchableOpacity style={styles.buttonBackground}>
-          <Text
-            style={styles.buttonTitle}
-            onPress={() => {
-              setEditMode(false);
-              setDetails({});
-            }}
-          >
-            Add new menu item
-          </Text>
-        </TouchableOpacity>
-        <FlatList
-          style={styles.flatList}
-          data={data}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <MenuItemView item={item} handleDetails={handleDetails} />
-          )}
-          ItemSeparatorComponent={FlatListItemSeparator}
+
+  render() {
+    return (
+      <View style={styles.container}>
+
+        <View style={styles.titleContainer}>
+          <Text style={styles.mainTitle}>{this.state.data.length} menu items</Text>
+          <Text style={styles.secondaryTitle}>Add, update and remove a menu item.</Text>
+        </View>
+
+        <View style={{ backgroundColor: '#D6D6D6', height: 1, width: '60%' }} />
+
+        <View style={{
+          flexDirection: 'row', flex: 2
+        }}>
+          <View style={{ width: '60%' }}>
+            <FlatList
+              style={styles.flatList}
+              data={this.state.data}
+              showsVerticalScrollIndicator={true}
+              extraData={this.state}
+              renderItem={({ item }) => (
+                <MenuItemView item={item} handleDetails={this.handleDetails} />
+              )}
+              ItemSeparatorComponent={FlatListItemSeparator}
+            />
+          </View>
+        </View>
+        <MenuDetailsView style={{ position: 'absolute', right: 0 }}
+          item={this.state.item}
+          mode={this.state.mode}
+          handleMode={this.handleMode}
+          updateMenuItem={this.updateMenuItem}
+          addMenuItem={this.addMenuItem}
+          deleteMenuItem={this.deleteMenuItem}
         />
       </View>
-      <View style={styles.rightContainer}>
-        <MenuDetailsView
-          details={details}
-          setDetails={setDetails}
-          editMode={editMode}
-          editMenuItem={editMenuItem}
-          addNewMenuItem={addNewMenuItem}
-          deleteMenuItem={deleteMenuItem}
-        />
-      </View>
-    </View>
-  );
->>>>>>> 5efd282503930e31c7f4df36b337de070a161cf1
+    );
+  }
 }
 
 export default Menu;

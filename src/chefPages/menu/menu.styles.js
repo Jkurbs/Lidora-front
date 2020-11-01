@@ -1,124 +1,57 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
-const userImageViewSize = 120;
+const { height: windowHeight } = Dimensions.get("screen");
 
 export default StyleSheet.create({
-<<<<<<< HEAD
     container: {
         fontFamily: "System",
-        flex: 1,
-        width: '100%',
         backgroundColor: 'white',
-        height: 'auto'
+        flex: 1,
+        height: windowHeight,
     },
 
+    flatListItemSeparator: {
+        alignSelf: 'center',
+        height: 0.5,
+        width: "95%",
+        backgroundColor: '#D6D6D6'
+    },
 
     titleContainer: {
         flexDirection: 'column',
-        marginBottom: 5
+        height: 60,
+        alignContent: 'center',
+        paddingLeft: 20,
+        justifyContent: 'center'
+
+
     },
 
     mainTitle: {
-        fontSize: 30,
+        fontSize: 25,
         fontWeight: '500'
     },
 
     secondaryTitle: {
-        color: 'rgb(99, 99, 102)'
-    },
-
-    secondContainer: {
-        width: '60%',
-        height: '100%',
-        borderRadius: 10,
+        color: 'rgb(99, 99, 102)',
+        marginBottom: 10
     },
 
     flatList: {
-        width: '100%',
-        // backgroundColor: '#F6F6F6',
-        borderRadius: 5
+        borderRadius: 5,
     },
 
     menuContent: {
         flexDirection: 'row',
-        width: '90%',
-        marginTop: 20,
-        marginBottom: 20,
-        paddingLeft: 20,
-        height: 70,
+        marginLeft: 20,
+        paddingTop: 20,
+        paddingBottom: 20,
     },
-=======
-  container: {
-    fontFamily: "System",
-    flex: 1,
-    width: "100%",
-    backgroundColor: "#E5E5E5",
-    borderColor: "pink",
-    borderWidth: 1,
-    flexDirection: "row",
-  },
-  leftContainer: {
-    width: "60%",
-    height: "90%",
-    justifyContent: "center",
-    alignContent: "center",
-    backgroundColor: "white",
-    margin: "auto",
-    borderRadius: 10,
-  },
-  rightContainer: {
-    width: "35%",
-    height: "90%",
-    alignContent: "center",
-    backgroundColor: "white",
-    margin: "auto",
-    borderRadius: 10,
-  },
 
-  flatList: {
-    marginTop: 90,
-    width: "100%",
-    backgroundColor: "white",
-  },
-
-  menuContent: {
-    flexDirection: "row",
-    width: "90%",
-    marginTop: 20,
-    marginBottom: 20,
-    marginLeft: 20,
-    paddingLeft: 20,
-    height: 90,
-  },
-
-  menuWrapper: {
-    flexDirection: "row",
-    alignSelf: "center",
-  },
->>>>>>> 5efd282503930e31c7f4df36b337de070a161cf1
-
-  mainView: {
-    flexDirection: "column",
-    justifyContent: "space-around",
-    width: "90%",
-  },
-
-  secondaryView: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    paddingLeft: 20,
-    paddingRight: 20,
-  },
-
-<<<<<<< HEAD
     secondaryView: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'space-between',
-        width: '100%',
-        paddingLeft: 20,
-        paddingRight: 40,
-        marginBottom: 20
+        margin: 8
     },
 
     image: {
@@ -127,98 +60,20 @@ export default StyleSheet.create({
         borderRadius: 35,
         backgroundColor: "#F5F5F7",
     },
-=======
-  image: {
-    borderRadius: 5,
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "#F5F5F7",
-  },
 
-  description: {
-    marginTop: -50,
-    marginLeft: 20,
-    width: "100%",
-  },
->>>>>>> 5efd282503930e31c7f4df36b337de070a161cf1
-
-  title: {
-    fontWeight: "500",
-  },
-
-  buttonBackground: {
-    backgroundColor: "green",
-    borderRadius: 10,
-    height: 50,
-    width: 120,
-    justifyContent: "center",
-    alignSelf: "flex-end",
-    margin: 20,
-  },
-  buttonTitle: {
-    textAlign: "center",
-  },
-  // Right side menu form
-  menuForm: {
-    flexDirection: "column",
-    justifyContent: "space-around",
-    width: "90%",
-    marginTop: 100,
-    marginBottom: 20,
-    marginLeft: 20,
-    paddingLeft: 20,
-    height: 90,
-  },
-  formTitle: {
-    marginTop: 200,
-    textAlign: "center",
-    fontSize: 25,
-    fontWeight: "500",
-  },
-  formInput: {
-    margin: 20,
-    lineHeight: 50,
-    fontSize: 18,
-    textAlign: "center",
-    textAlignVertical: 'top',
-  },
-  buttonView: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    // width: "40%",
-  },
-  addButton: {
-    backgroundColor: "green",
-    borderRadius: 10,
-    height: 50,
-    width: 120,
-    justifyContent: "center",
-    margin: 20,
-  },
-  editButton: {
-    backgroundColor: "green",
-    borderRadius: 10,
-    height: 50,
-    width: 120,
-    justifyContent: "center",
-    margin: 20,
-  },
-  deleteButton: {
-    backgroundColor: "red",
-    borderRadius: 10,
-    height: 50,
-    width: 120,
-    justifyContent: "center",
-    margin: 20,
-  },
-  buttonText: {
-    textAlign: "center",
-
-<<<<<<< HEAD
     mainText: {
         fontWeight: '500',
-        marginBottom: 15
+        fontSize: 17,
+        marginBottom: 4
+    },
+
+    description: {
+        marginBottom: 4
+    },
+
+    price: {
+        fontWeight: '500',
+        fontSize: 14
     },
 
     buttonBackground: {
@@ -235,8 +90,151 @@ export default StyleSheet.create({
         color: 'white',
         fontWeight: '500',
         alignSelf: 'center'
+    },
+
+    // Right side menu form
+
+    menuOptionsContainer: {
+        backgroundColor: '#F5F5F7',
+        width: '40%',
+        height: '100%',
+        position: 'absolute',
+        right: 0,
+    },
+
+    detailsContainer: {
+        flexDirection: "column",
+        padding: 20,
+        // height: windowHeight,
+        flexGrow: 1,
+    },
+
+    detailsItemImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        alignSelf: 'center',
+        marginBottom: 8,
+        backgroundColor: 'rgb(174,174,178)'
+    },
+
+    detailsItemTitle: {
+        textAlign: 'center',
+        fontWeight: '500',
+        fontSize: 20,
+        marginBottom: 8,
+
+    },
+
+    detailsItemPrice: {
+        textAlign: 'center',
+        fontWeight: '500',
+        fontSize: 17,
+        marginBottom: 8,
+    },
+
+    detailsItemDescription: {
+        textAlign: 'center'
+    },
+
+    detailsButtonContainer: {
+        // position: 'absolute',
+        flexDirection: "row",
+        marginTop: 100,
+        alignSelf: 'center',
+        // bottom: 100
+    },
+
+
+    // Edit side menu form 
+
+    menuForm: {
+        flexDirection: "column",
+        height: '100%',
+        backgroundColor: '#F5F5F7',
+        flex: 1,
+        width: '40%',
+    },
+
+    editItemContainer: {
+        flexDirection: 'column',
+        padding: 20,
+        justifyContent: 'center'
+    },
+
+    addImageButton: {
+        alignSelf: 'center',
+        color: 'rgb(0, 122, 255)',
+        fontWeight: '500',
+        marginBottom: 10
+    },
+
+    inputContainer: {
+        flexDirection: 'column',
+        width: '95%',
+        marginTop: 8,
+    },
+
+    formTitle: {
+        fontSize: 14,
+        fontWeight: "500",
+    },
+
+    formInput: {
+        marginTop: 8,
+        paddingLeft: 8,
+        fontSize: 14,
+        textAlignVertical: 'top',
+        borderColor: 'rgb(99, 99, 102)',
+        borderWidth: 1,
+        borderRadius: 5,
+        height: 40
+    },
+
+
+    formInputDescription: {
+        marginTop: 8,
+        padding: 8,
+        padding: 8,
+        fontSize: 14,
+        borderColor: 'rgb(99, 99, 102)',
+        borderWidth: 1,
+        borderRadius: 5,
+        height: 100
     }
-=======
-  }
->>>>>>> 5efd282503930e31c7f4df36b337de070a161cf1
+    ,
+    buttonView: {
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        // width: "40%",
+    },
+    addButton: {
+        backgroundColor: "green",
+        borderRadius: 10,
+        height: 50,
+        width: 120,
+        justifyContent: "center",
+        margin: 20,
+    },
+    editButton: {
+        backgroundColor: "rgb(174,174,178)",
+        borderRadius: 10,
+        height: 50,
+        width: 120,
+        justifyContent: "center",
+        margin: 20,
+    },
+    deleteButton: {
+        backgroundColor: "rgb(255,59,48)",
+        borderRadius: 10,
+        height: 50,
+        width: 120,
+        justifyContent: "center",
+        margin: 20,
+    },
+    buttonText: {
+        textAlign: "center",
+        color: 'white',
+        fontWeight: '500'
+    }
 });
