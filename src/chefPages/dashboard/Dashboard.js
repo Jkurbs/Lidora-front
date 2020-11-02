@@ -36,7 +36,6 @@ function TabNavigator() {
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
-
                     if (route.name === 'Home') {
                         iconName = focused
                             ? require('../../assets/icon/home-black.png')
@@ -102,7 +101,6 @@ function HomeScreen({ navigation }) {
 
             <CustomHeader title='Home' isHome={true} navigation={navigation} />
             <ScrollView style={{ marginBottom: 0 }}>
-
                 {/* Today Section */}
                 <View style={{ marginTop: 25, alignSelf: 'center', width: '90%', height: 120, backgroundColor: 'rgb(48, 209, 88)', borderRadius: 10 }}>
                     <View style={{ flexDirection: 'row', padding: 8, alignItems: 'center', padding: 10 }}>

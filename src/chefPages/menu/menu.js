@@ -93,6 +93,21 @@ class Menu extends React.Component {
     this.deleteMenuItem = this.deleteMenuItem.bind(this);
   }
 
+  // Fetch current chef Menu 
+  fetchMenu = () => {
+    var db = firebase.firestore();
+    const [userData, setUserData] = React.useState({ user: [] })
+    React.useEffect(() => {
+      const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("menu")
+      ref.get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          console.log(doc.id, " => ", doc.data());
+        });
+      });
+    })
+  }
+
+  // Handle menu details mode 
   handleMode = (mode) => {
     this.setState({
       mode: mode
@@ -119,6 +134,7 @@ class Menu extends React.Component {
     // Change menu mode 
     this.handleMode("Details")
     // TODO: - Add menu item to Firebase 
+
   };
 
   // Update menu Item 
@@ -136,6 +152,7 @@ class Menu extends React.Component {
       };
     });
     // TODO: - Update menu item in Firebase 
+
   };
 
   // Delete menu Item 
@@ -147,14 +164,14 @@ class Menu extends React.Component {
         item: data[0]
       };
     });
-    // TODO: - Delete menu item in Firebase 
+    // TODO: - Delete menu item in Firebase
+
   };
 
 
   render() {
     return (
       <View style={styles.container}>
-
         <View style={styles.titleContainer}>
           <Text style={styles.mainTitle}>{this.state.data.length} menu items</Text>
           <Text style={styles.secondaryTitle}>Add, update and remove a menu item.</Text>

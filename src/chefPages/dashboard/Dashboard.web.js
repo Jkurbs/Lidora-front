@@ -2,19 +2,15 @@ import * as React from 'react';
 import { Image, Text, View, SafeAreaView, ScrollView } from 'react-native';
 import { createSideTabNavigator } from 'react-navigation-side-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Ionicons } from "@expo/vector-icons";
-
-
 import MenuScreen from '../menu/menu';
 import InventoryScreen from '../inventory/inventory';
-
 
 import firebase from '../../firebase/Firebase';
 import 'firebase/firestore';
 
 const Tab = createSideTabNavigator();
 const StackInventory = createStackNavigator();
+const StackOrders = createStackNavigator();
 const StackMenu = createStackNavigator();
 
 const navOptionHandler = () => ({
@@ -35,7 +31,7 @@ function TabNavigator(props) {
                 tabStyle: { marginBottom: 20 },
 
                 style: {
-                    paddind: 60, width: 296, paddingTop: 250, marginBottom: 16,
+                    paddind: 60, width: 296, paddingTop: 250,
                 },
                 iconHorizontal: true,
                 labelSize: 15,
@@ -72,9 +68,30 @@ function TabNavigator(props) {
                         fontWeight: 'bold',
                     },
                 }}
-                name="Inventory" component={InventoryStack} />
+                name="Inventory" component={InventoryStack}></Tab.Screen>
+
+            <Tab.Screen
+                options={{
+                    title: todayDate,
+                    tabBarLabel: 'Customer orders',
+                    backgroundColor: '#f4511e',
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }}
+                name="Orders" component={OrdersStack}
+            />
         </Tab.Navigator>
 
+    )
+}
+
+function OrdersStack() {
+    return (
+        <StackOrders.Navigator initialRouteName="Orders">
+            <StackOrders.Screen name="Orders" component={InventoryScreen} options={navOptionHandler} />
+        </StackOrders.Navigator>
     )
 }
 
@@ -106,7 +123,6 @@ function Dashboard({ route }) {
     const [userData, setUserData] = React.useState({ user: [] })
 
     React.useEffect(() => {
-
         // Fetch Current chef 
         db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").get().then(function (doc) {
             console.log("data: ", doc.data())

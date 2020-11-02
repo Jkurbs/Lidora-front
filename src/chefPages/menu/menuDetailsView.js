@@ -106,7 +106,7 @@ class MenuDetailsView extends React.Component {
     return (
       <View style={styles.menuOptionsContainer} >
         <View style={{ flexDirection: 'column' }}>
-          <View style={{ height: 60, backgroundColor: 'white' }}>
+          <View style={{ height: 100, backgroundColor: 'white' }}>
             <TouchableOpacity onPress={this.handleAddButtonClick.bind(this)} style={styles.buttonBackground}>
               <Text style={styles.buttonTitle}>Add menu item</Text>
             </TouchableOpacity>

@@ -35,6 +35,17 @@ export default StyleSheet.create({
         marginBottom: 10
     },
 
+    headerView: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginLeft: 20,
+        paddingTop: 20,
+        paddingRight: 20,
+        paddingBottom: 20,
+        height: 30,
+        alignItems: 'center'
+    },
+
     flatList: {
         borderRadius: 5,
     },
@@ -44,29 +55,33 @@ export default StyleSheet.create({
         marginLeft: 20,
         paddingTop: 20,
         paddingBottom: 20,
+        height: 60,
+        alignItems: 'center'
     },
 
     secondaryView: {
-        flexDirection: 'column',
+        flexDirection: 'row',
         justifyContent: 'space-between',
-        margin: 8
+        margin: 8,
+        width: '90%'
     },
 
     image: {
-        width: 70,
-        height: 70,
+        width: 40,
+        height: 40,
         borderRadius: 35,
         backgroundColor: "#F5F5F7",
     },
 
     mainText: {
         fontWeight: '500',
-        fontSize: 17,
+        fontSize: 15,
         marginBottom: 4
     },
 
     description: {
-        marginBottom: 4
+        fontSize: 14,
+        color: '#929292'
     },
 
     price: {
@@ -170,16 +185,16 @@ export default StyleSheet.create({
     inputContainer: {
         flexDirection: 'column',
         width: '95%',
-        marginTop: 8,
+        marginTop: 16
     },
 
     formTitle: {
         fontSize: 14,
         fontWeight: "500",
+        marginBottom: 8
     },
 
     formInput: {
-        marginTop: 8,
         paddingLeft: 8,
         fontSize: 14,
         textAlignVertical: 'top',
