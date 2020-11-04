@@ -1,152 +1,152 @@
 import * as React from 'react';
-import { Image, Text, View, SafeAreaView, ScrollView } from 'react-native';
-import { createSideTabNavigator } from 'react-navigation-side-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-import MenuScreen from '../menu/menu';
-import InventoryScreen from '../inventory/inventory';
-
-import firebase from '../../firebase/Firebase';
+import { Image, Text, Button, View, SafeAreaView, ScrollView } from 'react-native';
+import { LineChart, Grid } from 'react-native-svg-charts'
 import 'firebase/firestore';
 
-const Tab = createSideTabNavigator();
-const StackInventory = createStackNavigator();
-const StackOrders = createStackNavigator();
-const StackMenu = createStackNavigator();
+const grossData = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
+const netData = [50, 10, 40, 95, -4, -24, 85, 91]
 
-const navOptionHandler = () => ({
-    headerShown: false,
-    header: null
-})
 
-function TabNavigator(props) {
-    var options = { weekday: 'long', month: 'long', day: 'numeric' };
-    var today = new Date();
-    const todayDate = today.toLocaleDateString("en-US", options);
-
+function HomeScreen() {
     return (
-        <Tab.Navigator
-            tabBarOptions={{
-                activeTintColor: '#34C759',
-                inactiveTintColor: 'black',
-                tabStyle: { marginBottom: 20 },
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F8FA' }}>
 
-                style: {
-                    paddind: 60, width: 296, paddingTop: 250,
-                },
-                iconHorizontal: true,
-                labelSize: 15,
-                showLabel: true,
-                tabWidth: 300,
-                header: null,
+            {/* <CustomHeader title='Home' isHome={true} navigation={navigation} /> */}
+            <ScrollView style={{ marginBottom: 0,  }}>
 
-                headerStyle: {
-                    backgroundColor: '#f4511e',
-                },
-            }}
-        >
-            <Tab.Screen
-                options={{
-                    title: todayDate,
-                    tabBarLabel: 'Menu',
-                    backgroundColor: '#f4511e',
-                    headerTintColor: '#fff',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
+                {/* Today Section */}
+                <View style={{ alignSelf: 'center', width: '100%', height: 120, backgroundColor: 'white'}}>
+                    <View style={{ position: 'absolute', bottom: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'column', margin: 8 }}>
+                            <Text style={{ color: 'black', fontSize: 23, fontWeight: '500' }}>$0.00</Text>
+                            <Text style={{ color: 'black', fontSize: 13 }}>Total balance</Text>
+                        </View>
+                        <View style={{ flexDirection: 'column', margin: 8 }}>
+                            <Text style={{ color: 'black', fontSize: 23, fontWeight: '500' }}>$0.00</Text>
+                            <Text style={{ color: 'black', fontSize: 13 }}>Future payouts</Text>
+                        </View>
+                        <View style={{ flexDirection: 'column', margin: 8 }}>
+                            <Text style={{ color: 'black', fontSize: 23, fontWeight: '500' }}>$0.00</Text>
+                            <Text style={{ color: 'black', fontSize: 13 }}>In transit to bank</Text>
+                        </View>
+                    </View>
+                </View>
 
-                    },
-                }}
+                {/* Payouts section */}
+                <View>
+                    <View style={{
+                         flexDirection: 'row', justifyContent:'center', width:'90%', margin:'auto'
+                    }}>
+                    {/* Gross Volume */}
+                    <View style={{
+                         backgroundColor: 'white', margin: 20, width: '65%', height: 200, borderRadius: 10, shadowColor: 'black', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
+                    }}>
+                        <View style={{ flexDirection: 'column', margin: 16 }}>
+                            <Text style={{ color: 'black', fontSize: 17, fontWeight: '500', marginRight: 8 }}>Today</Text>
+                            <Text style={{ color: 'rgb(48, 209, 88)', fontSize: 22, fontWeight: '500', marginRight: 8 }}>$100.00</Text>
+                        </View>
+                        <LineChart
+                            style={{ bottom: 10, height: 100, width: '100%' }}
+                            data={grossData}
+                            svg={{ stroke: 'rgb(48, 209, 88)' }}
+                            contentInset={{ top: 20, bottom: 20 }}
+                        >
+                            <Grid direction={'VERTICAL'} />
+                        </LineChart>
+                    </View>
+                    <View style={{
+                         backgroundColor: 'white', margin: 20, width: '30%', height: 200, borderRadius: 10, shadowColor: 'black', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
+                    }}>
+                        <View style={{ flexDirection: 'column', margin: 16 }}>
+                            <Text style={{ color: 'black', fontSize: 17, fontWeight: '500', marginRight: 8 }}>Today</Text>
+                            <Text style={{ color: 'rgb(48, 209, 88)', fontSize: 22, fontWeight: '500', marginRight: 8 }}>$100.00</Text>
+                        </View>
+                    </View>
+                    </View>
 
-                name="Menu" component={MenuStack} />
-
-            <Tab.Screen
-                options={{
-                    title: todayDate,
-                    tabBarLabel: 'Inventory',
-                    backgroundColor: '#f4511e',
-                    headerTintColor: '#fff',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                    },
-                }}
-                name="Inventory" component={InventoryStack}></Tab.Screen>
-
-            <Tab.Screen
-                options={{
-                    title: todayDate,
-                    tabBarLabel: 'Customer orders',
-                    backgroundColor: '#f4511e',
-                    headerTintColor: '#fff',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                    },
-                }}
-                name="Orders" component={OrdersStack}
-            />
-        </Tab.Navigator>
-
-    )
-}
-
-function OrdersStack() {
-    return (
-        <StackOrders.Navigator initialRouteName="Orders">
-            <StackOrders.Screen name="Orders" component={InventoryScreen} options={navOptionHandler} />
-        </StackOrders.Navigator>
-    )
-}
-
-// Stack to show the inventory
-function InventoryStack() {
-    return (
-        <StackInventory.Navigator initialRouteName="Inventory">
-            <StackInventory.Screen name="Inventory" component={InventoryScreen} options={navOptionHandler} />
-        </StackInventory.Navigator>
-    )
-}
+                    {/*MONTHLY OVERVIEW */}
 
 
-// Stack to show the menu
-function MenuStack() {
-    return (
-        <StackMenu.Navigator initialRouteName="Menu">
-            <StackMenu.Screen name="Menu" component={MenuScreen} options={navOptionHandler} />
-        </StackMenu.Navigator>
-    )
-}
+                    <View style={{width:'90%', margin:'auto'}}>
+                    <Text style={{ color: 'black', fontSize: 24, fontWeight: '500', marginleft: 10 }}>Monthly Overview</Text>
+                    </View>
+                    <View style={{
+                         flexDirection: 'row', justifyContent:'center',width:'90%', margin:'auto'
+                    }}>
+                    {/* Income this month */}
+                    <View style={{
+                        alignSelf: 'center', backgroundColor: 'white', margin: 20, width:"30%", height: 120, borderRadius: 10, shadowColor: 'black', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
+                    }}>
+                        <View style={{ flexDirection: 'column', margin: 16 }}>
+                            <Text style={{ color: 'black', fontSize: 17, fontWeight: '500', marginRight: 8 }}>Income this month</Text>
+                            <Text style={{ color: 'rgb(48, 209, 88)', fontSize: 22, fontWeight: '500', marginRight: 8 }}>$50.00</Text>
+                        </View>
+                    </View>
 
+                    {/* Net volume from sales */}
 
-function Dashboard({ route }) {
-    const { user } = route.params;
-    // get name and picture from firebase
-    var db = firebase.firestore();
+                    <View style={{
+                        alignSelf: 'center', backgroundColor: 'white', margin: 20, width:"30%",  height: 120, borderRadius: 10, shadowColor: 'black', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
+                    }}>
+                        <View style={{ flexDirection: 'column', margin: 16 }}>
+                            <Text style={{ color: 'black', fontSize: 17, fontWeight: '500', marginRight: 8 }}>Net volume from sales</Text>
+                            <Text style={{ color: 'rgb(48, 209, 88)', fontSize: 22, fontWeight: '500', marginRight: 8 }}>$16</Text>
+                        </View>
+                    </View>
 
-    const [userData, setUserData] = React.useState({ user: [] })
+                    {/* Total customers */}
 
-    React.useEffect(() => {
-        // Fetch Current chef 
-        db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").get().then(function (doc) {
-            console.log("data: ", doc.data())
-            if (doc.exists) {
-                setUserData({ user: doc.data() })
-            } else {
-                console.log("No such document!");
-            }
-        }).catch(function (error) {
-            console.log("Error getting document:", error);
-        });
-    }, [])
+                    <View style={{
+                        alignSelf: 'center', backgroundColor: 'white', margin: 20, width:"30%",  height: 120, borderRadius: 10, shadowColor: 'black', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
+                    }}>
+                        <View style={{ flexDirection: 'column', margin: 16 }}>
+                            <Text style={{ color: 'black', fontSize: 17, fontWeight: '500', marginRight: 8 }}>Total customers</Text>
+                            <Text style={{ color: 'rgb(48, 209, 88)', fontSize: 22, fontWeight: '500', marginRight: 8 }}>160</Text>
+                        </View>
+                    </View>
+                    </View>
+                    {/* Total fees spent */}
+                    <View style={{
+                         flexDirection: 'row', justifyContent:'center',width:'90%', margin:'auto'
+                    }}>
+                    <View style={{
+                        alignSelf: 'center', backgroundColor: 'white', margin: 20, width:"30%", height: 120, borderRadius: 10, shadowColor: 'black', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
+                    }}>
+                        <View style={{ flexDirection: 'column', margin: 16 }}>
+                            <Text style={{ color: 'black', fontSize: 17, fontWeight: '500', marginRight: 8 }}>Total fees spent</Text>
+                            <Text style={{ color: 'rgb(48, 209, 88)', fontSize: 22, fontWeight: '500', marginRight: 8 }}>$50.00</Text>
+                        </View>
+                    </View>
 
-    return (
-        <View style={{ height: '100%' }}>
-            <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
-                <Image style={{ height: 120, width: 120, borderRadius: 60, marginBottom: 16 }} source={{ uri: userData.user.imageURL }} />
-                <Text style={{ fontSize: 25, fontWeight: '700' }}>Welcome {userData.user.first_name}</Text>
-            </View>
+                    {/* Inventory loss */}
 
-            <TabNavigator />
-        </View>
+                    <View style={{
+                        alignSelf: 'center', backgroundColor: 'white', margin: 20, width:"30%",  height: 120, borderRadius: 10, shadowColor: 'black', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
+                    }}>
+                        <View style={{ flexDirection: 'column', margin: 16 }}>
+                            <Text style={{ color: 'black', fontSize: 17, fontWeight: '500', marginRight: 8 }}>Inventory loss</Text>
+                            <Text style={{ color: 'rgb(48, 209, 88)', fontSize: 22, fontWeight: '500', marginRight: 8 }}>16 items</Text>
+                        </View>
+                    </View>
+
+                    {/* Total sales */}
+
+                    <View style={{
+                        alignSelf: 'center', backgroundColor: 'white', margin: 20, width:"30%",  height: 120, borderRadius: 10, shadowColor: 'black', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
+                    }}>
+                        <View style={{ flexDirection: 'column', margin: 16 }}>
+                            <Text style={{ color: 'black', fontSize: 17, fontWeight: '500', marginRight: 8 }}>Total sales</Text>
+                            <Text style={{ color: 'rgb(48, 209, 88)', fontSize: 22, fontWeight: '500', marginRight: 8 }}>160</Text>
+                        </View>
+                    </View>
+                    </View>
+                </View>
+                
+            </ScrollView>
+        </SafeAreaView >
     );
 }
 
-export default Dashboard;
+
+export default HomeScreen;
 
