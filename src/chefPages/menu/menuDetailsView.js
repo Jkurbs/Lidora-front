@@ -2,8 +2,40 @@ import React, { useState, useCallback, useEffect } from "react";
 import styles from "./menu.styles";
 import { View, TextInput, TouchableOpacity, Text, Image, Alert, Button } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import  MultiSelect  from 'react-native-multiple-select'
+import PropTypes from 'prop-types';
+
 import * as DocumentPicker from 'expo-document-picker';
 
+const items = [{
+  id: '92iijs7yta',
+  name: 'Ondo'
+}, {
+  id: 'a0s0a8ssbsd',
+  name: 'Ogun'
+}, {
+  id: '16hbajsabsd',
+  name: 'Calabar'
+}, {
+  id: 'nahs75a5sg',
+  name: 'Lagos'
+}, {
+  id: '667atsas',
+  name: 'Maiduguri'
+}, {
+  id: 'hsyasajs',
+  name: 'Anambra'
+}, {
+  id: 'djsjudksjd',
+  name: 'Benue'
+}, {
+  id: 'sdhyaysdj',
+  name: 'Kaduna'
+}, {
+  id: 'suudydjsjd',
+  name: 'Abuja'
+  }
+];
 
 class MenuDetailsView extends React.Component {
   constructor() {
@@ -164,6 +196,14 @@ class Add extends React.Component {
       item: item
     }
   }
+  state = {
+    selectedItems : []
+  };
+
+  
+  onSelectedItemsChange = selectedItems => {
+    this.setState({ selectedItems });
+  };
 
   render() {
     return (
@@ -191,6 +231,34 @@ class Add extends React.Component {
               onChangeText={(text) => this.state.item.price = text}
               defaultValue={""}
             />
+
+          <View style={{marginTop: 8}}>
+          <Text style={styles.formTitle}>Ingredients</Text>
+          <MultiSelect
+          items={items}
+          uniqueKey="id"
+          ref={(component) => { this.multiSelect = component }}
+          onSelectedItemsChange={this.onSelectedItemsChange}
+          selectedItems={this.state.selectedItems}
+          selectText="Pick Ingredients"
+          searchInputPlaceholderText="Search Ingredients..."
+          onChangeInput={ (text)=> console.log(text)}
+          tagRemoveIconColor="#CCC"
+          tagBorderColor="#CCC"
+          tagTextColor="#CCC"
+          selectedItemTextColor="#CCC"
+          selectedItemIconColor="#CCC"
+          itemTextColor="#000"
+          displayKey="name"
+          searchInputStyle={{ color: '#CCC' }}
+          submitButtonColor="#CCC"
+          submitButtonText="Submit"
+          styleMainWrapper={{ marginTop: 7}}
+          styleTextDropdown={{fontFamily: 'System', padding: 8}}
+          styleDropdownMenuSubsection={{height: 40, borderRadius: 5, borderWidth: 1, borderColor: '#d6d6d6'}}
+          />
+          </View>
+
           </View>
           <View style={styles.inputContainer}>
             <Text style={styles.formTitle}>Description</Text>
