@@ -8,18 +8,14 @@ export default StyleSheet.create({
   },
   container: {
     flex: 1,
+    flexDirection: 'column',
     alignItems: "center",
     justifyContent: "center",
   },
-  imageStyle: {
-    marginBottom: 10,
-    borderRadius: 5,
-    width: "auto",
-    height: 200,
-  },
+
+
   headerText: {
-    fontSize: 25,
-    marginTop: -200,
+    fontSize: 40,
   },
   textStyle: {
     marginTop: 10,
@@ -27,14 +23,17 @@ export default StyleSheet.create({
     color: "black",
     fontSize: 17,
   },
-  emailStyle: {
-    width: 100,
-    margin: 5,
+  input: {
+    marginTop: 8,
+    padding: 8,
+    padding: 8,
+    fontSize: 14,
+    borderColor: 'rgb(99, 99, 102)',
+    borderWidth: 1,
+    borderRadius: 5,
+    height: 50
   },
-  passwordStyle: {
-    width: 100,
-    marginBottom: 20,
-  },
+
   userLink: {
     color: "white",
   },

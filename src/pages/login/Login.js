@@ -9,8 +9,6 @@ function Login({ route }) {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
-  console.log(password)
-
   const { navigation } = route.params;
 
   const onSubmit = () => {
@@ -18,13 +16,12 @@ function Login({ route }) {
       .auth()
       .signInWithEmailAndPassword('test@gmail.com', '123456')
       .then(data => {
-        const userName = data.user.displayName;
+        const userName = data.user.uid;
         // toggle state variable
         // useEffect hook on parent component
         // redirect to private route
-        console.log(userName)
-        console.log("userdata",data.user)
-        navigation.navigate('Dashboard')
+        console.log("UID: ", userName)
+        navigation.navigate('Dashboard', { user: data.user })
       })
       .catch(function (error) {
         // Handle Errors here.
@@ -42,25 +39,28 @@ function Login({ route }) {
         <View style={styles.formContainer}>
           <Text style={styles.textStyle}>Chef Login</Text>
           <TextInput
-            style={styles.emailStyle}
+            style={styles.input}
             type="email"
             placeholder="Email"
             defaultValue=""
-            onChangeText={(value) => setEmail(value)}
+            onChangeText={(text) => setEmail(text)}
           />
           <TextInput
-            style={styles.passwordStyle}
+            style={styles.input}
             type="password"
             placeholder="Password"
             defaultValue={email}
-            onChangeText={(value) => setPassword(value)}
+            onChangeText={(text) => setPassword(text)}
           />
-          <Button title="Login" onPress={onSubmit} />
-          <Button
-            title="Hungry?"
-            style={styles.userLink}
-            onPress={() => setIsChef(false)}
-          />
+          <View style={{ padding: 20 }}>
+            <Button title="Login" onPress={onSubmit} />
+            {/* <Button
+              title="Hungry?"
+              style={styles.userLink}
+              onPress={() => setIsChef(false)}
+            /> */}
+          </View>
+
         </View>
       ) : (
           <View style={styles.formContainer}>
