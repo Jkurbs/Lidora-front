@@ -3,7 +3,6 @@ import styles from "./menu.styles";
 import { View, TextInput, TouchableOpacity, Text, Image, Alert, Button } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import * as DocumentPicker from 'expo-document-picker';
-import { MenuItem } from '../../models/MenuItem'
 
 
 class MenuDetailsView extends React.Component {
@@ -248,6 +247,10 @@ class Edit extends React.Component {
               defaultValue={this.props.item.price}
             />
           </View>
+
+          {/* TODO: - Add search field here */}
+
+
           <View style={styles.inputContainer}>
             <Text style={styles.formTitle}>Description</Text>
             <TextInput style={styles.formInputDescription}

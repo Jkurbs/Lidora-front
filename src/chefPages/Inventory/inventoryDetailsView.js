@@ -23,8 +23,6 @@ class InventoryDetailsView extends React.Component {
         return (
             <View style={styles.menuOptionsContainer} >
                 <View style={{ flexDirection: 'column' }}>
-
-                    <View style={{ backgroundColor: '#D6D6D6', height: 1, width: '100%' }} />
                     <this.renderChildComponent />
                 </View>
             </View>

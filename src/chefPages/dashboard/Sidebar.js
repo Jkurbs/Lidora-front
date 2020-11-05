@@ -5,6 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MenuScreen from '../menu/menu';
 import InventoryScreen from '../inventory/inventory';
 import DashboardScreen from '../dashboard/Dashboard.web';
+import OrdersScreen from '../order/Order.web';
+
 
 import firebase from '../../firebase/Firebase';
 import 'firebase/firestore';
@@ -46,7 +48,7 @@ function TabNavigator(props) {
                 },
             }}
         >
-            
+
             <Tab.Screen
                 options={{
                     title: todayDate,
@@ -115,7 +117,7 @@ function DashboardStack() {
 function OrdersStack() {
     return (
         <StackOrders.Navigator initialRouteName="Orders">
-            <StackOrders.Screen name="Orders" component={InventoryScreen} options={navOptionHandler} />
+            <StackOrders.Screen name="Orders" component={OrdersScreen} options={navOptionHandler} />
         </StackOrders.Navigator>
     )
 }
