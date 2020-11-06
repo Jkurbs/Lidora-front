@@ -6,6 +6,7 @@ class InventoryItemView extends React.Component {
     render() {
         return (
             <TouchableOpacity
+                onPress={() => this.props.handleDetails(this.props.item)}
                 style={styles.menuContent}>
                 <View style={styles.secondaryView}>
                     <Text style={styles.mainText}>{this.props.item.name}</Text>

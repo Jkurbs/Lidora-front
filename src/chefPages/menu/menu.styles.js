@@ -7,7 +7,7 @@ export default StyleSheet.create({
         fontFamily: "System",
         backgroundColor: 'white',
         flex: 1,
-        height: windowHeight,
+        // height: windowHeight,
     },
 
     flatListItemSeparator: {
@@ -17,11 +17,20 @@ export default StyleSheet.create({
         backgroundColor: '#D6D6D6'
     },
 
+    titleParentContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: 90,
+        width: '60%',
+        paddingLeft: 20,
+        paddingRight: 20
+    },
+
     titleContainer: {
         flexDirection: 'column',
-        height: 100,
         alignContent: 'center',
-        paddingLeft: 20,
+        paddingBottom: 8,
         justifyContent: 'center'
     },
 
@@ -37,13 +46,16 @@ export default StyleSheet.create({
 
     flatList: {
         borderRadius: 5,
+        width: '30%',
     },
 
     menuContent: {
         flexDirection: 'row',
+        alignItems: 'center',
         marginLeft: 20,
         paddingTop: 20,
         paddingBottom: 20,
+        height: 90
     },
 
     secondaryView: {
@@ -53,15 +65,15 @@ export default StyleSheet.create({
     },
 
     image: {
-        width: 70,
-        height: 70,
+        width: 50,
+        height: 50,
         borderRadius: 35,
         backgroundColor: "#F5F5F7",
     },
 
     mainText: {
         fontWeight: '500',
-        fontSize: 17,
+        fontSize: 15,
         marginBottom: 4
     },
 
@@ -83,6 +95,7 @@ export default StyleSheet.create({
         alignSelf: 'flex-end',
         margin: 20
     },
+
     buttonTitle: {
         textAlign: 'center',
         color: 'white',
@@ -103,7 +116,7 @@ export default StyleSheet.create({
     detailsContainer: {
         flexDirection: "column",
         padding: 20,
-        // height: windowHeight,
+        backgroundColor: '#F5F5F7',
         flexGrow: 1,
     },
 
@@ -112,6 +125,7 @@ export default StyleSheet.create({
         height: 100,
         borderRadius: 50,
         alignSelf: 'center',
+        marginTop: 20,
         marginBottom: 8,
         backgroundColor: 'rgb(174,174,178)'
     },
@@ -136,11 +150,9 @@ export default StyleSheet.create({
     },
 
     detailsButtonContainer: {
-        // position: 'absolute',
         flexDirection: "row",
-        marginTop: 100,
-        alignSelf: 'center',
-        // bottom: 100
+        marginTop: 10,
+        alignSelf: 'flex-end',
     },
 
 
@@ -157,7 +169,9 @@ export default StyleSheet.create({
     editItemContainer: {
         flexDirection: 'column',
         padding: 20,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        // flex: 1, 
+        flexGrow: 1
     },
 
     addImageButton: {
@@ -190,16 +204,16 @@ export default StyleSheet.create({
         backgroundColor: 'white'
     },
 
-
     formInputDescription: {
         marginTop: 8,
         padding: 8,
         padding: 8,
         fontSize: 14,
-        borderColor: 'rgb(99, 99, 102)',
+        borderColor: '#d6d6d6',
         borderWidth: 1,
         borderRadius: 5,
-        height: 100
+        height: 100,
+        backgroundColor: 'white'
     }
     ,
     buttonView: {
@@ -215,22 +229,33 @@ export default StyleSheet.create({
         justifyContent: "center",
         margin: 20,
     },
+
     editButton: {
         backgroundColor: "rgb(174,174,178)",
         borderRadius: 10,
-        height: 50,
-        width: 120,
+        height: 30,
+        width: 70,
         justifyContent: "center",
-        margin: 20,
+        margin: 10,
     },
+
     deleteButton: {
-        backgroundColor: "rgb(255,59,48)",
+        borderWidth: 0.5,
+        borderColor: '#d3071c',
         borderRadius: 10,
-        height: 50,
-        width: 120,
+        height: 30,
+        width: 50,
         justifyContent: "center",
-        margin: 20,
+        margin: 10,
     },
+
+    deleteText: {
+        color: '#d3071c',
+        textAlign: "center",
+        fontWeight: '500',
+        fontSize: 12
+    },
+
     buttonText: {
         textAlign: "center",
         color: 'white',

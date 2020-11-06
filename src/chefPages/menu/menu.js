@@ -4,7 +4,11 @@ import {
   View,
   FlatList,
   Text,
+  ScrollView,
+  TouchableOpacity
 } from "react-native";
+
+import { Ionicons } from '@expo/vector-icons';
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
@@ -168,34 +172,35 @@ class Menu extends React.Component {
 
   };
 
-
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.mainTitle}>{this.state.data.length} menu items</Text>
-          <Text style={styles.secondaryTitle}>Add, update and remove a menu item.</Text>
+        <View style={styles.titleParentContainer}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.mainTitle}>{this.state.data.length} menu items</Text>
+            <Text style={styles.secondaryTitle}>Add, update and remove a menu item.</Text>
+          </View>
+          <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>
+            <Ionicons name="ios-add" size={30} color="#34C759" />
+          </TouchableOpacity>
         </View>
-
-        <View style={{ backgroundColor: '#D6D6D6', height: 1, width: '60%' }} />
+        <View style={{ backgroundColor: '#D6D6D6', height: 1, width: '100%' }} />
 
         <View style={{
           flexDirection: 'row', flex: 2
         }}>
-          <View style={{ width: '60%' }}>
-            <FlatList
-              style={styles.flatList}
-              data={this.state.data}
-              showsVerticalScrollIndicator={true}
-              extraData={this.state}
-              renderItem={({ item }) => (
-                <MenuItemView item={item} handleDetails={this.handleDetails} />
-              )}
-              ItemSeparatorComponent={FlatListItemSeparator}
-            />
-          </View>
+          <FlatList
+            style={styles.flatList}
+            data={this.state.data}
+            showsVerticalScrollIndicator={true}
+            extraData={this.state}
+            renderItem={({ item }) => (
+              <MenuItemView item={item} handleDetails={this.handleDetails} />
+            )}
+            ItemSeparatorComponent={FlatListItemSeparator}
+          />
         </View>
-        <MenuDetailsView style={{ position: 'absolute', right: 0 }}
+        <MenuDetailsView
           item={this.state.item}
           mode={this.state.mode}
           handleMode={this.handleMode}
@@ -204,6 +209,7 @@ class Menu extends React.Component {
           deleteMenuItem={this.deleteMenuItem}
         />
       </View>
+
     );
   }
 }

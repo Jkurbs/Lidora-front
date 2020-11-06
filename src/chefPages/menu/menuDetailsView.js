@@ -2,40 +2,32 @@ import React, { useState, useCallback, useEffect } from "react";
 import styles from "./menu.styles";
 import { View, TextInput, TouchableOpacity, Text, Image, Alert, Button } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import  MultiSelect  from 'react-native-multiple-select'
-import PropTypes from 'prop-types';
+import MultiSelect from 'react-native-multiple-select'
 
 import * as DocumentPicker from 'expo-document-picker';
 
 const items = [{
   id: '92iijs7yta',
-  name: 'Ondo'
+  name: 'Banana'
 }, {
   id: 'a0s0a8ssbsd',
-  name: 'Ogun'
+  name: 'Orange'
 }, {
   id: '16hbajsabsd',
-  name: 'Calabar'
+  name: 'Rice'
 }, {
   id: 'nahs75a5sg',
-  name: 'Lagos'
+  name: 'Avocado'
 }, {
   id: '667atsas',
-  name: 'Maiduguri'
+  name: 'Dates'
 }, {
   id: 'hsyasajs',
-  name: 'Anambra'
+  name: 'Barley'
 }, {
   id: 'djsjudksjd',
-  name: 'Benue'
-}, {
-  id: 'sdhyaysdj',
-  name: 'Kaduna'
-}, {
-  id: 'suudydjsjd',
-  name: 'Abuja'
-  }
-];
+  name: 'Babaganoosh'
+}];
 
 class MenuDetailsView extends React.Component {
   constructor() {
@@ -137,12 +129,6 @@ class MenuDetailsView extends React.Component {
     return (
       <View style={styles.menuOptionsContainer} >
         <View style={{ flexDirection: 'column' }}>
-          <View style={{ height: 100, backgroundColor: 'white' }}>
-            <TouchableOpacity onPress={this.handleAddButtonClick.bind(this)} style={styles.buttonBackground}>
-              <Text style={styles.buttonTitle}>Add menu item</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{ backgroundColor: '#D6D6D6', height: 1, width: '100%' }} />
           <this.renderChildComponent />
         </View>
       </View>
@@ -150,27 +136,27 @@ class MenuDetailsView extends React.Component {
   }
 }
 
-
 class Details extends React.Component {
   render() {
     return (
-      <ScrollView>
+      <ScrollView style={{ height: '100%' }}>
+        <View style={styles.detailsButtonContainer}>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => this.props.deleteMenuItem(this.props.item)}>
+            <Text style={styles.deleteText}>Delete</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.handleEditClick}
+            style={styles.editButton}>
+            <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.detailsContainer}>
+
           <Image style={styles.detailsItemImage} source={this.props.item.image} />
           <Text style={styles.detailsItemTitle}>{this.props.item.name}</Text>
           <Text style={styles.detailsItemPrice}>${this.props.item.price}</Text>
           <Text style={styles.detailsItemDescription}>{this.props.item.description}</Text>
-          <View style={styles.detailsButtonContainer}>
-            <TouchableOpacity onPress={this.props.handleEditClick}
-              style={styles.editButton}>
-              <Text style={styles.buttonText}>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => this.props.deleteMenuItem(this.props.item)}>
-              <Text style={styles.buttonText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </ScrollView>
     )
@@ -197,18 +183,18 @@ class Add extends React.Component {
     }
   }
   state = {
-    selectedItems : []
+    selectedItems: []
   };
 
-  
   onSelectedItemsChange = selectedItems => {
     this.setState({ selectedItems });
   };
 
   render() {
     return (
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.editItemContainer}>
+          <Text style={{ fontSize: 20, fontWeight: '500', alignSelf: 'center' }}>Add a new item</Text>
           <Image
             style={styles.detailsItemImage}
             source={this.props.image}
@@ -232,33 +218,36 @@ class Add extends React.Component {
               defaultValue={""}
             />
 
-          <View style={{marginTop: 8}}>
-          <Text style={styles.formTitle}>Ingredients</Text>
-          <MultiSelect
-          items={items}
-          uniqueKey="id"
-          ref={(component) => { this.multiSelect = component }}
-          onSelectedItemsChange={this.onSelectedItemsChange}
-          selectedItems={this.state.selectedItems}
-          selectText="Pick Ingredients"
-          searchInputPlaceholderText="Search Ingredients..."
-          onChangeInput={ (text)=> console.log(text)}
-          tagRemoveIconColor="#CCC"
-          tagBorderColor="#CCC"
-          tagTextColor="#CCC"
-          selectedItemTextColor="#CCC"
-          selectedItemIconColor="#CCC"
-          itemTextColor="#000"
-          displayKey="name"
-          searchInputStyle={{ color: '#CCC' }}
-          submitButtonColor="#CCC"
-          submitButtonText="Submit"
-          styleMainWrapper={{ marginTop: 7}}
-          styleTextDropdown={{fontFamily: 'System', padding: 8}}
-          styleDropdownMenuSubsection={{height: 40, borderRadius: 5, borderWidth: 1, borderColor: '#d6d6d6'}}
-          />
-          </View>
-
+            <View style={{ marginTop: 8 }}>
+              <Text style={styles.formTitle}>Ingredients</Text>
+              <MultiSelect
+                items={items}
+                uniqueKey="id"
+                ref={(component) => { this.multiSelect = component }}
+                onSelectedItemsChange={this.onSelectedItemsChange}
+                selectedItems={this.state.selectedItems}
+                selectText="Pick Ingredients"
+                searchInputPlaceholderText="Search Ingredients..."
+                onChangeInput={(text) => console.log(text)}
+                tagRemoveIconColor="#CCC"
+                tagBorderColor="#CCC"
+                tagTextColor="#CCC"
+                selectedItemTextColor="#CCC"
+                selectedItemIconColor="#CCC"
+                itemTextColor="#000"
+                displayKey="name"
+                searchInputStyle={{ color: '#CCC' }}
+                submitButtonColor="#CCC"
+                submitButtonText="Submit"
+                styleMainWrapper={{ marginTop: 7 }}
+                styleTextDropdown={{ fontFamily: 'System', padding: 8 }}
+                styleDropdownMenuSubsection={{ height: 40, borderRadius: 5, borderWidth: 1, borderColor: '#d6d6d6' }}
+                styleRowList={{ height: 40 }}
+                itemFontSize={13}
+                styleListContainer={{ marginTop: 20 }}
+                searchInputStyle={{ height: 40 }}
+              />
+            </View>
           </View>
           <View style={styles.inputContainer}>
             <Text style={styles.formTitle}>Description</Text>
