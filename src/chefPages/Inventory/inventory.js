@@ -1,6 +1,8 @@
 import React from "react";
 import styles from "./inventory.styles";
-import { View, FlatList, Text } from "react-native";
+import { View, FlatList, Text, TouchableOpacity } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
+
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 
@@ -63,6 +65,7 @@ class Inventory extends React.Component {
             mode: 'Add',
             value: '',
             data: data,
+            item: data[0]
         };
         this.addInventoryItem = this.addInventoryItem.bind(this);
     }
@@ -89,6 +92,14 @@ class Inventory extends React.Component {
         })
     }
 
+    // Show Iventory item details 
+    handleDetails = (item) => {
+        this.setState({
+            item: item,
+            mode: 'Details'
+        })
+    };
+
     // Add new inventory item
     addInventoryItem = (item) => {
         this.setState(state => {
@@ -99,6 +110,18 @@ class Inventory extends React.Component {
             };
         });
         // TODO: - Add inventory item to Firebase 
+    };
+
+    // Delete menu Item 
+    deleteInventoryItem = (item) => {
+        this.setState(state => {
+            const data = state.data.filter(otherItem => otherItem.key !== item.key);
+            return {
+                data,
+                item: data[0]
+            };
+        });
+        // TODO: - Delete menu item in Firebase
 
     };
 
@@ -106,12 +129,16 @@ class Inventory extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.mainTitle}>{this.state.data.length} items in your inventory</Text>
-                    <Text style={styles.secondaryTitle}>Add items to your iventory.</Text>
+                <View style={styles.titleParentContainer}>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.mainTitle}>{this.state.data.length} items in your inventory</Text>
+                        <Text style={styles.secondaryTitle}>Add, Update and Delete items to your iventory.</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>
+                        <Ionicons name="ios-add" size={30} color="#34C759" />
+                    </TouchableOpacity>
                 </View>
                 <View style={{ backgroundColor: '#D6D6D6', height: 1, width: '60%' }} />
-
                 <View style={{ width: '60%' }}>
                     <FlatList
                         style={styles.flatList}
@@ -124,10 +151,11 @@ class Inventory extends React.Component {
                         ItemSeparatorComponent={FlatListItemSeparator}
                     />
                 </View>
-                <InventoryDetailsView style={{ position: 'absolute', right: 0 }}
+                <InventoryDetailsView style={{ top: 0, bottom: 0, position: 'absolute', right: 0 }}
                     item={this.state.item}
                     mode={this.state.mode}
                     addInventoryItem={this.addInventoryItem}
+                    deleteInventoryItem={this.deleteInventoryItem}
                 />
             </View>
         );

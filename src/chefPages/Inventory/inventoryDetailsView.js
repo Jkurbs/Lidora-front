@@ -14,21 +14,66 @@ class InventoryDetailsView extends React.Component {
         this.renderChildComponent = this.renderChildComponent.bind(this);
     }
     renderChildComponent() {
-        return <Add
-            item={this.props.item}
-            addInventoryItem={this.props.addInventoryItem} />
+        switch (this.props.mode) {
+            case "Details":
+                return <Details
+                    image={this.state.image}
+                    item={this.props.item}
+                    deleteInventoryItem={this.props.deleteInventoryItem}
+                    editIventoryItem={this.props.editIventoryItem}
+                    handleEditClick={this.handleEditButtonClick}
+                />
+            case "Edit":
+                return <Edit
+                    item={this.props.item} image={this.state.image}
+                    handleSaveButtonClick={this.handleSaveButtonClick}
+                    handleAddNewItemButtonClick={this.handleAddNewItemButtonClick}
+                />
+            case "Add":
+                return <Add
+                    item={this.props.item}
+                    handleMode={this.props.handleMode}
+                    addInventoryItem={this.props.addInventoryItem}
+                    handleCancelButtonClick={this.handleCancelButtonClick}
+                />
+        }
     }
 
     render() {
         return (
             <View style={styles.menuOptionsContainer} >
-                <View style={{ flexDirection: 'column' }}>
+                <View style={{ flexDirection: 'column', height: '100%' }}>
                     <this.renderChildComponent />
                 </View>
             </View>
         )
     }
 }
+
+class Details extends React.Component {
+    render() {
+        return (
+            <ScrollView style={{ height: '100%' }}>
+                <View style={styles.detailsButtonContainer}>
+                    <TouchableOpacity
+                        style={styles.deleteButton}
+                        onPress={() => this.props.deleteInventoryItem(this.props.item)}>
+                        <Text style={styles.deleteText}>Delete</Text>
+                    </TouchableOpacity>
+                    {/* <TouchableOpacity onPress={this.handleEditClick}
+                        style={styles.editButton}>
+                        <Text style={styles.buttonText}>Edit</Text>
+                    </TouchableOpacity> */}
+                </View>
+                <View style={styles.detailsContainer}>
+                    <Text style={styles.detailsItemTitle}>{this.props.item.name}</Text>
+                    <Text style={styles.detailsItemPrice}>{this.props.item.quantity} {this.props.item.unit}</Text>
+                </View>
+            </ScrollView>
+        )
+    }
+}
+
 
 // ADD ITEM COMPONENT 
 class Add extends React.Component {
@@ -49,8 +94,10 @@ class Add extends React.Component {
 
     render() {
         return (
-            <ScrollView>
+            <ScrollView style={{ height: '100%' }}>
                 <View style={styles.editItemContainer}>
+
+                    <Text style={{ fontSize: 20, fontWeight: '500' }}>Add an item</Text>
                     <View style={styles.inputContainer}>
                         <Text style={styles.formTitle}>Name</Text>
                         <TextInput style={styles.formInput}
