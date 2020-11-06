@@ -18,32 +18,59 @@ const Item = ({ imageURL, name }) => (
     </View>
 );
 
-function OrdersScreen() {
-    const renderItem = ({ item }) => (
+class Order extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            // data: data,
+            // item: data[0],
+            day: Date()
+        };
+
+        this.renderItem = this.renderItem.bind(this);
+        this.fetchOrders = this.fetchOrders.bind(this);
+
+    }
+
+    renderItem = ({ item }) => (
         <Item imageURL={item.imageURL} name={item.name} />
     );
-    return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F8FA' }}>
-            {/* <CustomHeader title='Orders' isHome={true} /> */}
-            <View style={{ width: '60%' }}>
-                <CalendarList
-                    horizontal={true}
-                    pagingEnabled={false}
-                    calendarWidth={500}
-                    calendarHeight={300}
-                    theme={{
-                        selectedDotColor: '#ffffff',
-                        arrowColor: 'orange',
-                    }}
-                    onDayPress={(day) => { console.log('Day pressed', day.dateString); }}
-                />
-                <FlatList style={{ marginTop: 50, marginLeft: 16 }}
-                    data={DATA}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.id}
-                />
-            </View>
-        </SafeAreaView>
-    );
+
+    fetchOrders(day) {
+        alert(day.dateString)
+
+    }
+
+    render() {
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F8FA' }}>
+                {/* <CustomHeader title='Orders' isHome={true} /> */}
+                <View style={{ width: '60%' }}>
+                    <CalendarList
+                        horizontal={true}
+                        pagingEnabled={false}
+                        calendarWidth={500}
+                        calendarHeight={300}
+                        theme={{
+                            selectedDotColor: '#ffffff',
+                            arrowColor: 'orange',
+                        }}
+
+                        // onDayPress={(day) => { this.fetchOrders.bind(this, day) }}
+
+                        // onClick={(day) => this.handleSort(column)}
+
+                        onDayPress={(day) => this.fetchOrders(day)}
+                    />
+                    <FlatList style={{ marginTop: 50, marginLeft: 16 }}
+                        data={DATA}
+                        renderItem={this.renderItem}
+                        keyExtractor={item => item.id}
+                    />
+                </View>
+            </SafeAreaView>
+        );
+    }
 }
-export default OrdersScreen;
+
+export default Order;
