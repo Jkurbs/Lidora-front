@@ -12,7 +12,7 @@ import InventoryDetailsView from "./inventoryDetailsView";
 const data = [
     {
         key: 1,
-        name: "To add, look the right or tap the green button!",
+        name: "To add, look to the right or tap the green button!",
         quantity: 2,
         unit: 'steps'
     },
