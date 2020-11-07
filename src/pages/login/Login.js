@@ -21,7 +21,7 @@ function Login({ route }) {
         // useEffect hook on parent component
         // redirect to private route
         console.log("UID: ", userName)
-        navigation.navigate('Dashboard', { user: data.user })
+        navigation.navigate('Dashboard', { navigation: navigation, user: data.user })
       })
       .catch(function (error) {
         // Handle Errors here.
