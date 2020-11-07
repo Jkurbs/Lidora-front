@@ -23,7 +23,7 @@ const navOptionHandler = () => ({
     header: null,
 });
 
-function TabNavigator(props, user) {
+function TabNavigator() {
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
     const todayDate = today.toLocaleDateString("en-US", options);
@@ -119,8 +119,7 @@ function TabNavigator(props, user) {
                     },
                 }}
                 name="Support"
-                component={OrdersStack(user)}
-
+                component={SupportStack}
             />
         </Tab.Navigator>
     );
@@ -155,7 +154,7 @@ function SupportStack() {
         <StackSupport.Navigator initialRouteName="Support">
             <StackSupport.Screen
                 name="Support"
-                component={<SupportScreen user={this.props.user}/>}
+                component={SupportScreen}
                 options={navOptionHandler}
             />
         </StackSupport.Navigator>
@@ -238,7 +237,7 @@ function Dashboard({ route }) {
                 </Text>
             </View>
 
-            <TabNavigator user={userData.user}/>
+            <TabNavigator />
         </View>
     );
 }

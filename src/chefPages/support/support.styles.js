@@ -10,6 +10,11 @@ export default StyleSheet.create({
         height: windowHeight,
     },
 
+    itemContainer: {
+
+        width: '40%'
+    },
+
     inputContainer: {
         flexDirection: 'column',
         width: '95%',
@@ -25,24 +30,39 @@ export default StyleSheet.create({
         flexDirection: "column",
         height: '100%',
         backgroundColor: '#F5F5F7',
-        flex: 1, 
+        flex: 1,
         width: '40%',
     },
+
+    formInput: {
+        marginTop: 8,
+        paddingLeft: 8,
+        fontSize: 14,
+        textAlignVertical: 'top',
+        borderColor: '#d6d6d6',
+        borderWidth: 1,
+        borderRadius: 5,
+        height: 40,
+        backgroundColor: 'white'
+    },
+
     formInputDescription: {
         marginTop: 8,
         padding: 8,
         padding: 8,
         fontSize: 14,
-        borderColor: 'rgb(99, 99, 102)',
+        borderColor: '#d6d6d6',
         borderWidth: 1,
         borderRadius: 5,
-        height: 100
+        height: 100,
+        backgroundColor: 'white'
     },
 
-    editItemContainer: {
+    itemContainer: {
+        marginTop: 20,
         flexDirection: 'column',
         padding: 20,
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
 
     editButton: {
@@ -53,7 +73,7 @@ export default StyleSheet.create({
         justifyContent: "center",
         margin: 20,
     },
-    
+
     buttonText: {
         textAlign: "center",
         color: 'white',
