@@ -12,40 +12,9 @@ import InventoryDetailsView from "./inventoryDetailsView";
 const data = [
     {
         key: 1,
-        name: "Rice",
-        quantity: 10,
-        unit: 'gram'
-    },
-    {
-        key: 2,
-        name: "Bananas",
-        quantity: 10,
-        unit: 'piece'
-    },
-    {
-        key: 3,
-        name: "Avocado",
-        quantity: 5,
-        unit: 'gram'
-
-    },
-    {
-        key: 4,
-        name: "Whole Dates",
-        quantity: 3,
-        unit: 'gram'
-    },
-    {
-        key: 5,
-        name: "barley",
-        quantity: 9,
-        unit: 'gram'
-    },
-    {
-        key: 6,
-        name: "babaganoosh",
-        quantity: 1,
-        unit: 'gram'
+        name: "To add, look the right or tap the green button!",
+        quantity: 2,
+        unit: 'steps'
     },
 ];
 
@@ -114,6 +83,7 @@ class Inventory extends React.Component {
 
     // Delete menu Item 
     deleteInventoryItem = (item) => {
+        if (this.state.data.length === 1) { return }
         this.setState(state => {
             const data = state.data.filter(otherItem => otherItem.key !== item.key);
             return {
@@ -131,7 +101,7 @@ class Inventory extends React.Component {
             <View style={styles.container}>
                 <View style={styles.titleParentContainer}>
                     <View style={styles.titleContainer}>
-                        <Text style={styles.mainTitle}>{this.state.data.length} items in your inventory</Text>
+                        <Text style={styles.mainTitle}>{this.state.data.length - 1} items in your inventory</Text>
                         <Text style={styles.secondaryTitle}>Add, Update and Delete items to your iventory.</Text>
                     </View>
                     <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>

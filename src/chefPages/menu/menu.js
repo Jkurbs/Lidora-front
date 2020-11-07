@@ -19,57 +19,11 @@ import MenuDetailsView from "./menuDetailsView";
 const data = [
   {
     key: 1,
-    name: "Rice",
+    name: "Add a menu item",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-    price: 3.29,
-    image:
-      "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=706&q=80",
-  },
-  {
-    key: 2,
-    name: "Healthy gear",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-    price: 10.29,
-    image:
-      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=1335&q=80",
-  },
-  {
-    key: 3,
-    name: "Tuna burger",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-    price: 12.29,
-    image:
-      "https://images.unsplash.com/photo-1521305916504-4a1121188589?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    key: 4,
-    name: "Hot hoagies - Chicken strips",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-    price: 5.69,
-    image:
-      "https://images.unsplash.com/photo-1490818387583-1baba5e638af?ixlib=rb-1.2.1&auto=format&fit=crop&w=1231&q=80",
-  },
-  {
-    key: 5,
-    name: "Tuna burger",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-    price: 12.29,
-    image:
-      "https://images.unsplash.com/photo-1521305916504-4a1121188589?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    key: 6,
-    name: "Hot hoagies - Chicken strips",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ",
-    price: 5.69,
-    image:
-      "https://images.unsplash.com/photo-1490818387583-1baba5e638af?ixlib=rb-1.2.1&auto=format&fit=crop&w=1231&q=80",
+      "Tip: click the green button to add your first menu item.",
+    price: '$$',
+    image: '',
   },
 ];
 
@@ -173,6 +127,7 @@ class Menu extends React.Component {
 
   // Delete menu Item 
   deleteMenuItem = (item) => {
+    if (this.state.data.length <= 1) { return }
     this.setState(state => {
       const data = state.data.filter(otherItem => otherItem.key !== item.key);
       return {
@@ -189,7 +144,7 @@ class Menu extends React.Component {
       <View style={styles.container}>
         <View style={styles.titleParentContainer}>
           <View style={styles.titleContainer}>
-            <Text style={styles.mainTitle}>{this.state.data.length} menu items</Text>
+            <Text style={styles.mainTitle}>{this.state.data.length - 1} menu items</Text>
             <Text style={styles.secondaryTitle}>Add, update and remove a menu item.</Text>
           </View>
           <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>

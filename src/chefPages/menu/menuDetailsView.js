@@ -153,7 +153,7 @@ class Details extends React.Component {
         </View>
         <View style={styles.detailsContainer}>
 
-          <Image style={styles.detailsItemImage} source={this.props.item.image} />
+          <Image style={styles.detailsItemImage} source={this.props.item?.image} />
           <Text style={styles.detailsItemTitle}>{this.props.item.name}</Text>
           <Text style={styles.detailsItemPrice}>${this.props.item.price}</Text>
           <Text style={styles.detailsItemDescription}>{this.props.item.description}</Text>

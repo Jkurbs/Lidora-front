@@ -176,17 +176,18 @@ export default StyleSheet.create({
     },
 
     deleteButton: {
-        borderWidth: 0.5,
-        borderColor: '#d3071c',
-        borderRadius: 10,
+        borderWidth: 1,
+        borderRadius: 6,
         height: 30,
-        width: 50,
+        width: 70,
         justifyContent: "center",
         margin: 10,
+        backgroundColor: '#fafbfc',
+        borderColor: 'rgba(27, 31, 35, 0.15)'
     },
 
     deleteText: {
-        color: '#d3071c',
+        color: '#d73a49',
         textAlign: "center",
         fontWeight: '500',
         fontSize: 12
