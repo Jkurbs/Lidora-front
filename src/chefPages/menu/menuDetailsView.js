@@ -146,7 +146,7 @@ class Details extends React.Component {
             onPress={() => this.props.deleteMenuItem(this.props.item)}>
             <Text style={styles.deleteText}>Delete</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.handleEditClick}
+          <TouchableOpacity onPress={this.props.handleEditClick}
             style={styles.editButton}>
             <Text style={styles.buttonText}>Edit</Text>
           </TouchableOpacity>
