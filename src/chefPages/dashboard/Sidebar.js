@@ -192,54 +192,29 @@ function Dashboard({ route }) {
     // get name and picture from firebase
     var db = firebase.firestore();
 
-    const [userData, setUserData] = React.useState({ user: [] });
+    const [userData, setUserData] = React.useState({ user: [] })
 
     React.useEffect(() => {
-        // Fetch Current chef
-        db.collection("chefs")
-            .doc("cAim5UCNHnXPAvvK0sUa")
-            .get()
-            .then(function (doc) {
-                console.log("data: ", doc.data());
-                if (doc.exists) {
-                    setUserData({ user: doc.data() });
-                } else {
-                    console.log("No such document!");
-                }
-            })
-            .catch(function (error) {
-                console.log("Error getting document:", error);
-            });
-    }, []);
+        // Fetch Current chef 
+        db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").get().then(function (doc) {
+            console.log("data: ", doc.data())
+            if (doc.exists) {
+                setUserData({ user: doc.data() })
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function (error) {
+            console.log("Error getting document:", error);
+        });
+    }, [])
 
     return (
-        <View style={{ height: "100%" }}>
-            <View
-                style={{
-                    flexDirection: "column",
-                    position: "absolute",
-                    zIndex: 100,
-                    top: 50,
-                    left: 20,
-                }}
-            >
-                <Image
-                    style={{
-                        height: 120,
-                        width: 120,
-                        borderRadius: 60,
-                        marginBottom: 16,
-                    }}
-                    source={{ uri: userData.user.imageURL }}
-                />
-                <Text style={{ fontSize: 25, fontWeight: "700" }}>
-                    Welcome {userData.user.first_name}
-                </Text>
-        <View style={{ flex: 1 }}>
+        <View style={{ height: '100%' }}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
                 <Image style={{ height: 120, width: 120, borderRadius: 60, marginBottom: 16 }} source={{ uri: userData.user.imageURL }} />
                 <Text style={{ fontSize: 25, fontWeight: '700' }}>Welcome {userData.user.first_name}</Text>
             </View>
+
             <TabNavigator />
         </View>
     );

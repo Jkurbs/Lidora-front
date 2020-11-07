@@ -71,7 +71,7 @@ class SupportView extends React.Component {
                         <View style={styles.inputContainer}>
                             <Text style={styles.formTitle}>Issue Category</Text>
                             <Picker
-                                selectedValue={this.state.category}
+                                // selectedValue={this.state.category}
                                 style={styles.formInput}
                                 onValueChange={(itemValue, itemIndex) =>
                                     this.state.category = itemValue
