@@ -7,6 +7,7 @@ export default StyleSheet.create({
         fontFamily: "System",
         backgroundColor: 'white',
         flex: 1,
+        color: '#111'
         // height: windowHeight,
     },
 
@@ -40,7 +41,7 @@ export default StyleSheet.create({
     },
 
     secondaryTitle: {
-        color: 'rgb(99, 99, 102)',
+        // color: 'rgb(99, 99, 102)',
         marginBottom: 10
     },
 
@@ -231,7 +232,9 @@ export default StyleSheet.create({
     },
 
     editButton: {
-        backgroundColor: "rgb(174,174,178)",
+        borderWidth: 1,
+        borderColor: 'rgba(27, 31, 35, 0.15)',
+        backgroundColor: "#fafbfc",
         borderRadius: 10,
         height: 30,
         width: 70,
@@ -240,17 +243,18 @@ export default StyleSheet.create({
     },
 
     deleteButton: {
-        borderWidth: 0.5,
-        borderColor: '#d3071c',
-        borderRadius: 10,
+        borderWidth: 1,
+        borderRadius: 6,
         height: 30,
-        width: 50,
+        width: 70,
         justifyContent: "center",
         margin: 10,
+        backgroundColor: '#fafbfc',
+        borderColor: 'rgba(27, 31, 35, 0.15)'
     },
 
     deleteText: {
-        color: '#d3071c',
+        color: '#d73a49',
         textAlign: "center",
         fontWeight: '500',
         fontSize: 12
@@ -258,7 +262,8 @@ export default StyleSheet.create({
 
     buttonText: {
         textAlign: "center",
-        color: 'white',
-        fontWeight: '500'
+        color: '#24292e',
+        fontWeight: '500',
+        fontSize: 12
     }
 });
