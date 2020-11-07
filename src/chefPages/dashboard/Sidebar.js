@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image, Text, View, SafeAreaView, ScrollView } from "react-native";
+import { Image, Text, View, SafeAreaView, ScrollView, TouchableOpacity } from "react-native";
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import MenuScreen from "../menu/menu";
@@ -30,6 +30,10 @@ function TabNavigator() {
 
     return (
         <Tab.Navigator
+            navigationOptions={{
+                // Hide the header from AppNavigator stack
+                header: null,
+            }}
             tabBarOptions={{
                 activeTintColor: "#34C759",
                 inactiveTintColor: "black",
@@ -37,7 +41,7 @@ function TabNavigator() {
 
                 style: {
                     paddind: 60,
-                    width: 296,
+                    width: 269,
                     paddingTop: 250,
                 },
                 iconHorizontal: true,
@@ -92,7 +96,6 @@ function TabNavigator() {
                 name="Inventory"
                 component={InventoryStack}
             ></Tab.Screen>
-
             <Tab.Screen
                 options={{
                     title: todayDate,
@@ -106,12 +109,10 @@ function TabNavigator() {
                 name="Orders"
                 component={OrdersStack}
             />
-
-
             <Tab.Screen
                 options={{
                     title: todayDate,
-                    tabBarLabel: "Support",
+                    tabBarLabel: "",
                     backgroundColor: "#f4511e",
                     headerTintColor: "#fff",
                     headerTitleStyle: {
@@ -125,6 +126,7 @@ function TabNavigator() {
     );
 }
 
+// Stack to show the Dashboard
 function DashboardStack() {
     return (
         <StackOrders.Navigator initialRouteName="Dashboard">
@@ -137,6 +139,7 @@ function DashboardStack() {
     );
 }
 
+// Stack to show the Orders
 function OrdersStack() {
     return (
         <StackOrders.Navigator initialRouteName="Orders">
@@ -149,6 +152,7 @@ function OrdersStack() {
     );
 }
 
+// Stack to show the Support
 function SupportStack() {
     return (
         <StackSupport.Navigator initialRouteName="Support">
@@ -161,7 +165,7 @@ function SupportStack() {
     );
 }
 
-// Stack to show the inventory
+// Stack to show the Inventory
 function InventoryStack() {
     return (
         <StackInventory.Navigator initialRouteName="Inventory">
@@ -174,7 +178,7 @@ function InventoryStack() {
     );
 }
 
-// Stack to show the menu
+// Stack to show the Menu
 function MenuStack() {
     return (
         <StackMenu.Navigator initialRouteName="Menu">
@@ -187,11 +191,20 @@ function MenuStack() {
     );
 }
 
+// Sign out 
+function signOut(navigation) {
+    firebase.auth().signOut().then(function () {
+        // Sign-out successful.
+        navigation.goBack()
+    }).catch(function (error) {
+        // An error happened.
+    });
+}
+
 function Dashboard({ route }) {
-    const { user } = route.params;
+    const { user, navigation } = route.params;
     // get name and picture from firebase
     var db = firebase.firestore();
-
     const [userData, setUserData] = React.useState({ user: [] })
 
     React.useEffect(() => {
@@ -212,7 +225,15 @@ function Dashboard({ route }) {
         <View style={{ height: '100%' }}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
                 <Image style={{ height: 120, width: 120, borderRadius: 60, marginBottom: 16 }} source={{ uri: userData.user.imageURL }} />
-                <Text style={{ fontSize: 25, fontWeight: '700' }}>Welcome {userData.user.first_name}</Text>
+                <Text style={{ fontSize: 25, fontWeight: '700' }}>Welcome {user.displayName}</Text>
+            </View>
+            <View style={{ flexDirection: 'column', justifyContent: 'space-around', position: "absolute", zIndex: 100, bottom: 50, left: 20 }}>
+                <TouchableOpacity style={{ marginBottom: 20 }} onPress={() => signOut(navigation)}>
+                    <Text style={{ color: 'rgb(142, 142, 147)' }}>Log Out</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('Support')}>
+                    <Text style={{ color: 'rgb(142, 142, 147)', fontWeight: '500' }}>Support</Text>
+                </TouchableOpacity>
             </View>
 
             <TabNavigator />

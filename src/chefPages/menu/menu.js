@@ -81,6 +81,8 @@ const FlatListItemSeparator = () => {
   );
 }
 
+var db = firebase.firestore();
+
 class Menu extends React.Component {
   constructor() {
     super();
@@ -91,6 +93,7 @@ class Menu extends React.Component {
       item: data[0],
     };
 
+    this.fetchInventory = this.fetchInventory.bind(this)
     this.handleDetails = this.handleDetails.bind(this);
     this.addMenuItem = this.addMenuItem.bind(this);
     this.updateMenuItem = this.updateMenuItem.bind(this);
@@ -98,17 +101,26 @@ class Menu extends React.Component {
   }
 
   // Fetch current chef Menu 
-  fetchMenu = () => {
-    var db = firebase.firestore();
-    const [userData, setUserData] = React.useState({ user: [] })
-    React.useEffect(() => {
-      const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("menu")
-      ref.get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          console.log(doc.id, " => ", doc.data());
-        });
+  // fetchMenu = () => {
+  //   const [userData, setUserData] = React.useState({ user: [] })
+  //   React.useEffect(() => {
+  //     const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("menu")
+  //     ref.get().then(function (querySnapshot) {
+  //       querySnapshot.forEach(function (doc) {
+  //         console.log(doc.id, " => ", doc.data());
+  //       });
+  //     });
+  //   })
+  // }
+
+  fetchInventory = () => {
+    console.log("FETCH INVENTORY")
+    const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("inventory")
+    ref.get().then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        console.log(doc.id, " => ", doc.data());
       });
-    })
+    });
   }
 
   // Handle menu details mode 
