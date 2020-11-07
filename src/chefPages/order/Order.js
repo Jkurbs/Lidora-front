@@ -6,15 +6,12 @@ import CustomHeader from '../../components/customHeader'
 import { FlatList } from 'react-native-gesture-handler';
 import { DATA } from './order.data.js';
 
-
-
 const Item = ({ imageURL, name }) => (
     <View style={{ flexDirection: 'row', height: 70 }}>
         <Image style={{ height: 50, width: 50, borderRadius: 5, marginRight: 8 }} source={{ uri: imageURL }} />
         <Text style={{ fontSize: 16, fontWeight: '500' }}>{name}</Text>
     </View>
 );
-
 
 function OrdersScreen() {
     const renderItem = ({ item }) => (

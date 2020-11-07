@@ -35,7 +35,7 @@ function OrdersScreen() {
                         selectedDotColor: '#ffffff',
                         arrowColor: 'orange',
                     }}
-                    onDayPress={(day) => { console.log('Day pressed', day); }}
+                    onDayPress={(day) => { console.log('Day pressed', day.dateString); }}
                 />
                 <FlatList style={{ marginTop: 50, marginLeft: 16 }}
                     data={DATA}

@@ -17,11 +17,20 @@ export default StyleSheet.create({
         backgroundColor: '#D6D6D6'
     },
 
+    titleParentContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: 90,
+        width: '60%',
+        paddingLeft: 20,
+        paddingRight: 20
+    },
+
     titleContainer: {
         flexDirection: 'column',
-        height: 100,
         alignContent: 'center',
-        paddingLeft: 20,
+        paddingBottom: 8,
         justifyContent: 'center'
     },
 
@@ -150,12 +159,37 @@ export default StyleSheet.create({
         textAlign: 'center'
     },
 
+
     detailsButtonContainer: {
-        // position: 'absolute',
         flexDirection: "row",
-        marginTop: 100,
-        alignSelf: 'center',
-        // bottom: 100
+        marginTop: 10,
+        alignSelf: 'flex-end',
+    },
+
+    editButton: {
+        backgroundColor: "rgb(174,174,178)",
+        borderRadius: 10,
+        height: 30,
+        width: 70,
+        justifyContent: "center",
+        margin: 10,
+    },
+
+    deleteButton: {
+        borderWidth: 0.5,
+        borderColor: '#d3071c',
+        borderRadius: 10,
+        height: 30,
+        width: 50,
+        justifyContent: "center",
+        margin: 10,
+    },
+
+    deleteText: {
+        color: '#d3071c',
+        textAlign: "center",
+        fontWeight: '500',
+        fontSize: 12
     },
 
 
@@ -230,22 +264,14 @@ export default StyleSheet.create({
         justifyContent: "center",
         margin: 20,
     },
-    editButton: {
-        backgroundColor: "rgb(174,174,178)",
-        borderRadius: 10,
-        height: 50,
-        width: 120,
-        justifyContent: "center",
-        margin: 20,
-    },
-    deleteButton: {
-        backgroundColor: "rgb(255,59,48)",
-        borderRadius: 10,
-        height: 50,
-        width: 120,
-        justifyContent: "center",
-        margin: 20,
-    },
+    // editButton: {
+    //     backgroundColor: "rgb(174,174,178)",
+    //     borderRadius: 10,
+    //     height: 50,
+    //     width: 120,
+    //     justifyContent: "center",
+    //     margin: 20,
+    // },
     buttonText: {
         textAlign: "center",
         color: 'white',
