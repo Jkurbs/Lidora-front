@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, Button } from "react-native";
+import { View, Text, TextInput, Button, TouchableOpacity } from "react-native";
 import styles from "./login.styles.js";
 import firebase from "../../firebase/Firebase";
 
@@ -29,7 +29,7 @@ function Login({ route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Lidora Login</Text>
+      <Text style={styles.headerText}>Login to access your Dashboard</Text>
       <View style={styles.formContainer}>
         <TextInput
           style={styles.input}
@@ -45,9 +45,11 @@ function Login({ route }) {
           defaultValue={email}
           onChangeText={(text) => setPassword(text)}
         />
-        <View style={{ padding: 20 }}>
-          <Button title="Login" onPress={onSubmit} />
-        </View>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={onSubmit}>
+          <Text style={styles.loginText}>Login</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
