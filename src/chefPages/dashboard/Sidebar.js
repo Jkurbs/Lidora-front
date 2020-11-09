@@ -41,13 +41,13 @@ function TabNavigator() {
 
                 style: {
                     paddind: 60,
-                    width: 269,
+                    width: 200,
                     paddingTop: 250,
                 },
                 iconHorizontal: true,
-                labelSize: 15,
+                labelSize: 13,
                 showLabel: true,
-                tabWidth: 300,
+                tabWidth: 200,
                 header: null,
 
                 headerStyle: {
@@ -224,8 +224,8 @@ function Dashboard({ route }) {
     return (
         <View style={{ height: '100%' }}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
-                <Image style={{ height: 120, width: 120, borderRadius: 60, marginBottom: 16 }} source={{ uri: userData.user.imageURL }} />
-                <Text style={{ fontSize: 25, fontWeight: '700' }}>Welcome {userData.user.first_name}</Text>
+                <Image style={{ height: 100, width: 100, borderRadius: 50, marginBottom: 16 }} source={{ uri: userData.user.imageURL }} />
+                <Text style={{ fontSize: 20, fontWeight: '500' }}>Welcome {userData.user.first_name}</Text>
             </View>
             <View style={{ flexDirection: 'column', justifyContent: 'space-around', position: "absolute", zIndex: 100, bottom: 50, left: 20 }}>
                 <TouchableOpacity style={{ marginBottom: 20 }} onPress={() => signOut(navigation)}>
