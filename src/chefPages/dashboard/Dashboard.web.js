@@ -1,18 +1,21 @@
 import * as React from 'react';
-import { Image, Text, Button, View, SafeAreaView, ScrollView, StyleSheet, SectionList } from 'react-native';
-import { LineChart, YAxis, XAxis, Grid, ScaleFunction, ScaleType, ProgressCircle } from 'react-native-svg-charts'
-import 'firebase/firestore';
+import { Text, View, SafeAreaView, ScrollView, StyleSheet, SectionList } from 'react-native';
+import { LineChart, YAxis, XAxis, Grid, ProgressCircle } from 'react-native-svg-charts'
+
+import firebase from "../../firebase/Firebase";
+import "firebase/firestore";
 
 import BalanceView from './balanceView'
 import LatestOrderView from './latestOrderView'
-import CalendarView from './calendarView'
+import moment from 'moment'
 
-// const data = []
-const data = [180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500, 180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500]
+import { loadStripe } from '@stripe/stripe-js';
+import { useStripe, Elements } from '@stripe/react-stripe-js';
 
-const axesSvg = { fontSize: 10, fill: 'grey' };
-const verticalContentInset = { top: 10, bottom: 10 }
-const xAxisHeight = 30
+const stripePromise = loadStripe('pk_test_51HL8h8LjpR7kl7iGeWLOW7OGQw2qAix0ToeOkzAgOUceEiOUDsGDmuDI1tQyNWSkOiQvdwOxFBpQEw4rBoDuI3Dc00i6Fa8VWD');
+
+const data = []
+// const data = [180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500, 180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500]
 
 const DATA = [
     {
@@ -32,23 +35,17 @@ const DATA = [
     },
 ]
 
+const axesSvg = { fontSize: 10, fill: 'grey' };
+const verticalContentInset = { top: 10, bottom: 10 }
+const xAxisHeight = 30
+
 function HomeScreen() {
 
-    // MARK: - FUNCTIONS 
+    const stripe = useStripe();
+    var db = firebase.firestore();
 
-    // Fetch Daily average, using date range
-
-
-    // Calculate average revenue 
-    let average = eval(data.join('+')) / data.length
-    let roundedAverage = Math.round((average + Number.EPSILON) * 100) / 100
-
-
-    // Fetch Balances
-
-
-    // Fetch latest orders, Top 5 orders (Limit 5 latest orders)
-
+    let totalAverageValue = eval(data.join('+')) / data.length
+    let roundedTotalAverageValue = Math.round((totalAverageValue + Number.EPSILON) * 100) / 100
 
     // Fetch income this month, using date range
 
@@ -70,7 +67,7 @@ function HomeScreen() {
                     }}>
 
                         <View style={{ margin: 16 }}>
-                            <Text style={{ color: 'black', fontSize: 18, marginRight: 8 }}>{data.length === 0 ? '0 on Average (Daily Average) ' : roundedAverage + ' on Average (Daily Average)'} </Text>
+                            <Text style={{ color: 'black', fontSize: 18, marginRight: 8 }}>{data.length === 0 ? '0 on Average (Daily Average) ' : roundedTotalAverageValue + ' on Average (Daily Average)'} </Text>
                         </View>
 
                         {/* Gross Volume and Right Panel section
@@ -79,7 +76,7 @@ function HomeScreen() {
 
                         {data.length === 0 ? (
                             <View style={{ height: 400, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                                <Text style={{ alignSelf: 'center', color: 'black', fontSize: 18, marginRight: 8 }}>There isn't enough data to display daily averages</Text>
+                                <Text style={{ alignSelf: 'center', color: 'black', fontSize: 14, marginRight: 8 }}>There isn't enough data to display daily averages.</Text>
                             </View>
                         ) : (
                                 <View style={{ height: 400, width: '100%', flexDirection: 'row' }}>
@@ -119,7 +116,7 @@ function HomeScreen() {
                             alignSelf: 'center', backgroundColor: 'white', margin: 20, width: 300, height: 120, borderRadius: 10, shadowColor: 'black', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
                         }}>
                             <View style={{ flexDirection: 'column', margin: 16 }}>
-                                <Text style={{ fontSize: 20, fontWeight: '500', marginRight: 8 }}>$50.00</Text>
+                                <Text style={{ fontSize: 20, fontWeight: '500', marginRight: 8 }}>$0.00</Text>
                                 <Text style={{ color: 'black', fontSize: 15, marginRight: 8 }}>Income this month</Text>
                                 <View style={{ alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 20, }}>
                                     <ProgressCircle style={{ height: 90, width: 90 }} progress={0.0} progressColor={'rgb(48, 209, 88)'} />
@@ -130,7 +127,7 @@ function HomeScreen() {
                             alignSelf: 'center', backgroundColor: 'white', margin: 20, width: 300, height: 120, borderRadius: 10, shadowColor: 'black', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
                         }}>
                             <View style={{ flexDirection: 'column', margin: 16 }}>
-                                <Text style={{ fontSize: 20, fontWeight: '500', marginRight: 8 }}>5</Text>
+                                <Text style={{ fontSize: 20, fontWeight: '500', marginRight: 8 }}>0</Text>
                                 <Text style={{ color: 'black', fontSize: 15, marginRight: 8 }}>Total sales</Text>
                                 <View style={{ alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 20, }}>
                                     <ProgressCircle style={{ height: 90, width: 90 }} progress={0.0} progressColor={'rgb(48, 209, 88)'} />
@@ -144,7 +141,7 @@ function HomeScreen() {
                             alignSelf: 'center', backgroundColor: 'white', margin: 20, width: 300, height: 120, borderRadius: 10, shadowColor: 'black', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
                         }}>
                             <View style={{ flexDirection: 'column', margin: 16 }}>
-                                <Text style={{ fontSize: 20, fontWeight: '500', marginRight: 8 }}>$50.00</Text>
+                                <Text style={{ fontSize: 20, fontWeight: '500', marginRight: 8 }}>$0.00</Text>
                                 <Text style={{ color: 'black', fontSize: 15, marginRight: 8 }}>Net volume from sales</Text>
                                 <View style={{ alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 20, }}>
                                     <ProgressCircle style={{ height: 90, width: 90 }} progress={0.0} progressColor={'rgb(48, 209, 88)'} />
@@ -155,7 +152,7 @@ function HomeScreen() {
                             alignSelf: 'center', backgroundColor: 'white', margin: 20, width: 300, height: 120, borderRadius: 10, shadowColor: 'black', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
                         }}>
                             <View style={{ flexDirection: 'column', margin: 16 }}>
-                                <Text style={{ fontSize: 20, fontWeight: '500', marginRight: 8 }}>$50.00</Text>
+                                <Text style={{ fontSize: 20, fontWeight: '500', marginRight: 8 }}>$0.00</Text>
                                 <Text style={{ color: 'black', fontSize: 15, marginRight: 8 }}>Total sales</Text>
                                 <View style={{ alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 20, }}>
                                     <ProgressCircle style={{ height: 90, width: 90 }} progress={0.0} progressColor={'rgb(48, 209, 88)'} />
@@ -180,9 +177,9 @@ function HomeScreen() {
                         renderItem={({ item, section }) => {
                             switch (section.title) {
                                 case "Finance summary":
-                                    return <BalanceView item={item} />
+                                    return <BalanceView />
                                 case "Latest orders":
-                                    return <LatestOrderView item={item} />
+                                    return <LatestOrderView />
                                 default:
                                     break;
                             }
@@ -214,5 +211,125 @@ const styles = StyleSheet.create({
     }
 });
 
+const App = () => {
+    return (
+        <Elements stripe={stripePromise}>
+            <HomeScreen />
+        </Elements>
+    );
+};
 
-export default HomeScreen;
+
+export default App;
+
+// Constants 
+// const [totalAverage, setTotalAverage] = React.useState({ value: [] })
+// const [averageValue, setAverageValue] = React.useState({ value: 0 })
+
+// const [balance, setBalance] = React.useState({
+//     value: [
+//         {
+//             title: "Finance summary",
+//             data: [
+//                 { key: 1, totalBalance: 10000, futurePayout: 1000, toBank: 1000 },
+//             ]
+//         },
+//         {
+//             title: "Latest orders",
+//             data: [
+//                 { key: 1, total: 100 },
+//                 { key: 2, total: 16 },
+//                 { key: 3, total: 54 },
+//                 { key: 4, total: 90 },
+//             ]
+//         },
+//     ]
+// })
+// const [order, setOrder] = React.useState({ value: [] })
+
+// MARK: - FUNCTIONS 
+
+// const ref = db.collection("chefs").doc("cAim5UCNHnXPAvvK0sUa")
+
+// Fetch Daily average, using date range
+// Fetch last 31 days timestamp 
+// Convert date to timestamp 
+// Calculate date range( max: 1 month ) 
+
+// React.useEffect(() => {
+//     let last31daysDate = moment().subtract(31, 'days').format();
+//     let timestamp = moment(last31daysDate).format("X");
+    // Query using timestamp
+//     ref.collection("sales").where("date_ordered", ">", timestamp)
+//         .get()
+//         .then(function (querySnapshot) {
+//             querySnapshot.forEach(function (doc) {
+//                 console.log("FETCH AVERAGE")
+//                 // get total from sale
+//                 const amountValue = doc.data().total;
+//                 let roundedAmountValue = Math.round((amountValue + Number.EPSILON) * 100) / 100
+//                 setTotalAverage({ value: roundedAmountValue })
+
+//                 // Calculate average revenue 
+//                 let totalAmountValue = eval(totalAverage.join('+')) / data.length
+//                 let roundedTotalAmountValue = Math.round((totalAmountValue + Number.EPSILON) * 100) / 100
+//                 setAverageValue({ value: roundedTotalAmountValue })
+//             });
+
+//             return
+//         })
+//         .catch(function (error) {
+//             console.log("Error getting documents: ", error);
+//         });
+// })
+
+
+// Fetch Balances
+// React.useEffect(() => {
+//     ref.collection("statistics").doc("balance").get().then(function (doc) {
+        // Set Balance 
+        // const data = doc.data()
+        // setBalance({
+        //     value: [
+        //         {
+        //             title: "Finance summary",
+        //             data: [
+        //                 { key: 1, totalBalance: 10000, futurePayout: 1000, toBank: 1000 },
+        //             ]
+        //         }
+        //     ]
+        // })
+//         return
+//     })
+//         .catch(function (error) {
+//             console.log("Error getting document: ", error);
+//         });
+// })
+
+
+// Fetch latest orders, Top 4 orders (Limit 4 latest orders)
+// React.useEffect(() => {
+//     ref.collection("sales").orderBy("date_ordered").limit(5)
+//         .get()
+//         .then(function (querySnapshot) {
+//             console.log("FETCH ORDERS")
+//             querySnapshot.forEach(function (doc) {
+//                 setBalance({
+//                     value: [
+//                         {
+//                             title: "Latest orders",
+//                             data: [
+//                                 { key: 1, total: 100 },
+//                                 { key: 2, total: 16 },
+//                                 { key: 3, total: 54 },
+//                                 { key: 4, total: 90 },
+//                             ]
+//                         }
+//                     ]
+//                 })
+//             });
+//         })
+//         .catch(function (error) {
+//             console.log("Error getting documents: ", error);
+//         });
+// })
