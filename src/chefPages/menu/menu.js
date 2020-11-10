@@ -38,6 +38,8 @@ const FlatListItemSeparator = () => {
 var db = firebase.firestore();
 const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("menu")
 
+
+
 class Menu extends React.Component {
   constructor() {
     super();
@@ -101,10 +103,37 @@ class Menu extends React.Component {
     });
     // Change menu mode 
     this.handleMode("Details")
-    // TODO: - Add menu item to Firebase 
+
+    // Add menu item to Firebase 
     ref.add(
-      item
+      {
+        key: item.key,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+      }
     )
+
+    //check and Add Image to Firebase Storage
+    if(item.image != null){
+      var storage = firebase.storage().ref(item.image.name)
+      storage.put(item.image.file).then((snapshot) => {
+        snapshot.ref.getDownloadURL().then(function(downloadURL) {
+          console.log("File available at", downloadURL);
+
+          ref.where('key','==',item.key).get().then(function(snapshot) {
+            snapshot.forEach(function(doc) {
+                console.log(doc.id)
+                ref.doc(doc.id).update(
+                  {
+                    imageURL:downloadURL
+                  }
+                )
+            })
+        })
+        });
+      })
+      }
 
   };
 
@@ -122,13 +151,46 @@ class Menu extends React.Component {
         data,
       };
     });
-    // TODO: - Update menu item in Firebase 
+    // Update menu item in Firebase 
+    ref.where('key','==',item.key).get().then(function(snapshot) {
+      snapshot.forEach(function(doc) {
+          console.log(doc.id)
+          ref.doc(doc.id).update(
+            {
+              key: item.key,
+              name: item.name,
+              description: item.description,
+              price: item.price,
+            }
+          )
+      })
+  })
+
+    //check and Add Image to Firebase Storage
+    if(item.image != null){
+      var storage = firebase.storage().ref(item.image.name)
+      storage.put(item.image.file).then((snapshot) => {
+        snapshot.ref.getDownloadURL().then(function(downloadURL) {
+          console.log("File available at", downloadURL);
+          ref.where('key','==',item.key).get().then(function(snapshot) {
+            snapshot.forEach(function(doc) {
+                console.log(doc.id)
+                ref.doc(doc.id).update(
+                  {
+                    imageURL:downloadURL
+                  }
+                )
+            })
+        })
+        });
+      })
+      }
 
   };
 
   // Delete menu Item 
   deleteMenuItem = (item) => {
-    if (this.state.data.length <= 1) { return }
+    if (item.key === 1) { return }
     this.setState(state => {
       const data = state.data.filter(otherItem => otherItem.key !== item.key);
       return {
@@ -136,9 +198,16 @@ class Menu extends React.Component {
         item: data[0]
       };
     });
-    // TODO: - Delete menu item in Firebase
+    // Delete menu item in Firebase
+    ref.where('key','==',item.key).get().then(function(snapshot) {
+      snapshot.forEach(function(doc) {
+          console.log(doc.id)
+          ref.doc(doc.id).delete()
+      })
+  })
 
   };
+
 
   render() {
     return (

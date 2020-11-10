@@ -160,7 +160,7 @@ class Details extends React.Component {
         </View>
         <View style={styles.detailsContainer}>
 
-          <Image style={styles.detailsItemImage} source={this.props.item?.image} />
+          <Image style={styles.detailsItemImage} source={this.props.item?.imageURL} />
           <Text style={styles.detailsItemTitle}>{this.props.item.name}</Text>
           <Text style={styles.detailsItemPrice}>${this.props.item.price}</Text>
           <Text style={styles.detailsItemDescription}>{this.props.item.description}</Text>
@@ -171,13 +171,14 @@ class Details extends React.Component {
 }
 
 
+
 // ADD ITEM COMPONENT 
 class Add extends React.Component {
 
   constructor() {
     super();
     const item = {
-      key: 18,
+      key: generateKey(""),
       name: "New item name",
       description:
         "new item description",
