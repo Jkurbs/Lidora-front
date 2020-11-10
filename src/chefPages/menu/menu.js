@@ -44,8 +44,8 @@ class Menu extends React.Component {
     this.state = {
       mode: 'Details',
       value: '',
-      data: data,
-      item: data[0],
+      data: [],
+      item: {},
     };
 
     this.handleDetails = this.handleDetails.bind(this);
@@ -66,9 +66,9 @@ class Menu extends React.Component {
                 currentComponent.setState(state => {
                     const data = [doc.data(), ...state.data];
                     return {
-                        data,
-                        data: doc.data(),
-                       
+                      data,
+                      value: doc.data(),
+                      
                     };
                 });
             });
@@ -102,6 +102,9 @@ class Menu extends React.Component {
     // Change menu mode 
     this.handleMode("Details")
     // TODO: - Add menu item to Firebase 
+    ref.add(
+      item
+    )
 
   };
 

@@ -29,10 +29,15 @@ const items = [{
   name: 'Babaganoosh'
 }];
 
+const generateKey = (pre) => {
+  return `${ pre }_${ new Date().getTime() }`;
+}
+
 class MenuDetailsView extends React.Component {
   constructor() {
     super();
     this.state = {
+      key: generateKey(""),
       image: null,
       name: null,
       price: null,
@@ -46,7 +51,8 @@ class MenuDetailsView extends React.Component {
 
   componentDidMount(prevProps) {
     this.setState({
-      image: this.props.item.image,
+      key: this.props.item.key,
+      image: this.props.item.imageURL,
       name: this.props.item.name,
       price: this.props.item.price,
       description: this.props.item.description
@@ -70,7 +76,8 @@ class MenuDetailsView extends React.Component {
   // Configure edit button click 
   handleEditButtonClick() {
     this.setState({
-      image: this.props.item.image,
+      key: this.props.item.key,
+      image: this.props.item.imageURL,
       name: this.props.item.name,
       price: this.props.item.price,
       description: this.props.item.description
