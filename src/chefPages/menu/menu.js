@@ -165,9 +165,10 @@ class Menu extends React.Component {
           )
       })
   })
-
     //check and Add Image to Firebase Storage
-    if(item.image != null){
+    //check if image changed
+    if(typeof item.image != 'string'){
+      console.log("UPDATEDIMAGE",item.image)
       var storage = firebase.storage().ref(item.image.name)
       storage.put(item.image.file).then((snapshot) => {
         snapshot.ref.getDownloadURL().then(function(downloadURL) {
@@ -210,6 +211,7 @@ class Menu extends React.Component {
 
 
   render() {
+    if(true === true) {
     return (
       <View style={styles.container}>
         <View style={styles.titleParentContainer}>
@@ -248,6 +250,44 @@ class Menu extends React.Component {
       </View>
 
     );
+    }
+    else {
+      return (<View style={styles.container}>
+        <View style={styles.titleParentContainer}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.mainTitle}>{this.state.data.length - 1} menu items</Text>
+            <Text style={styles.secondaryTitle}>BING, update and remove a menu item.</Text>
+          </View>
+          <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>
+            <Ionicons name="ios-add" size={30} color="#34C759" />
+          </TouchableOpacity>
+        </View>
+        <View style={{ backgroundColor: '#D6D6D6', height: 1, width: '100%' }} />
+
+        <View style={{
+          flexDirection: 'row', flex: 2
+        }}>
+          <FlatList
+            style={styles.flatList}
+            data={this.state.data}
+            showsVerticalScrollIndicator={true}
+            extraData={this.state}
+            renderItem={({ item }) => (
+              <MenuItemView item={item} handleDetails={this.handleDetails} />
+            )}
+            ItemSeparatorComponent={FlatListItemSeparator}
+          />
+        </View>
+        <MenuDetailsView
+          item={this.state.item}
+          mode={this.state.mode}
+          handleMode={this.handleMode}
+          updateMenuItem={this.updateMenuItem}
+          addMenuItem={this.addMenuItem}
+          deleteMenuItem={this.deleteMenuItem}
+        />
+      </View>)
+    }
   }
 }
 
