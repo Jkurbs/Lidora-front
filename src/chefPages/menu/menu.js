@@ -207,16 +207,22 @@ class Menu extends React.Component {
       })
   })
 
+    // Delete image from storage
+    if(item.image != null){
+      var storage = firebase.storage().ref(item.image.name)
+      storage.delete(item.image.name)
+      }
+
   };
 
 
   render() {
-    if(true === true) {
+    if(this.state.data.length >= 1) {
     return (
       <View style={styles.container}>
         <View style={styles.titleParentContainer}>
           <View style={styles.titleContainer}>
-            <Text style={styles.mainTitle}>{this.state.data.length - 1} menu items</Text>
+            <Text style={styles.mainTitle}>{this.state.data.length} menu item/s</Text>
             <Text style={styles.secondaryTitle}>Add, update and remove a menu item.</Text>
           </View>
           <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>
@@ -255,8 +261,8 @@ class Menu extends React.Component {
       return (<View style={styles.container}>
         <View style={styles.titleParentContainer}>
           <View style={styles.titleContainer}>
-            <Text style={styles.mainTitle}>{this.state.data.length - 1} menu items</Text>
-            <Text style={styles.secondaryTitle}>BING, update and remove a menu item.</Text>
+            <Text style={styles.mainTitle}>{this.state.data.length} menu items</Text>
+            <Text style={styles.secondaryTitle}>Add, update and remove a menu item.</Text>
           </View>
           <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>
             <Ionicons name="ios-add" size={30} color="#34C759" />
@@ -279,7 +285,7 @@ class Menu extends React.Component {
           />
         </View>
         <MenuDetailsView
-          item={this.state.item}
+          item={data[0]}
           mode={this.state.mode}
           handleMode={this.handleMode}
           updateMenuItem={this.updateMenuItem}
