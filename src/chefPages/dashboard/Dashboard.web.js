@@ -136,10 +136,10 @@ function HomeScreen() {
                                 <Text style={{ color: 'black', fontSize: 15, marginRight: 8 }}>Total sales</Text>
                                 <View style={{ alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 20, }}>
                                     <ProgressCircle style={{ height: 90, width: 90 }} progress={0.0} progressColor={'rgb(48, 209, 88)'} />
-                                <ModalComp />
                                 </View>
                             </View>
                         </View>
+                                <ModalComp />
                     </View>
 
                     <View style={{ margin: 20, width: '60%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
