@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react'
 import { Text, View, SafeAreaView, ScrollView, StyleSheet, SectionList } from 'react-native';
 import { LineChart, YAxis, XAxis, Grid, ProgressCircle } from 'react-native-svg-charts'
 
@@ -11,7 +12,10 @@ import moment from 'moment'
 
 import { loadStripe } from '@stripe/stripe-js';
 import { useStripe, Elements } from '@stripe/react-stripe-js';
-import GoalModal from './goalModal';
+import ModalComp from './goalModal';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+
 
 const stripePromise = loadStripe('pk_test_51HL8h8LjpR7kl7iGeWLOW7OGQw2qAix0ToeOkzAgOUceEiOUDsGDmuDI1tQyNWSkOiQvdwOxFBpQEw4rBoDuI3Dc00i6Fa8VWD');
 
@@ -122,7 +126,6 @@ function HomeScreen() {
                                 <View style={{ alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 20, }}>
                                     <ProgressCircle style={{ height: 90, width: 90 }} progress={0.0} progressColor={'rgb(48, 209, 88)'} />
                                 </View>
-                            <GoalModal/>
                             </View>
                         </View>
                         <View style={{
@@ -133,6 +136,7 @@ function HomeScreen() {
                                 <Text style={{ color: 'black', fontSize: 15, marginRight: 8 }}>Total sales</Text>
                                 <View style={{ alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 20, }}>
                                     <ProgressCircle style={{ height: 90, width: 90 }} progress={0.0} progressColor={'rgb(48, 209, 88)'} />
+                                <ModalComp />
                                 </View>
                             </View>
                         </View>

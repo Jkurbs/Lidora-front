@@ -1,42 +1,45 @@
-import React, { useState } from "react";
-import { Button, StyleSheet, View } from "react-native";
-import Dialog from "react-native-dialog";
+import React, { Component, useState } from "react";
+import { Button, StyleSheet, View, Dimensions, Modal, TextInput } from "react-native";
 
-export default function GoalModal() {
-    const [monthlyGoal, setMonthlyGoal] = useState(0);
-    const [visible, setVisible] = useState(false);
-
-    const showDialog = () => {
-        setVisible(true);
+class ModalComp extends Component {
+    state = {
+        modal: false,
+        monthlyGoal: 0,
     };
 
-    const handleCancel = () => {
-        setVisible(false);
+    handleModal = () => {
+        this.setState({
+            modal: !this.state.modal ? true : false,
+        });
     };
 
-    const handleSendGoal = () => {
-        setVisible(false);
-    };
-    console.log(monthlyGoal)
-    return (
-        <View style={styles.container}>
-            <Button title="Show dialog" onPress={showDialog} />
-            <Dialog.Container visible={visible}>
-        <Dialog.Title>Testing an input</Dialog.Title>
-        <Dialog.Input
-            onChangeText={goal => setMonthlyGoal({goal})}
-            />
-        <Dialog.Button label="OK" onPress={handleSendGoal} />
-      </Dialog.Container>
-        </View>
-    );
+    render() {
+        return (
+            <View>
+                <Button title="Open" onPress={this.handleModal}></Button>
+
+                <Modal visable={this.state.modal} >
+                    <View
+                        style={{
+                            marginTop: 50,
+                            backgroundColor: "red",
+                        }}
+                    >
+                        <Text> Set a goal</Text>
+                        <TextInput
+                            style={{
+                                height: 40,
+                                borderColor: "gray",
+                                borderWidth: 1,
+                            }}
+                            onChangeText={(text) => monthlyGoal(text)}
+                        ></TextInput>
+                    </View>
+                    <Button title="close" onPress={this.state.modal}></Button>
+                </Modal>
+            </View>
+        );
+    }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-});
+export default ModalComp;
