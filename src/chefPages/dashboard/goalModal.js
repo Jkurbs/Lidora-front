@@ -23,7 +23,10 @@ class ModalComp extends Component {
         console.log(this.state.monthlyGoal)
         console.log(this.state.modal);
     };
-
+    // Modal still not working properly.
+    //Modal shows up, but isn't hidden
+    // toggle functions with the buttons are not working properly despite the tutorial showing that it works
+    // input throws an error of undefined.
     render() {
         return (
             <View style={{width:'100%'}}>
