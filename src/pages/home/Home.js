@@ -46,7 +46,6 @@ export function normalize(size) {
 
 const phoneMaxWidth = 575.98
 
-
 const url = "https://www.instagram.com/lidoralive/";
 
 const FeaturesItem = ({ image, title, description }) => (
@@ -176,12 +175,12 @@ function HomeScreen({ navigation }) {
       </ImageBackground>
 
       {/* Provide section */}
-      <View style={{ marginTop: 60 }}>
+      <View style={{ marginTop: 0 }}>
         <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
           What we provide
             </Text>
         <FlatList
-          style={{ marginTop: 40 }}
+          style={{ marginTop: 20 }}
           data={FEATURESDATA}
           renderItem={renderFeaturesItem}
           keyExtractor={(item) => item.id}
