@@ -60,22 +60,21 @@ class Menu extends React.Component {
   //FETCH CURRENT CHEF MENU
   componentDidMount() {
     let currentComponent = this;
-    console.log("DOOINGIT")
-        // Fetch Current chef 
-        ref.get().then(function (querySnapshot) {
-            querySnapshot.forEach(function (doc) {
-                console.log(doc.id, " => ", doc.data());
-                currentComponent.setState(state => {
-                    const data = [doc.data(), ...state.data];
-                    return {
-                      data,
-                      value: doc.data(),
-                      
-                    };
-                });
-            });
-        });   
-}
+    // Fetch Current chef 
+    ref.get().then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        console.log(doc.id, " => ", doc.data());
+        currentComponent.setState(state => {
+          const data = [doc.data(), ...state.data];
+          return {
+            data,
+            value: doc.data(),
+
+          };
+        });
+      });
+    });
+  }
 
   // Handle menu details mode 
   handleMode = (mode) => {
@@ -115,26 +114,25 @@ class Menu extends React.Component {
     )
 
     //check and Add Image to Firebase Storage
-    if(item.image != null){
+    if (item.image != null) {
       var storage = firebase.storage().ref(item.image.name)
       storage.put(item.image.file).then((snapshot) => {
-        snapshot.ref.getDownloadURL().then(function(downloadURL) {
+        snapshot.ref.getDownloadURL().then(function (downloadURL) {
           console.log("File available at", downloadURL);
 
-          ref.where('key','==',item.key).get().then(function(snapshot) {
-            snapshot.forEach(function(doc) {
-                console.log(doc.id)
-                ref.doc(doc.id).update(
-                  {
-                    imageURL:downloadURL
-                  }
-                )
+          ref.where('key', '==', item.key).get().then(function (snapshot) {
+            snapshot.forEach(function (doc) {
+              console.log(doc.id)
+              ref.doc(doc.id).update(
+                {
+                  imageURL: downloadURL
+                }
+              )
             })
-        })
+          })
         });
       })
-      }
-
+    }
   };
 
   // Update menu Item 
@@ -152,41 +150,40 @@ class Menu extends React.Component {
       };
     });
     // Update menu item in Firebase 
-    ref.where('key','==',item.key).get().then(function(snapshot) {
-      snapshot.forEach(function(doc) {
-          console.log(doc.id)
-          ref.doc(doc.id).update(
-            {
-              key: item.key,
-              name: item.name,
-              description: item.description,
-              price: item.price,
-            }
-          )
+    ref.where('key', '==', item.key).get().then(function (snapshot) {
+      snapshot.forEach(function (doc) {
+        console.log(doc.id)
+        ref.doc(doc.id).update(
+          {
+            key: item.key,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+          }
+        )
       })
-  })
+    })
     //check and Add Image to Firebase Storage
     //check if image changed
-    if(typeof item.image != 'string'){
-      console.log("UPDATEDIMAGE",item.image)
+    if (typeof item.image != 'string') {
+      console.log("UPDATEDIMAGE", item.image)
       var storage = firebase.storage().ref(item.image.name)
       storage.put(item.image.file).then((snapshot) => {
-        snapshot.ref.getDownloadURL().then(function(downloadURL) {
+        snapshot.ref.getDownloadURL().then(function (downloadURL) {
           console.log("File available at", downloadURL);
-          ref.where('key','==',item.key).get().then(function(snapshot) {
-            snapshot.forEach(function(doc) {
-                console.log(doc.id)
-                ref.doc(doc.id).update(
-                  {
-                    imageURL:downloadURL
-                  }
-                )
+          ref.where('key', '==', item.key).get().then(function (snapshot) {
+            snapshot.forEach(function (doc) {
+              console.log(doc.id)
+              ref.doc(doc.id).update(
+                {
+                  imageURL: downloadURL
+                }
+              )
             })
-        })
+          })
         });
       })
-      }
-
+    }
   };
 
   // Delete menu Item 
@@ -200,56 +197,55 @@ class Menu extends React.Component {
       };
     });
     // Delete menu item in Firebase
-    ref.where('key','==',item.key).get().then(function(snapshot) {
-      snapshot.forEach(function(doc) {
-          console.log(doc.id)
-          ref.doc(doc.id).delete()
+    ref.where('key', '==', item.key).get().then(function (snapshot) {
+      snapshot.forEach(function (doc) {
+        console.log(doc.id)
+        ref.doc(doc.id).delete()
       })
-  })
-
+    })
   };
 
 
   render() {
-    if(true === true) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.titleParentContainer}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.mainTitle}>{this.state.data.length - 1} menu items</Text>
-            <Text style={styles.secondaryTitle}>Add, update and remove a menu item.</Text>
+    if (true === true) {
+      return (
+        <View style={styles.container}>
+          <View style={styles.titleParentContainer}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.mainTitle}>{this.state.data.length - 1} menu items</Text>
+              <Text style={styles.secondaryTitle}>Add, update and remove a menu item.</Text>
+            </View>
+            <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>
+              <Ionicons name="ios-add" size={30} color="#34C759" />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>
-            <Ionicons name="ios-add" size={30} color="#34C759" />
-          </TouchableOpacity>
-        </View>
-        <View style={{ backgroundColor: '#D6D6D6', height: 1, width: '100%' }} />
+          <View style={{ backgroundColor: '#D6D6D6', height: 1, width: '100%' }} />
 
-        <View style={{
-          flexDirection: 'row', flex: 2
-        }}>
-          <FlatList
-            style={styles.flatList}
-            data={this.state.data}
-            showsVerticalScrollIndicator={true}
-            extraData={this.state}
-            renderItem={({ item }) => (
-              <MenuItemView item={item} handleDetails={this.handleDetails} />
-            )}
-            ItemSeparatorComponent={FlatListItemSeparator}
+          <View style={{
+            flexDirection: 'row', flex: 2
+          }}>
+            <FlatList
+              style={styles.flatList}
+              data={this.state.data}
+              showsVerticalScrollIndicator={true}
+              extraData={this.state}
+              renderItem={({ item }) => (
+                <MenuItemView item={item} handleDetails={this.handleDetails} />
+              )}
+              ItemSeparatorComponent={FlatListItemSeparator}
+            />
+          </View>
+          <MenuDetailsView
+            item={this.state.item}
+            mode={this.state.mode}
+            handleMode={this.handleMode}
+            updateMenuItem={this.updateMenuItem}
+            addMenuItem={this.addMenuItem}
+            deleteMenuItem={this.deleteMenuItem}
           />
         </View>
-        <MenuDetailsView
-          item={this.state.item}
-          mode={this.state.mode}
-          handleMode={this.handleMode}
-          updateMenuItem={this.updateMenuItem}
-          addMenuItem={this.addMenuItem}
-          deleteMenuItem={this.deleteMenuItem}
-        />
-      </View>
 
-    );
+      );
     }
     else {
       return (<View style={styles.container}>
