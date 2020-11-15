@@ -15,7 +15,8 @@ import {
   Linking,
   TextInput,
   FlatList,
-  Button
+  Button,
+  SafeAreaView
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -43,6 +44,8 @@ export function normalize(size) {
   }
 }
 
+const phoneMaxWidth = 575.98
+
 const url = "https://www.instagram.com/lidoralive/";
 
 const FeaturesItem = ({ image, title, description }) => (
@@ -50,18 +53,19 @@ const FeaturesItem = ({ image, title, description }) => (
     style={{
       borderRadius: 5,
       alignItems: "center",
+      justifyContent: 'center',
       margin: 8,
       padding: 20,
-      width: 200,
+      width: windowWidth < phoneMaxWidth ? 200 : windowWidth / 3,
       height: 250,
       backgroundColor: "#F5F5F7",
     }}
   >
     <Image
-      style={{ resizeMode: "contain", marginBottom: 10, width: 60, height: 60 }}
+      style={{ resizeMode: "contain", marginBottom: 10, width: windowWidth < phoneMaxWidth ? 60 : 120, height: windowWidth < phoneMaxWidth ? 60 : 120 }}
       source={image}
     />
-    <Text style={{ fontWeight: "500" }}>{title}</Text>
+    <Text style={{ textAlign: 'center', fontWeight: "500", fontSize: windowWidth < phoneMaxWidth ? 17 : 24 }}>{title}</Text>
     <Text style={{ textAlign: "center", margin: 8 }}>{description}</Text>
   </View>
 );
@@ -84,7 +88,6 @@ function HomeScreen({ navigation }) {
     "Join our waiting list And follow us on Instagram to stay updated."
   );
   const [customerEmail, setText] = useState("");
-
 
   // Function to Add potential user to email list
   const addUser = async () => {
@@ -131,19 +134,18 @@ function HomeScreen({ navigation }) {
 
   return (
 
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
 
       {/* Provider section */}
 
-      <View style={styles.secondaryView}>
-
-        <ImageBackground style={styles.backgroundImage} source={require("../../assets/img/cook.svg")} >
-          <View style={{ marginTop: 110, alignItems: "center", width: 'auto', height: 'auto' }}>
+      <ImageBackground resizeMode={'cover'} style={styles.backgroundImage} source={windowWidth < phoneMaxWidth ? require("../../assets/img/cook.svg") : require("../../assets/img/test.svg")} >
+        <View style={styles.secondaryView}>
+          <View style={{ marginTop: 50, marginBottom: 50, alignItems: "center", width: 'auto', height: '50%', }}>
             <Text style={{ width: windowWidth, textAlign: "center", color: "black", fontSize: normalize(30), fontWeight: "500" }}>
               Ready to start cooking {"\n"} and selling?
               </Text>
-            <Text style={{ marginTop: 20, textAlign: "center", color: "black", fontSize: 17 }}>
+            <Text style={{ marginTop: 20, textAlign: "center", color: "black", fontSize: windowWidth < phoneMaxWidth ? 14 : 20 }}>
               Apply now to join the team
               </Text>
             <TouchableOpacity
@@ -168,18 +170,17 @@ function HomeScreen({ navigation }) {
                 </Text>
             </TouchableOpacity>
           </View>
-        </ImageBackground>
+        </View>
 
-      </View>
-
+      </ImageBackground>
 
       {/* Provide section */}
-      <View style={{ marginTop: 60 }}>
+      <View style={{ marginTop: 0 }}>
         <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
           What we provide
             </Text>
         <FlatList
-          style={{ marginTop: 40 }}
+          style={{ marginTop: 20 }}
           data={FEATURESDATA}
           renderItem={renderFeaturesItem}
           keyExtractor={(item) => item.id}
@@ -187,7 +188,7 @@ function HomeScreen({ navigation }) {
           showsHorizontalScrollIndicator={false}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -255,8 +256,6 @@ function App() {
 }
 
 export default registerRootComponent(App);
-
-
 
 {/* Current chefs section */ }
 {/* <View style={{ marginTop: 60, width: '100%' }}>

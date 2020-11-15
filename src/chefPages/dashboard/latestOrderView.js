@@ -7,9 +7,10 @@ class BalanceView extends Component {
         return (
             <View style={{ marginTop: 8 }}>
                 <View style={{ alignItems: 'center', height: 60, padding: 10, backgroundColor: 'white', borderRadius: 8, flexDirection: 'row', justifyContent: 'space-between', marginBottom: 0 }}>
-                    <Text style={{ fontSize: 17 }}>#1</Text>
-                    <Text style={{ fontSize: 17 }}>$100</Text>
+                    <Text style={{ fontSize: 17 }}>#{this.props.item.key}</Text>
+                    <Text style={{ fontSize: 17 }}>${this.props.item.total}</Text>
                 </View>
+
             </View>
 
         )

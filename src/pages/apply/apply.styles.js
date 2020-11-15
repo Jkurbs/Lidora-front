@@ -5,6 +5,7 @@ const userImageViewSize = 120;
 export default StyleSheet.create({
   root: {
     flex: 1,
+    backgroundColor: 'white'
   },
   container: {
     flex: 1,

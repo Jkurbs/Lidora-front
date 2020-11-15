@@ -22,10 +22,12 @@ import { render } from 'react-native-web';
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get("window");
 
-const stripePromise = loadStripe('pk_test_51HL8h8LjpR7kl7iGeWLOW7OGQw2qAix0ToeOkzAgOUceEiOUDsGDmuDI1tQyNWSkOiQvdwOxFBpQEw4rBoDuI3Dc00i6Fa8VWD');
+const axesSvg = { fontSize: 10, fill: 'grey' };
+const verticalContentInset = { top: 10, bottom: 10 }
+const xAxisHeight = 30
 
-const data = []
-// const data = [180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500, 180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500]
+// const data = []
+const data = [180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500, 180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500]
 
 var db = firebase.firestore();
 const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("goals").doc("monthly")
@@ -145,7 +147,6 @@ class HomeScreen extends React.Component {
         </View>
     );
 
-
     // MARK: - RENDER
     render() {
         return (
@@ -218,6 +219,7 @@ class HomeScreen extends React.Component {
                                     </View>
                                 </View>
                             </View>
+
                             <View style={styles.goalShadowView}>
                                 <View style={styles.goalView}>
                                     <Text style={styles.goalAmountText}>0</Text>

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
+import { View, Alert } from 'react-native';
 
 import Step from './Step';
 
