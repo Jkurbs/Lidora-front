@@ -74,6 +74,9 @@ class Details extends React.Component {
     }
 }
 
+const generateKey = (pre) => {
+    return `${ pre }_${ new Date().getTime() }`;
+}
 
 // ADD ITEM COMPONENT 
 class Add extends React.Component {
@@ -81,8 +84,8 @@ class Add extends React.Component {
     constructor() {
         super();
         const item = {
-            key: 18,
-            name: "New item name",
+            key: generateKey(""),
+            name: "ADD NEW ITEM",
             quantity: 12.29,
             unit: 'Piece'
         }

@@ -9,7 +9,7 @@ class MenuItemView extends React.Component {
                 style={styles.menuContent}
                 onPress={() => this.props.handleDetails(this.props.item)}>
                 <View style={styles.menuWrapper}>
-                    <Image style={styles.image} source={this.props.item.image}
+                    <Image style={styles.image} source={this.props.item.imageURL}
                     />
                 </View>
                 <View style={styles.secondaryView}>
