@@ -13,21 +13,16 @@ import BalanceView from './balanceView'
 import LatestOrderView from './latestOrderView'
 import styles from './dashboard.styles'
 
-import { loadStripe } from '@stripe/stripe-js';
-import { useStripe, Elements } from '@stripe/react-stripe-js';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 
 import Modal from 'modal-enhanced-react-native-web';
-import { render } from 'react-native-web';
-
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get("window");
 
 const axesSvg = { fontSize: 10, fill: 'grey' };
 const verticalContentInset = { top: 10, bottom: 10 }
 const xAxisHeight = 30
 
-// const data = []
-const data = [180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500, 180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500]
+const data = []
+// const data = [180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500, 180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500]
 
 var db = firebase.firestore();
 const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("goals").doc("monthly")
@@ -49,10 +44,6 @@ const DATA = [
         ]
     },
 ]
-
-const axesSvg = { fontSize: 10, fill: 'grey' };
-const verticalContentInset = { top: 10, bottom: 10 }
-const xAxisHeight = 30
 
 var db = firebase.firestore();
 let totalAverageValue = eval(data.join('+')) / data.length
@@ -267,7 +258,7 @@ class HomeScreen extends React.Component {
                             renderItem={({ item, section }) => {
                                 switch (section.title) {
                                     case "Finance summary":
-                                        return <BalanceView />
+                                        return <BalanceView item={item} />
                                     case "Latest orders":
                                         return <LatestOrderView />
                                     default:
