@@ -29,22 +29,33 @@ function Login({ route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Login to access your Dashboard</Text>
+      <Text style={styles.headerText}>Sign in to your account</Text>
+
       <View style={styles.formContainer}>
-        <TextInput
-          style={styles.input}
-          type="email"
-          placeholder="Email"
-          defaultValue=""
-          onChangeText={(text) => setEmail(text)}
-        />
-        <TextInput
-          style={styles.input}
-          type="password"
-          placeholder="Password"
-          defaultValue={email}
-          onChangeText={(text) => setPassword(text)}
-        />
+        <View>
+          <Text>Email</Text>
+          <TextInput
+            style={styles.input}
+            type="email"
+            placeholder="Email"
+            defaultValue=""
+            onChangeText={(text) => setEmail(text)}
+          />
+
+        </View>
+
+        <View>
+          <Text>Password</Text>
+          <TextInput
+            style={styles.input}
+            type="password"
+            placeholder="Password"
+            defaultValue={email}
+            onChangeText={(text) => setPassword(text)}
+          />
+
+        </View>
+
         <TouchableOpacity
           style={styles.loginButton}
           onPress={onSubmit}>

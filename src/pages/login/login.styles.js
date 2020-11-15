@@ -26,6 +26,12 @@ export default StyleSheet.create({
   },
 
 
+  formContainer: {
+    backgroundColor: 'red',
+    width: ''
+
+  },
+
   input: {
     marginTop: 8,
     padding: 8,

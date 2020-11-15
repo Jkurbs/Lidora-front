@@ -8,11 +8,7 @@ class BalanceView extends Component {
             <View style={styles.balanceContainer}>
                 <View style={styles.valueContainer}>
                     <Text style={styles.descriptionText}>Total balance</Text>
-                    <Text style={styles.valueText}>${this.props.item.total}</Text>
-                </View>
-                <View style={styles.valueContainer}>
-                    <Text style={styles.descriptionText}>Future payout</Text>
-                    <Text style={styles.valueText}>${this.props.item.futurePayout}</Text>
+                    <Text style={styles.valueText}>${this.props.item.totalBalance}</Text>
                 </View>
                 <View style={styles.valueContainer}>
                     <Text style={styles.descriptionText}>In transit to bank</Text>
