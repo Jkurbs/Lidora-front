@@ -21,8 +21,8 @@ const axesSvg = { fontSize: 10, fill: 'grey' };
 const verticalContentInset = { top: 10, bottom: 10 }
 const xAxisHeight = 30
 
-const data = []
-// const data = [180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500, 180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500]
+// const data = []
+const data = [180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500, 180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500]
 
 var db = firebase.firestore();
 const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("goals").doc("monthly")
@@ -166,7 +166,8 @@ class HomeScreen extends React.Component {
                                     <Text style={styles.emptyText}>There isn't enough data to display daily averages.</Text>
                                 </View>
                             ) : (
-                                    <View style={styles.averageView}>
+
+                                    <View style={styles.chartContainer}>
                                         <YAxis
                                             data={data}
                                             style={{ marginBottom: xAxisHeight }}
@@ -175,12 +176,13 @@ class HomeScreen extends React.Component {
                                         />
                                         <View style={styles.chartView}>
                                             <LineChart
-                                                style={styles.chart}
+                                                style={{ flex: 1 }}
                                                 data={data}
                                                 contentInset={verticalContentInset}
                                                 svg={{ strokeOpacity: 0.8, strokeWidth: 2, stroke: 'rgb(48, 209, 88)' }}
                                                 xMin={1}
-                                                xMax={31}>
+                                                xMax={31}
+                                            >
                                                 <Grid />
                                             </LineChart>
                                             <XAxis
