@@ -234,8 +234,8 @@ function App() {
   const [userLoggedIn, setIsUserLoggedIn] = React.useState(false)
   const [userData, setUserData] = React.useState({ user: [] })
 
+  // Verify if user is logged in
   React.useEffect(() => {
-
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
 

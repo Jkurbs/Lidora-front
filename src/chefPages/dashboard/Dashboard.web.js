@@ -17,44 +17,30 @@ import styles from './dashboard.styles'
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 
 import Modal from 'modal-enhanced-react-native-web';
+import moment from 'moment';
 
 const axesSvg = { fontSize: 10, fill: 'grey' };
 const verticalContentInset = { top: 10, bottom: 10 }
 const xAxisHeight = 30
 
-// const data = []
-const data = [180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500, 180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500]
 
 var db = firebase.firestore();
-const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("goals").doc("monthly")
+const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa")
 
-const DATA = [
-
-    {
-        title: "Finance summary",
-        data: [
-            { key: 1, totalBalance: 10000, futurePayout: 1000, toBank: 1000 },
-        ]
-    },
+const testdata = [
     {
         title: "Quick links",
-        data: [1
-        ]
-    },
-    {
-        title: "Latest orders",
-        data: [
-            { key: 1, total: 100 },
-            { key: 2, total: 16 },
-            { key: 3, total: 54 },
-            { key: 4, total: 90 },
-        ]
+        data: [1]
     },
 ]
 
 var db = firebase.firestore();
-let totalAverageValue = eval(data.join('+')) / data.length
-let roundedTotalAverageValue = Math.round((totalAverageValue + Number.EPSILON) * 100) / 100
+
+
+function calculateDiffence(value1, value2) {
+    return value1 / value2
+}
+
 
 
 class HomeScreen extends React.Component {
@@ -62,11 +48,28 @@ class HomeScreen extends React.Component {
     constructor() {
         super();
         this.state = {
+
+            totalAverage: 0,
+            averageValues: [],
+
             goalType: '',
             monthlyIncomeGoal: 0,
             monthlySaleGoal: 0,
             goal: 0,
-            visibleModal: null
+
+            monthlyIncome: 0,
+            monthlyIncomeDifference: 0,
+            monthlySales: 0,
+            montlhySalesDifferent: 0,
+
+            netVolume: 0,
+            subscriptions: 0,
+            totalSales: 0,
+            deliveryFees: 0,
+
+            visibleModal: null,
+            data: testdata,
+            value: null
         };
 
         this.goalTextInput = React.createRef()
@@ -77,17 +80,53 @@ class HomeScreen extends React.Component {
 
     // Fetch total sales
 
-
     // Fetch current goals 
     componentWillMount() {
         let currentComponent = this;
-        ref.get().then(function (doc) {
+
+        //Query using timestamp
+        ref.collection("completed_sales").orderBy('date_ordered', 'desc')
+            .limit(31).get()
+            .then(function (querySnapshot) {
+
+                querySnapshot.forEach(function (doc) {
+                    // get total from sale
+                    const amountValue = doc.data().total;
+                    let roundedAmountValue = Math.round((amountValue + Number.EPSILON) * 100) / 100
+
+                    currentComponent.setState(state => {
+                        const averageValues = [roundedAmountValue, ...state.averageValues];
+                        return {
+                            averageValues,
+                            value: roundedAmountValue,
+                        };
+                    });
+
+                    const averageValues = currentComponent.state.averageValues
+                    console.log("Average values: ", averageValues)
+
+                    // Calculate average revenue 
+                    let totalAmountValue = eval(averageValues.join('+')) / querySnapshot.size
+                    let roundedTotalAmountValue = Math.round((totalAmountValue + Number.EPSILON) * 100) / 100
+                    currentComponent.setState({ totalAverage: roundedTotalAmountValue })
+                });
+
+                return
+            })
+            .catch(function (error) {
+                console.log("Error getting documents: ", error);
+            });
+
+        // Fetch goals 
+
+        ref.collection("goals").doc("monthly").get().then(function (doc) {
             if (doc.exists) {
                 const data = doc.data()
                 const monthlyIncomeGoal = data.income
                 const monthlySaleGoal = data.sales
                 currentComponent.setState({ monthlyIncomeGoal: monthlyIncomeGoal })
                 currentComponent.setState({ monthlySaleGoal: monthlySaleGoal })
+                return
 
                 // TODO: -  Convert goals to show the progressView
             } else {
@@ -97,6 +136,53 @@ class HomeScreen extends React.Component {
         }).catch(function (error) {
             console.log("Error getting document:", error);
         });
+
+        // Fetch Reports
+        ref.collection("statistic").doc("reports").get().then(function (doc) {
+            if (doc.exists) {
+                const docData = doc.data()
+                currentComponent.setState(state => {
+                    const data = [
+                        {
+                            title: "Finance summary",
+                            data: [
+                                { key: 1, totalBalance: docData["available"], toBank: docData["pending"] },
+                            ]
+                        },
+                        ...state.data];
+                    return {
+                        data,
+                        value: data
+                    };
+                });
+
+                const monthlyIncome = docData["monthly_income"]
+                const montlhyIncomeDifferent = calculateDiffence(monthlyIncome, currentComponent.state.monthlyIncomeGoal)
+
+                const monthlySales = docData["monthly_sales"]
+                const montlhySalesDifferent = calculateDiffence(monthlySales, currentComponent.state.monthlySaleGoal)
+
+                const netVolume = docData["net_volume"]
+                const subscriptions = docData["subscriptions"]
+                const totalSales = docData["total_sales"]
+                const deliveryFees = docData["delivery_fees"]
+
+                currentComponent.setState({
+                    monthlyIncome: monthlyIncome,
+                    monthlyIncomeDifference: montlhyIncomeDifferent,
+                    monthlySales: monthlySales,
+                    montlhySalesDifferent: montlhySalesDifferent,
+                    netVolume: netVolume,
+                    subscriptions: subscriptions,
+                    totalSales: totalSales,
+                    deliveryFees: deliveryFees
+                })
+                return
+            }
+        })
+            .catch(function (error) {
+                console.log("Error getting document: ", error);
+            });
     }
 
     // Set a goal 
@@ -104,13 +190,18 @@ class HomeScreen extends React.Component {
         const goal = Number(this.state.goal)
         const goalType = this.state.goalType
 
+        const goalRef = ref.collection("goals").doc("monthly")
+
         // Verify the goal type 
         if (goalType === 'income') {
-            this.setState({ monthlyIncomeGoal: goal })
-            ref.set({ 'income': goal }, { merge: true })
+            const difference = calculateDiffence(this.state.monthlyIncome, goal)
+
+            this.setState({ monthlyIncomeGoal: goal, monthlyIncomeDifference: difference })
+            goalRef.set({ 'income': goal }, { merge: true })
         } else {
-            this.setState({ monthlySaleGoal: goal })
-            ref.set({ 'sales': goal }, { merge: true })
+            const difference = calculateDiffence(this.state.monthlySales, goal)
+            this.setState({ monthlySaleGoal: goal, montlhySalesDifferent: difference })
+            goalRef.set({ 'sales': goal }, { merge: true })
         }
         // Clear current goal in TextInput
         this.goalTextInput.current.clear();
@@ -165,7 +256,7 @@ class HomeScreen extends React.Component {
                                 If there's data show Chart, if there's nothing show message
                             */}
 
-                            {data.length === 0 ? (
+                            {this.state.averageValues.length === 0 ? (
                                 <View style={styles.emptyView}>
                                     <Text style={styles.emptyText}>There isn't enough data to display daily averages.</Text>
                                 </View>
@@ -182,12 +273,12 @@ class HomeScreen extends React.Component {
                                         height: 300
                                     }}>
                                         <View style={{ margin: 16 }}>
-                                            <Text style={styles.averageMainText}>{data.length === 0 ? '0 on Average (Daily Average) ' : roundedTotalAverageValue + ' on Average (Daily Average)'} </Text>
+                                            <Text style={styles.averageMainText}>{this.state.averageValues.length === 0 ? '0 on Average (Daily Average) ' : this.state.totalAverage + ' on Average (Daily Average)'} </Text>
                                         </View>
 
                                         <View style={styles.chartContainer}>
                                             <YAxis
-                                                data={data}
+                                                data={this.state.averageValues}
                                                 style={{ marginBottom: xAxisHeight }}
                                                 contentInset={verticalContentInset}
                                                 svg={axesSvg}
@@ -195,7 +286,7 @@ class HomeScreen extends React.Component {
                                             <View style={styles.chartView}>
                                                 <LineChart
                                                     style={{ flex: 1 }}
-                                                    data={data}
+                                                    data={this.state.averageValues}
                                                     contentInset={verticalContentInset}
                                                     svg={{ strokeOpacity: 0.8, strokeWidth: 2, stroke: 'rgb(48, 209, 88)' }}
                                                     xMin={1}
@@ -205,17 +296,14 @@ class HomeScreen extends React.Component {
                                                 </LineChart>
                                                 <XAxis
                                                     style={{ marginHorizontal: -10, height: xAxisHeight }}
-                                                    data={data}
+                                                    data={this.state.averageValues}
                                                     formatLabel={(value, index) => index}
                                                     contentInset={{ left: -10, right: 10 }}
                                                     svg={axesSvg}
                                                 />
                                             </View>
                                         </View>
-
-
                                     </View>
-
                                 )}
                         </View>
 
@@ -223,13 +311,13 @@ class HomeScreen extends React.Component {
                         <View style={styles.goalContainer}>
                             <View style={styles.goalShadowView}>
                                 <View style={styles.goalView}>
-                                    <Text style={styles.goalAmountText}>$0.00</Text>
+                                    <Text style={styles.goalAmountText}>${this.state.monthlyIncome}</Text>
                                     <Text style={styles.goalDescriptionText}>Income this month</Text>
                                     <TouchableOpacity style={styles.goalButton} onPress={() => this.setState({ visibleModal: true, goalType: 'income' })}>
                                         <Text onPress={() => this.setState({ visibleModal: true, goalType: 'income' })} style={styles.goalButtonText}>Set goal</Text>
                                     </TouchableOpacity>
                                     <View style={styles.goalProgressContainer}>
-                                        <ProgressCircle style={styles.progressCircle} progress={0.0} progressColor={'rgb(48, 209, 88)'} />
+                                        <ProgressCircle style={styles.progressCircle} progress={this.state.monthlyIncomeDifference} progressColor={'rgb(48, 209, 88)'} />
                                         <Text style={styles.progressText}> {this.state.monthlyIncomeGoal} </Text>
                                     </View>
                                 </View>
@@ -237,13 +325,13 @@ class HomeScreen extends React.Component {
 
                             <View style={styles.goalShadowView}>
                                 <View style={styles.goalView}>
-                                    <Text style={styles.goalAmountText}>0</Text>
+                                    <Text style={styles.goalAmountText}>{this.state.monthlySales}</Text>
                                     <Text style={styles.goalDescriptionText}>Monthly sales</Text>
                                     <TouchableOpacity style={styles.goalButton} onPress={() => this.setState({ visibleModal: true })}>
                                         <Text onPress={() => this.setState({ visibleModal: true, goalType: 'sales' })} style={styles.goalButtonText}>Set goal</Text>
                                     </TouchableOpacity>
                                     <View style={styles.goalProgressContainer}>
-                                        <ProgressCircle style={styles.progressCircle} />
+                                        <ProgressCircle style={styles.progressCircle} progress={this.state.montlhySalesDifferent} progressColor={'rgb(48, 209, 88)'} />
                                         <Text style={styles.progressText}> {this.state.monthlySaleGoal} </Text>
                                     </View>
                                 </View>
@@ -254,14 +342,29 @@ class HomeScreen extends React.Component {
                         <View style={styles.goalContainer}>
                             <View style={styles.goalShadowView}>
                                 <View style={styles.goalView}>
-                                    <Text style={styles.goalAmountText}>$0.00</Text>
+                                    <Text style={styles.goalAmountText}>${this.state.netVolume}</Text>
                                     <Text style={styles.goalDescriptionText}>Net volume from sales</Text>
                                 </View>
                             </View>
                             <View style={styles.goalShadowView}>
                                 <View style={styles.goalView}>
-                                    <Text style={styles.goalAmountText}>$0.00</Text>
+                                    <Text style={styles.goalAmountText}>{this.state.totalSales}</Text>
                                     <Text style={styles.goalDescriptionText}>Total sales</Text>
+                                </View>
+                            </View>
+                        </View>
+
+                        <View style={styles.goalContainer}>
+                            <View style={styles.goalShadowView}>
+                                <View style={styles.goalView}>
+                                    <Text style={styles.goalAmountText}>{this.state.subscriptions}</Text>
+                                    <Text style={styles.goalDescriptionText}>Total subscription</Text>
+                                </View>
+                            </View>
+                            <View style={styles.goalShadowView}>
+                                <View style={styles.goalView}>
+                                    <Text style={styles.goalAmountText}>${this.state.deliveryFees}</Text>
+                                    <Text style={styles.goalDescriptionText}>Total delivery fees</Text>
                                 </View>
                             </View>
                         </View>
@@ -271,7 +374,7 @@ class HomeScreen extends React.Component {
 
                     <View style={styles.rightPanelContainer}>
                         <SectionList
-                            sections={DATA}
+                            sections={this.state.data}
                             renderSectionHeader={({ section }) => {
                                 return (
                                     <View style={styles.headerView}>
@@ -283,7 +386,7 @@ class HomeScreen extends React.Component {
                                 switch (section.title) {
                                     case "Quick links":
                                         return (
-                                            <QuickLinksView item={item} />
+                                            <QuickLinksView navigation={this.props.navigation} item={item} />
                                         )
                                     case "Finance summary":
                                         return <BalanceView item={item} />
@@ -340,6 +443,7 @@ export default HomeScreen;
 // Calculate date range( max: 1 month ) 
 
 // React.useEffect(() => {
+
 //     let last31daysDate = moment().subtract(31, 'days').format();
 //     let timestamp = moment(last31daysDate).format("X");
     // Query using timestamp
@@ -363,29 +467,6 @@ export default HomeScreen;
 //         })
 //         .catch(function (error) {
 //             console.log("Error getting documents: ", error);
-//         });
-// })
-
-
-// Fetch Balances
-// React.useEffect(() => {
-//     ref.collection("statistics").doc("balance").get().then(function (doc) {
-        // Set Balance 
-        // const data = doc.data()
-        // setBalance({
-        //     value: [
-        //         {
-        //             title: "Finance summary",
-        //             data: [
-        //                 { key: 1, totalBalance: 10000, futurePayout: 1000, toBank: 1000 },
-        //             ]
-        //         }
-        //     ]
-        // })
-//         return
-//     })
-//         .catch(function (error) {
-//             console.log("Error getting document: ", error);
 //         });
 // })
 

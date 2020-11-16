@@ -28,7 +28,7 @@ const navOptionHandler = () => ({
     header: null,
 });
 
-function TabNavigator() {
+function TabNavigator({ navigation }) {
 
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
@@ -71,6 +71,7 @@ function TabNavigator() {
                         fontWeight: "bold",
                     },
                 }}
+                initialParams={{ navigation: navigation }}
                 name="Dashboard"
                 component={DashboardStack}
             />
@@ -254,7 +255,7 @@ function WebDashboard({ userData, navigation }) {
                     <Text style={{ color: 'rgb(142, 142, 147)', fontWeight: '500' }}>Support</Text>
                 </TouchableOpacity>
             </View>
-            <TabNavigator />
+            <TabNavigator navigation={navigation} />
         </View>
     )
 }

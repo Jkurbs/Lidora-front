@@ -21,13 +21,19 @@ class QuickLinksView extends Component {
                 flexDirection: 'column',
                 justifyContent: 'space-between'
             }}>
-                <Text style={{ color: 'rgb(48, 209, 88)' }}><Entypo name="link" size={16} color='rgb(48, 209, 88)' />
-                        Menu</Text>
-                <Text style={{ color: 'rgb(48, 209, 88)' }}><Entypo name="link" size={16} color='rgb(48, 209, 88)' />
-                        Inventory</Text>
-                <Text style={{ color: 'rgb(48, 209, 88)' }}><Entypo name="link" size={16} color='rgb(48, 209, 88)' />
-                        Support</Text>
+                <View style={{ flexDirection: 'row', }}>
+                    <Entypo name="link" size={16} color='rgb(48, 209, 88)' />
+                    <Text onPress={() => this.props.navigation.navigate('Menu')} style={{ marginLeft: 8, color: 'rgb(48, 209, 88)' }}>Menu</Text>
+                </View>
+                <View style={{ flexDirection: 'row', }}>
+                    <Entypo name="link" size={16} color='rgb(48, 209, 88)' />
+                    <Text onPress={() => this.props.navigation.navigate('Inventory')} style={{ marginLeft: 8, color: 'rgb(48, 209, 88)' }}>Inventory</Text>
+                </View>
 
+                <View style={{ flexDirection: 'row', }}>
+                    <Entypo name="link" size={16} color='rgb(48, 209, 88)' />
+                    <Text onPress={() => this.props.navigation.navigate('Support')} style={{ marginLeft: 8, color: 'rgb(48, 209, 88)' }}>Support</Text>
+                </View>
             </View>
 
         )
