@@ -231,12 +231,12 @@ function Dashboard({ route }) {
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard />
     } else {
-        return <WebDashboard userData={userData} />
+        return <WebDashboard userData={userData} navigation={navigation} />
     }
 }
 
 
-function WebDashboard({ userData }) {
+function WebDashboard({ userData, navigation }) {
     return (
         <View style={{ height: '100%' }}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
