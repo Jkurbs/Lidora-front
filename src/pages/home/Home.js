@@ -3,6 +3,7 @@ import { registerRootComponent } from "expo";
 import { StatusBar } from "expo-status-bar";
 import styles from "./home.style";
 import { Ionicons } from "@expo/vector-icons";
+import { Entypo } from '@expo/vector-icons';
 import {
   Platform,
   PixelRatio,
@@ -30,6 +31,8 @@ import DashboardScreen from "../../chefPages/dashboard/Sidebar";
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
+import "firebase/auth";
+
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
@@ -175,7 +178,7 @@ function HomeScreen({ navigation }) {
       </ImageBackground>
 
       {/* Provide section */}
-      <View style={{ marginTop: 0 }}>
+      <View style={{ marginTop: 60 }}>
         <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
           What we provide
             </Text>
@@ -187,6 +190,24 @@ function HomeScreen({ navigation }) {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
         />
+      </View>
+
+      {/* Footer */}
+      <View style={{ alignItems: "center", marginTop: 30, marginBottom: 20, padding: 20 }}>
+        <Ionicons
+          onPress={handleSocialPress}
+          name="logo-instagram"
+          size={26}
+          color="gray"
+        />
+        <View style={{ marginTop: 8, flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text style={{ marginRight: 8, color: "black", fontWeight: '500' }}>
+            Lidora {"\u00A9"} 2020
+        </Text>
+          <Text onPress={() => navigation.navigate("Legal")} style={{ fontWeight: '500' }}>Privacy & Legal</Text>
+
+        </View>
+
       </View>
     </SafeAreaView>
   );
@@ -209,6 +230,36 @@ const MyTheme = {
 function App() {
   // function Platform
   // protected routes?
+
+  var db = firebase.firestore();
+
+  const [userLoggedIn, setIsUserLoggedIn] = React.useState(false)
+  const [userData, setUserData] = React.useState({ user: [] })
+
+  React.useEffect(() => {
+
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+
+        setIsUserLoggedIn(true)
+
+        db.collection('chefs').doc(user.uid).get().then(function (doc) {
+          if (doc.exists) {
+            setUserData({ user: doc.data() })
+          } else {
+            console.log("No such document!");
+          }
+        }).catch(function (error) {
+          console.log("Error getting document:", error);
+        });
+
+      } else {
+        // No user is signed in.
+        setIsUserLoggedIn(false)
+      }
+    })
+  })
+
   return (
     <NavigationContainer theme={MyTheme}>
       <Stack.Navigator
@@ -225,9 +276,10 @@ function App() {
               <TouchableOpacity
                 onPress={() => {
                   /* 1. Navigate to the Details route with params */
-                  navigation.navigate('Login',
+                  navigation.navigate(userLoggedIn ? 'Dashboard' : 'Login',
                     {
                       navigation: navigation,
+                      user: userData
                     });
                 }}
                 style={{
@@ -242,7 +294,14 @@ function App() {
                   elevation: 7,
                 }}
               >
-                <Text style={{ alignSelf: 'center', fontSize: 17 }}>Login</Text>
+                {userLoggedIn ? (
+                  <Text style={{ alignSelf: 'center', fontSize: 12 }}>{'Dashboard'}
+                    <Entypo name="chevron-small-right" size={12} color="black" />
+                  </Text>
+
+                ) : (
+                    <Text style={{ alignSelf: 'center', fontSize: 14 }}>{'Login'}</Text>
+                  )}
               </TouchableOpacity>
             ),
           })}

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image, Text, View, SafeAreaView, ScrollView, TouchableOpacity } from "react-native";
+import { Image, Text, View, SafeAreaView, ScrollView, TouchableOpacity, Dimensions } from "react-native";
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import MenuScreen from "../menu/menu";
@@ -11,12 +11,17 @@ import SupportScreen from "../support/support";
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 
+const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
+
+
 const Tab = createSideTabNavigator();
 const StackInventory = createStackNavigator();
 const StackOrders = createStackNavigator();
 const StackMenu = createStackNavigator();
 const StackDashboard = createStackNavigator();
 const StackSupport = createStackNavigator();
+
+
 
 const navOptionHandler = () => ({
     headerShown: false,
@@ -203,6 +208,8 @@ function signOut(navigation) {
 
 function Dashboard({ route }) {
     const { user, navigation } = route.params;
+    const phoneMaxWidth = 575.98
+
     // get name and picture from firebase
     var db = firebase.firestore();
     const [userData, setUserData] = React.useState({ user: [] })
@@ -221,6 +228,15 @@ function Dashboard({ route }) {
         });
     }, [])
 
+    if (windowWidth < phoneMaxWidth) {
+        return <MobileDashboard />
+    } else {
+        return <WebDashboard userData={userData} />
+    }
+}
+
+
+function WebDashboard({ userData }) {
     return (
         <View style={{ height: '100%' }}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
@@ -237,10 +253,18 @@ function Dashboard({ route }) {
                     <Text style={{ color: 'rgb(142, 142, 147)', fontWeight: '500' }}>Support</Text>
                 </TouchableOpacity>
             </View>
-
             <TabNavigator />
         </View>
-    );
+    )
+}
+
+function MobileDashboard() {
+    return (
+        <View style={{ height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 17, alignSelf: 'center' }}>Dashboard will soon be avaible on mobile.</Text>
+        </View>
+    )
+
 }
 
 export default Dashboard;

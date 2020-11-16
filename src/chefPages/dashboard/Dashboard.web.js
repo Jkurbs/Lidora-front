@@ -218,7 +218,7 @@ class HomeScreen extends React.Component {
                                     <Text style={styles.goalAmountText}>0</Text>
                                     <Text style={styles.goalDescriptionText}>Monthly sales</Text>
                                     <TouchableOpacity style={styles.goalButton} onPress={() => this.setState({ visibleModal: true })}>
-                                        <Text onPress={() => this.setState({ visibleModal: true, goalType: 'sales' })} style={{ fontSize: 14 }}>Set goal</Text>
+                                        <Text onPress={() => this.setState({ visibleModal: true, goalType: 'sales' })} style={styles.goalButtonText}>Set goal</Text>
                                     </TouchableOpacity>
                                     <View style={styles.goalProgressContainer}>
                                         <ProgressCircle style={styles.progressCircle} />
