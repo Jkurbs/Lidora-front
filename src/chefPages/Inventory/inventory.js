@@ -94,6 +94,30 @@ class Inventory extends React.Component {
         )
     };
 
+      // Update inventory Item 
+  updateInventoryItem = (item) => {
+    this.setState(state => {
+      const data = state.data.map((previousItem, j) => {
+        if (j === item) {
+          return item;
+        } else {
+          return previousItem;
+        }
+      });
+      return {
+        data,
+      };
+    });
+    // Update menu item in Firebase 
+    ref.where('key','==',item.key).get().then(function(snapshot) {
+      snapshot.forEach(function(doc) {
+          console.log(doc.id)
+          ref.doc(doc.id).update(item)
+      })
+  })
+
+  };
+
     // Delete menu Item 
     deleteInventoryItem = (item) => {
         if (item.key === 12) { return }
@@ -144,7 +168,9 @@ class Inventory extends React.Component {
                 <InventoryDetailsView style={{ top: 0, bottom: 0, position: 'absolute', right: 0 }}
                     item={this.state.item}
                     mode={this.state.mode}
+                    handleMode={this.handleMode}
                     addInventoryItem={this.addInventoryItem}
+                    updateInventoryItem={this.updateInventoryItem}
                     deleteInventoryItem={this.deleteInventoryItem}
                 />
             </View>
