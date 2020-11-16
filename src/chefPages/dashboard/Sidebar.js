@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image, Text, View, SafeAreaView, ScrollView, TouchableOpacity, Dimensions } from "react-native";
+import { Image, Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import MenuScreen from "../menu/menu";
@@ -11,7 +11,7 @@ import SupportScreen from "../support/support";
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 
-const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
+const { width: windowWidth } = Dimensions.get("screen");
 
 
 const Tab = createSideTabNavigator();
@@ -29,6 +29,7 @@ const navOptionHandler = () => ({
 });
 
 function TabNavigator() {
+
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
     const todayDate = today.toLocaleDateString("en-US", options);
@@ -101,7 +102,7 @@ function TabNavigator() {
                 name="Inventory"
                 component={InventoryStack}
             ></Tab.Screen>
-            <Tab.Screen
+            {/* <Tab.Screen
                 options={{
                     title: todayDate,
                     tabBarLabel: "Customer orders",
@@ -113,7 +114,7 @@ function TabNavigator() {
                 }}
                 name="Orders"
                 component={OrdersStack}
-            />
+            /> */}
             <Tab.Screen
                 options={{
                     title: todayDate,
@@ -264,7 +265,5 @@ function MobileDashboard() {
             <Text style={{ fontSize: 17, alignSelf: 'center' }}>Dashboard will soon be avaible on mobile.</Text>
         </View>
     )
-
 }
-
 export default Dashboard;

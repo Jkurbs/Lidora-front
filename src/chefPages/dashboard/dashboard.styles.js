@@ -5,13 +5,13 @@ const { height: windowHeight } = Dimensions.get("screen");
 export default StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
+        backgroundColor: '#F5F5F7',
     },
 
     mainView: {
         height: '100%',
         flexDirection: 'colunm',
-        backgroundColor: 'white'
+        backgroundColor: '#F5F5F7',
     },
 
     modalContainer: {
@@ -71,10 +71,19 @@ export default StyleSheet.create({
     },
 
     emptyView: {
-        height: 400,
-        width: '100%',
+        height: 300,
+        width: '95%',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        borderRadius: 8,
+        marginRight: 60,
+        shadowColor: 'black',
+        shadowColor: "#000",
+        // shadowOffset: { width: 5, height: 5 },
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5,
     },
 
     emptyText: {
@@ -85,9 +94,12 @@ export default StyleSheet.create({
     },
 
     chartContainer: {
-        height: 400,
+        height: '80%',
         width: '100%',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        padding: 20,
+        marginBottom: 20
     },
 
     chartView: {
@@ -99,36 +111,34 @@ export default StyleSheet.create({
         flex: 1
     },
 
-
-
     goalContainer: {
-        margin: 20,
+        marginLeft: 15,
+        marginRight: 15,
         width: '60%',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        alignItems: 'center'
+        alignItems: 'center',
     },
 
 
     goalShadowView: {
+        marginBottom: 20,
         alignSelf: 'center',
         backgroundColor: 'white',
-        margin: 20,
-        width: 300,
+        width: '45%',
         height: 120,
-        borderRadius: 10,
+        borderRadius: 6,
         shadowColor: 'black',
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        // shadowOffset: { width: 5, height: 5 },
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
         elevation: 5,
     },
 
     goalView: {
         flexDirection: 'column',
         margin: 16
-
     },
 
     goalAmountText: {
@@ -139,7 +149,7 @@ export default StyleSheet.create({
 
     goalDescriptionText: {
         color: 'black',
-        fontSize: 15,
+        fontSize: 13,
         marginRight: 8
     },
 
@@ -161,8 +171,8 @@ export default StyleSheet.create({
     },
 
     progressCircle: {
-        height: 90,
-        width: 90
+        height: 80,
+        width: 80
     },
 
     progressText: {
@@ -181,8 +191,15 @@ export default StyleSheet.create({
         right: 0,
         width: '35%',
         height: '100%',
-        backgroundColor: '#F5F5F7',
-        padding: 20
+        backgroundColor: 'white',
+        margin: 30,
+        padding: 20,
+        borderRadius: 6,
+        shadowColor: 'black',
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5,
     },
 
     headerView: {

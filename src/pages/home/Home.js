@@ -205,9 +205,7 @@ function HomeScreen({ navigation }) {
             Lidora {"\u00A9"} 2020
         </Text>
           <Text onPress={() => navigation.navigate("Legal")} style={{ fontWeight: '500' }}>Privacy & Legal</Text>
-
         </View>
-
       </View>
     </SafeAreaView>
   );

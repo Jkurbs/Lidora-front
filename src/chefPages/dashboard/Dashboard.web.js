@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react'
 import {
-    Text, View, SafeAreaView, ScrollView, StyleSheet, SectionList, Dimensions, Button
+    Text, View, SafeAreaView, ScrollView, SectionList
 } from 'react-native';
 
 import { LineChart, YAxis, XAxis, Grid, ProgressCircle } from 'react-native-svg-charts'
@@ -10,6 +10,7 @@ import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 
 import BalanceView from './balanceView'
+import QuickLinksView from './quicklinks'
 import LatestOrderView from './latestOrderView'
 import styles from './dashboard.styles'
 
@@ -21,17 +22,23 @@ const axesSvg = { fontSize: 10, fill: 'grey' };
 const verticalContentInset = { top: 10, bottom: 10 }
 const xAxisHeight = 30
 
-const data = []
-// const data = [180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500, 180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500]
+// const data = []
+const data = [180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500, 180, 132, 166, 140, 190, 200, 85, 231, 35, 53, 180, 24, 150, 100, 500]
 
 var db = firebase.firestore();
 const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("goals").doc("monthly")
 
 const DATA = [
+
     {
         title: "Finance summary",
         data: [
             { key: 1, totalBalance: 10000, futurePayout: 1000, toBank: 1000 },
+        ]
+    },
+    {
+        title: "Quick links",
+        data: [1
         ]
     },
     {
@@ -72,7 +79,7 @@ class HomeScreen extends React.Component {
 
 
     // Fetch current goals 
-    componentDidMount() {
+    componentWillMount() {
         let currentComponent = this;
         ref.get().then(function (doc) {
             if (doc.exists) {
@@ -153,9 +160,6 @@ class HomeScreen extends React.Component {
                 <ScrollView>
                     <View style={styles.mainView}>
                         <View style={styles.averageView}>
-                            <View style={{ margin: 16 }}>
-                                <Text style={styles.averageMainText}>{data.length === 0 ? '0 on Average (Daily Average) ' : roundedTotalAverageValue + ' on Average (Daily Average)'} </Text>
-                            </View>
 
                             {/* Gross Volume and Right Panel section
                                 If there's data show Chart, if there's nothing show message
@@ -167,33 +171,51 @@ class HomeScreen extends React.Component {
                                 </View>
                             ) : (
 
-                                    <View style={styles.chartContainer}>
-                                        <YAxis
-                                            data={data}
-                                            style={{ marginBottom: xAxisHeight }}
-                                            contentInset={verticalContentInset}
-                                            svg={axesSvg}
-                                        />
-                                        <View style={styles.chartView}>
-                                            <LineChart
-                                                style={{ flex: 1 }}
+                                    <View style={{
+                                        flexDirection: 'column', borderRadius: 8, backgroundColor: 'white', marginRight: 30,
+                                        marginBottom: 30,
+                                        shadowColor: 'black',
+                                        shadowColor: "#000",
+                                        shadowOpacity: 0.1,
+                                        shadowRadius: 10,
+                                        elevation: 5,
+                                        height: 300
+                                    }}>
+                                        <View style={{ margin: 16 }}>
+                                            <Text style={styles.averageMainText}>{data.length === 0 ? '0 on Average (Daily Average) ' : roundedTotalAverageValue + ' on Average (Daily Average)'} </Text>
+                                        </View>
+
+                                        <View style={styles.chartContainer}>
+                                            <YAxis
                                                 data={data}
+                                                style={{ marginBottom: xAxisHeight }}
                                                 contentInset={verticalContentInset}
-                                                svg={{ strokeOpacity: 0.8, strokeWidth: 2, stroke: 'rgb(48, 209, 88)' }}
-                                                xMin={1}
-                                                xMax={31}
-                                            >
-                                                <Grid />
-                                            </LineChart>
-                                            <XAxis
-                                                style={{ marginHorizontal: -10, height: xAxisHeight }}
-                                                data={data}
-                                                formatLabel={(value, index) => index}
-                                                contentInset={{ left: -10, right: 10 }}
                                                 svg={axesSvg}
                                             />
+                                            <View style={styles.chartView}>
+                                                <LineChart
+                                                    style={{ flex: 1 }}
+                                                    data={data}
+                                                    contentInset={verticalContentInset}
+                                                    svg={{ strokeOpacity: 0.8, strokeWidth: 2, stroke: 'rgb(48, 209, 88)' }}
+                                                    xMin={1}
+                                                    xMax={31}
+                                                >
+                                                    <Grid />
+                                                </LineChart>
+                                                <XAxis
+                                                    style={{ marginHorizontal: -10, height: xAxisHeight }}
+                                                    data={data}
+                                                    formatLabel={(value, index) => index}
+                                                    contentInset={{ left: -10, right: 10 }}
+                                                    svg={axesSvg}
+                                                />
+                                            </View>
                                         </View>
+
+
                                     </View>
+
                                 )}
                         </View>
 
@@ -259,6 +281,10 @@ class HomeScreen extends React.Component {
                             }}
                             renderItem={({ item, section }) => {
                                 switch (section.title) {
+                                    case "Quick links":
+                                        return (
+                                            <QuickLinksView item={item} />
+                                        )
                                     case "Finance summary":
                                         return <BalanceView item={item} />
                                     case "Latest orders":
