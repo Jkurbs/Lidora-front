@@ -20,8 +20,8 @@ function Login({ route }) {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(data => {
-        const userName = data.user.uid;
-        navigation.navigate('Dashboard', { navigation: navigation, user: data.user })
+        
+        navigation.navigate('Dashboard', { navigation: navigation, userID: data.user.uid })
         setIndicatorAnimating(false)
         setLoginText("Login")
       })
