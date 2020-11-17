@@ -3,6 +3,7 @@ import { registerRootComponent } from "expo";
 import { StatusBar } from "expo-status-bar";
 import styles from "./home.style";
 import { Ionicons } from "@expo/vector-icons";
+import { Entypo } from '@expo/vector-icons';
 import {
   Platform,
   PixelRatio,
@@ -15,7 +16,8 @@ import {
   Linking,
   TextInput,
   FlatList,
-  Button
+  Button,
+  SafeAreaView
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -29,6 +31,8 @@ import DashboardScreen from "../../chefPages/dashboard/Sidebar";
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
+import "firebase/auth";
+
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
@@ -43,6 +47,8 @@ export function normalize(size) {
   }
 }
 
+const phoneMaxWidth = 575.98
+
 const url = "https://www.instagram.com/lidoralive/";
 
 const FeaturesItem = ({ image, title, description }) => (
@@ -50,18 +56,19 @@ const FeaturesItem = ({ image, title, description }) => (
     style={{
       borderRadius: 5,
       alignItems: "center",
+      justifyContent: 'center',
       margin: 8,
       padding: 20,
-      width: 200,
+      width: windowWidth < phoneMaxWidth ? 200 : windowWidth / 3,
       height: 250,
       backgroundColor: "#F5F5F7",
     }}
   >
     <Image
-      style={{ resizeMode: "contain", marginBottom: 10, width: 60, height: 60 }}
+      style={{ resizeMode: "contain", marginBottom: 10, width: windowWidth < phoneMaxWidth ? 60 : 120, height: windowWidth < phoneMaxWidth ? 60 : 120 }}
       source={image}
     />
-    <Text style={{ fontWeight: "500" }}>{title}</Text>
+    <Text style={{ textAlign: 'center', fontWeight: "500", fontSize: windowWidth < phoneMaxWidth ? 17 : 24 }}>{title}</Text>
     <Text style={{ textAlign: "center", margin: 8 }}>{description}</Text>
   </View>
 );
@@ -84,7 +91,6 @@ function HomeScreen({ navigation }) {
     "Join our waiting list And follow us on Instagram to stay updated."
   );
   const [customerEmail, setText] = useState("");
-
 
   // Function to Add potential user to email list
   const addUser = async () => {
@@ -131,19 +137,18 @@ function HomeScreen({ navigation }) {
 
   return (
 
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
 
       {/* Provider section */}
 
-      <View style={styles.secondaryView}>
-
-        <ImageBackground style={styles.backgroundImage} source={require("../../assets/img/cook.svg")} >
-          <View style={{ marginTop: 110, alignItems: "center", width: 'auto', height: 'auto' }}>
+      <ImageBackground resizeMode={'cover'} style={styles.backgroundImage} source={windowWidth < phoneMaxWidth ? require("../../assets/img/cook.svg") : require("../../assets/img/test.svg")} >
+        <View style={styles.secondaryView}>
+          <View style={{ marginTop: 50, marginBottom: 50, alignItems: "center", width: 'auto', height: '50%', }}>
             <Text style={{ width: windowWidth, textAlign: "center", color: "black", fontSize: normalize(30), fontWeight: "500" }}>
               Ready to start cooking {"\n"} and selling?
               </Text>
-            <Text style={{ marginTop: 20, textAlign: "center", color: "black", fontSize: 17 }}>
+            <Text style={{ marginTop: 20, textAlign: "center", color: "black", fontSize: windowWidth < phoneMaxWidth ? 14 : 20 }}>
               Apply now to join the team
               </Text>
             <TouchableOpacity
@@ -168,10 +173,9 @@ function HomeScreen({ navigation }) {
                 </Text>
             </TouchableOpacity>
           </View>
-        </ImageBackground>
+        </View>
 
-      </View>
-
+      </ImageBackground>
 
       {/* Provide section */}
       <View style={{ marginTop: 60 }}>
@@ -179,7 +183,7 @@ function HomeScreen({ navigation }) {
           What we provide
             </Text>
         <FlatList
-          style={{ marginTop: 40 }}
+          style={{ marginTop: 20 }}
           data={FEATURESDATA}
           renderItem={renderFeaturesItem}
           keyExtractor={(item) => item.id}
@@ -187,7 +191,23 @@ function HomeScreen({ navigation }) {
           showsHorizontalScrollIndicator={false}
         />
       </View>
-    </View>
+
+      {/* Footer */}
+      <View style={{ alignItems: "center", marginTop: 30, marginBottom: 20, padding: 20 }}>
+        <Ionicons
+          onPress={handleSocialPress}
+          name="logo-instagram"
+          size={26}
+          color="gray"
+        />
+        <View style={{ marginTop: 8, flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text style={{ marginRight: 8, color: "black", fontWeight: '500' }}>
+            Lidora {"\u00A9"} 2020
+        </Text>
+          <Text onPress={() => navigation.navigate("Legal")} style={{ fontWeight: '500' }}>Privacy & Legal</Text>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -208,6 +228,36 @@ const MyTheme = {
 function App() {
   // function Platform
   // protected routes?
+
+  var db = firebase.firestore();
+
+  const [userLoggedIn, setIsUserLoggedIn] = React.useState(false)
+  const [userData, setUserData] = React.useState({ user: [] })
+
+  // Verify if user is logged in
+  React.useEffect(() => {
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+
+        setIsUserLoggedIn(true)
+
+        db.collection('chefs').doc(user.uid).get().then(function (doc) {
+          if (doc.exists) {
+            setUserData({ user: doc.data() })
+          } else {
+            console.log("No such document!");
+          }
+        }).catch(function (error) {
+          console.log("Error getting document:", error);
+        });
+
+      } else {
+        // No user is signed in.
+        setIsUserLoggedIn(false)
+      }
+    })
+  })
+
   return (
     <NavigationContainer theme={MyTheme}>
       <Stack.Navigator
@@ -224,9 +274,10 @@ function App() {
               <TouchableOpacity
                 onPress={() => {
                   /* 1. Navigate to the Details route with params */
-                  navigation.navigate('Login',
+                  navigation.navigate(userLoggedIn ? 'Dashboard' : 'Login',
                     {
                       navigation: navigation,
+                      user: userData
                     });
                 }}
                 style={{
@@ -241,7 +292,14 @@ function App() {
                   elevation: 7,
                 }}
               >
-                <Text style={{ alignSelf: 'center', fontSize: 17 }}>Login</Text>
+                {userLoggedIn ? (
+                  <Text style={{ alignSelf: 'center', fontSize: 12 }}>{'Dashboard'}
+                    <Entypo name="chevron-small-right" size={12} color="black" />
+                  </Text>
+
+                ) : (
+                    <Text style={{ alignSelf: 'center', fontSize: 14 }}>{'Login'}</Text>
+                  )}
               </TouchableOpacity>
             ),
           })}
@@ -255,8 +313,6 @@ function App() {
 }
 
 export default registerRootComponent(App);
-
-
 
 {/* Current chefs section */ }
 {/* <View style={{ marginTop: 60, width: '100%' }}>

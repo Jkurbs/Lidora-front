@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image, Text, View, SafeAreaView, ScrollView, TouchableOpacity } from "react-native";
+import { Image, Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import MenuScreen from "../menu/menu";
@@ -11,6 +11,9 @@ import SupportScreen from "../support/support";
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 
+const { width: windowWidth } = Dimensions.get("screen");
+
+
 const Tab = createSideTabNavigator();
 const StackInventory = createStackNavigator();
 const StackOrders = createStackNavigator();
@@ -18,12 +21,15 @@ const StackMenu = createStackNavigator();
 const StackDashboard = createStackNavigator();
 const StackSupport = createStackNavigator();
 
+
+
 const navOptionHandler = () => ({
     headerShown: false,
     header: null,
 });
 
-function TabNavigator() {
+function TabNavigator({ navigation }) {
+
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
     const todayDate = today.toLocaleDateString("en-US", options);
@@ -65,6 +71,7 @@ function TabNavigator() {
                         fontWeight: "bold",
                     },
                 }}
+                initialParams={{ navigation: navigation }}
                 name="Dashboard"
                 component={DashboardStack}
             />
@@ -96,7 +103,7 @@ function TabNavigator() {
                 name="Inventory"
                 component={InventoryStack}
             ></Tab.Screen>
-            <Tab.Screen
+            {/* <Tab.Screen
                 options={{
                     title: todayDate,
                     tabBarLabel: "Customer orders",
@@ -108,7 +115,7 @@ function TabNavigator() {
                 }}
                 name="Orders"
                 component={OrdersStack}
-            />
+            /> */}
             <Tab.Screen
                 options={{
                     title: todayDate,
@@ -203,6 +210,8 @@ function signOut(navigation) {
 
 function Dashboard({ route }) {
     const { user, navigation } = route.params;
+    const phoneMaxWidth = 575.98
+
     // get name and picture from firebase
     var db = firebase.firestore();
     const [userData, setUserData] = React.useState({ user: [] })
@@ -221,10 +230,21 @@ function Dashboard({ route }) {
         });
     }, [])
 
+    if (windowWidth < phoneMaxWidth) {
+        return <MobileDashboard />
+    } else {
+        return <WebDashboard userData={userData} navigation={navigation} />
+    }
+}
+
+
+function WebDashboard({ userData, navigation }) {
     return (
         <View style={{ height: '100%' }}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
-                <Image style={{ height: 100, width: 100, borderRadius: 50, marginBottom: 16 }} source={{ uri: userData.user.imageURL }} />
+                <Image style={{
+                    height: 100, width: 100, borderRadius: 50, marginBottom: 16, backgroundColor: 'rgb(174,174,178)'
+                }} source={{ uri: userData.user.imageURL }} />
                 <Text style={{ fontSize: 20, fontWeight: '500' }}>Welcome {userData.user.first_name}</Text>
             </View>
             <View style={{ flexDirection: 'column', justifyContent: 'space-around', position: "absolute", zIndex: 100, bottom: 50, left: 20 }}>
@@ -235,10 +255,16 @@ function Dashboard({ route }) {
                     <Text style={{ color: 'rgb(142, 142, 147)', fontWeight: '500' }}>Support</Text>
                 </TouchableOpacity>
             </View>
-
-            <TabNavigator />
+            <TabNavigator navigation={navigation} />
         </View>
-    );
+    )
 }
 
+function MobileDashboard() {
+    return (
+        <View style={{ height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 17, alignSelf: 'center' }}>Dashboard will soon be avaible on mobile.</Text>
+        </View>
+    )
+}
 export default Dashboard;

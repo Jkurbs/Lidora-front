@@ -1,22 +1,26 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
-const userImageViewSize = 120;
+const phoneMaxWidth = 575.98
 
 export default StyleSheet.create({
-  root: {
-    flex: 1,
-  },
+
   container: {
     flex: 1,
     flexDirection: 'column',
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: 'white'
   },
 
   headerText: {
-    fontSize: 25,
-    marginBottom: 50,
+    fontSize: 35,
+    marginBottom: 16,
+    fontWeight: '490'
+  },
 
+  inputTitle: {
+    fontWeight: '490'
   },
 
   textStyle: {
@@ -25,6 +29,16 @@ export default StyleSheet.create({
     fontSize: 17,
   },
 
+  formContainer: {
+    // width: windowWidth < phoneMaxWidth ? '50%' : '40%',
+    height: 500,
+    padding: 0,
+    borderRadius: 8.0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: 'rgba(219,219,219, 1)',
+    borderWidth: windowWidth < phoneMaxWidth ? 0 : 1,
+  },
 
   input: {
     marginTop: 8,
@@ -41,13 +55,11 @@ export default StyleSheet.create({
   loginButton: {
     borderWidth: 1,
     borderRadius: 6,
-    marginTop: 10,
+    marginTop: 40,
     height: 50,
     justifyContent: "center",
-    backgroundColor: '#fafbfc',
     borderColor: 'rgba(27, 31, 35, 0.15)',
     backgroundColor: 'rgb(48, 209, 88)'
-
   },
 
   loginText: {
