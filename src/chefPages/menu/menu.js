@@ -36,7 +36,10 @@ const FlatListItemSeparator = () => {
 }
 
 var db = firebase.firestore();
+//Menu Ref
 const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("menu")
+//ingredients ref
+const ref2 = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("inventory")
 
 
 
@@ -48,6 +51,7 @@ class Menu extends React.Component {
       value: '',
       data: [],
       item: {},
+      ingredients: []
     };
 
     this.handleDetails = this.handleDetails.bind(this);
@@ -75,7 +79,23 @@ class Menu extends React.Component {
                 });
             });
         });   
+        // Fetch List of Ingredients
+        ref2.get().then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+              console.log(doc.id, " => ", doc.data());
+              currentComponent.setState(state => {
+                  const ingredientsData = [doc.data(), ...state.ingredients];
+                  return {
+                    ingredientsData,
+                    
+                  };
+              });
+          });
+          
+      });   
+
 }
+
 
   // Handle menu details mode 
   handleMode = (mode) => {
@@ -248,6 +268,7 @@ class Menu extends React.Component {
         <MenuDetailsView
           item={this.state.item}
           mode={this.state.mode}
+          ingredients={this.state.ingredients}
           handleMode={this.handleMode}
           updateMenuItem={this.updateMenuItem}
           addMenuItem={this.addMenuItem}
@@ -286,6 +307,7 @@ class Menu extends React.Component {
         </View>
         <MenuDetailsView
           item={data[0]}
+          ingredients={this.state.ingredients}
           mode={this.state.mode}
           handleMode={this.handleMode}
           updateMenuItem={this.updateMenuItem}

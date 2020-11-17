@@ -55,8 +55,11 @@ class MenuDetailsView extends React.Component {
       image: this.props.item.imageURL,
       name: this.props.item.name,
       price: this.props.item.price,
-      description: this.props.item.description
+      description: this.props.item.description,
+      ingredients: this.props.ingredients
     })
+
+    console.log("greddies",this.props.ingredients)
   }
 
   // Pick image from computer folder 
@@ -229,7 +232,7 @@ class Add extends React.Component {
             <View style={{ marginTop: 8 }}>
               <Text style={styles.formTitle}>Ingredients</Text>
               <MultiSelect
-                items={items}
+                items={this.state.ingredients}
                 uniqueKey="id"
                 ref={(component) => { this.multiSelect = component }}
                 onSelectedItemsChange={this.onSelectedItemsChange}
