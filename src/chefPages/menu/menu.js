@@ -51,7 +51,14 @@ class Menu extends React.Component {
       value: '',
       data: [],
       item: {},
-      ingredients: []
+      ingredients: [{
+        id:'369',
+        name:"dambichfine"
+      },
+      {
+        id:'243',
+        name:"ypolo"
+      }]
     };
 
     this.handleDetails = this.handleDetails.bind(this);
@@ -81,17 +88,18 @@ class Menu extends React.Component {
         });   
         // Fetch List of Ingredients
         ref2.get().then(function (querySnapshot) {
+          let ingredientArray = []
           querySnapshot.forEach(function (doc) {
               console.log(doc.id, " => ", doc.data());
-              currentComponent.setState(state => {
-                  const ingredientsData = [doc.data(), ...state.ingredients];
-                  return {
-                    ingredientsData,
-                    
-                  };
-              });
+              ingredientArray.push({
+                id:doc.data().key,
+                name:doc.data().name
+              })
           });
-          
+          currentComponent.setState({
+            ingredients: ingredientArray
+          })
+          console.log("gradients",currentComponent.state.ingredients)
       });   
 
 }

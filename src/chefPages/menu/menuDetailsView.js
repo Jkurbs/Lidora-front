@@ -41,7 +41,11 @@ class MenuDetailsView extends React.Component {
       image: null,
       name: null,
       price: null,
-      description: null
+      description: null,
+      ingredients: [{
+        id:"222",
+        name:"beesechurger"
+      }]
     }
     this.pickDocument = this.pickDocument.bind(this);
     this.handleEditButtonClick = this.handleEditButtonClick.bind(this);
@@ -49,17 +53,16 @@ class MenuDetailsView extends React.Component {
     this.renderChildComponent = this.renderChildComponent.bind(this);
   }
 
-  componentDidMount(prevProps) {
+  componentWillMount(prevProps) {
     this.setState({
       key: this.props.item.key,
       image: this.props.item.imageURL,
       name: this.props.item.name,
       price: this.props.item.price,
       description: this.props.item.description,
-      ingredients: this.props.ingredients
+      // ingredients: this.props.ingredients
     })
-
-    console.log("greddies",this.props.ingredients)
+    console.log('gredientsss2',this.props.ingredients)
   }
 
   // Pick image from computer folder 
@@ -127,6 +130,7 @@ class MenuDetailsView extends React.Component {
         return <Add
           item={this.props.item}
           image={this.state.image}
+          ingredients={this.props.ingredients}
           handleMode={this.props.handleMode}
           hadleImagePicking={this.pickDocument}
           addMenuItem={this.props.addMenuItem}
@@ -232,7 +236,7 @@ class Add extends React.Component {
             <View style={{ marginTop: 8 }}>
               <Text style={styles.formTitle}>Ingredients</Text>
               <MultiSelect
-                items={this.state.ingredients}
+                items={this.props.ingredients}
                 uniqueKey="id"
                 ref={(component) => { this.multiSelect = component }}
                 onSelectedItemsChange={this.onSelectedItemsChange}
