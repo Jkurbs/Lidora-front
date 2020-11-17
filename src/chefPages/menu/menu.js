@@ -139,7 +139,7 @@ class Menu extends React.Component {
         name: item.name,
         description: item.description,
         price: item.price,
-        ingredients:selectedItems
+        ingredients:selectedItems || null
       }
     )
 

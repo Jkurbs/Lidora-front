@@ -122,7 +122,7 @@ class Inventory extends React.Component {
 
     // Delete menu Item 
     deleteInventoryItem = (item) => {
-        if (item.key === 1) { return }
+        if (this.state.data.length >= 1){
         this.setState(state => {
             const data = state.data.filter(otherItem => otherItem.key !== item.key);
             return {
@@ -137,6 +137,7 @@ class Inventory extends React.Component {
                 ref.doc(doc.id).delete()
             })
         })
+        } else { return }
         
 
     };
