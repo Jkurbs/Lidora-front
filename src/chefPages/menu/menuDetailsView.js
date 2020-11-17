@@ -237,7 +237,7 @@ class Add extends React.Component {
               <Text style={styles.formTitle}>Ingredients</Text>
               <MultiSelect
                 items={this.props.ingredients}
-                uniqueKey="id"
+                uniqueKey="name"
                 ref={(component) => { this.multiSelect = component }}
                 onSelectedItemsChange={this.onSelectedItemsChange}
                 selectedItems={this.state.selectedItems}
@@ -275,7 +275,7 @@ class Add extends React.Component {
             />
           </View>
           <View style={styles.detailsButtonContainer}>
-            <TouchableOpacity onPress={this.props.addMenuItem.bind(this, this.state.item)}
+            <TouchableOpacity onPress={this.props.addMenuItem.bind(this, this.state.item,this.state.selectedItems)}
               style={styles.editButton}>
               <Text style={styles.buttonText}>Save</Text>
             </TouchableOpacity>

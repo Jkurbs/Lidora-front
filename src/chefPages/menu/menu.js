@@ -120,7 +120,7 @@ class Menu extends React.Component {
   };
 
   // Add new menu item
-  addMenuItem = (item) => {
+  addMenuItem = (item,selectedItems) => {
     this.setState(state => {
       const data = [item, ...state.data];
       return {
@@ -131,7 +131,7 @@ class Menu extends React.Component {
     });
     // Change menu mode 
     this.handleMode("Details")
-
+    console.log("slectedTEMS",selectedItems)
     // Add menu item to Firebase 
     ref.add(
       {
@@ -139,6 +139,7 @@ class Menu extends React.Component {
         name: item.name,
         description: item.description,
         price: item.price,
+        ingredients:selectedItems
       }
     )
 
