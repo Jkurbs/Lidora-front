@@ -167,7 +167,9 @@ export default StyleSheet.create({
     },
 
     editButton: {
-        backgroundColor: "rgb(174,174,178)",
+        borderWidth: 1,
+        borderColor: 'rgba(27, 31, 35, 0.15)',
+        backgroundColor: "#fafbfc",
         borderRadius: 10,
         height: 30,
         width: 70,

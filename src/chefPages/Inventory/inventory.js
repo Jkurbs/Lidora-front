@@ -86,17 +86,43 @@ class Inventory extends React.Component {
             return {
                 data,
                 value: item,
+                item: item
             };
         });
         // TODO: - Add inventory item to Firebase 
         ref.add(
             item
         )
+        this.handleMode("Details")
     };
+
+      // Update inventory Item 
+  updateInventoryItem = (item) => {
+    this.setState(state => {
+      const data = state.data.map((previousItem, j) => {
+        if (j === item) {
+          return item;
+        } else {
+          return previousItem;
+        }
+      });
+      return {
+        data,
+      };
+    });
+    // Update menu item in Firebase 
+    ref.where('key','==',item.key).get().then(function(snapshot) {
+      snapshot.forEach(function(doc) {
+          console.log(doc.id)
+          ref.doc(doc.id).update(item)
+      })
+  })
+
+  };
 
     // Delete menu Item 
     deleteInventoryItem = (item) => {
-        if (item.key === 12) { return }
+        if (item.key === 1) { return }
         this.setState(state => {
             const data = state.data.filter(otherItem => otherItem.key !== item.key);
             return {
@@ -117,11 +143,20 @@ class Inventory extends React.Component {
 
 
     render() {
+        let menuData
+        let menuItem
+        if(this.state.data.length > 0){
+            menuData = this.state.data
+            menuItem = this.state.item
+        } else {
+            menuData = data
+            menuItem = data
+        }
         return (
             <View style={styles.container}>
                 <View style={styles.titleParentContainer}>
                     <View style={styles.titleContainer}>
-                        <Text style={styles.mainTitle}>{this.state.data.length - 1} items in your inventory</Text>
+                        <Text style={styles.mainTitle}>{this.state.data.length} items in your inventory</Text>
                         <Text style={styles.secondaryTitle}>Add, Update and Delete items to your iventory.</Text>
                     </View>
                     <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>
@@ -132,7 +167,7 @@ class Inventory extends React.Component {
                 <View style={{ width: '60%' }}>
                     <FlatList
                         style={styles.flatList}
-                        data={this.state.data}
+                        data={menuData}
                         showsVerticalScrollIndicator={true}
                         extraData={this.state}
                         renderItem={({ item }) => (
@@ -142,9 +177,11 @@ class Inventory extends React.Component {
                     />
                 </View>
                 <InventoryDetailsView style={{ top: 0, bottom: 0, position: 'absolute', right: 0 }}
-                    item={this.state.item}
+                    item={menuItem}
                     mode={this.state.mode}
+                    handleMode={this.handleMode}
                     addInventoryItem={this.addInventoryItem}
+                    updateInventoryItem={this.updateInventoryItem}
                     deleteInventoryItem={this.deleteInventoryItem}
                 />
             </View>
