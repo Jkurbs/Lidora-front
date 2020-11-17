@@ -232,7 +232,9 @@ function App() {
   var db = firebase.firestore();
 
   const [userLoggedIn, setIsUserLoggedIn] = React.useState(false)
-  const [userData, setUserData] = React.useState({ user: [] })
+  const [userData, setUserData] = React.useState({ user: [],
+                                                   userID: ""
+                                                             })
 
   // Verify if user is logged in
   React.useEffect(() => {
@@ -243,7 +245,9 @@ function App() {
 
         db.collection('chefs').doc(user.uid).get().then(function (doc) {
           if (doc.exists) {
-            setUserData({ user: doc.data() })
+            setUserData({ user: doc.data(),
+                          userID: user.uid
+                        })
           } else {
             console.log("No such document!");
           }
@@ -277,7 +281,7 @@ function App() {
                   navigation.navigate(userLoggedIn ? 'Dashboard' : 'Login',
                     {
                       navigation: navigation,
-                      user: userData
+                      userID: userData.userID
                     });
                 }}
                 style={{

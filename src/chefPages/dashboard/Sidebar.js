@@ -209,16 +209,16 @@ function signOut(navigation) {
 }
 
 function Dashboard({ route }) {
-    const { user, navigation } = route.params;
+    const { userID, navigation } = route.params;
     const phoneMaxWidth = 575.98
-
+    console.log("USERTHING",userID)
     // get name and picture from firebase
     var db = firebase.firestore();
     const [userData, setUserData] = React.useState({ user: [] })
 
     React.useEffect(() => {
         // Fetch Current chef 
-        db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").get().then(function (doc) {
+        db.collection('chefs').doc(userID).get().then(function (doc) {
             console.log("data: ", doc.data())
             if (doc.exists) {
                 setUserData({ user: doc.data() })
