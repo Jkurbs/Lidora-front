@@ -38,9 +38,8 @@ export default class App extends React.Component {
         <View
           style={{
             height: '50%', width: '100%', marginTop: 80, padding: 30, alignSelf: "center", justifyContent: 'center', flexDirection: 'column',
-            backgroundColor: 'red'
           }} >
-          <Text style={{ fontSize: 25, textAlign: "center", backgroundColor: 'blue' }}>
+          <Text style={{ fontSize: 25, textAlign: "center" }}>
             Let's get you started {"\n"} We just have a few question for you
           </Text>
           <View style={{ height: 150, backgroundColor: 'brown' }}>

@@ -2,7 +2,6 @@ import React, { useState, useCallback } from "react";
 import { registerRootComponent } from "expo";
 import { StatusBar } from "expo-status-bar";
 import styles from "./home.style";
-import { Ionicons } from "@expo/vector-icons";
 import { Entypo } from '@expo/vector-icons';
 import {
   Platform,
@@ -13,10 +12,7 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Linking,
-  TextInput,
   FlatList,
-  Button,
   SafeAreaView
 } from "react-native";
 
@@ -28,6 +24,7 @@ import ApplyScreen from "../apply/Apply.js";
 import LegalScreen from "../legal/Legal.js";
 import LoginScreen from "../login/Login.js";
 import DashboardScreen from "../../chefPages/dashboard/Sidebar";
+import Footer from "../../components/Footer"
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
@@ -49,7 +46,7 @@ export function normalize(size) {
 
 const phoneMaxWidth = 575.98
 
-const url = "https://www.instagram.com/lidoralive/";
+var unsubscribe;
 
 const FeaturesItem = ({ image, title, description }) => (
   <View
@@ -112,16 +109,6 @@ function HomeScreen({ navigation }) {
     setMessageValue(newMessage);
     addUser();
   };
-
-  // Function to handle instagram button pressed
-  const handleSocialPress = useCallback(async () => {
-    const supported = await Linking.canOpenURL(url);
-    if (supported) {
-      await Linking.openURL(url);
-    } else {
-      Alert.alert(`Don't know how to open this URL: ${url}`);
-    }
-  }, [url]);
 
   const renderFeaturesItem = ({ item }) => (
     <FeaturesItem
@@ -191,22 +178,7 @@ function HomeScreen({ navigation }) {
           showsHorizontalScrollIndicator={false}
         />
       </View>
-
-      {/* Footer */}
-      <View style={{ alignItems: "center", marginTop: 30, marginBottom: 20, padding: 20 }}>
-        <Ionicons
-          onPress={handleSocialPress}
-          name="logo-instagram"
-          size={26}
-          color="gray"
-        />
-        <View style={{ marginTop: 8, flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ marginRight: 8, color: "black", fontWeight: '500' }}>
-            Lidora {"\u00A9"} 2020
-        </Text>
-          <Text onPress={() => navigation.navigate("Legal")} style={{ fontWeight: '500' }}>Privacy & Legal</Text>
-        </View>
-      </View>
+      <Footer />
     </SafeAreaView>
   );
 }
@@ -232,34 +204,35 @@ function App() {
   var db = firebase.firestore();
 
   const [userLoggedIn, setIsUserLoggedIn] = React.useState(false)
-  const [userData, setUserData] = React.useState({ user: [],
-                                                   userID: ""
-                                                             })
+  const [userData, setUserData] = React.useState({
+    user: [],
+    userID: ""
+  })
 
   // Verify if user is logged in
   React.useEffect(() => {
-    firebase.auth().onAuthStateChanged(function (user) {
+    unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
-
         setIsUserLoggedIn(true)
-
         db.collection('chefs').doc(user.uid).get().then(function (doc) {
           if (doc.exists) {
-            setUserData({ user: doc.data(),
-                          userID: user.uid
-                        })
+            setUserData({
+              user: doc.data(),
+              userID: user.uid
+            })
           } else {
             console.log("No such document!");
           }
         }).catch(function (error) {
           console.log("Error getting document:", error);
         });
-
+        return
       } else {
         // No user is signed in.
         setIsUserLoggedIn(false)
       }
     })
+    // unsubscribe()
   })
 
   return (

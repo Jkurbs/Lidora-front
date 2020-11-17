@@ -7,6 +7,7 @@ import {
 import { LineChart, YAxis, XAxis, Grid, ProgressCircle } from 'react-native-svg-charts'
 
 import firebase from "../../firebase/Firebase";
+import "firebase/auth";
 import "firebase/firestore";
 
 import BalanceView from './balanceView'
@@ -25,7 +26,6 @@ const xAxisHeight = 30
 
 
 var db = firebase.firestore();
-const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa")
 
 const testdata = [
     {
@@ -71,7 +71,6 @@ class HomeScreen extends React.Component {
             data: testdata,
             value: null
         };
-
         this.goalTextInput = React.createRef()
     }
 
@@ -82,6 +81,10 @@ class HomeScreen extends React.Component {
 
     // Fetch current goals 
     componentWillMount() {
+
+        var user = firebase.auth().currentUser;
+        const ref = db.collection('chefs').doc(user.uid)
+
         let currentComponent = this;
 
         //Query using timestamp
@@ -103,8 +106,6 @@ class HomeScreen extends React.Component {
                     });
 
                     const averageValues = currentComponent.state.averageValues
-                    console.log("Average values: ", averageValues)
-
                     // Calculate average revenue 
                     let totalAmountValue = eval(averageValues.join('+')) / querySnapshot.size
                     let roundedTotalAmountValue = Math.round((totalAmountValue + Number.EPSILON) * 100) / 100

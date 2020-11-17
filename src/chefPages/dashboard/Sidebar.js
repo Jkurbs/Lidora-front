@@ -11,7 +11,7 @@ import SupportScreen from "../support/support";
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 
-const { width: windowWidth } = Dimensions.get("screen");
+const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
 
 const Tab = createSideTabNavigator();
@@ -28,7 +28,9 @@ const navOptionHandler = () => ({
     header: null,
 });
 
-function TabNavigator({ navigation }) {
+function TabNavigator({ navigation, userID }) {
+
+    console.log("TAB NAV USERID: ", userID)
 
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
@@ -71,7 +73,7 @@ function TabNavigator({ navigation }) {
                         fontWeight: "bold",
                     },
                 }}
-                initialParams={{ navigation: navigation }}
+                initialParams={{ navigation: navigation, userID: userID }}
                 name="Dashboard"
                 component={DashboardStack}
             />
@@ -209,9 +211,9 @@ function signOut(navigation) {
 }
 
 function Dashboard({ route }) {
+
     const { userID, navigation } = route.params;
     const phoneMaxWidth = 575.98
-    console.log("USERTHING",userID)
     // get name and picture from firebase
     var db = firebase.firestore();
     const [userData, setUserData] = React.useState({ user: [] })
@@ -229,6 +231,9 @@ function Dashboard({ route }) {
             console.log("Error getting document:", error);
         });
     }, [])
+
+    console.log("USER DATA: ", userData.user.id)
+
 
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard />
@@ -255,7 +260,7 @@ function WebDashboard({ userData, navigation }) {
                     <Text style={{ color: 'rgb(142, 142, 147)', fontWeight: '500' }}>Support</Text>
                 </TouchableOpacity>
             </View>
-            <TabNavigator navigation={navigation} />
+            <TabNavigator navigation={navigation} userID={userData.user.id} />
         </View>
     )
 }
@@ -263,7 +268,7 @@ function WebDashboard({ userData, navigation }) {
 function MobileDashboard() {
     return (
         <View style={{ height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: 17, alignSelf: 'center' }}>Dashboard will soon be avaible on mobile.</Text>
+            <Text style={{ fontSize: 17, alignSelf: 'center' }}>Dashboard will soon be available on mobile.</Text>
         </View>
     )
 }

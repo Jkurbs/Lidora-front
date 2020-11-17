@@ -3,6 +3,7 @@ import { View, Text, TextInput, ActivityIndicator, TouchableOpacity } from "reac
 import styles from "./login.styles.js";
 import firebase from "../../firebase/Firebase";
 import activityIndicator from '../../components/activityIndicator'
+import Footer from '../../components/Footer'
 
 function Login({ route }) {
 
@@ -20,7 +21,7 @@ function Login({ route }) {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(data => {
-        
+
         navigation.navigate('Dashboard', { navigation: navigation, userID: data.user.uid })
         setIndicatorAnimating(false)
         setLoginText("Login")
@@ -77,6 +78,7 @@ function Login({ route }) {
           </TouchableOpacity>
         </View>
       </View>
+      <Footer />
     </View>
   );
 };
