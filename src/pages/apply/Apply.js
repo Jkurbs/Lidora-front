@@ -42,7 +42,7 @@ export default class App extends React.Component {
           <Text style={{ fontSize: 25, textAlign: "center" }}>
             Let's get you started {"\n"} We just have a few question for you
           </Text>
-          <View style={{ height: 150, backgroundColor: 'brown' }}>
+          <View style={{ height: 150 }}>
             <Wizard initialValues={{ firstName: "", lastName: "", email: "" }}>
               {forms.map((el) => (
                 <Wizard.Step key={el.name}>

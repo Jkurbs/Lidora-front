@@ -71,15 +71,7 @@ class Menu extends React.Component {
   //FETCH CURRENT CHEF MENU
   componentDidMount() {
 
-    var user = firebase.auth().currentUser;
-
-    //Menu Ref
-    // const ref = db.collection('chefs').doc(this.state.userId).collection("menu")
-    // //ingredients ref
-    // const ref2 = db.collection('chefs').doc(this.state.userId).collection("inventory")
-
     let currentComponent = this;
-
 
     // Fetch Current chef 
     console.log("STATE USER ID: ", this.state.userId)

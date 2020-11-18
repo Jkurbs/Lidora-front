@@ -27,41 +27,40 @@ const FlatListItemSeparator = () => {
 }
 
 
-    var db = firebase.firestore();
-    const ref = db.collection('chefs').doc("cAim5UCNHnXPAvvK0sUa").collection("inventory")
+var db = firebase.firestore();
+const ref = db.collection('chefs')
 
 class Inventory extends React.Component {
 
     constructor() {
         super();
         this.state = {
+            userID: firebase.auth().currentUser.uid,
             mode: 'Add',
             value: '',
             data: [],
             item: {}
         };
         this.addInventoryItem = this.addInventoryItem.bind(this);
-        
     }
 
 
-    
+
     componentDidMount() {
         let currentComponent = this;
-        console.log("DOOINGIT")
-            // Fetch Current chef 
-            ref.get().then(function (querySnapshot) {
-                querySnapshot.forEach(function (doc) {
-                    console.log(doc.id, " => ", doc.data());
-                    currentComponent.setState(state => {
-                        const data = [doc.data(), ...state.data];
-                        return {
-                            data,
-                            value: doc.data(),
-                        };
-                    });
+        // Fetch Current chef 
+        ref.doc(currentComponent.state.userID).collection("inventory").get().then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+                console.log(doc.id, " => ", doc.data());
+                currentComponent.setState(state => {
+                    const data = [doc.data(), ...state.data];
+                    return {
+                        data,
+                        value: doc.data(),
+                    };
                 });
-            });   
+            });
+        });
     }
 
     // Handle inventory details mode 
@@ -90,55 +89,55 @@ class Inventory extends React.Component {
             };
         });
         // TODO: - Add inventory item to Firebase 
-        ref.add(
+        ref.doc(this.state.userID).collection("inventory").add(
             item
         )
         this.handleMode("Details")
     };
 
-      // Update inventory Item 
-  updateInventoryItem = (item) => {
-    this.setState(state => {
-      const data = state.data.map((previousItem, j) => {
-        if (j === item) {
-          return item;
-        } else {
-          return previousItem;
-        }
-      });
-      return {
-        data,
-      };
-    });
-    // Update menu item in Firebase 
-    ref.where('key','==',item.key).get().then(function(snapshot) {
-      snapshot.forEach(function(doc) {
-          console.log(doc.id)
-          ref.doc(doc.id).update(item)
-      })
-  })
+    // Update inventory Item 
+    updateInventoryItem = (item) => {
+        this.setState(state => {
+            const data = state.data.map((previousItem, j) => {
+                if (j === item) {
+                    return item;
+                } else {
+                    return previousItem;
+                }
+            });
+            return {
+                data,
+            };
+        });
+        // Update menu item in Firebase 
+        ref.doc(this.state.userID).collection("inventory").where('key', '==', item.key).get().then(function (snapshot) {
+            snapshot.forEach(function (doc) {
+                console.log(doc.id)
+                ref.doc(this.state.userID).collection("inventory").doc(doc.id).update(item)
+            })
+        })
 
-  };
+    };
 
     // Delete menu Item 
     deleteInventoryItem = (item) => {
-        if (this.state.data.length >= 1){
-        this.setState(state => {
-            const data = state.data.filter(otherItem => otherItem.key !== item.key);
-            return {
-                data,
-                item: data[0]
-            };
-        });
-        // TODO: - Delete menu item in Firebase
-         ref.where('key','==',item.key).get().then(function(snapshot) {
-            snapshot.forEach(function(doc) {
-                console.log(doc.id)
-                ref.doc(doc.id).delete()
+        if (this.state.data.length >= 1) {
+            this.setState(state => {
+                const data = state.data.filter(otherItem => otherItem.key !== item.key);
+                return {
+                    data,
+                    item: data[0]
+                };
+            });
+            // TODO: - Delete menu item in Firebase
+            ref.doc(this.state.userID).collection("inventory").where('key', '==', item.key).get().then(function (snapshot) {
+                snapshot.forEach(function (doc) {
+                    console.log(doc.id)
+                    ref.doc(this.state.userID).collection("inventory").doc(doc.id).delete()
+                })
             })
-        })
         } else { return }
-        
+
 
     };
 
@@ -146,7 +145,7 @@ class Inventory extends React.Component {
     render() {
         let menuData
         let menuItem
-        if(this.state.data.length > 0){
+        if (this.state.data.length > 0) {
             menuData = this.state.data
             menuItem = this.state.item
         } else {
