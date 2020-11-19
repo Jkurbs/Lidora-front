@@ -97,6 +97,7 @@ class Inventory extends React.Component {
 
     // Update inventory Item 
     updateInventoryItem = (item) => {
+        console.log("UPDATEINVENTORYITEM",item)
         this.setState(state => {
             const data = state.data.map((previousItem, j) => {
                 if (j === item) {
@@ -110,10 +111,11 @@ class Inventory extends React.Component {
             };
         });
         // Update menu item in Firebase 
+        let currentComponent = this
         ref.doc(this.state.userID).collection("inventory").where('key', '==', item.key).get().then(function (snapshot) {
             snapshot.forEach(function (doc) {
                 console.log(doc.id)
-                ref.doc(this.state.userID).collection("inventory").doc(doc.id).update(item)
+                ref.doc(currentComponent.state.userID).collection("inventory").doc(doc.id).update(item)
             })
         })
 
@@ -130,10 +132,11 @@ class Inventory extends React.Component {
                 };
             });
             // TODO: - Delete menu item in Firebase
+            let currentComponent = this
             ref.doc(this.state.userID).collection("inventory").where('key', '==', item.key).get().then(function (snapshot) {
                 snapshot.forEach(function (doc) {
                     console.log(doc.id)
-                    ref.doc(this.state.userID).collection("inventory").doc(doc.id).delete()
+                    ref.doc(currentComponent.state.userID).collection("inventory").doc(doc.id).delete()
                 })
             })
         } else { return }

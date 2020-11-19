@@ -89,7 +89,7 @@ class Menu extends React.Component {
       });
     });
     // Fetch List of Ingredients
-    ref.doc(this.state.userId).collection("inventory").get().then(function (querySnapshot) {
+    ref.doc(this.state.userId).collection("inventory").onSnapshot(function(querySnapshot) {
       let ingredientArray = []
       querySnapshot.forEach(function (doc) {
         console.log(doc.id, " => ", doc.data());
@@ -124,16 +124,34 @@ class Menu extends React.Component {
   // Add new menu item
   addMenuItem = (item, selectedItems) => {
     this.setState(state => {
-      const data = [item, ...state.data];
+      const data = [{      
+        key: item.key,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        imageURL: item.image
+      }, ...state.data];
       return {
         data,
-        value: item,
-        item: item
+        value: {      
+          key: item.key,
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          imageURL: item.image
+        },
+        item: {      
+          key: item.key,
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          imageURL: item.image
+        }
       };
     });
     // Change menu mode 
     this.handleMode("Details")
-    console.log("slectedTEMS", selectedItems)
+    console.log("userIDAddMenuItem", this.state.userId)
     // Add menu item to Firebase 
     ref.doc(this.state.userId).collection("menu").add(
       {
@@ -148,14 +166,14 @@ class Menu extends React.Component {
     //check and Add Image to Firebase Storage
     if (item.image != null) {
       var storage = firebase.storage().ref(item.image.name)
+      let currentComponent = this
       storage.put(item.image.file).then((snapshot) => {
         snapshot.ref.getDownloadURL().then(function (downloadURL) {
           console.log("File available at", downloadURL);
-
-          ref.where('key', '==', item.key).get().then(function (snapshot) {
+          ref.doc(currentComponent.state.userId).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
             snapshot.forEach(function (doc) {
               console.log(doc.id)
-              ref.doc(doc.id).update(
+              ref.doc(currentComponent.state.userId).collection("menu").doc(doc.id).update(
                 {
                   imageURL: downloadURL
                 }
@@ -183,10 +201,12 @@ class Menu extends React.Component {
       };
     });
     // Update menu item in Firebase 
-    ref.where('key', '==', item.key).get().then(function (snapshot) {
+    let currentComponent = this
+    ref.doc(this.state.userId).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
       snapshot.forEach(function (doc) {
         console.log(doc.id)
-        ref.doc(doc.id).update(
+
+        ref.doc(currentComponent.state.userId).collection("menu").doc(doc.id).update(
           {
             key: item.key,
             name: item.name,
@@ -201,13 +221,14 @@ class Menu extends React.Component {
     if (typeof item.image != 'string') {
       console.log("UPDATEDIMAGE", item.image)
       var storage = firebase.storage().ref(item.image.name)
+      let currentComponent = this
       storage.put(item.image.file).then((snapshot) => {
         snapshot.ref.getDownloadURL().then(function (downloadURL) {
           console.log("File available at", downloadURL);
-          ref.where('key', '==', item.key).get().then(function (snapshot) {
+          ref.doc(currentComponent.state.userId).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
             snapshot.forEach(function (doc) {
               console.log(doc.id)
-              ref.doc(doc.id).update(
+              ref.doc(currentComponent.state.userId).collection("menu").doc(doc.id).update(
                 {
                   imageURL: downloadURL
                 }
@@ -231,10 +252,11 @@ class Menu extends React.Component {
       };
     });
     // Delete menu item in Firebase
-    ref.where('key', '==', item.key).get().then(function (snapshot) {
+    let currentComponent = this
+    ref.doc(this.state.userId).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
       snapshot.forEach(function (doc) {
         console.log(doc.id)
-        ref.doc(doc.id).delete()
+        ref.doc(currentComponent.state.userId).collection("menu").doc(doc.id).delete()
       })
     })
 

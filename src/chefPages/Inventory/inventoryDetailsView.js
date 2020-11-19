@@ -27,9 +27,11 @@ class InventoryDetailsView extends React.Component {
       this.props.handleMode("Edit")
   }
 
-  handleSaveButtonClick() {
-    const item = this.props.item
-    this.props.updateInventoryItem(item)
+  handleSaveButtonClick(editItem) {
+    this.props.item.name = editItem.name
+    this.props.item.quantity = editItem.quantity
+    this.props.item.unit = editItem.unit
+    this.props.updateInventoryItem(editItem)
     this.props.handleMode("Details")
   }
 
@@ -168,13 +170,13 @@ class Add extends React.Component {
 // EDIT ITEM COMPONENT 
 class Edit extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         const item = {
-            key: generateKey(""),
-            name: "ADD NEW ITEM",
-            quantity: 12.29,
-            unit: 'Piece'
+            key: this.props.item.key,
+            name: this.props.item.name,
+            quantity: this.props.item.quantity,
+            unit: this.props.item.unit
         }
 
         this.state = {
@@ -192,7 +194,7 @@ class Edit extends React.Component {
                         <Text style={styles.formTitle}>Name</Text>
                         <TextInput style={styles.formInput}
                             placeholder={'Add a name'}
-                            onChangeText={(text) => this.props.item.name = text}
+                            onChangeText={(text) => this.state.item.name = text}
                             defaultValue={this.props.item.name}
                         />
                     </View>
@@ -203,7 +205,7 @@ class Edit extends React.Component {
                             defaultValue={this.props.item.unit}
                             style={styles.formInput}
                             onValueChange={(itemValue, itemIndex) =>
-                                this.props.item.unit = itemValue}>
+                                this.state.item.unit = itemValue}>
 
                             <Picker.Item label="Piece" value="Piece" />
                             <Picker.Item label="Gram" value="Gram" />
@@ -215,13 +217,13 @@ class Edit extends React.Component {
                         <Text style={styles.formTitle}>Quantity</Text>
                         <TextInput style={styles.formInput}
                             placeholder={'Edit Quantity'}
-                            onChangeText={(text) => this.props.item.quantity = text}
+                            onChangeText={(text) => this.state.item.quantity = text}
                             defaultValue={this.props.item.quantity}
                         />
                     </View>
                     <View style={styles.detailsButtonContainer}>
                         <TouchableOpacity
-                            onPress={this.props.handleSaveButtonClick}
+                            onPress={()=>{this.props.handleSaveButtonClick(this.state.item)}}
                             style={styles.editButton}>
                             <Text style={styles.buttonText}>Save</Text>
                         </TouchableOpacity>
