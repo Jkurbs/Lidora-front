@@ -95,9 +95,10 @@ class MenuDetailsView extends React.Component {
     this.props.item.name = editItem.name
     this.props.item.price = editItem.price
     this.props.item.description = editItem.description
+    this.props.item.imageURL = this.state.image
     this.props.updateMenuItem(editItem)
     this.props.handleMode("Details")
-    this.state.image = null
+    // this.state.image = null
   }
 
   handleAddButtonClick() {
@@ -300,11 +301,11 @@ class Edit extends React.Component {
     super(props);
     const item = {
       key: this.props.item.key,
-      name: "New item name",
+      name: this.props.item.name,
       description:
-        "new item description",
-      price: 12.29,
-      image: null
+      this.props.item.description,
+      price: this.props.item.price,
+      image: this.props.item.image
     }
 
     this.state = {

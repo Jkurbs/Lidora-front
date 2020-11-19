@@ -174,9 +174,9 @@ class Edit extends React.Component {
         super(props);
         const item = {
             key: this.props.item.key,
-            name: "ADD NEW ITEM",
-            quantity: 12.29,
-            unit: 'Piece'
+            name: this.props.item.name,
+            quantity: this.props.item.quantity,
+            unit: this.props.item.unit
         }
 
         this.state = {

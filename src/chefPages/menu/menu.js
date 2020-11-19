@@ -124,11 +124,29 @@ class Menu extends React.Component {
   // Add new menu item
   addMenuItem = (item, selectedItems) => {
     this.setState(state => {
-      const data = [item, ...state.data];
+      const data = [{      
+        key: item.key,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        imageURL: item.image
+      }, ...state.data];
       return {
         data,
-        value: item,
-        item: item
+        value: {      
+          key: item.key,
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          imageURL: item.image
+        },
+        item: {      
+          key: item.key,
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          imageURL: item.image
+        }
       };
     });
     // Change menu mode 
@@ -234,10 +252,11 @@ class Menu extends React.Component {
       };
     });
     // Delete menu item in Firebase
+    let currentComponent = this
     ref.doc(this.state.userId).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
       snapshot.forEach(function (doc) {
         console.log(doc.id)
-        ref.doc(this.state.userId).collection("menu").doc(doc.id).delete()
+        ref.doc(currentComponent.state.userId).collection("menu").doc(doc.id).delete()
       })
     })
 
