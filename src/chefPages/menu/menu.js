@@ -89,7 +89,7 @@ class Menu extends React.Component {
       });
     });
     // Fetch List of Ingredients
-    ref.doc(this.state.userId).collection("inventory").get().then(function (querySnapshot) {
+    ref.doc(this.state.userId).collection("inventory").onSnapshot(function(querySnapshot) {
       let ingredientArray = []
       querySnapshot.forEach(function (doc) {
         console.log(doc.id, " => ", doc.data());

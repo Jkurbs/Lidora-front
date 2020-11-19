@@ -98,7 +98,7 @@ class MenuDetailsView extends React.Component {
     this.props.item.imageURL = this.state.image
     this.props.updateMenuItem(editItem)
     this.props.handleMode("Details")
-    // this.state.image = null
+    this.state.image = null
   }
 
   handleAddButtonClick() {
