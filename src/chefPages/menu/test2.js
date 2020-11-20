@@ -68,7 +68,12 @@ class Test2 extends React.Component {
     render() {
         return (
             <>
-            <HeaderBar />
+            <HeaderBar 
+                title={"Menu"}
+                subtitle={"11 Items"}
+                search={""}
+                isCustomerOrders={true}
+            />
             <TableView
                 tableHead={this.state.tableHead}
                 tableData={this.state.tableData}

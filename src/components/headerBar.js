@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         height: '200px',
         top:'60px',
         right:'13px',
-        zIndex:'1'
+        zIndex:'1000'
     }
     
 
@@ -96,10 +96,10 @@ class HeaderBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          title: "Menu",
-          subtitle: "11 items",
-          search: "",
-          isCustomerOrders: true,
+          title: this.props.title,
+          subtitle: this.props.subtitle,
+          search: this.props.search,
+          isCustomerOrders: this.props.isCustomerOrders,
           showCalendar: false
         }
       }
@@ -121,7 +121,7 @@ class HeaderBar extends React.Component {
         if(this.state.isCustomerOrders){
             return(                 
             <View style={styles.rightSide}>
-                <TouchableOpacity style={{border:'1px solid green', height:'24px',marginTop:'34px'}} onPress={()=>{this.showModal()}}>
+                <TouchableOpacity style={{ height:'24px',marginTop:'34px'}} onPress={()=>{this.showModal()}}>
                 <View style={styles.orderInput} >
                 <Image style={styles.orderIcon} source={require('../assets/icon/chevron-down.png')}/>
                 <Text style={styles.orderText} >Order For Today</Text>
