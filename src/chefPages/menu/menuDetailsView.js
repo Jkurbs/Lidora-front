@@ -42,10 +42,7 @@ class MenuDetailsView extends React.Component {
       name: null,
       price: null,
       description: null,
-      ingredients: [{
-        id:"222",
-        name:"beesechurger"
-      }]
+      ingredients: []
     }
     this.pickDocument = this.pickDocument.bind(this);
     this.handleEditButtonClick = this.handleEditButtonClick.bind(this);
@@ -92,10 +89,14 @@ class MenuDetailsView extends React.Component {
   }
 
   // Configure save button click 
-  handleSaveButtonClick() {
+  handleSaveButtonClick(editItem) {
     const item = this.props.item
-    item.image = this.state.image
-    this.props.updateMenuItem(item)
+    editItem.image = this.state.image
+    this.props.item.name = editItem.name
+    this.props.item.price = editItem.price
+    this.props.item.description = editItem.description
+    this.props.item.imageURL = this.state.image
+    this.props.updateMenuItem(editItem)
     this.props.handleMode("Details")
     this.state.image = null
   }
@@ -296,6 +297,22 @@ class Add extends React.Component {
 // EDIT ITEM COMPONENT 
 class Edit extends React.Component {
 
+  constructor(props) {
+    super(props);
+    const item = {
+      key: this.props.item.key,
+      name: this.props.item.name,
+      description:
+      this.props.item.description,
+      price: this.props.item.price,
+      image: this.props.item.image
+    }
+
+    this.state = {
+      item: item
+    }
+  }
+
   render() {
     return (
       <ScrollView>
@@ -306,7 +323,7 @@ class Edit extends React.Component {
             <Text style={styles.formTitle}>Name</Text>
             <TextInput style={styles.formInput}
               placeholder={'Add a name'}
-              onChangeText={(text) => this.props.item.name = text}
+              onChangeText={(text) => this.state.item.name = text}
               defaultValue={this.props.item.name}
             />
 
@@ -315,7 +332,7 @@ class Edit extends React.Component {
             <Text style={styles.formTitle}>Price</Text>
             <TextInput style={styles.formInput}
               placeholder={'Add a Price'}
-              onChangeText={(text) => this.props.item.price = text}
+              onChangeText={(text) => this.state.item.price = text}
               defaultValue={this.props.item.price}
             />
           </View>
@@ -329,11 +346,11 @@ class Edit extends React.Component {
               multiline={true}
               maxLength={100}
               placeholder={'Add a description'}
-              onChangeText={(text) => this.props.item.description = text}
+              onChangeText={(text) => this.state.item.description = text}
               defaultValue={this.props.item.description}
             />
           </View>
-          <TouchableOpacity onPress={this.props.handleSaveButtonClick}
+          <TouchableOpacity onPress={()=>{this.props.handleSaveButtonClick(this.state.item)}}
             style={styles.editButton}>
             <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
