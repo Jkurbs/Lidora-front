@@ -7,7 +7,8 @@ import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import firebase from '../../firebase/Firebase';
 import "firebase/firestore";
 
-import TableView from '../../components/tableView'
+import TableView from '../../components/tableView';
+import HeaderBar from '../../components/headerBar';
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
@@ -66,6 +67,8 @@ class Test2 extends React.Component {
 
     render() {
         return (
+            <>
+            <HeaderBar />
             <TableView
                 tableHead={this.state.tableHead}
                 tableData={this.state.tableData}
@@ -79,6 +82,7 @@ class Test2 extends React.Component {
                 middleAction={this.leftActionSelected.bind(this)}
                 rightAction={this.rightActionSelected.bind(this)}
             />
+            </>
         )
     }
 }
