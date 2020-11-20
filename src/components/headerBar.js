@@ -100,16 +100,16 @@ class HeaderBar extends React.Component {
           subtitle: "11 items",
           search: "",
           isCustomerOrders: true,
-          show: false
+          showCalendar: false
         }
       }
     
     showModal = () => {
-    this.setState({ show: true });
+    this.setState({ showCalendar: true });
     }
     
     hideModal = () => {
-    this.setState({ show: false });
+    this.setState({ showCalendar: false });
     }
 
     buttonPressed = () => {
@@ -177,7 +177,7 @@ class HeaderBar extends React.Component {
                     <Text style={styles.subtitle}>{this.state.subtitle}</Text>
                 </View>
             <this.InputSwitch/>
-            <this.OrderCalendar show={this.state.show} handleClose={this.hideModal} />
+            <this.OrderCalendar show={this.state.showCalendar} handleClose={this.hideModal} />
             </View>
         )
     }
