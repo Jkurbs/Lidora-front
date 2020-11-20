@@ -42,6 +42,7 @@
     "react-native-svg": "12.1.0",
     "react-native-svg-charts": "^5.4.0",
     "react-native-svg-uri": "^1.2.3",
+    "react-native-table-component": "^1.2.1",
     "react-native-web": "~0.13.12",
     "react-navigation-side-tabs": "0.0.7",
     "react-responsive": "^8.1.0",
