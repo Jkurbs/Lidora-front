@@ -8,7 +8,8 @@ import "firebase/firestore";
 
 import IventoryItemView from "./inventoryItemView";
 import InventoryDetailsView from "./inventoryDetailsView";
-
+import TableView from '../../components/tableView';
+import HeaderBar from '../../components/headerBar';
 const data = [
     {
         key: 1,
@@ -39,7 +40,10 @@ class Inventory extends React.Component {
             mode: 'Add',
             value: '',
             data: [],
-            item: {}
+            item: {},
+            tableHead: ['Image', 'Name', 'Price', 'Actions'],
+            tableData: [],
+            hasData: null,
         };
         this.addInventoryItem = this.addInventoryItem.bind(this);
     }
@@ -47,19 +51,26 @@ class Inventory extends React.Component {
 
 
     componentDidMount() {
+        console.log("COmponent did mount")
         let currentComponent = this;
         // Fetch Current chef 
-        ref.doc(currentComponent.state.userID).collection("inventory").get().then(function (querySnapshot) {
-            querySnapshot.forEach(function (doc) {
-                console.log(doc.id, " => ", doc.data());
-                currentComponent.setState(state => {
-                    const data = [doc.data(), ...state.data];
-                    return {
-                        data,
-                        value: doc.data(),
-                    };
+        ref.doc('spE8oRHDBChYPTVgF8BayBTJKmP2').collection("menu").get().then(function (querySnapshot) {
+            if (querySnapshot.empty) {
+                currentComponent.setState({
+                    hasData: false,
                 });
-            });
+            } else {
+                querySnapshot.forEach(function (doc) {
+                    const data = doc.data()
+                    const propertyValues = [data.imageURL, data.name, data.price, '']
+                    let currentTableData = [...currentComponent.state.tableData];
+                    currentTableData.push(propertyValues);
+                    currentComponent.setState({
+                        tableData: currentTableData,
+                        hasData: true,
+                    });
+                });
+            }
         });
     }
 
@@ -144,6 +155,28 @@ class Inventory extends React.Component {
 
     };
 
+    didSelectCell = (selectedIndex) => {
+        alert(selectedIndex)
+    }
+
+    leftActionSelected = (selectedIndex) => {
+        alert(selectedIndex)
+    }
+
+    middleActionSelected = (selectedIndex) => {
+        alert("Middle Action")
+    }
+
+    rightActionSelected = (selectedIndex) => {
+        alert(selectedIndex)
+    }
+
+    showModal = () => {
+        console.log("SHOWCALENDAR!")
+        this.setState({ showCalendar: !this.state.showCalendar });
+        console.log(this.state.showCalendar)
+    }
+
 
     render() {
         let menuData
@@ -157,35 +190,28 @@ class Inventory extends React.Component {
         }
         return (
             <View style={styles.container}>
-                <View style={styles.titleParentContainer}>
-                    <View style={styles.titleContainer}>
-                        <Text style={styles.mainTitle}>{this.state.data.length} items in your inventory</Text>
-                        <Text style={styles.secondaryTitle}>Add, Update and Delete items to your iventory.</Text>
-                    </View>
-                    <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>
-                        <Ionicons name="ios-add" size={30} color="#34C759" />
-                    </TouchableOpacity>
-                </View>
-                <View style={{ backgroundColor: '#D6D6D6', height: 1, width: '60%' }} />
-                <View style={{ width: '60%' }}>
-                    <FlatList
-                        style={styles.flatList}
-                        data={menuData}
-                        showsVerticalScrollIndicator={true}
-                        extraData={this.state}
-                        renderItem={({ item }) => (
-                            <IventoryItemView item={item} handleDetails={this.handleDetails} />
-                        )}
-                        ItemSeparatorComponent={FlatListItemSeparator}
-                    />
-                </View>
-                <InventoryDetailsView style={{ top: 0, bottom: 0, position: 'absolute', right: 0 }}
-                    item={menuItem}
-                    mode={this.state.mode}
-                    handleMode={this.handleMode}
-                    addInventoryItem={this.addInventoryItem}
-                    updateInventoryItem={this.updateInventoryItem}
-                    deleteInventoryItem={this.deleteInventoryItem}
+                <HeaderBar 
+                    title={"Inventory"}
+                    subtitle={"11 Items"}
+                    search={""}
+                    isCustomerOrders={false}
+                    show={this.showModal.bind(this)}
+                />
+                <TableView 
+
+                    tableHead={this.state.tableHead}
+                    tableData={this.state.tableData}
+                    hasData={this.state.hasData}
+                    hasImage={true}
+                    didSelectCell={this.didSelectCell.bind(this)}
+                    leftImage={require('../../assets/icon/edit.png')}
+                    middleImage={require('../../assets/icon/remove-100.png')}
+                    rightImage={require('../../assets/icon/info-100.png')}
+                    leftAction={this.leftActionSelected.bind(this)}
+                    middleAction={this.leftActionSelected.bind(this)}
+                    rightAction={this.rightActionSelected.bind(this)}
+    
+                
                 />
             </View>
         );

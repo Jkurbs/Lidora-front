@@ -40,7 +40,7 @@ function TabNavigator({ navigation, userID }) {
         <Tab.Navigator
             navigationOptions={{
                 // Hide the header from AppNavigator stack
-                header: null,
+                header: false,
             }}
             tabBarOptions={{
                 activeTintColor: "#34C759",
@@ -48,7 +48,6 @@ function TabNavigator({ navigation, userID }) {
                 tabStyle: { marginBottom: 20 },
 
                 style: {
-                    paddind: 60,
                     width: 200,
                     paddingTop: 250,
                 },
@@ -56,10 +55,11 @@ function TabNavigator({ navigation, userID }) {
                 labelSize: 13,
                 showLabel: true,
                 tabWidth: 200,
-                header: null,
-
+                header: false,
+                
                 headerStyle: {
                     backgroundColor: "#f4511e",
+                    color:'green'
                 },
             }}
         >
@@ -99,8 +99,11 @@ function TabNavigator({ navigation, userID }) {
                     backgroundColor: "#f4511e",
                     headerTintColor: "#fff",
                     headerTitleStyle: {
-                        fontWeight: "bold",
+                        fontWeight: "regular",
+                        
                     },
+                    color:'green'
+                    
                 }}
                 name="Inventory"
                 component={InventoryStack}
