@@ -7,7 +7,9 @@ import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import firebase from '../../firebase/Firebase';
 import "firebase/firestore";
 
-import TableView from '../../components/tableView'
+import TableView from '../../components/tableView';
+import HeaderBar from '../../components/headerBar';
+import CalendarModal from '../../components/calendarModal';
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
@@ -18,7 +20,8 @@ class Test2 extends React.Component {
         this.state = {
             tableHead: ['Image', 'Name', 'Price', 'Actions'],
             tableData: [],
-            hasData: null
+            hasData: null,
+            showCalendar:false
         }
     }
 
@@ -64,8 +67,22 @@ class Test2 extends React.Component {
         alert(selectedIndex)
     }
 
+    showModal = () => {
+        console.log("SHOWCALENDAR!")
+        this.setState({ showCalendar: !this.state.showCalendar });
+        console.log(this.state.showCalendar)
+    }
+
     render() {
         return (
+            <>
+            <HeaderBar 
+                title={"Menu"}
+                subtitle={"11 Items"}
+                search={""}
+                isCustomerOrders={true}
+                show={this.showModal.bind(this)}
+            />
             <TableView
                 tableHead={this.state.tableHead}
                 tableData={this.state.tableData}
@@ -79,6 +96,10 @@ class Test2 extends React.Component {
                 middleAction={this.leftActionSelected.bind(this)}
                 rightAction={this.rightActionSelected.bind(this)}
             />
+            <CalendarModal
+                show={this.state.showCalendar}
+            />
+            </>
         )
     }
 }

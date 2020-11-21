@@ -30,6 +30,7 @@
     "react-device-detect": "^1.14.0",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
+    "react-native-animated-hide-view": "^1.0.0",
     "react-native-awesome-alerts": "^1.4.2",
     "react-native-calendars": "^1.403.0",
     "react-native-document-picker": "^4.1.0",
