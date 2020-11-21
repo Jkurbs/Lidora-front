@@ -14,33 +14,13 @@ import firebase from "../../firebase/Firebase";
 import "firebase/auth";
 import "firebase/firestore";
 
+import TableView from '../../components/tableView';
+import HeaderBar from '../../components/headerBar';
 import MenuItemView from './menuItemView';
 import MenuDetailsView from "./menuDetailsView";
 
-
-const data = [
-  {
-    key: 1,
-    name: "Add a menu item",
-    description:
-      "Tip: click the green button to add your first menu item.",
-    price: '$$',
-    image: '',
-  },
-];
-
-const FlatListItemSeparator = () => {
-  return (
-    <View
-      style={styles.flatListItemSeparator}
-    />
-  );
-}
-
-
 var db = firebase.firestore();
 const ref = db.collection('chefs')
-
 
 class Menu extends React.Component {
   constructor() {
@@ -58,10 +38,13 @@ class Menu extends React.Component {
       {
         id: '243',
         name: "ypolo"
-      }]
+      }],
+
+      tableHead: ['Image', 'Name', 'Price', 'Actions'],
+      tableData: [],
+      hasData: null,
     };
 
-    this.handleDetails = this.handleDetails.bind(this);
     this.addMenuItem = this.addMenuItem.bind(this);
     this.updateMenuItem = this.updateMenuItem.bind(this);
     this.deleteMenuItem = this.deleteMenuItem.bind(this);
@@ -74,22 +57,20 @@ class Menu extends React.Component {
     let currentComponent = this;
 
     // Fetch Current chef 
-    console.log("STATE USER ID: ", this.state.userId)
     ref.doc(this.state.userId).collection("menu").get().then(function (querySnapshot) {
       querySnapshot.forEach(function (doc) {
-        console.log(doc.id, " => ", doc.data());
-        currentComponent.setState(state => {
-          const data = [doc.data(), ...state.data];
-          return {
-            data,
-            value: doc.data(),
-
-          };
+        const data = doc.data()
+        const propertyValues = [data.imageURL, data.name, data.price, '']
+        let currentTableData = [...currentComponent.state.tableData];
+        currentTableData.push(propertyValues);
+        currentComponent.setState({
+          tableData: currentTableData,
+          hasData: true,
         });
       });
     });
     // Fetch List of Ingredients
-    ref.doc(this.state.userId).collection("inventory").onSnapshot(function(querySnapshot) {
+    ref.doc(this.state.userId).collection("inventory").onSnapshot(function (querySnapshot) {
       let ingredientArray = []
       querySnapshot.forEach(function (doc) {
         console.log(doc.id, " => ", doc.data());
@@ -107,24 +88,12 @@ class Menu extends React.Component {
   }
 
 
-  // Handle menu details mode 
-  handleMode = (mode) => {
-    this.setState({
-      mode: mode
-    })
-  }
 
-  // Show menu item details 
-  handleDetails = (item) => {
-    this.setState({
-      item: item
-    })
-  };
 
   // Add new menu item
   addMenuItem = (item, selectedItems) => {
     this.setState(state => {
-      const data = [{      
+      const data = [{
         key: item.key,
         name: item.name,
         description: item.description,
@@ -133,14 +102,14 @@ class Menu extends React.Component {
       }, ...state.data];
       return {
         data,
-        value: {      
+        value: {
           key: item.key,
           name: item.name,
           description: item.description,
           price: item.price,
           imageURL: item.image
         },
-        item: {      
+        item: {
           key: item.key,
           name: item.name,
           description: item.description,
@@ -151,7 +120,6 @@ class Menu extends React.Component {
     });
     // Change menu mode 
     this.handleMode("Details")
-    console.log("userIDAddMenuItem", this.state.userId)
     // Add menu item to Firebase 
     ref.doc(this.state.userId).collection("menu").add(
       {
@@ -183,7 +151,6 @@ class Menu extends React.Component {
         });
       })
     }
-
   };
 
   // Update menu Item 
@@ -219,7 +186,6 @@ class Menu extends React.Component {
     //check and Add Image to Firebase Storage
     //check if image changed
     if (typeof item.image != 'string') {
-      console.log("UPDATEDIMAGE", item.image)
       var storage = firebase.storage().ref(item.image.name)
       let currentComponent = this
       storage.put(item.image.file).then((snapshot) => {
@@ -265,90 +231,60 @@ class Menu extends React.Component {
       var storage = firebase.storage().ref(item.image.name)
       storage.delete(item.image.name)
     }
-
   };
+
+  didSelectCell = (selectedIndex) => {
+
+  }
+
+  leftActionSelected = (selectedIndex) => {
+
+  }
+
+  middleActionSelected = (selectedIndex) => {
+
+  }
+
+  rightActionSelected = (selectedIndex) => {
+
+  }
+
+  showModal = () => {
+    this.setState({ showCalendar: !this.state.showCalendar });
+    console.log(this.state.showCalendar)
+  }
 
 
   render() {
-    if (this.state.data.length >= 1) {
-      return (
-        <View style={styles.container}>
-          <View style={styles.titleParentContainer}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.mainTitle}>{this.state.data.length} menu item/s</Text>
-              <Text style={styles.secondaryTitle}>Add, update and remove a menu item.</Text>
-            </View>
-            <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>
-              <Ionicons name="ios-add" size={30} color="#34C759" />
-            </TouchableOpacity>
-          </View>
-          <View style={{ backgroundColor: '#D6D6D6', height: 1, width: '100%' }} />
+    return (
 
-          <View style={{
-            flexDirection: 'row', flex: 2
-          }}>
-            <FlatList
-              style={styles.flatList}
-              data={this.state.data}
-              showsVerticalScrollIndicator={true}
-              extraData={this.state}
-              renderItem={({ item }) => (
-                <MenuItemView item={item} handleDetails={this.handleDetails} />
-              )}
-              ItemSeparatorComponent={FlatListItemSeparator}
-            />
-          </View>
-          <MenuDetailsView
-            item={this.state.item}
-            mode={this.state.mode}
-            ingredients={this.state.ingredients}
-            handleMode={this.handleMode}
-            updateMenuItem={this.updateMenuItem}
-            addMenuItem={this.addMenuItem}
-            deleteMenuItem={this.deleteMenuItem}
-          />
-        </View>
-
-      );
-    }
-    else {
-      return (<View style={styles.container}>
-        <View style={styles.titleParentContainer}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.mainTitle}>{this.state.data.length} menu items</Text>
-            <Text style={styles.secondaryTitle}>Add, update and remove a menu item.</Text>
-          </View>
-          <TouchableOpacity onPress={() => this.setState({ mode: 'Add' })}>
-            <Ionicons name="ios-add" size={30} color="#34C759" />
-          </TouchableOpacity>
-        </View>
-        <View style={{ backgroundColor: '#D6D6D6', height: 1, width: '100%' }} />
-
-        <View style={{
-          flexDirection: 'row', flex: 2
-        }}>
-          <FlatList
-            style={styles.flatList}
-            data={this.state.data}
-            showsVerticalScrollIndicator={true}
-            extraData={this.state}
-            renderItem={({ item }) => (
-              <MenuItemView item={item} handleDetails={this.handleDetails} />
-            )}
-            ItemSeparatorComponent={FlatListItemSeparator}
-          />
-        </View>
-        <MenuDetailsView
-          item={data[0]}
-          ingredients={this.state.ingredients}
-          mode={this.state.mode}
-          handleMode={this.handleMode}
-          updateMenuItem={this.updateMenuItem}
-          addMenuItem={this.addMenuItem}
-          deleteMenuItem={this.deleteMenuItem}
+      <View style={styles.container}>
+        <HeaderBar
+          title={"Menu"}
+          subtitle={this.state.tableData.length}
+          search={""}
+          isCustomerOrders={false}
+          show={this.showModal.bind(this)}
         />
-      </View>)
-    }
+
+        <ScrollView>
+          <TableView
+            tableHead={this.state.tableHead}
+            tableData={this.state.tableData}
+            hasData={this.state.hasData}
+            hasImage={true}
+            didSelectCell={this.didSelectCell.bind(this)}
+            leftImage={require('../../assets/icon/edit.png')}
+            middleImage={require('../../assets/icon/remove-100.png')}
+            rightImage={require('../../assets/icon/info-100.png')}
+            leftAction={this.leftActionSelected.bind(this)}
+            middleAction={this.leftActionSelected.bind(this)}
+            rightAction={this.rightActionSelected.bind(this)}
+          />
+        </ScrollView>
+      </View>
+
+    )
   }
 }
 

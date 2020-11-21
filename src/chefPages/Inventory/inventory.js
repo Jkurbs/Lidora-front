@@ -1,32 +1,12 @@
 import React from "react";
 import styles from "./inventory.styles";
-import { View, FlatList, Text, TouchableOpacity } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
+import { View, ScrollView } from "react-native";
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 
-import IventoryItemView from "./inventoryItemView";
-import InventoryDetailsView from "./inventoryDetailsView";
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
-const data = [
-    {
-        key: 1,
-        name: "To add, look to the right or tap the green button!",
-        quantity: 2,
-        unit: 'steps'
-    },
-];
-
-const FlatListItemSeparator = () => {
-    return (
-        <View
-            style={styles.flatListItemSeparator}
-        />
-    );
-}
-
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
@@ -41,20 +21,17 @@ class Inventory extends React.Component {
             value: '',
             data: [],
             item: {},
-            tableHead: ['Image', 'Name', 'Price', 'Actions'],
+            tableHead: ['Name', 'Quantity', 'Unit', 'Actions'],
             tableData: [],
             hasData: null,
         };
         this.addInventoryItem = this.addInventoryItem.bind(this);
     }
 
-
-
     componentDidMount() {
-        console.log("COmponent did mount")
         let currentComponent = this;
         // Fetch Current chef 
-        ref.doc('spE8oRHDBChYPTVgF8BayBTJKmP2').collection("menu").get().then(function (querySnapshot) {
+        ref.doc(this.state.userID).collection("inventory").get().then(function (querySnapshot) {
             if (querySnapshot.empty) {
                 currentComponent.setState({
                     hasData: false,
@@ -62,7 +39,7 @@ class Inventory extends React.Component {
             } else {
                 querySnapshot.forEach(function (doc) {
                     const data = doc.data()
-                    const propertyValues = [data.imageURL, data.name, data.price, '']
+                    const propertyValues = [data.name, data.quantity, data.unit, '']
                     let currentTableData = [...currentComponent.state.tableData];
                     currentTableData.push(propertyValues);
                     currentComponent.setState({
@@ -108,7 +85,6 @@ class Inventory extends React.Component {
 
     // Update inventory Item 
     updateInventoryItem = (item) => {
-        console.log("UPDATEINVENTORYITEM",item)
         this.setState(state => {
             const data = state.data.map((previousItem, j) => {
                 if (j === item) {
@@ -151,68 +127,55 @@ class Inventory extends React.Component {
                 })
             })
         } else { return }
-
-
     };
 
     didSelectCell = (selectedIndex) => {
-        alert(selectedIndex)
+
     }
 
     leftActionSelected = (selectedIndex) => {
-        alert(selectedIndex)
+
     }
 
     middleActionSelected = (selectedIndex) => {
-        alert("Middle Action")
+
     }
 
     rightActionSelected = (selectedIndex) => {
-        alert(selectedIndex)
+
     }
 
     showModal = () => {
-        console.log("SHOWCALENDAR!")
         this.setState({ showCalendar: !this.state.showCalendar });
         console.log(this.state.showCalendar)
     }
 
-
     render() {
-        let menuData
-        let menuItem
-        if (this.state.data.length > 0) {
-            menuData = this.state.data
-            menuItem = this.state.item
-        } else {
-            menuData = data
-            menuItem = data
-        }
         return (
             <View style={styles.container}>
-                <HeaderBar 
+                <HeaderBar
                     title={"Inventory"}
-                    subtitle={"11 Items"}
+                    subtitle={this.state.tableData.length}
                     search={""}
                     isCustomerOrders={false}
                     show={this.showModal.bind(this)}
                 />
-                <TableView 
 
-                    tableHead={this.state.tableHead}
-                    tableData={this.state.tableData}
-                    hasData={this.state.hasData}
-                    hasImage={true}
-                    didSelectCell={this.didSelectCell.bind(this)}
-                    leftImage={require('../../assets/icon/edit.png')}
-                    middleImage={require('../../assets/icon/remove-100.png')}
-                    rightImage={require('../../assets/icon/info-100.png')}
-                    leftAction={this.leftActionSelected.bind(this)}
-                    middleAction={this.leftActionSelected.bind(this)}
-                    rightAction={this.rightActionSelected.bind(this)}
-    
-                
-                />
+                <ScrollView>
+                    <TableView
+                        tableHead={this.state.tableHead}
+                        tableData={this.state.tableData}
+                        hasData={this.state.hasData}
+                        hasImage={false}
+                        didSelectCell={this.didSelectCell.bind(this)}
+                        leftImage={require('../../assets/icon/edit.png')}
+                        middleImage={require('../../assets/icon/remove-100.png')}
+                        rightImage={require('../../assets/icon/info-100.png')}
+                        leftAction={this.leftActionSelected.bind(this)}
+                        middleAction={this.leftActionSelected.bind(this)}
+                        rightAction={this.rightActionSelected.bind(this)}
+                    />
+                </ScrollView>
             </View>
         );
     }
