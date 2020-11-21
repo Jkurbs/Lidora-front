@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
         width: '100%',
         position: 'relative', backgroundColor: 'white', borderRadius: 5, shadowColor: "#000",
         shadowColor: "#000",
-        shadowOpacity: 0.26,
+        shadowOpacity: 0.13,
         shadowRadius: 10.68,
     },
     head: { height: 74, paddingLeft: 20, paddingRight: 20, borderBottomColor: '#CECECE', borderBottomWidth: 1 },
