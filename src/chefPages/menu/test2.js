@@ -67,9 +67,9 @@ class Test2 extends React.Component {
         alert(selectedIndex)
     }
 
-    showModal = (bool) => {
+    showModal = () => {
         console.log("SHOWCALENDAR!")
-        this.setState({ showCalendar: bool });
+        this.setState({ showCalendar: !this.state.showCalendar });
         console.log(this.state.showCalendar)
     }
 

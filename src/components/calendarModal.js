@@ -9,9 +9,17 @@ const styles = StyleSheet.create({
         backgroundColor: 'skyblue',
         width: '200px',
         height: '200px',
-        top:'60px',
+        top:'50',
         right:'13px',
-        zIndex:'1000'
+        borderRadius:'5px'
+    },
+
+    animated:{
+        flex:1,
+        position:'absolute',
+        alignSelf:'center',
+        top:'60px',
+        right:'10px',
     }
 
 
@@ -35,31 +43,15 @@ class CalendarModal extends Component {
     }
   
     hideModal = () => {
-    this.setState({ showCalendar: false });
+        this.setState({ showCalendar: !this.state.showCalendar });
     }
 
-    // ///ORDERCALENDAR MODAL
-    // OrderCalendar = ({ handleClose, show, children }) => {
-    //     if(show){
-    //     return (
-    //         <View style={styles.orderModal}>           
-    //             <button
-    //             onClick={handleClose}
-    //             >
-    //             Close
-    //             </button>
-    //         </View>
-    //     );
-    //     } else{
-    //         return (<></>)
-    //     }
-    //     };
-    // ///ORDERCALENDAR MODAL END
 
     render(){
         return (
-            <AnimatedHideView visible={this.props.show} style={{ backgroundColor: 'red', padding: 10 }}>
-            <this.OrderCalendar show={this.state.showCalendar} handleClose={this.hideModal} />
+            <AnimatedHideView visible={this.props.show} style={styles.animated} >
+            <View style={styles.orderModal}>           
+            </View>
             </AnimatedHideView>
         )
     }
