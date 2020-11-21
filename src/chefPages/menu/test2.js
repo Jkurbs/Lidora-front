@@ -9,6 +9,7 @@ import "firebase/firestore";
 
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
+import CalendarModal from '../../components/calendarModal';
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
@@ -19,7 +20,8 @@ class Test2 extends React.Component {
         this.state = {
             tableHead: ['Image', 'Name', 'Price', 'Actions'],
             tableData: [],
-            hasData: null
+            hasData: null,
+            showCalendar:false
         }
     }
 
@@ -65,6 +67,12 @@ class Test2 extends React.Component {
         alert(selectedIndex)
     }
 
+    showModal = (bool) => {
+        console.log("SHOWCALENDAR!")
+        this.setState({ showCalendar: bool });
+        console.log(this.state.showCalendar)
+    }
+
     render() {
         return (
             <>
@@ -73,6 +81,7 @@ class Test2 extends React.Component {
                 subtitle={"11 Items"}
                 search={""}
                 isCustomerOrders={true}
+                show={this.showModal.bind(this)}
             />
             <TableView
                 tableHead={this.state.tableHead}
@@ -86,6 +95,9 @@ class Test2 extends React.Component {
                 leftAction={this.leftActionSelected.bind(this)}
                 middleAction={this.leftActionSelected.bind(this)}
                 rightAction={this.rightActionSelected.bind(this)}
+            />
+            <CalendarModal
+                show={this.state.showCalendar}
             />
             </>
         )

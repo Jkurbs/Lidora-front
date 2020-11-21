@@ -73,16 +73,6 @@ const styles = StyleSheet.create({
         height: 20,
         tintColor: '#00CF46',
       },
-
-    orderModal:{
-        position:'absolute',
-        backgroundColor: 'skyblue',
-        width: '200px',
-        height: '200px',
-        top:'60px',
-        right:'13px',
-        zIndex:'1000'
-    }
     
 
 })
@@ -100,12 +90,11 @@ class HeaderBar extends React.Component {
           subtitle: this.props.subtitle,
           search: this.props.search,
           isCustomerOrders: this.props.isCustomerOrders,
-          showCalendar: false
         }
       }
     
     showModal = () => {
-    this.setState({ showCalendar: true });
+    this.props.show(true)
     }
     
     hideModal = () => {
@@ -121,7 +110,7 @@ class HeaderBar extends React.Component {
         if(this.state.isCustomerOrders){
             return(                 
             <View style={styles.rightSide}>
-                <TouchableOpacity style={{ height:'24px',marginTop:'34px'}} onPress={()=>{this.showModal()}}>
+                <TouchableOpacity style={{ height:'24px',marginTop:'34px'}} onPress={this.showModal}>
                 <View style={styles.orderInput} >
                 <Image style={styles.orderIcon} source={require('../assets/icon/chevron-down.png')}/>
                 <Text style={styles.orderText} >Order For Today</Text>
@@ -151,23 +140,6 @@ class HeaderBar extends React.Component {
     }
     ///INPUTSWITCH END
 
-    ///ORDERCALENDAR MODAL
-    OrderCalendar = ({ handleClose, show, children }) => {
-        if(show){
-        return (
-          <View style={styles.orderModal}>           
-              <button
-                onClick={handleClose}
-              >
-                Close
-              </button>
-          </View>
-        );
-        } else{
-            return (<></>)
-        }
-      };
-    ///ORDERCALENDAR MODAL END
 
     render(){
         return (
@@ -177,7 +149,6 @@ class HeaderBar extends React.Component {
                     <Text style={styles.subtitle}>{this.state.subtitle}</Text>
                 </View>
             <this.InputSwitch/>
-            <this.OrderCalendar show={this.state.showCalendar} handleClose={this.hideModal} />
             </View>
         )
     }
