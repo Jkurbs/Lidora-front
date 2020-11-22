@@ -14,12 +14,12 @@ class QuickLinksView extends Component {
                 elevation: 5,
                 borderRadius: 8,
                 backgroundColor: 'white',
-                height: 100,
+                height: 120,
                 width: '95%',
                 padding: 16,
                 alignSelf: 'center',
                 flexDirection: 'column',
-                justifyContent: 'space-between'
+                justifyContent: 'space-around'
             }}>
                 <View style={{ flexDirection: 'row', }}>
                     <Entypo name="link" size={16} color='rgb(48, 209, 88)' />
@@ -33,6 +33,10 @@ class QuickLinksView extends Component {
                 <View style={{ flexDirection: 'row', }}>
                     <Entypo name="link" size={16} color='rgb(48, 209, 88)' />
                     <Text onPress={() => this.props.navigation.navigate('Support')} style={{ marginLeft: 8, color: 'rgb(48, 209, 88)' }}>Support</Text>
+                </View>
+                <View style={{ flexDirection: 'row', }}>
+                    <Entypo name="link" size={16} color='rgb(48, 209, 88)' />
+                    <Text onPress={() => this.props.navigation.navigate('Orders')} style={{ marginLeft: 8, color: 'rgb(48, 209, 88)' }}>Customer orders</Text>
                 </View>
             </View>
 

@@ -20,7 +20,7 @@ class TableView extends React.Component {
 
 
 
-    actionElement = (index) => {
+    actionElement = (data, index) => {
 
         var buttons = []
 
@@ -35,7 +35,7 @@ class TableView extends React.Component {
         if (this.props.middleImage != null) {
             buttons.push(
                 <TouchableOpacity style={styles.button}
-                    onPress={this.props.middleAction.bind(this, index)}>
+                    onPress={this.props.middleAction.bind(this, data, index)}>
                     <Image style={{ width: 20, height: 20 }} source={this.props.middleImage} />
                 </TouchableOpacity>
             )
@@ -59,7 +59,7 @@ class TableView extends React.Component {
         if (cellIndex === 0) {
             return this.imageElement(rowData[0], selectedIndex)
         } else if (cellIndex === 3) {
-            return this.actionElement(selectedIndex)
+            return this.actionElement(rowData, selectedIndex)
         } else {
             return cellData
         }
@@ -112,7 +112,7 @@ class TableView extends React.Component {
                                         <TableWrapper key={index} style={styles.row}>
                                             {
                                                 rowData.map((cellData, cellIndex) => (
-                                                    <Cell key={cellIndex} data={[cellIndex === rowData.length - 1 ? this.actionElement(rowData.slice(-1)[0], index) : cellData]} textStyle={styles.text} />
+                                                    <Cell key={cellIndex} data={[cellIndex === rowData.length - 1 ? this.actionElement(rowData, index) : cellData]} textStyle={styles.text} />
                                                 ))
                                             }
                                         </TableWrapper>

@@ -232,10 +232,6 @@ function Dashboard({ route }) {
             console.log("Error getting document:", error);
         });
     }, [])
-
-    console.log("USER DATA: ", userData.user.id)
-
-
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard />
     } else {
@@ -252,7 +248,11 @@ function WebDashboard({ userData, navigation }) {
                     height: 100, width: 100, borderRadius: 50, marginBottom: 16, backgroundColor: 'rgb(174,174,178)'
                 }} source={{ uri: userData.user.imageURL }} />
                 <Text style={{ fontSize: 20, fontWeight: '500' }}>Welcome {userData.user.first_name}</Text>
+                <TouchableOpacity style={{ marginTop: 16, marginBottom: 20 }} onPress={() => navigation.navigate("Settings")}>
+                    <Text style={{ fontWeight: '500' }}>Settings</Text>
+                </TouchableOpacity>
             </View>
+
             <View style={{ flexDirection: 'column', justifyContent: 'space-around', position: "absolute", zIndex: 100, bottom: 50, left: 20 }}>
                 <TouchableOpacity style={{ marginBottom: 20 }} onPress={() => signOut(navigation)}>
                     <Text style={{ color: 'rgb(142, 142, 147)' }}>Log Out</Text>
@@ -262,7 +262,7 @@ function WebDashboard({ userData, navigation }) {
                 </TouchableOpacity>
             </View>
             <TabNavigator navigation={navigation} userID={userData.user.id} />
-        </View>
+        </View >
     )
 }
 

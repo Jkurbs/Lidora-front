@@ -26,6 +26,8 @@ import LoginScreen from "../login/Login.js";
 import DashboardScreen from "../../chefPages/dashboard/Sidebar";
 import Footer from "../../components/Footer"
 
+import SettingScreen from '../../chefPages/settings/sideBar';
+
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import "firebase/auth";
@@ -256,6 +258,7 @@ class App extends React.Component {
           }}
         >
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Settings" component={SettingScreen} />
           <Stack.Screen name="Lidora" component={HomeScreen}
             options={({ navigation, route }) => ({
               headerRight: () => (

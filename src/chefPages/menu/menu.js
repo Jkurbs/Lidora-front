@@ -48,7 +48,7 @@ class Menu extends React.Component {
     let currentComponent = this;
 
     // Fetch Current chef 
-    ref.doc(this.state.userId).collection("menu").get().then(function (querySnapshot) {
+    ref.doc(this.state.userId).collection("menu").onSnapshot(function (querySnapshot) {
       querySnapshot.forEach(function (doc) {
         const data = doc.data()
         const propertyValues = [data.imageURL, data.name, data.price, '']

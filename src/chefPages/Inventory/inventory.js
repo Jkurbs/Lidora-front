@@ -21,6 +21,7 @@ class Inventory extends React.Component {
             tableHead: ['Name', 'Quantity', 'Unit', 'Actions'],
             tableData: [],
             filteredTableData: [],
+            item: null,
             hasData: null,
             isSearching: false,
             isAlertVisible: false
@@ -31,7 +32,9 @@ class Inventory extends React.Component {
     componentDidMount() {
         let currentComponent = this;
         // Fetch Current chef 
-        ref.doc(this.state.userID).collection("inventory").get().then(function (querySnapshot) {
+        ref.doc(this.state.userID).collection("inventory").onSnapshot(function (querySnapshot) {
+            currentComponent.setState({ tableData: [] })
+
             if (querySnapshot.empty) {
                 currentComponent.setState({
                     hasData: false,
@@ -108,36 +111,43 @@ class Inventory extends React.Component {
     };
 
     // Delete menu Item 
-    deleteInventoryItem = (item) => {
-        if (this.state.data.length >= 1) {
-            this.setState(state => {
-                const data = state.data.filter(otherItem => otherItem.key !== item.key);
-                return {
-                    data,
-                    item: data[0]
-                };
-            });
-            // TODO: - Delete menu item in Firebase
-            let currentComponent = this
-            ref.doc(this.state.userID).collection("inventory").where('key', '==', item.key).get().then(function (snapshot) {
-                snapshot.forEach(function (doc) {
-                    console.log(doc.id)
-                    ref.doc(currentComponent.state.userID).collection("inventory").doc(doc.id).delete()
-                })
-            })
-        } else { return }
+    deleteInventoryItem = () => {
+
+        // TODO: - Delete menu item in Firebase
+        // let currentComponent = this
+        // ref.doc(this.state.userID).collection("inventory").where('key', '==', item.key).get().then(function (snapshot) {
+        //     snapshot.forEach(function (doc) {
+        //         console.log(doc.id)
+        //         ref.doc(currentComponent.state.userID).collection("inventory").doc(doc.id).delete()
+        //     })
+        // })
+
+        const item = this.state.item
+
+        this.setState(state => {
+            const data = state.tableData.filter(otherItem => otherItem !== item);
+            const filteredData = state.filteredTableData.filter(otherItem => otherItem !== item);
+            return {
+                tableData: data,
+                filteredTableData: filteredData
+            };
+        });
+
+        this.setState({ item: null, isAlertVisible: !this.state.isAlertVisible })
+
     };
 
     didSelectCell = (selectedIndex) => {
 
+        alert(selectedIndex)
     }
 
     leftActionSelected = (selectedIndex) => {
 
     }
 
-    middleActionSelected = (selectedIndex) => {
-        this.setState({ isAlertVisible: !this.state.isAlertVisible })
+    middleActionSelected = (item, selectedIndex) => {
+        this.setState({ item: item, isAlertVisible: !this.state.isAlertVisible })
     }
 
     rightActionSelected = (selectedIndex) => {
@@ -155,6 +165,15 @@ class Inventory extends React.Component {
             isSearching: true,
             filteredTableData: filteredData,
         });
+
+        if (filteredData.length === 0) {
+            this.setState({
+                isSearching: false,
+                filteredTableData: [
+                    ["No result ", "try something else",]
+                ],
+            });
+        }
     }
 
     render() {
@@ -183,7 +202,7 @@ class Inventory extends React.Component {
                     />
                 </ScrollView>
                 <Alert
-                    action={this.middleActionSelected}
+                    deleteAction={this.deleteInventoryItem}
                     isVisible={this.state.isAlertVisible}
                     buttonTitle1={"Delete from inventory"} />
             </View>

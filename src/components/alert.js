@@ -14,8 +14,8 @@ class Alert extends Component {
                     <Text style={styles.title}>Are you sure you want to delete this item?</Text>
                     <Text style={styles.secondaryText}>Once deleted it can’t be recovered.</Text>
                     <View style={styles.buttonContainer}>
-                        <RegularButton action={this.props.action} text={"Cancel"} />
-                        <DestructiveButton action={this.props.action} text={this.props.buttonTitle1} />
+                        <RegularButton action={this.props.isVisible} text={"Cancel"} />
+                        <DestructiveButton action={this.props.deleteAction} text={this.props.buttonTitle1} />
                     </View>
                 </View>
             </AnimatedHideView>
