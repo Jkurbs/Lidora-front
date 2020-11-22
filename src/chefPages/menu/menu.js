@@ -27,22 +27,13 @@ class Menu extends React.Component {
     super();
     this.state = {
       userId: firebase.auth().currentUser.uid,
-      mode: 'Details',
-      value: '',
-      data: [],
-      item: {},
-      ingredients: [{
-        id: '369',
-        name: "dambichfine"
-      },
-      {
-        id: '243',
-        name: "ypolo"
-      }],
-
+      ingredients: [],
       tableHead: ['Image', 'Name', 'Price', 'Actions'],
       tableData: [],
       hasData: null,
+      filteredTableData: [],
+      isSearching: false,
+      isAlertVisible: false
     };
 
     this.addMenuItem = this.addMenuItem.bind(this);
@@ -254,6 +245,15 @@ class Menu extends React.Component {
     console.log(this.state.showCalendar)
   }
 
+  search = (searchTerm) => {
+    let filteredData = this.state.tableData.filter(dataRow => dataRow[1].toLowerCase().includes(searchTerm));
+    this.setState({
+      isSearching: true,
+      filteredTableData: filteredData,
+    });
+  }
+
+
 
   render() {
     return (
@@ -262,15 +262,15 @@ class Menu extends React.Component {
         <HeaderBar
           title={"Menu"}
           subtitle={this.state.tableData.length}
-          search={""}
-          isCustomerOrders={false}
+          search={this.search.bind(this)}
+          isSearchEnabled={true}
           show={this.showModal.bind(this)}
         />
 
         <ScrollView>
           <TableView
             tableHead={this.state.tableHead}
-            tableData={this.state.tableData}
+            tableData={this.state.isSearching ? this.state.filteredTableData : this.state.tableData}
             hasData={this.state.hasData}
             hasImage={true}
             didSelectCell={this.didSelectCell.bind(this)}

@@ -7,6 +7,7 @@ import "firebase/firestore";
 
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
+import Alert from '../../components/alert'
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
@@ -17,13 +18,12 @@ class Inventory extends React.Component {
         super();
         this.state = {
             userID: firebase.auth().currentUser.uid,
-            mode: 'Add',
-            value: '',
-            data: [],
-            item: {},
             tableHead: ['Name', 'Quantity', 'Unit', 'Actions'],
             tableData: [],
+            filteredTableData: [],
             hasData: null,
+            isSearching: false,
+            isAlertVisible: false
         };
         this.addInventoryItem = this.addInventoryItem.bind(this);
     }
@@ -105,7 +105,6 @@ class Inventory extends React.Component {
                 ref.doc(currentComponent.state.userID).collection("inventory").doc(doc.id).update(item)
             })
         })
-
     };
 
     // Delete menu Item 
@@ -138,7 +137,7 @@ class Inventory extends React.Component {
     }
 
     middleActionSelected = (selectedIndex) => {
-
+        this.setState({ isAlertVisible: !this.state.isAlertVisible })
     }
 
     rightActionSelected = (selectedIndex) => {
@@ -150,21 +149,28 @@ class Inventory extends React.Component {
         console.log(this.state.showCalendar)
     }
 
+    search = (searchTerm) => {
+        let filteredData = this.state.tableData.filter(dataRow => dataRow[0].toLowerCase().includes(searchTerm));
+        this.setState({
+            isSearching: true,
+            filteredTableData: filteredData,
+        });
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <HeaderBar
                     title={"Inventory"}
                     subtitle={this.state.tableData.length}
-                    search={""}
-                    isCustomerOrders={false}
+                    search={this.search.bind(this)}
+                    isSearchEnabled={true}
                     show={this.showModal.bind(this)}
                 />
-
                 <ScrollView>
                     <TableView
                         tableHead={this.state.tableHead}
-                        tableData={this.state.tableData}
+                        tableData={this.state.isSearching ? this.state.filteredTableData : this.state.tableData}
                         hasData={this.state.hasData}
                         hasImage={false}
                         didSelectCell={this.didSelectCell.bind(this)}
@@ -172,10 +178,14 @@ class Inventory extends React.Component {
                         middleImage={require('../../assets/icon/remove-100.png')}
                         rightImage={require('../../assets/icon/info-100.png')}
                         leftAction={this.leftActionSelected.bind(this)}
-                        middleAction={this.leftActionSelected.bind(this)}
+                        middleAction={this.middleActionSelected.bind(this)}
                         rightAction={this.rightActionSelected.bind(this)}
                     />
                 </ScrollView>
+                <Alert
+                    action={this.middleActionSelected}
+                    isVisible={this.state.isAlertVisible}
+                    buttonTitle1={"Delete from inventory"} />
             </View>
         );
     }

@@ -29,11 +29,13 @@ import Footer from "../../components/Footer"
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import "firebase/auth";
-
+import ActivityIndicator from '../../components/activityIndicator'
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
 const scale = windowWidth / 400;
+
+var db = firebase.firestore();
 
 export function normalize(size) {
   const newSize = size * scale;
@@ -80,17 +82,19 @@ const Item = ({ title, image }) => (
   </View>
 );
 
-function HomeScreen({ navigation }) {
+class HomeScreen extends React.Component {
 
-  // Properties 
-  const [value, setValue] = useState("Looking for your favorite food?");
-  const [messageValue, setMessageValue] = useState(
-    "Join our waiting list And follow us on Instagram to stay updated."
-  );
-  const [customerEmail, setText] = useState("");
+  constructor() {
+    super()
+    this.state = {
+      titleText: "Looking for your favorite food?",
+      secondaryText: "Join our waiting list And follow us on Instagram to stay updated.",
+      customerEmail: ""
+    }
+  }
 
   // Function to Add potential user to email list
-  const addUser = async () => {
+  addUser = async () => {
     var db = firebase.firestore();
     try {
       const potentialUserDoc = await db.collection("potential_users").add({
@@ -102,7 +106,7 @@ function HomeScreen({ navigation }) {
     }
   };
 
-  const sendToEmailList = () => {
+  sendToEmailList = () => {
     const newCustomerTitle = "Thank you!";
     const newMessage = "We'll keep you updated.";
     setValue(newCustomerTitle);
@@ -110,7 +114,7 @@ function HomeScreen({ navigation }) {
     addUser();
   };
 
-  const renderFeaturesItem = ({ item }) => (
+  renderFeaturesItem = ({ item }) => (
     <FeaturesItem
       image={item.image}
       title={item.title}
@@ -118,69 +122,68 @@ function HomeScreen({ navigation }) {
     />
   );
 
-  const renderItem = ({ item }) => (
+  renderItem = ({ item }) => (
     <Item title={item.title} image={item.image} />
   );
 
-  return (
+  render() {
+    return (
 
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
-
-      {/* Provider section */}
-
-      <ImageBackground resizeMode={'cover'} style={styles.backgroundImage} source={windowWidth < phoneMaxWidth ? require("../../assets/img/cook.svg") : require("../../assets/img/test.svg")} >
-        <View style={styles.secondaryView}>
-          <View style={{ marginTop: 50, marginBottom: 50, alignItems: "center", width: 'auto', height: '50%', }}>
-            <Text style={{ width: windowWidth, textAlign: "center", color: "black", fontSize: normalize(30), fontWeight: "500" }}>
-              Ready to start cooking {"\n"} and selling?
-              </Text>
-            <Text style={{ marginTop: 20, textAlign: "center", color: "black", fontSize: windowWidth < phoneMaxWidth ? 14 : 20 }}>
-              Apply now to join the team
-              </Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Apply")}
-              style={{
-                alignItems: "center",
-                marginTop: 20,
-                width: 150,
-                height: 45,
-                borderRadius: 25,
-                backgroundColor: "black",
-              }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  margin: 12.5,
-                  textAlign: "center",
-                  fontWeight: "500",
-                }}>
-                Apply now
+      <SafeAreaView style={styles.container} >
+        <StatusBar style="auto" />
+        {/* Provider section */}
+        <ImageBackground resizeMode={'cover'} style={styles.backgroundImage} source={windowWidth < phoneMaxWidth ? require("../../assets/img/cook.svg") : require("../../assets/img/test.svg")} >
+          <View style={styles.secondaryView}>
+            <View style={{ marginTop: 50, marginBottom: 50, alignItems: "center", width: 'auto', height: '50%', }}>
+              <Text style={{ width: windowWidth, textAlign: "center", color: "black", fontSize: normalize(30), fontWeight: "500" }}>
+                Ready to start cooking {"\n"} and selling?
                 </Text>
-            </TouchableOpacity>
+              <Text style={{ marginTop: 20, textAlign: "center", color: "black", fontSize: windowWidth < phoneMaxWidth ? 14 : 20 }}>
+                Apply now to join the team
+                </Text>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate("Apply")}
+                style={{
+                  alignItems: "center",
+                  marginTop: 20,
+                  width: 150,
+                  height: 45,
+                  borderRadius: 25,
+                  backgroundColor: "black",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    margin: 12.5,
+                    textAlign: "center",
+                    fontWeight: "500",
+                  }}>
+                  Apply now
+                  </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </ImageBackground >
 
-      </ImageBackground>
-
-      {/* Provide section */}
-      <View style={{ marginTop: 60 }}>
-        <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
-          What we provide
-            </Text>
-        <FlatList
-          style={{ marginTop: 20 }}
-          data={FEATURESDATA}
-          renderItem={renderFeaturesItem}
-          keyExtractor={(item) => item.id}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
-      <Footer />
-    </SafeAreaView>
-  );
+        {/* Provide section */}
+        < View style={{ marginTop: 60 }}>
+          <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
+            What we provide
+              </Text>
+          <FlatList
+            style={{ marginTop: 20 }}
+            data={FEATURESDATA}
+            renderItem={this.renderFeaturesItem}
+            keyExtractor={(item) => item.id}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          />
+        </View >
+        <Footer />
+      </SafeAreaView >
+    );
+  }
 }
 
 const Stack = createStackNavigator();
@@ -197,28 +200,32 @@ const MyTheme = {
   },
 };
 
-function App() {
-  // function Platform
-  // protected routes?
-
-  var db = firebase.firestore();
-
-  const [userLoggedIn, setIsUserLoggedIn] = React.useState(false)
-  const [userData, setUserData] = React.useState({
-    user: [],
-    userID: ""
-  })
+class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      userLoggedIn: null,
+      userData: {
+        user: [],
+        userID: ""
+      }
+    }
+  }
 
   // Verify if user is logged in
-  React.useEffect(() => {
+  componentWillMount() {
+    const currentComponent = this
     unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
-        setIsUserLoggedIn(true)
+        currentComponent.setState({ userLoggedIn: true })
+
         db.collection('chefs').doc(user.uid).get().then(function (doc) {
           if (doc.exists) {
-            setUserData({
-              user: doc.data(),
-              userID: user.uid
+            currentComponent.setState({
+              userData: {
+                user: doc.data(),
+                userID: user.uid
+              }
             })
           } else {
             console.log("No such document!");
@@ -229,64 +236,70 @@ function App() {
         return
       } else {
         // No user is signed in.
-        setIsUserLoggedIn(false)
+        currentComponent.setState({ userLoggedIn: false })
       }
     })
-    // unsubscribe()
-  })
+  }
 
-  return (
-    <NavigationContainer theme={MyTheme}>
-      <Stack.Navigator
-        initialRouteName="Lidora"
-        screenOptions={{
-          headerMode: "none",
-          headerTransparent: true,
-        }}
-      >
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Lidora" component={HomeScreen}
-          options={({ navigation, route }) => ({
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  /* 1. Navigate to the Details route with params */
-                  navigation.navigate(userLoggedIn ? 'Dashboard' : 'Login',
-                    {
-                      navigation: navigation,
-                      userID: userData.userID
-                    });
-                }}
-                style={{
-                  justifyContent: 'center',
-                  alignContent: 'center', backgroundColor: 'white', marginRight: 16, width: 90, height: 40, borderRadius: 20, shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 3,
-                  },
-                  shadowOpacity: 0.29,
-                  shadowRadius: 4.65,
-                  elevation: 7,
-                }}
-              >
-                {userLoggedIn ? (
-                  <Text style={{ alignSelf: 'center', fontSize: 12 }}>{'Dashboard'}
-                    <Entypo name="chevron-small-right" size={12} color="black" />
-                  </Text>
+  componentWillUnmount() {
+    unsubscribe()
+  }
 
-                ) : (
-                    <Text style={{ alignSelf: 'center', fontSize: 14 }}>{'Login'}</Text>
-                  )}
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={DashboardScreen} />
-        <Stack.Screen name="Apply" component={ApplyScreen} />
-        <Stack.Screen name="Legal" component={LegalScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+  render() {
+    return (
+      <NavigationContainer theme={MyTheme}>
+        <Stack.Navigator
+          initialRouteName="Lidora"
+          screenOptions={{
+            headerMode: "none",
+            headerTransparent: true,
+          }}
+        >
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Lidora" component={HomeScreen}
+            options={({ navigation, route }) => ({
+              headerRight: () => (
+                <TouchableOpacity
+                  onPress={() => {
+                    /* 1. Navigate to the Details route with params */
+                    navigation.navigate(this.state.userLoggedIn ? 'Dashboard' : 'Login',
+                      {
+                        navigation: navigation,
+                        userID: this.state.userData.userID
+                      });
+                  }}
+                  style={{
+                    justifyContent: 'center',
+                    alignContent: 'center', backgroundColor: 'white', marginRight: 16, width: 90, height: 40, borderRadius: 20, shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 3,
+                    },
+                    shadowOpacity: 0.29,
+                    shadowRadius: 4.65,
+                    elevation: 7,
+                  }}
+                >
+
+                  {this.state.userLoggedIn ? (
+                    <Text style={{ alignSelf: 'center', fontSize: 12 }}>{'Dashboard'}
+                      <Entypo name="chevron-small-right" size={12} color="black" />
+                    </Text>
+                  ) : (
+                      <Text style={{ alignSelf: 'center', fontSize: 14 }}>{'Login'}</Text>
+                    )}
+                  {/* <ActivityIndicator style={{ position: 'absolute' }} size={"small"} animating={!this.state.userLoggedIn} color={"gray"} /> */}
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={DashboardScreen} />
+          <Stack.Screen name="Apply" component={ApplyScreen} />
+          <Stack.Screen name="Legal" component={LegalScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
 }
 
 export default registerRootComponent(App);

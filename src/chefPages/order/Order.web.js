@@ -1,76 +1,113 @@
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import { CalendarList } from 'react-native-calendars';
 import * as React from 'react';
-import { Image, Text, View, SafeAreaView, ScrollView, Dimensions } from 'react-native';
+import { View, ScrollView } from 'react-native';
+import styles from "./orders.styles";
 
-import CustomHeader from '../../components/customHeader'
-import { FlatList } from 'react-native-gesture-handler';
-import { DATA } from './order.data.js';
+import TableView from '../../components/tableView';
+import HeaderBar from '../../components/headerBar';
+import Alert from '../../components/alert'
 
-const {
-    width: windowWidth,
-    height: windowHeight,
-} = Dimensions.get('window');
+import firebase from "../../firebase/Firebase";
+import "firebase/firestore";
 
+var db = firebase.firestore();
+const ref = db.collection('chefs')
 
-const Item = ({ imageURL, name }) => (
-    <View style={{ flexDirection: 'row', height: 70 }}>
-        <Text style={{ fontSize: 16, fontWeight: '500' }}>{name}</Text>
-    </View>
-);
-
-class Order extends React.Component {
+class OrdersScreen extends React.Component {
     constructor() {
         super();
         this.state = {
-            // data: data,
-            // item: data[0],
-            day: Date()
+            userID: firebase.auth().currentUser.uid,
+            tableHead: ['Order Id', 'Total', 'Ordered date', 'Delivery Date', 'Actions'],
+            tableData: [
+                ["#1", "$199", "11/18/2020", "11/19/2020", ""],
+                ["#1", "$199", "11/18/2020", "11/19/2020", ""]
+            ],
+            hasData: true,
+            isAlertVisible: false,
+            showCalendar: false
         };
+    }
 
-        this.renderItem = this.renderItem.bind(this);
-        this.fetchOrders = this.fetchOrders.bind(this);
+    // componentDidMount() {
+    //     let currentComponent = this;
+    //     // Fetch Current chef 
+    //     ref.doc(this.state.userID).collection("incoming_sales").get().then(function (querySnapshot) {
+    //         if (querySnapshot.empty) {
+    //             currentComponent.setState({
+    //                 hasData: false,
+    //             });
+    //         } else {
+    //             querySnapshot.forEach(function (doc) {
+    //                 const data = doc.data()
+    //                 const propertyValues = [data.name, data.quantity, data.unit, '', '']
+    //                 let currentTableData = [...currentComponent.state.tableData];
+    //                 currentTableData.push(propertyValues);
+    //                 currentComponent.setState({
+    //                     tableData: currentTableData,
+    //                     hasData: true,
+    //                 });
+    //             });
+    //         }
+    //     });
+    // }
+
+
+    didSelectCell = (selectedIndex) => {
 
     }
 
-    renderItem = ({ item }) => (
-        <Item imageURL={item.imageURL} name={item.name} />
-    );
-
-    fetchOrders(day) {
-        alert(day.dateString)
+    leftActionSelected = (selectedIndex) => {
 
     }
+
+    middleActionSelected = (selectedIndex) => {
+        this.setState({ isAlertVisible: !this.state.isAlertVisible })
+    }
+
+    rightActionSelected = (selectedIndex) => {
+
+    }
+
+    showModal = () => {
+        this.setState({ showCalendar: !this.state.showCalendar });
+        console.log(this.state.showCalendar)
+    }
+
+
+    // data = this.state.tableData.filter(data => {
+    //     return data.nama.toLowerCase().match(searchText);
+    // });
 
     render() {
         return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F8FA' }}>
-                {/* <CustomHeader title='Orders' isHome={true} /> */}
-                <View style={{ width: '60%' }}>
-                    <CalendarList
-                        horizontal={true}
-                        pagingEnabled={false}
-                        calendarWidth={500}
-                        calendarHeight={300}
-                        theme={{
-                            selectedDotColor: '#ffffff',
-                            arrowColor: 'orange',
-                        }}
-
-                        // onDayPress={(day) => { this.fetchOrders.bind(this, day) }}
-
-                        // onClick={(day) => this.handleSort(column)}
-
-                        onDayPress={(day) => this.fetchOrders(day)}
+            <View style={styles.container}>
+                <HeaderBar
+                    title={"Customer orders"}
+                    subtitle={this.state.tableData.length}
+                    search={console.log("test")}
+                    isSearchEnabled={false}
+                    show={this.showModal.bind(this)}
+                />
+                <ScrollView>
+                    <TableView
+                        tableHead={this.state.tableHead}
+                        tableData={this.state.tableData}
+                        hasData={this.state.hasData}
+                        hasImage={false}
+                        didSelectCell={this.didSelectCell.bind(this)}
+                        middleImage={require('../../assets/icon/remove-100.png')}
+                        rightImage={require('../../assets/icon/info-100.png')}
+                        middleAction={this.middleActionSelected.bind(this)}
+                        rightAction={this.rightActionSelected.bind(this)}
                     />
-                    <FlatList style={{ marginTop: 50, marginLeft: 16 }}
-                        data={DATA}
-                        renderItem={this.renderItem}
-                        keyExtractor={item => item.id}
-                    />
-                </View>
-            </SafeAreaView>
+                </ScrollView>
+                <Alert
+                    action={this.middleActionSelected}
+                    isVisible={this.state.isAlertVisible}
+                    buttonTitle1={"Delete from inventory"} />
+            </View>
         );
     }
 }
-
-export default Order;
+export default OrdersScreen;

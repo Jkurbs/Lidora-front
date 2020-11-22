@@ -3,7 +3,60 @@ import * as React from 'react';
 import { TouchableOpacity, Image, Text, View, StyleSheet, TextInput } from 'react-native';
 import { block } from 'react-native-reanimated';
 import { render } from 'react-native-web';
+
+import SearchTextField from '../components/searchTextField'
 import MainButton from './buttons/mainButton';
+import DropDown from '../components/dropDown'
+import { Entypo } from '@expo/vector-icons';
+
+
+class HeaderBar extends React.Component {
+
+    showModal = () => {
+        this.props.show(true)
+    }
+
+    hideModal = () => {
+        this.setState({ showCalendar: false });
+    }
+
+    buttonPressed = () => {
+        alert("HeaderBarbutton pressed")
+    }
+
+    //INPUT SWITCH - SWITCHES BETWEEN REGULAR SEARCH INPUT AND CUSTOMER INPUT
+    InputSwitch = () => {
+        if (this.props.isSearchEnabled) {
+            return (
+                <View style={styles.rightSide}>
+                    <View style={styles.rightInput}>
+                        <SearchTextField
+                            placeholder={'Search for an Item here'}
+                            onChangeText={(text) => this.props.search(text)}
+                        />
+                        <MainButton action={() => { this.buttonPressed() }} text={'Add'}></MainButton>
+                    </View>
+                </View>
+            )
+        } else {
+            return (
+                <DropDown />
+            )
+        }
+    }
+
+    render() {
+        return (
+            <View style={styles.headerBar}>
+                <View style={styles.titleView}>
+                    <Text style={styles.title}>{this.props.title}</Text>
+                    <Text style={styles.subtitle}>{this.props.subtitle} Items</Text>
+                </View>
+                <this.InputSwitch />
+            </View>
+        )
+    }
+}
 
 const styles = StyleSheet.create({
 
@@ -16,7 +69,14 @@ const styles = StyleSheet.create({
     subtitle: { textAlign: 'left', fontSize: 14, fontWeight: '400', color: '#8E8E93' },
 
     rightInput: {
-        paddingTop: '23px'
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+    },
+
+    rightSide: {
+        marginRight: '16px',
+        justifyContent: 'center',
+        width: 300
     },
 
     formInput: {
@@ -34,125 +94,28 @@ const styles = StyleSheet.create({
 
     },
 
-    searchIcon: {
-        position: 'absolute',
-        top: '38px',
-        left: '7px',
-        fontSize: '15px',
-        width: 18,
-        height: 18,
-        tintColor: 'gray',
-        transform: 'scaleX(-1)'
-    },
-
     button: {
-        paddingTop: '34px',
         paddingLeft: '17px'
     },
 
-    rightSide: {
-        paddingRight: '13px',
-        flexDirection: 'row'
-    },
 
     orderInput: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginRight: 20
     },
 
     orderText: {
         color: '#00CF46',
         fontWeight: '500',
-        fontSize: '15px',
-        paddingRight: '30px'
+        fontSize: '14px',
     },
 
     orderIcon: {
-        position: 'absolute',
-        top: '1px',
-        right: '6px',
+        marginTop: '3px',
         fontSize: '15px',
-        width: 20,
-        height: 20,
-        tintColor: '#00CF46',
     },
-
-
 })
 
-
-
-
-
-class HeaderBar extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            title: this.props.title,
-            subtitle: this.props.subtitle,
-            search: this.props.search,
-            isCustomerOrders: this.props.isCustomerOrders,
-        }
-    }
-
-    showModal = () => {
-        this.props.show(true)
-    }
-
-    hideModal = () => {
-        this.setState({ showCalendar: false });
-    }
-
-    buttonPressed = () => {
-        alert("HeaderBarbutton pressed")
-    }
-
-    //INPUTSWITCH - SWITCHES BETWEEN REGULAR SEARCHINPUT AND CUSTOMERINPUT
-    InputSwitch = () => {
-        if (this.state.isCustomerOrders) {
-            return (
-                <View style={styles.rightSide}>
-                    <TouchableOpacity style={{ height: '24px', marginTop: '34px' }} onPress={this.showModal}>
-                        <View style={styles.orderInput} >
-                            <Image style={styles.orderIcon} source={require('../assets/icon/chevron-down.png')} />
-                            <Text style={styles.orderText} >Order For Today</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>)
-        } else {
-            return (
-                <View style={styles.rightSide}>
-                    <View style={styles.rightInput}>
-                        <Image style={styles.searchIcon}
-                            source={require('../assets/icon/search.png')}
-                        />
-                        <TextInput style={styles.formInput}
-                            placeholder={'Search for an Item here'}
-                            onChangeText={(text) => this.state.search = text}
-                            defaultValue={""}
-                        />
-
-                    </View>
-                    <View style={styles.button}>
-                        <MainButton action={() => { this.buttonPressed() }} text={'Add'}></MainButton>
-                    </View>
-                </View>
-            )
-        }
-    }
-    ///INPUTSWITCH END
-
-
-    render() {
-        return (
-            <View style={styles.headerBar}>
-                <View style={styles.titleView}>
-                    <Text style={styles.title}>{this.state.title}</Text>
-                    <Text style={styles.subtitle}>{this.state.subtitle} Items</Text>
-                </View>
-                <this.InputSwitch />
-            </View>
-        )
-    }
-}
 
 export default HeaderBar;

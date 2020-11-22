@@ -56,10 +56,10 @@ function TabNavigator({ navigation, userID }) {
                 showLabel: true,
                 tabWidth: 200,
                 header: false,
-                
+
                 headerStyle: {
                     backgroundColor: "#f4511e",
-                    color:'green'
+                    color: 'green'
                 },
             }}
         >
@@ -100,15 +100,13 @@ function TabNavigator({ navigation, userID }) {
                     headerTintColor: "#fff",
                     headerTitleStyle: {
                         fontWeight: "regular",
-                        
                     },
-                    color:'green'
-                    
+                    color: 'green'
                 }}
                 name="Inventory"
                 component={InventoryStack}
             ></Tab.Screen>
-            {/* <Tab.Screen
+            <Tab.Screen
                 options={{
                     title: todayDate,
                     tabBarLabel: "Customer orders",
@@ -120,7 +118,7 @@ function TabNavigator({ navigation, userID }) {
                 }}
                 name="Orders"
                 component={OrdersStack}
-            /> */}
+            />
             <Tab.Screen
                 options={{
                     title: todayDate,

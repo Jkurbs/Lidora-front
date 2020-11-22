@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-import { registerRootComponent } from "expo";
 
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import ActivityIndicator from '../components/activityIndicator'
@@ -18,6 +17,8 @@ class TableView extends React.Component {
             source={data}
         />
     );
+
+
 
     actionElement = (index) => {
 
@@ -49,7 +50,7 @@ class TableView extends React.Component {
             )
         }
 
-        return <View style={{ backgroundColor: '#EEEEEE', borderRadius: 5, height: 29, width: 108, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', padding: 8 }}>
+        return <View style={{ backgroundColor: '#EEEEEE', borderRadius: 5, height: 40, width: 110, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', padding: 8 }}>
             {buttons}
         </View>
     };
@@ -67,8 +68,9 @@ class TableView extends React.Component {
 
     render() {
         if (this.props.hasData === null) {
-            return <ActivityIndicator size={"small"} animating={!this.props.hasData} color={"gray"} />
-
+            return (
+                <ActivityIndicator size={"small"} animating={!this.props.hasData} color={"gray"} />
+            )
         } else if (this.props.hasData === false) {
             return (
                 <View style={styles.container}>
@@ -110,7 +112,7 @@ class TableView extends React.Component {
                                         <TableWrapper key={index} style={styles.row}>
                                             {
                                                 rowData.map((cellData, cellIndex) => (
-                                                    <Cell key={cellIndex} data={[cellIndex === 3 ? this.actionElement(rowData.slice(-1)[0], index) : cellData]} textStyle={styles.text} />
+                                                    <Cell key={cellIndex} data={[cellIndex === rowData.length - 1 ? this.actionElement(rowData.slice(-1)[0], index) : cellData]} textStyle={styles.text} />
                                                 ))
                                             }
                                         </TableWrapper>
@@ -130,7 +132,8 @@ const styles = StyleSheet.create({
     container: { flex: 1, padding: 16, paddingTop: 30 },
     table: {
         width: '100%',
-        position: 'relative', backgroundColor: 'white', borderRadius: 5, shadowColor: "#000",
+        position: 'relative', backgroundColor: 'white', borderRadius: 5,
+        shadowColor: "#000",
         shadowColor: "#000",
         shadowOpacity: 0.13,
         shadowRadius: 10.68,
