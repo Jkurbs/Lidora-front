@@ -248,7 +248,7 @@ function WebDashboard({ userData, navigation }) {
                     height: 100, width: 100, borderRadius: 50, marginBottom: 16, backgroundColor: 'rgb(174,174,178)'
                 }} source={{ uri: userData.user.imageURL }} />
                 <Text style={{ fontSize: 20, fontWeight: '500' }}>Welcome {userData.user.first_name}</Text>
-                <TouchableOpacity style={{ marginTop: 16, marginBottom: 20 }} onPress={() => navigation.navigate("Settings")}>
+                <TouchableOpacity style={{ marginTop: 16, marginBottom: 20 }} onPress={() => navigation.navigate("Settings", navigation = { navigation })}>
                     <Text style={{ fontWeight: '500' }}>Settings</Text>
                 </TouchableOpacity>
             </View>

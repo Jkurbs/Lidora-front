@@ -138,7 +138,6 @@ class Inventory extends React.Component {
     };
 
     didSelectCell = (selectedIndex) => {
-
         alert(selectedIndex)
     }
 
@@ -150,13 +149,16 @@ class Inventory extends React.Component {
         this.setState({ item: item, isAlertVisible: !this.state.isAlertVisible })
     }
 
+    cancelAlert = () => {
+        this.setState({ isAlertVisible: !this.state.isAlertVisible })
+    }
+
     rightActionSelected = (selectedIndex) => {
 
     }
 
     showModal = () => {
         this.setState({ showCalendar: !this.state.showCalendar });
-        console.log(this.state.showCalendar)
     }
 
     search = (searchTerm) => {
@@ -202,7 +204,8 @@ class Inventory extends React.Component {
                     />
                 </ScrollView>
                 <Alert
-                    deleteAction={this.deleteInventoryItem}
+                    cancelAction={this.cancelAlert.bind(this)}
+                    deleteAction={this.deleteInventoryItem.bind(this)}
                     isVisible={this.state.isAlertVisible}
                     buttonTitle1={"Delete from inventory"} />
             </View>

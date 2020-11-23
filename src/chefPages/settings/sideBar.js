@@ -82,18 +82,21 @@ function EditProfileStack() {
 function Dashboard({ route }) {
 
     const phoneMaxWidth = 575.98
+    const { navigation } = route.params;
+
 
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard />
     } else {
-        return <WebDashboard />
+        return <WebDashboard navigation={navigation} />
     }
 }
 
 
-function WebDashboard({ userData, navigation }) {
+function WebDashboard({ navigation }) {
     return (
-        <View style={{ borderRadius: 10, marginTop: 50, height: '100%', width: '100%', alignSelf: 'center' }}>
+        <View style={{}}>
+            <Text onPress={() => navigation.navigate("Dashboard", navigation = { navigation })}>Back</Text>
             <View style={{ borderRadius: 10, marginTop: 50, height: '80%', width: '80%', alignSelf: 'center' }}>
                 <TabNavigator />
             </View>

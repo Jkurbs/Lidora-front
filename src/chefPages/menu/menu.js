@@ -1,14 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React from "react";
 import styles from "./menu.styles";
 import {
   View,
-  FlatList,
-  Text,
   ScrollView,
-  TouchableOpacity
 } from "react-native";
-
-import { Ionicons } from '@expo/vector-icons';
 
 import firebase from "../../firebase/Firebase";
 import "firebase/auth";
@@ -16,8 +11,7 @@ import "firebase/firestore";
 
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
-import MenuItemView from './menuItemView';
-import MenuDetailsView from "./menuDetailsView";
+import Alert from '../../components/alert'
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
@@ -30,6 +24,7 @@ class Menu extends React.Component {
       ingredients: [],
       tableHead: ['Image', 'Name', 'Price', 'Actions'],
       tableData: [],
+      item: null,
       hasData: null,
       filteredTableData: [],
       isSearching: false,
@@ -46,8 +41,6 @@ class Menu extends React.Component {
   componentDidMount() {
 
     let currentComponent = this;
-
-    // Fetch Current chef 
     ref.doc(this.state.userId).collection("menu").onSnapshot(function (querySnapshot) {
       querySnapshot.forEach(function (doc) {
         const data = doc.data()
@@ -75,10 +68,7 @@ class Menu extends React.Component {
       })
       console.log("gradients", currentComponent.state.ingredients)
     });
-
   }
-
-
 
 
   // Add new menu item
@@ -184,7 +174,6 @@ class Menu extends React.Component {
           console.log("File available at", downloadURL);
           ref.doc(currentComponent.state.userId).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
             snapshot.forEach(function (doc) {
-              console.log(doc.id)
               ref.doc(currentComponent.state.userId).collection("menu").doc(doc.id).update(
                 {
                   imageURL: downloadURL
@@ -195,33 +184,38 @@ class Menu extends React.Component {
         });
       })
     }
-
   };
 
   // Delete menu Item 
-  deleteMenuItem = (item) => {
-    if (item.key === 1) { return }
+  deleteMenuItem = () => {
+
+    const item = this.state.item
+
     this.setState(state => {
-      const data = state.data.filter(otherItem => otherItem.key !== item.key);
+      const data = state.tableData.filter(otherItem => otherItem !== item);
+      const filteredData = state.filteredTableData.filter(otherItem => otherItem !== item);
       return {
-        data,
-        item: data[0]
+        tableData: data,
+        filteredTableData: filteredData
       };
     });
+
+    this.setState({ item: null, isAlertVisible: !this.state.isAlertVisible })
+
     // Delete menu item in Firebase
-    let currentComponent = this
-    ref.doc(this.state.userId).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
-      snapshot.forEach(function (doc) {
-        console.log(doc.id)
-        ref.doc(currentComponent.state.userId).collection("menu").doc(doc.id).delete()
-      })
-    })
+    // let currentComponent = this
+    // ref.doc(this.state.userId).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
+    //   snapshot.forEach(function (doc) {
+    //     console.log(doc.id)
+    //     ref.doc(currentComponent.state.userId).collection("menu").doc(doc.id).delete()
+    //   })
+    // })
 
     // Delete image from storage
-    if (item.image != null) {
-      var storage = firebase.storage().ref(item.image.name)
-      storage.delete(item.image.name)
-    }
+    // if (item.image != null) {
+    //   var storage = firebase.storage().ref(item.image.name)
+    //   storage.delete(item.image.name)
+    // }
   };
 
   didSelectCell = (selectedIndex) => {
@@ -232,8 +226,12 @@ class Menu extends React.Component {
 
   }
 
-  middleActionSelected = (selectedIndex) => {
+  middleActionSelected = (item, selectedIndex) => {
+    this.setState({ item: item, isAlertVisible: !this.state.isAlertVisible })
+  }
 
+  cancelAlert = () => {
+    this.setState({ isAlertVisible: !this.state.isAlertVisible })
   }
 
   rightActionSelected = (selectedIndex) => {
@@ -252,8 +250,6 @@ class Menu extends React.Component {
       filteredTableData: filteredData,
     });
   }
-
-
 
   render() {
     return (
@@ -278,10 +274,16 @@ class Menu extends React.Component {
             middleImage={require('../../assets/icon/remove-100.png')}
             rightImage={require('../../assets/icon/info-100.png')}
             leftAction={this.leftActionSelected.bind(this)}
-            middleAction={this.leftActionSelected.bind(this)}
+            middleAction={this.middleActionSelected.bind(this)}
             rightAction={this.rightActionSelected.bind(this)}
           />
         </ScrollView>
+
+        <Alert
+          cancelAction={this.cancelAlert.bind(this)}
+          deleteAction={this.deleteMenuItem.bind(this)}
+          isVisible={this.state.isAlertVisible}
+          buttonTitle1={"Delete from menu"} />
       </View>
 
     )
