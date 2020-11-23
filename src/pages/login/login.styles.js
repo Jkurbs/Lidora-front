@@ -31,6 +31,7 @@ export default StyleSheet.create({
 
   formContainer: {
     // width: windowWidth < phoneMaxWidth ? '50%' : '40%',
+    marginTop: 50,
     height: 500,
     padding: 0,
     borderRadius: 8.0,

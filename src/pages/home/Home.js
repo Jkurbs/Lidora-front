@@ -26,7 +26,7 @@ import LoginScreen from "../login/Login.js";
 import DashboardScreen from "../../chefPages/dashboard/Sidebar";
 import Footer from "../../components/Footer"
 
-import SettingScreen from '../../chefPages/settings/sideBar';
+import SettingScreen from '../../chefPages/settings/settingsSideBar';
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";

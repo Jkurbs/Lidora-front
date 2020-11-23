@@ -1,62 +1,36 @@
-import React, { useState, useCallback, useEffect } from "react";
-import styles from "../support/support.styles";
+import React from "react";
+import styles from './editProfile.styles';
 import {
     View,
     TextInput,
     TouchableOpacity,
-    Text,
-    Image,
-    Alert,
-    Button,
-    RecyclerViewBackedScrollView,
+    Text
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import firebase from "../../firebase/Firebase";
+import firebase from "../../../firebase/Firebase";
 import "firebase/firestore";
 import "firebase/auth";
 
 
-class SupportView extends React.Component {
+class EditProfileView extends React.Component {
     constructor() {
         super();
         this.state = {
-            message: 'Welcome to Lidora support',
-            subject: null,
-            category: 'Report a Bug',
-            description: null,
+
         };
     }
-
-
 
     render() {
         const user = firebase.auth().currentUser;
         const sendTicket = async () => {
 
-            if (this.state.description === null) {
-                alert("Please add a description.")
-                return
-            }
-            var db = firebase.firestore();
-            try {
-                const potentialUserDoc = await db.collection("support").add({
-                    email_address: user.email,
-                    subject: this.state.subject,
-                    category: this.state.category,
-                    description: this.state.description,
-                });
-                this.setState({ message: "Thank you, we'll get in touch with you soon" })
-                return;
-            } catch (error) {
-                console.log(error);
-            }
+
         };
 
 
         return (
             <View style={styles.container}>
                 <View style={styles.itemContainer}>
-                    <Text style={{ fontSize: 32, fontWeight: '500' }}>{this.state.message}</Text>
                     <View style={{ marginTop: 20 }} >
                         <View style={styles.inputContainer}>
                             <Text style={styles.formTitle}>Subject</Text>
@@ -122,4 +96,4 @@ class SupportView extends React.Component {
     }
 }
 
-export default SupportView;
+export default EditProfileView;

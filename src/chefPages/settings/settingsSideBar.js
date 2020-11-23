@@ -2,7 +2,7 @@ import * as React from "react";
 import { Image, Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import EditProfileScreen from './editProfile';
+import EditProfileScreen from './EditProfile/editProfile';
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
@@ -23,28 +23,21 @@ function TabNavigator({ navigation, userID }) {
 
     return (
         <Tab.Navigator
-            navigationOptions={{
-                // Hide the header from AppNavigator stack
-                header: false,
-            }}
             tabBarOptions={{
                 activeTintColor: "#34C759",
                 inactiveTintColor: "black",
                 tabStyle: { marginBottom: 20 },
-
                 style: {
                     width: 200,
-                    paddingTop: 50,
+                    paddingTop: 30,
                 },
                 iconHorizontal: true,
                 labelSize: 13,
                 showLabel: true,
                 tabWidth: 200,
-                header: false,
-
                 headerStyle: {
                     backgroundColor: "#f4511e",
-                    color: 'green'
+                    // color: 'green'
                 },
             }}
         >
@@ -52,7 +45,7 @@ function TabNavigator({ navigation, userID }) {
                 options={{
                     title: "Edit Profile",
                     tabBarLabel: "Edit Profile",
-                    backgroundColor: "#f4511e",
+                    // backgroundColor: "#f4511e",
                     headerTintColor: "#fff",
                     headerTitleStyle: {
                         fontWeight: "bold",
@@ -84,7 +77,6 @@ function Dashboard({ route }) {
     const phoneMaxWidth = 575.98
     const { navigation } = route.params;
 
-
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard />
     } else {
@@ -95,9 +87,9 @@ function Dashboard({ route }) {
 
 function WebDashboard({ navigation }) {
     return (
-        <View style={{}}>
+        <View style={{ height: '100%', justifyContent: 'center' }}>
             <Text onPress={() => navigation.navigate("Dashboard", navigation = { navigation })}>Back</Text>
-            <View style={{ borderRadius: 10, marginTop: 50, height: '80%', width: '80%', alignSelf: 'center' }}>
+            <View style={{ borderRadius: 10, height: '80%', width: '80%', alignSelf: 'center' }}>
                 <TabNavigator />
             </View>
         </View>

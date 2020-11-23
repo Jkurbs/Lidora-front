@@ -36,12 +36,12 @@
     "react-native-multiple-select": "^0.5.6",
     "react-native-reanimated": "~1.13.0",
     "react-native-screens": "^2.13.0",
+    "react-native-svg": "12.1.0",
     "react-native-svg-charts": "^5.4.0",
     "react-native-table-component": "^1.2.1",
     "react-native-web": "~0.13.12",
     "react-navigation-side-tabs": "0.0.7",
-    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
-    "react-native-svg": "12.1.0"
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"
