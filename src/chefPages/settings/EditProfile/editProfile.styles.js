@@ -7,54 +7,76 @@ export default StyleSheet.create({
         fontFamily: "System",
         backgroundColor: 'white',
         flex: 1,
-        height: windowHeight,
+        height: '100%',
     },
 
     itemContainer: {
-
-        width: '40%'
+        width: '40%',
+        height: windowHeight,
     },
 
-    inputContainer: {
-        flexDirection: 'column',
+    imageContainer: {
+        flexDirection: 'row',
         width: '95%',
         marginTop: 8,
+        alignItems: 'center',
+        marginBottom: 20
     },
 
-    formTitle: {
+    name: {
         fontSize: 14,
+        marginLeft: 20,
         fontWeight: "500",
     },
 
-    menuForm: {
-        flexDirection: "column",
-        height: '100%',
-        backgroundColor: '#F5F5F7',
-        flex: 1,
-        width: '40%',
+    imageButton: {
+        fontSize: 14,
+        marginLeft: 20,
+        color: '#00CF46',
+        fontWeight: "500",
+    },
+
+    inputView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 8
     },
 
     formInput: {
+        marginLeft: 20,
         marginTop: 8,
         paddingLeft: 8,
+        fontSize: 14,
+        borderColor: '#d6d6d6',
+        borderWidth: 1,
+        borderRadius: 5,
+        height: 40,
+        width: 445,
+        backgroundColor: 'white'
+    },
+
+    formTitle: {
+        fontWeight: '500',
+        textAlign: 'right'
+    },
+
+    bioView: {
+        marginTop: 16
+    },
+
+    formInputDescription: {
+        marginLeft: 65,
+        marginTop: 8,
+        paddingLeft: 8,
+        paddingTop: 8,
+
         fontSize: 14,
         textAlignVertical: 'top',
         borderColor: '#d6d6d6',
         borderWidth: 1,
         borderRadius: 5,
-        height: 40,
-        backgroundColor: 'white'
-    },
-
-    formInputDescription: {
-        marginTop: 8,
-        padding: 8,
-        padding: 8,
-        fontSize: 14,
-        borderColor: '#d6d6d6',
-        borderWidth: 1,
-        borderRadius: 5,
-        height: 100,
+        height: 80,
+        width: 445,
         backgroundColor: 'white'
     },
 

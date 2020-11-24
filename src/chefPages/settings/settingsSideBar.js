@@ -1,21 +1,23 @@
 import * as React from "react";
-import { Image, Text, View, TouchableOpacity, Dimensions } from "react-native";
+import { Text, View, Dimensions } from "react-native";
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import EditProfileScreen from './EditProfile/editProfile';
+import { ScrollView } from "react-native-gesture-handler";
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
 const Tab = createSideTabNavigator();
 const StackEditProfile = createStackNavigator();
 
-
 const navOptionHandler = () => ({
     headerShown: false,
     header: null,
 });
 
-function TabNavigator({ navigation, userID }) {
+function TabNavigator({ userData }) {
+
+    console.log("DATA TAB: ", userData)
 
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
@@ -51,22 +53,24 @@ function TabNavigator({ navigation, userID }) {
                         fontWeight: "bold",
                     },
                 }}
-                initialParams={{ navigation: navigation, userID: userID }}
                 name="Edit Profile"
                 component={EditProfileStack}
+                ini
+            // initialParams={{ userData: userData }}
             />
         </Tab.Navigator>
     );
 }
 
 // Stack to show the Dashboard
-function EditProfileStack() {
+function EditProfileStack({ userData }) {
     return (
         <StackEditProfile.Navigator initialRouteName="Edit Account">
             <StackEditProfile.Screen
                 name="Edit Account"
                 component={EditProfileScreen}
                 options={navOptionHandler}
+                initialParams={{ userData: userData }}
             />
         </StackEditProfile.Navigator>
     );
@@ -75,22 +79,23 @@ function EditProfileStack() {
 function Dashboard({ route }) {
 
     const phoneMaxWidth = 575.98
-    const { navigation } = route.params;
+    const { navigation, userData } = route.params;
+    console.log("SIDE BAR USER DATA: ", userData)
 
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard />
     } else {
-        return <WebDashboard navigation={navigation} />
+        return <WebDashboard navigation={navigation} userData={userData} />
     }
 }
 
 
-function WebDashboard({ navigation }) {
+function WebDashboard({ navigation, userData }) {
     return (
-        <View style={{ height: '100%', justifyContent: 'center' }}>
+        <View style={{ height: '100%', backgroundColor: 'red' }}>
             <Text onPress={() => navigation.navigate("Dashboard", navigation = { navigation })}>Back</Text>
-            <View style={{ borderRadius: 10, height: '80%', width: '80%', alignSelf: 'center' }}>
-                <TabNavigator />
+            <View style={{ marginTop: 50, height: '100%' }} >
+                < TabNavigator userData={userData} />
             </View>
         </View>
     )

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Image, Text, View, TouchableOpacity, Dimensions } from "react-native";
+
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import MenuScreen from "../menu/menu";
@@ -28,9 +29,9 @@ const navOptionHandler = () => ({
     header: null,
 });
 
-function TabNavigator({ navigation, userID }) {
+function TabNavigator({ navigation, userData }) {
 
-    console.log("TAB NAV USERID: ", userID)
+    console.log("USER DATA: ", userData)
 
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
@@ -73,7 +74,7 @@ function TabNavigator({ navigation, userID }) {
                         fontWeight: "bold",
                     },
                 }}
-                initialParams={{ navigation: navigation, userID: userID }}
+                initialParams={{ navigation: navigation, userData: userData }}
                 name="Dashboard"
                 component={DashboardStack}
             />
@@ -248,7 +249,8 @@ function WebDashboard({ userData, navigation }) {
                     height: 100, width: 100, borderRadius: 50, marginBottom: 16, backgroundColor: 'rgb(174,174,178)'
                 }} source={{ uri: userData.user.imageURL }} />
                 <Text style={{ fontSize: 20, fontWeight: '500' }}>Welcome {userData.user.first_name}</Text>
-                <TouchableOpacity style={{ marginTop: 16, marginBottom: 20 }} onPress={() => navigation.navigate("Settings", navigation = { navigation })}>
+                {/* //userData = { userData }, navigation = { navigation } */}
+                <TouchableOpacity style={{ marginTop: 16, marginBottom: 20 }} onPress={() => navigation.navigate("Settings", { userData: userData, navigation: navigation })}>
                     <Text style={{ fontWeight: '500' }}>Settings</Text>
                 </TouchableOpacity>
             </View>
@@ -261,7 +263,7 @@ function WebDashboard({ userData, navigation }) {
                     <Text style={{ color: 'rgb(142, 142, 147)', fontWeight: '500' }}>Support</Text>
                 </TouchableOpacity>
             </View>
-            <TabNavigator navigation={navigation} userID={userData.user.id} />
+            <TabNavigator navigation={navigation} userData={userData} />
         </View >
     )
 }
