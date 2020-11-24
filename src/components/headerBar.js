@@ -21,7 +21,7 @@ class HeaderBar extends React.Component {
     }
 
     buttonPressed = () => {
-        alert("HeaderBarbutton pressed")
+        this.props.showInv()
     }
 
     //INPUT SWITCH - SWITCHES BETWEEN REGULAR SEARCH INPUT AND CUSTOMER INPUT
