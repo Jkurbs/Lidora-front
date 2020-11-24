@@ -29,10 +29,11 @@ class InventoryRightSidebar extends React.Component {
 
       }
     
-    handleSlide = () => {
+    handleSlide = checkActive => {
     let {isActive,translateX} = this.state;
+    console.log('activecheck',checkActive)
     Animated.spring(translateX, {
-        toValue: isActive ? -420 : 0,
+        toValue: checkActive ? -420 : 0,
         duration: 20
     }).start(finished => {
 
@@ -43,12 +44,6 @@ class InventoryRightSidebar extends React.Component {
         
       });
     };
-
-    componentDidUpdate(){
-        if(this.state.isActive === true){
-        this.handleSlide
-        }
-    }
 
 
     render(){
