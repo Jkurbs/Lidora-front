@@ -97,8 +97,7 @@ class Test2 extends React.Component {
 
     showInventoryModal = () => {
         this.setState({isInvModalActive: !this.state.isInvModalActive})
-        this.child.current.handleSlide();
-
+        this.child.current.handleSlide(this.state.isInvModalActive);
         if(this.state.isInvModalActive === true){
             this.animatedTransitionShrink.start();
 
