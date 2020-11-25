@@ -13,7 +13,7 @@ import { Entypo } from '@expo/vector-icons';
 class HeaderBar extends React.Component {
 
     showModal = () => {
-        this.props.show(true)
+        this.props.showCalendar(true)
     }
 
     hideModal = () => {

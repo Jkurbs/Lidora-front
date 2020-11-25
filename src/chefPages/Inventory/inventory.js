@@ -1,21 +1,25 @@
 import React from "react";
 import styles from "./inventory.styles";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Animated, Dimensions } from "react-native";
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
-import Alert from '../../components/alert'
+import Alert from '../../components/alert';
+import InventoryRightSideBar from '../../components/InventoryRightSidebar';
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
+
+const getWidth = Dimensions.get('window').width - 200;
 
 class Inventory extends React.Component {
 
     constructor() {
         super();
+        this.child = React.createRef();
         this.state = {
             userID: firebase.auth().currentUser.uid,
             tableHead: ['Name', 'Quantity', 'Unit', 'Actions'],
@@ -24,10 +28,18 @@ class Inventory extends React.Component {
             item: null,
             hasData: null,
             isSearching: false,
-            isAlertVisible: false
+            isAlertVisible: false,
+            isInvModalActive:true,
+            interpolateBar: this.animVal.interpolate({inputRange:[0,1],outputRange:[getWidth,getWidth-397]}),
+            windowWidth:"",
         };
         this.addInventoryItem = this.addInventoryItem.bind(this);
     }
+
+    animVal = new Animated.Value(0);
+    
+    animatedTransitionShrink = Animated.spring(this.animVal,{toValue:1})
+    animatedTransitionGrow = Animated.spring(this.animVal,{toValue:0})
 
     componentDidMount() {
         let currentComponent = this;
@@ -51,6 +63,14 @@ class Inventory extends React.Component {
                     });
                 });
             }
+        });
+        let getWidth = ''
+        window.addEventListener('resize', function() {
+            // your custom logic
+            getWidth = Dimensions.get('window').width - 200;
+            currentComponent.setState({
+                interpolateBar: currentComponent.animVal.interpolate({inputRange:[0,1],outputRange:[getWidth,getWidth-397]})
+            })
         });
     }
 
@@ -157,8 +177,20 @@ class Inventory extends React.Component {
 
     }
 
-    showModal = () => {
+    showCalendarModal = () => {
         this.setState({ showCalendar: !this.state.showCalendar });
+    }
+
+    showInventoryModal = () => {
+        this.setState({isInvModalActive: !this.state.isInvModalActive})
+        this.child.current.handleSlide(this.state.isInvModalActive);
+        if(this.state.isInvModalActive === true){
+            this.animatedTransitionShrink.start();
+
+        } else {
+            this.animatedTransitionGrow.start();
+        }
+        
     }
 
     search = (searchTerm) => {
@@ -178,6 +210,21 @@ class Inventory extends React.Component {
         }
     }
 
+    handleWidth = () => {
+        let {isActive,translateX} = this.state;
+        Animated.spring(translateX, {
+            toValue: isActive ? -420 : 0,
+            duration: 20
+        }).start(finished => {
+    
+              this.setState((prevState, props) => ({
+                isActive: !prevState.isActive,
+              }));
+              console.log(this.state.isActive)
+            
+          });
+        };
+
     render() {
         return (
             <View style={styles.container}>
@@ -186,9 +233,13 @@ class Inventory extends React.Component {
                     subtitle={this.state.tableData.length}
                     search={this.search.bind(this)}
                     isSearchEnabled={true}
-                    show={this.showModal.bind(this)}
+                    showCalendar={this.showCalendarModal.bind(this)}
+                    showInv={this.showInventoryModal.bind(this)}
+                    handleMode={this.handleMode.bind(this)}
+                    isModalActive={this.state.isInvModalActive}
                 />
                 <ScrollView>
+                <Animated.View style={{width: this.state.interpolateBar}}>
                     <TableView
                         tableHead={this.state.tableHead}
                         tableData={this.state.isSearching ? this.state.filteredTableData : this.state.tableData}
@@ -202,7 +253,13 @@ class Inventory extends React.Component {
                         middleAction={this.middleActionSelected.bind(this)}
                         rightAction={this.rightActionSelected.bind(this)}
                     />
+                    </Animated.View>
                 </ScrollView>
+                    <InventoryRightSideBar 
+                            isActive={this.state.isInvModalActive}
+                            mode={'Add'}
+                            ref={this.child}
+                        />
                 <Alert
                     cancelAction={this.cancelAlert.bind(this)}
                     deleteAction={this.deleteInventoryItem.bind(this)}
