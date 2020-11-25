@@ -255,11 +255,11 @@ class Inventory extends React.Component {
                     />
                     </Animated.View>
                 </ScrollView>
-                    <InventoryRightSideBar 
-                            isActive={this.state.isInvModalActive}
-                            mode={'Add'}
-                            ref={this.child}
-                        />
+                <InventoryRightSideBar 
+                        isActive={this.state.isInvModalActive}
+                        mode={'Add'}
+                        ref={this.child}
+                    />
                 <Alert
                     cancelAction={this.cancelAlert.bind(this)}
                     deleteAction={this.deleteInventoryItem.bind(this)}
