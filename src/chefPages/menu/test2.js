@@ -30,7 +30,8 @@ class Test2 extends React.Component {
             showCalendar:false,
             isInvModalActive:true,
             interpolateBar: this.animVal.interpolate({inputRange:[0,1],outputRange:[getWidth,getWidth-397]}),
-            windowWidth:""
+            windowWidth:"",
+            mode:'Add'
         }
     }
     
@@ -72,13 +73,26 @@ class Test2 extends React.Component {
         
     }
 
+        // Handle inventory details mode 
+        handleMode = (mode) => {
+            this.setState({
+                mode: mode
+            })
+        }
+
 
     didSelectCell = (selectedIndex) => {
-        alert(selectedIndex)
+        this.handleMode("Details")
+        if(this.state.isInvModalActive === true){
+        this.showInventoryModal()
+        }
     }
 
     leftActionSelected = (selectedIndex) => {
-        alert(selectedIndex)
+        this.handleMode("Edit")
+        if(this.state.isInvModalActive === true){
+        this.showInventoryModal()
+        }
     }
 
     middleActionSelected = (selectedIndex) => {
@@ -132,6 +146,9 @@ class Test2 extends React.Component {
                 isSearchEnabled={true}
                 showCal={this.showCalendarModal.bind(this)}
                 showInv={this.showInventoryModal.bind(this)}
+                handleMode={this.handleMode.bind(this)}
+                isModalActive={this.state.isInvModalActive}
+                mode={this.state.mode}
             />
             <Animated.View style={{width: this.state.interpolateBar}}>
             <TableView
@@ -153,6 +170,7 @@ class Test2 extends React.Component {
             />
             <InventoryRightSidebar 
                 isActive={this.state.isInvModalActive}
+                mode={this.state.mode}
                 ref={this.child}
             />
             </>

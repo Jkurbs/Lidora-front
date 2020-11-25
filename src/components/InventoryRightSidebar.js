@@ -1,8 +1,9 @@
 
 import * as React from 'react';
-import { TouchableOpacity, Image, Text, View, StyleSheet, TextInput, Animated } from 'react-native';
+import { TouchableOpacity, Image, Text, View, StyleSheet, TextInput, Animated, ScrollView } from 'react-native';
 import ModalSearchField from '../components/modalSearchField';
 import ModalTextField from '../components/modalTextField';
+import ModalTextBox from '../components/modalTextBox';
 import RegularButton from '../components/buttons/regularButton';
 import { Picker } from '@react-native-picker/picker';
 import { Row } from 'react-native-table-component';
@@ -25,6 +26,7 @@ class InventoryRightSidebar extends React.Component {
           modalMode: this.props.modalMode,
           item: item
         }
+        this.renderChildComponent = this.renderChildComponent.bind(this);
 
 
       }
@@ -45,6 +47,32 @@ class InventoryRightSidebar extends React.Component {
       });
     };
 
+    renderChildComponent() {
+        switch (this.props.mode) {
+            case "Details":
+                return <Details
+                    // image={this.state.image}
+                    // item={this.props.item}
+                    // deleteInventoryItem={this.props.deleteInventoryItem}
+                    // editIventoryItem={this.props.editIventoryItem}
+                    // handleEditClick={this.handleEditButtonClick}
+                />
+            case "Edit":
+                return <Edit
+                    item={this.state.item} 
+                    handleSaveButtonClick={this.handleSaveButtonClick}
+                    handleAddNewItemButtonClick={this.handleAddNewItemButtonClick}
+                />
+            case "Add":
+                return <Add
+                    // item={this.props.item}
+                    // handleMode={this.props.handleMode}
+                    // addInventoryItem={this.props.addInventoryItem}
+                    // handleCancelButtonClick={this.handleCancelButtonClick}
+                />
+        }
+    }
+
 
     render(){
         let {isActive,translateX,valueX} = this.state;
@@ -52,7 +80,43 @@ class InventoryRightSidebar extends React.Component {
             <>
             <Animated.View style={[styles.animated,{transform:[{translateX}]}]}  >
             <View style={styles.orderModal}>  
-            <View style={styles.modalHeader}>
+            <this.renderChildComponent />
+            </View>
+            </Animated.View>
+            </>
+        )
+    }
+}
+
+export default InventoryRightSidebar;
+
+
+
+const generateKey = (pre) => {
+    return `${ pre }_${ new Date().getTime() }`;
+}
+
+// ADD ITEM COMPONENT 
+class Add extends React.Component {
+
+    constructor() {
+        super();
+        const item = {
+            key: generateKey(""),
+            name: "ADD NEW ITEM",
+            quantity: 12.29,
+            unit: 'Piece'
+        }
+
+        this.state = {
+            item: item
+        }
+    }
+
+    render() {
+        return (
+            <ScrollView style={{ height: '100%' }}>
+                <View style={styles.modalHeader}>
             <Text style={styles.titleText}>Add Inventory Item</Text> 
             <View style={styles.saveButton}>
             <RegularButton text={"Save"} />
@@ -78,14 +142,114 @@ class InventoryRightSidebar extends React.Component {
                             <Picker.Item label="Liter" value="Liter" />
                         </Picker>
             </View>
-            </View>
-            </Animated.View>
-            </>
+            </ScrollView >
         )
     }
 }
 
-export default InventoryRightSidebar;
+// DETAILS VIEW COMPONENT 
+class Details extends React.Component {
+
+    constructor() {
+        super();
+        const item = {
+            key: generateKey(""),
+            name: "ADD NEW ITEM",
+            quantity: 12,
+            unit: 'Piece'
+        }
+
+        this.state = {
+            item: item
+        }
+    }
+
+    render() {
+        return (
+            <ScrollView style={{ height: '100%' }}>
+                <View style={styles.modalHeader}>
+            <Text style={styles.titleText}>Details</Text> 
+            </View>
+            <ModalTextBox title={'Name'} subtitle={this.state.item.name} />
+            <ModalTextBox title={'Quantity'} subtitle={`${this.state.item.quantity} ${this.state.item.unit}`} />
+            <ModalTextBox title={'Date Added'} subtitle={'TBA'} />
+            </ScrollView >
+        )
+    }
+}
+
+// EDIT ITEM COMPONENT 
+class Edit extends React.Component {
+
+    constructor(props) {
+        super(props);
+        // const item = {
+        //     key: this.props.item.key,
+        //     name: this.props.item.name,
+        //     quantity: this.props.item.quantity,
+        //     unit: this.props.item.unit
+        // }
+                const item = {
+            key: '1234',
+            name: 'Testeditname',
+            quantity: 'testquantitiy',
+            unit: 'testunitsss'
+        }
+
+        this.state = {
+            item: item
+        }
+    }
+
+    render() {
+        return (
+            <ScrollView style={{ height: '100%' }}>
+
+            <View style={styles.modalHeader}>
+                        <Text style={styles.titleText}>Edit Item</Text> 
+                        </View>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.formTitle}>Name</Text>
+                        <TextInput style={styles.formInput}
+                            placeholder={'Add a name'}
+                            onChangeText={(text) => this.state.item.name = text}
+                            defaultValue={this.props.item.name}
+                        />
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.formTitle}>Unit</Text>
+                        <Picker
+                            selectedValue={this.state.language}
+                            defaultValue={this.props.item.unit}
+                            style={styles.formInput}
+                            onValueChange={(itemValue, itemIndex) =>
+                                this.state.item.unit = itemValue}>
+
+                            <Picker.Item label="Piece" value="Piece" />
+                            <Picker.Item label="Gram" value="Gram" />
+                            <Picker.Item label="Ounce" value="Ounce" />
+                            <Picker.Item label="Liter" value="Liter" />
+                        </Picker>
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.formTitle}>Quantity</Text>
+                        <TextInput style={styles.formInput}
+                            placeholder={'Edit Quantity'}
+                            onChangeText={(text) => this.state.item.quantity = text}
+                            defaultValue={this.props.item.quantity}
+                        />
+                    </View>
+                    <View style={styles.detailsButtonContainer}>
+                        <TouchableOpacity
+                            onPress={()=>{this.props.handleSaveButtonClick(this.state.item)}}
+                            style={styles.editButton}>
+                            <Text style={styles.buttonText}>Save</Text>
+                        </TouchableOpacity>
+                    </View>
+            </ScrollView >
+        )
+    }
+}
 
 
 const styles = StyleSheet.create({
