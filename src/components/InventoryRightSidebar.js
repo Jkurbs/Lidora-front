@@ -80,6 +80,11 @@ class InventoryRightSidebar extends React.Component {
             <>
             <Animated.View style={[styles.animated,{transform:[{translateX}]}]}  >
             <View style={styles.orderModal}>  
+            <View styles={styles.cancel}>
+            <Image source={require('../assets/icon/cancel.png')}/>
+            
+            </View>
+
             <this.renderChildComponent />
             </View>
             </Animated.View>
@@ -118,6 +123,7 @@ class Add extends React.Component {
             <ScrollView style={{ height: '100%' }}>
                 <View style={styles.modalHeader}>
             <Text style={styles.titleText}>Add Inventory Item</Text> 
+            <Text styles={{fontSize:'100px', color:'orange'}}>SKETIT!</Text>
             <View style={styles.saveButton}>
             <RegularButton text={"Save"} />
             </View>
@@ -310,6 +316,10 @@ const styles = StyleSheet.create({
         position:"absolute",
         right:'10px',
         top:'-10px',
+    },
+
+    cancel: {
+        fontSize:"30px"
     }
 
 
