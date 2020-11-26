@@ -34,7 +34,7 @@ class Inventory extends React.Component {
             isInvModalActive:false,
             interpolateBar: this.animVal.interpolate({inputRange:[0,1],outputRange:[getWidth,getWidth-397]}),
             windowWidth:"",
-            mode:'Details',
+            mode:'Add',
         };
         this.addInventoryItem = this.addInventoryItem.bind(this);
     }

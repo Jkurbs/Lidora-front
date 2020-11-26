@@ -48,6 +48,10 @@ class InventoryRightSidebar extends React.Component {
 
     cancelModal = () => {
         this.props.showInv()
+        // TODO: When canceling, find way to reset placeholder text in add item mode without lag
+        if(this.props.mode == 'Add'){
+        this.props.handleMode("Details")
+        }
     }
 
     renderChildComponent() {
