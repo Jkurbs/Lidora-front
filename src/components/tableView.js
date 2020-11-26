@@ -18,8 +18,6 @@ class TableView extends React.Component {
         />
     );
 
-
-
     actionElement = (data, index) => {
 
         var buttons = []
@@ -137,7 +135,7 @@ const styles = StyleSheet.create({
         shadowColor: "#000",
         shadowOpacity: 0.13,
         shadowRadius: 10.68,
-        minWidth:'400px',
+        minWidth: '400px',
     },
     head: { height: 74, paddingLeft: 20, paddingRight: 20, borderBottomColor: '#CECECE', borderBottomWidth: 1 },
     body: { height: 100, paddingLeft: 20, paddingRight: 20, borderBottomColor: '#CECECE', borderBottomWidth: 1 },

@@ -21,7 +21,7 @@ class HeaderBar extends React.Component {
     }
 
     buttonPressed = () => {
-        this.props.showInv()
+        this.props.showRightSideBar()
     }
 
     //INPUT SWITCH - SWITCHES BETWEEN REGULAR SEARCH INPUT AND CUSTOMER INPUT
