@@ -25,13 +25,16 @@ class Inventory extends React.Component {
             tableHead: ['Name', 'Quantity', 'Unit', 'Actions'],
             tableData: [],
             filteredTableData: [],
-            item: null,
+            item: {},
+            data: [],
+            value: '',
             hasData: null,
             isSearching: false,
             isAlertVisible: false,
-            isInvModalActive:true,
+            isInvModalActive:false,
             interpolateBar: this.animVal.interpolate({inputRange:[0,1],outputRange:[getWidth,getWidth-397]}),
             windowWidth:"",
+            mode:'Details',
         };
         this.addInventoryItem = this.addInventoryItem.bind(this);
     }
@@ -158,11 +161,23 @@ class Inventory extends React.Component {
     };
 
     didSelectCell = (selectedIndex) => {
-        alert(selectedIndex)
+        this.handleMode("Details")
+        const item = {
+            name: this.state.tableData[selectedIndex][0],
+            quantity: this.state.tableData[selectedIndex][1],
+            unit: this.state.tableData[selectedIndex][2]
+        }
+        this.handleDetails(item)
+        if(this.state.isInvModalActive === false){
+        this.showInventoryModal()
+        }
     }
 
     leftActionSelected = (selectedIndex) => {
-
+        this.handleMode("Edit")
+        if(this.state.isInvModalActive === false){
+        this.showInventoryModal()
+        }
     }
 
     middleActionSelected = (item, selectedIndex) => {
@@ -174,7 +189,10 @@ class Inventory extends React.Component {
     }
 
     rightActionSelected = (selectedIndex) => {
-
+        this.handleMode("Details")
+        if(this.state.isInvModalActive === false){
+        this.showInventoryModal()
+        }
     }
 
     showCalendarModal = () => {
@@ -182,13 +200,15 @@ class Inventory extends React.Component {
     }
 
     showInventoryModal = () => {
-        this.setState({isInvModalActive: !this.state.isInvModalActive})
-        this.child.current.handleSlide(this.state.isInvModalActive);
         if(this.state.isInvModalActive === true){
-            this.animatedTransitionShrink.start();
+            this.setState({isInvModalActive: false})
+            this.child.current.handleSlide(true);
+            this.animatedTransitionGrow.start();
 
         } else {
-            this.animatedTransitionGrow.start();
+            this.setState({isInvModalActive: true})
+            this.child.current.handleSlide(false);
+            this.animatedTransitionShrink.start();
         }
         
     }
@@ -257,8 +277,13 @@ class Inventory extends React.Component {
                 </ScrollView>
                 <InventoryRightSideBar 
                         isActive={this.state.isInvModalActive}
-                        mode={'Add'}
+                        showInv={this.showInventoryModal.bind(this)}
+                        mode={this.state.mode}
                         ref={this.child}
+                        handleMode={this.handleMode.bind(this)}
+                        item={this.state.item}
+                        addInventoryItem={this.addInventoryItem}
+                        editInventoryITem={this.updateInventoryItem}
                     />
                 <Alert
                     cancelAction={this.cancelAlert.bind(this)}

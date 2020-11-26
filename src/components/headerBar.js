@@ -22,11 +22,9 @@ class HeaderBar extends React.Component {
 
     buttonPressed = () => {
         this.props.handleMode('Add')
-        if(this.props.isModalActive === true){
+        if(this.props.isModalActive === false){
         this.props.showInv()
         }
-
-        
     }
 
     //INPUT SWITCH - SWITCHES BETWEEN REGULAR SEARCH INPUT AND CUSTOMER INPUT

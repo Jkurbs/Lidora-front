@@ -23,7 +23,7 @@ class InventoryRightSidebar extends React.Component {
         this.state = {
           isActive: this.props.isActive,
           translateX: new Animated.Value(0),
-          modalMode: this.props.modalMode,
+          mode: this.props.mode,
           item: item
         }
         this.renderChildComponent = this.renderChildComponent.bind(this);
@@ -33,9 +33,8 @@ class InventoryRightSidebar extends React.Component {
     
     handleSlide = (checkActive) => {
     let {isActive,translateX} = this.state;
-    console.log("BING",checkActive)
     Animated.spring(translateX, {
-        toValue: checkActive ? -420 : 0,
+        toValue: checkActive ? 0 : -420,
         duration: 20
     }).start(finished => {
 
@@ -47,15 +46,17 @@ class InventoryRightSidebar extends React.Component {
       });
     };
 
+    cancelModal = () => {
+        this.props.showInv()
+    }
+
     renderChildComponent() {
         switch (this.props.mode) {
             case "Details":
                 return <Details
-                    // image={this.state.image}
-                    // item={this.props.item}
-                    // deleteInventoryItem={this.props.deleteInventoryItem}
-                    // editIventoryItem={this.props.editIventoryItem}
-                    // handleEditClick={this.handleEditButtonClick}
+                    item={this.props.item}
+                    deleteInventoryItem={this.props.deleteInventoryItem}
+                    editInventoryItem={this.props.editInventoryItem}
                 />
             case "Edit":
                 return <Edit
@@ -65,10 +66,10 @@ class InventoryRightSidebar extends React.Component {
                 />
             case "Add":
                 return <Add
-                    // item={this.props.item}
-                    // handleMode={this.props.handleMode}
-                    // addInventoryItem={this.props.addInventoryItem}
-                    // handleCancelButtonClick={this.handleCancelButtonClick}
+                    item={this.props.item}
+                    handleMode={this.props.handleMode}
+                    addInventoryItem={this.props.addInventoryItem}
+                    handleCancelButtonClick={this.handleCancelButtonClick}
                 />
         }
     }
@@ -80,11 +81,9 @@ class InventoryRightSidebar extends React.Component {
             <>
             <Animated.View style={[styles.animated,{transform:[{translateX}]}]}  >
             <View style={styles.orderModal}>  
-            <View styles={styles.cancel}>
-            <Image source={require('../assets/icon/cancel.png')}/>
-            
-            </View>
-
+            <TouchableOpacity style={styles.cancelButton} onPressIn={()=>this.cancelModal()} >
+            <Image style={styles.cancel} source={require('../assets/icon/cancel.png')}/>
+            </TouchableOpacity>
             <this.renderChildComponent />
             </View>
             </Animated.View>
@@ -123,9 +122,8 @@ class Add extends React.Component {
             <ScrollView style={{ height: '100%' }}>
                 <View style={styles.modalHeader}>
             <Text style={styles.titleText}>Add Inventory Item</Text> 
-            <Text styles={{fontSize:'100px', color:'orange'}}>SKETIT!</Text>
             <View style={styles.saveButton}>
-            <RegularButton text={"Save"} />
+            <RegularButton text={"Save"} action={this.props.addInventoryItem.bind(this, this.state.item)} />
             </View>
             </View>
             <ModalSearchField
@@ -133,7 +131,7 @@ class Add extends React.Component {
                             onChangeText={(text) => this.props.search(text)}
 
                         />
-            <ModalTextField placeholder={"Add Quantity"}/>
+            <ModalTextField placeholder={"Add Quantity"}  onChangeText={(text) => this.state.item.quantity = text}/>
             <View>
             <Picker
                             selectedValue={this.value}
@@ -176,8 +174,8 @@ class Details extends React.Component {
                 <View style={styles.modalHeader}>
             <Text style={styles.titleText}>Details</Text> 
             </View>
-            <ModalTextBox title={'Name'} subtitle={this.state.item.name} />
-            <ModalTextBox title={'Quantity'} subtitle={`${this.state.item.quantity} ${this.state.item.unit}`} />
+            <ModalTextBox title={'Name'} subtitle={this.props.item.name} />
+            <ModalTextBox title={'Quantity'} subtitle={`${this.props.item.quantity} ${this.props.item.unit}`} />
             <ModalTextBox title={'Date Added'} subtitle={'TBA'} />
             </ScrollView >
         )
@@ -318,8 +316,20 @@ const styles = StyleSheet.create({
         top:'-10px',
     },
 
+    cancelButton:{
+        borderRadius:'50%',
+        position:"absolute",
+        left:'23px',
+        top:'36px',
+        width:30,
+        height:30,
+        zIndex : 1,
+    },
+
     cancel: {
-        fontSize:"30px"
+        width:30,
+        height:30,
+        tintColor:'red',
     }
 
 
