@@ -212,7 +212,6 @@ class Edit extends React.Component {
     render() {
         return (
             <ScrollView style={{ height: '100%' }}>
-
             <View style={styles.modalHeader}>
                         <Text style={styles.titleText}>Edit Item</Text> 
                         </View>
@@ -333,7 +332,7 @@ const styles = StyleSheet.create({
     cancel: {
         width:30,
         height:30,
-        tintColor:'red',
+        tintColor:'gray',
     }
 
 
