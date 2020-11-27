@@ -10,7 +10,6 @@ import HeaderBar from '../../components/headerBar';
 import Alert from '../../components/alert';
 import InventoryRightSideBar from '../../components/InventoryRightSidebar';
 
-
 var db = firebase.firestore();
 const ref = db.collection('chefs')
 
@@ -175,6 +174,7 @@ class Inventory extends React.Component {
         if(this.state.isInvModalActive === false){
         this.showInventoryModal()
         }
+
 
     }
 

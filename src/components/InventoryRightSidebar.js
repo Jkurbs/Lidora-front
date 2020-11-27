@@ -7,7 +7,8 @@ import ModalTextBox from '../components/modalTextBox';
 import RegularButton from '../components/buttons/regularButton';
 import { Picker } from '@react-native-picker/picker';
 import { Row } from 'react-native-table-component';
-
+import foodData from '../assets/foodData.json';
+import MultiSelect from 'react-native-multiple-select'
 
 class InventoryRightSidebar extends React.Component {
 
@@ -117,8 +118,34 @@ class Add extends React.Component {
         }
 
         this.state = {
-            item: item
+            item: item,
+            results: []
         }
+    }
+
+    handleSearch = (text) => {
+        const filter = (a, f) => {
+            let keys = Object.keys(f)
+            if(keys.length == 1) {
+              return a.filter(x => x[keys[0]].toLowerCase().includes(f[keys[0]].toLowerCase()))
+            } else return a.filter(x => Object.values(f).every(fv => {
+              return Object.values(x).some(v => v.toLowerCase().includes(fv.toLowerCase()))
+            }))
+          }
+          
+        let arr = filter(foodData, {name:text})
+
+        let newArr = arr.sort((a,b) => (a.name.length > b.name.length) ? 1 : -1 )
+
+
+        this.setState(state => {
+            const limit = newArr.filter((val,i)=>i<10)
+            console.log(limit)
+            return {
+                results: limit,
+            };
+        });
+        
     }
 
     render() {
@@ -130,11 +157,34 @@ class Add extends React.Component {
             <RegularButton text={"Save"} action={this.props.addInventoryItem.bind(this, this.state.item)} />
             </View>
             </View>
-            <ModalSearchField
-                            placeholder={'Search for an Item here'}
-                            onChangeText={(text) => this.props.search(text)}
-
-                        />
+            <MultiSelect
+                items={this.state.results}
+                uniqueKey="name"
+                ref={(component) => { this.multiSelect = component }}
+                onSelectedItemsChange={this.onSelectedItemsChange}
+                selectedItems={this.state.selectedItems}
+                selectText="Pick Ingredients"
+                searchInputPlaceholderText="Search Ingredients..."
+                onChangeInput={(text) => this.handleSearch(text)}
+                tagRemoveIconColor="#CCC"
+                tagBorderColor="#CCC"
+                tagTextColor="#CCC"
+                selectedItemTextColor="#CCC"
+                selectedItemIconColor="#CCC"
+                itemTextColor="#000"
+                displayKey="name"
+                searchInputStyle={{ color: '#CCC' }}
+                submitButtonColor="#CCC"
+                submitButtonText="Submit"
+                styleMainWrapper={{ marginTop: 7 }}
+                styleTextDropdown={{ fontFamily: 'System', padding: 8 }}
+                styleDropdownMenuSubsection={{ height: 40, borderRadius: 5, borderWidth: 1, borderColor: '#d6d6d6' }}
+                styleRowList={{ height: 40 }}
+                itemFontSize={13}
+                styleListContainer={{ marginTop: 20 }}
+                searchInputStyle={{ height: 40 }}
+                single={true}
+              />
             <ModalTextField placeholder={"Add Quantity"}  onChangeText={(text) => this.state.item.quantity = text}/>
             <View>
             <Picker
