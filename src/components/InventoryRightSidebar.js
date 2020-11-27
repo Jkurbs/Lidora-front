@@ -158,12 +158,10 @@ class Add extends React.Component {
         })
         this.setState(state => {
             return {
-                item:selectedItem
+                item:ingredient[0]
             };
         });
 
-
-        console.log(this.state.item)
         console.log(ingredient[0])
       };
 
