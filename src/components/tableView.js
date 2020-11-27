@@ -73,7 +73,7 @@ class TableView extends React.Component {
             return (
                 <View style={styles.container}>
                     <Text style={{ alignSelf: 'center', marginBottom: 20 }}>There's no data at the moment</Text>
-                    <MainButton text={"Add your first"} action={this.props.action} />
+                    <MainButton text={"Add your first"} action={this.props.action} indicatorAnimating={false} />
                 </View>
             )
         } else {
