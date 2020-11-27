@@ -13,7 +13,7 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  SafeAreaView
+  SafeAreaView,
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -191,7 +191,7 @@ class HomeScreen extends React.Component {
 const Stack = createStackNavigator();
 
 const MyTheme = {
-  dark: false,
+  dark: true,
   colors: {
     primary: "rgb(46, 204, 113)",
     background: "rgb(242, 242, 242)",
