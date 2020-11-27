@@ -4,6 +4,7 @@ import {
     View,
     TextInput,
     TouchableOpacity,
+    ActivityIndicator,
     Text,
     Image,
     ScrollView
@@ -25,14 +26,40 @@ class EditProfileView extends React.Component {
         super();
         this.state = {
             userId: firebase.auth().currentUser.uid,
-            image: null,
-            firstName: null,
-            lastName: null,
-            username: null,
-            description: null,
-            email: null,
-            gender: null
+            image: '',
+            firstName: '',
+            lastName: '',
+            username: '',
+            description: '',
+            email: '',
+            gender: '',
+            buttonText: 'Submit',
+            indicatorAnimating: false
         };
+    }
+
+    componentDidMount() {
+        let currentComponent = this
+
+        // Fetch Current chef 
+        db.collection('chefs').doc(currentComponent.state.userId).get().then(function (doc) {
+            if (doc.exists) {
+                const user = doc.data()
+                currentComponent.setState({
+                    image: user.imageURL ?? '',
+                    firstName: user.first_name,
+                    lastName: user.last_name,
+                    username: user.username ?? '',
+                    description: user.description ?? '',
+                    gender: user.gender ?? '',
+                    email: user.email_address ?? '',
+                })
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function (error) {
+            console.log("Error getting document:", error);
+        });
     }
 
     // Pick image from computer folder 
@@ -49,71 +76,54 @@ class EditProfileView extends React.Component {
         }
     }
 
-    componentDidMount() {
-        let currentComponent = this
-
-        // Fetch Current chef 
-        db.collection('chefs').doc(currentComponent.state.userId).get().then(function (doc) {
-            if (doc.exists) {
-                const user = doc.data()
-                currentComponent.setState({
-                    image: user.imageURL,
-                    firstName: user.first_name,
-                    lastName: user.last_name,
-                    username: user.username,
-                    description: user.description,
-                    gender: user.gender,
-                    email: user.email_address,
-                })
-            } else {
-                console.log("No such document!");
-            }
-        }).catch(function (error) {
-            console.log("Error getting document:", error);
-        });
-    }
-
     save = () => {
-
-        var storage = firebase.storage().ref('chefs')
-
-        storage.put(this.state.image.file).then((snapshot) => {
-
-            snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                const userId = firebase.auth().currentUser.uid;
-                this.setState({ image: downloadURL })
-                db.collection('chefs').doc(userId).set({
-                    imageURL: downloadURL
-                }, { merge: true })
-                    .then(function () {
-                        console.log("Document successfully updated!");
-                    })
-                    .catch(function (error) {
-                        // The document probably doesn't exist.
-                        console.error("Error updating document: ", error);
-                    });
-            });
-        })
-
+        let currentComponent = this
+        currentComponent.setState({ indicatorAnimating: true, buttonText: '' })
         const user = firebase.auth().currentUser;
+        if (typeof this.state.image != 'string') {
+            var storage = firebase.storage().ref('chefs')
+            storage.put(this.state.image.file).then((snapshot) => {
+                snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                    const userId = firebase.auth().currentUser.uid;
+                    currentComponent.setState({ image: downloadURL })
+                    db.collection('chefs').doc(userId).set({
+                        imageURL: downloadURL
+                    }, { merge: true })
+                        .then(function () {
+                            user.updateProfile({
+                                photoURL: downloadURL,
+                            }).then(function () {
+                                // Update successful.
 
+                            }).catch(function (error) {
+                                // An error happened.
+                                alert(error)
+                            });
+                        })
+                        .catch(function (error) {
+                            // The document probably doesn't exist.
+                            console.error("Error updating document: ", error);
+                        });
+                });
+            })
+        }
 
         user.updateProfile({
-            displayName: this.state.firstName + ' ' + this.state.lastName,
-            photoURL: this.state.image,
+            displayName: currentComponent.state.firstName + ' ' + currentComponent.state.lastName,
             email: this.state.email
         }).then(function () {
             // Update successful.
-            db.collection('chefs').doc(this.state.userId).set({
-                first_name: this.state.firstName,
-                last_name: this.state.lastName,
-                username: this.state.username,
-                description: this.state.description,
-                gender: this.state.gender,
-                email_address: this.state.email,
+            db.collection('chefs').doc(currentComponent.state.userId).set({
+                first_name: currentComponent.state.firstName,
+                last_name: currentComponent.state.lastName,
+                username: currentComponent.state.username,
+                description: currentComponent.state.description,
+                gender: currentComponent.state.gender,
+                email_address: currentComponent.state.email,
             }, { merge: true })
                 .then(function () {
                     console.log("Document successfully updated!");
+                    currentComponent.setState({ indicatorAnimating: false, buttonText: 'Submit' })
                 })
                 .catch(function (error) {
                     // The document probably doesn't exist.
@@ -121,6 +131,9 @@ class EditProfileView extends React.Component {
                 });
         }).catch(function (error) {
             // An error happened.
+            alert(error)
+            console.log("Update updating user: ", error)
+
         });
     };
 
@@ -145,7 +158,7 @@ class EditProfileView extends React.Component {
                                 <TextInput
                                     style={styles.formInput}
                                     placeholder={"First name"}
-                                    onChangeText={(text) => (this.state.firstName = text)}
+                                    onChangeText={(text) => (this.setState({ firstName: text }))}
                                     defaultValue={this.state.firstName}
                                 />
                             </View>
@@ -155,34 +168,35 @@ class EditProfileView extends React.Component {
                                 <TextInput
                                     style={styles.formInput}
                                     placeholder={"Last name"}
-                                    onChangeText={(text) => (this.state.lastName = text)}
+                                    onChangeText={(text) => (this.setState({ lastName: text }))}
                                     defaultValue={this.state.lastName}
                                 />
                             </View>
 
                             <View style={styles.inputView}>
                                 <Text style={styles.formTitle}>Username</Text>
-                                <View style={{ flexDirection: 'column' }}>
-                                    <TextInput
-                                        style={styles.formInput}
-                                        placeholder={"Username"}
-                                        onChangeText={(text) => (this.state.username = text)}
-                                        defaultValue={this.state.username}
-                                    />
-                                    <Text style={{ paddingTop: 8, width: 445, marginLeft: 20, fontSize: 12, color: '#646464' }}>Help people discover your account by using the name you're known by: either your full name, nickname, or business name.</Text>
-                                </View>
+                                <TextInput
+                                    style={styles.formInput}
+                                    placeholder={"Username"}
+                                    onChangeText={(text) => (this.setState({ username: text }))}
+                                    defaultValue={this.state.username}
+                                />
+                                {/* <Text style={{ paddingTop: 8, width: 445, marginLeft: 20, fontSize: 12, color: '#646464' }}>Help people discover your account by using the name you're known by: either your full name, nickname, or business name.</Text> */}
                             </View>
 
                             <View style={[styles.inputView, styles.bioView]}>
-                                <Text style={styles.formTitle}>Bio</Text>
-                                <TextInput
-                                    style={styles.formInputDescription}
-                                    multiline={true}
-                                    maxLength={1000}
-                                    placeholder={"Description"}
-                                    onChangeText={(text) => (this.state.description = text)}
-                                    defaultValue={this.state.description}
-                                />
+                                <Text style={styles.formTitle}>Description</Text>
+                                <View style={{ flexDirection: 'column' }}>
+                                    <TextInput
+                                        style={styles.formInputDescription}
+                                        multiline={true}
+                                        maxLength={1000}
+                                        placeholder={"Description"}
+                                        onChangeText={(text) => (this.setState({ description: text }))}
+                                        defaultValue={this.state.description}
+                                    />
+                                    <Text style={{ paddingTop: 8, width: 445, marginLeft: 20, fontSize: 12, color: '#646464' }}>Write a short description about yourself.</Text>
+                                </View>
                             </View>
 
                             <View style={{ marginLeft: 20, marginTop: 40, marginBottom: 20 }}>
@@ -204,10 +218,15 @@ class EditProfileView extends React.Component {
                         <View style={styles.inputView}>
                             <Text style={styles.formTitle}>Gender</Text>
                             <Picker
+                                selectedValue={this.state.gender}
                                 style={styles.formInput}
                                 onValueChange={(itemValue, itemIndex) =>
                                     this.state.gender = itemValue
                                 }>
+                                <Picker.Item
+                                    label="Undefined"
+                                    value="Undefined"
+                                />
                                 <Picker.Item
                                     label="Male"
                                     value="Male"
@@ -218,7 +237,7 @@ class EditProfileView extends React.Component {
                                 />
                             </Picker>
                         </View>
-                        <Button text={"Submit"} action={this.save.bind(this)} />
+                        <Button text={this.state.buttonText} indicatorAnimating={this.state.indicatorAnimating} action={this.save.bind(this)} />
                     </View>
                 </ScrollView>
             </View>

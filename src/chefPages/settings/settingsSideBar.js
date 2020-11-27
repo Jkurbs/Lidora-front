@@ -3,11 +3,16 @@ import { Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import EditProfileScreen from './EditProfile/editProfile';
+import PreferenceScreen from './Preference/preference';
+
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
 const Tab = createSideTabNavigator();
+
 const StackEditProfile = createStackNavigator();
+const StackPreference = createStackNavigator();
+
 
 const navOptionHandler = () => ({
     headerShown: false,
@@ -36,7 +41,6 @@ function TabNavigator({ userData }) {
                 tabWidth: 200,
                 headerStyle: {
                     backgroundColor: "#f4511e",
-                    // color: 'green'
                 },
             }}
         >
@@ -44,7 +48,6 @@ function TabNavigator({ userData }) {
                 options={{
                     title: "Edit Profile",
                     tabBarLabel: "Edit Profile",
-                    // backgroundColor: "#f4511e",
                     headerTintColor: "#fff",
                     headerTitleStyle: {
                         fontWeight: "bold",
@@ -53,21 +56,19 @@ function TabNavigator({ userData }) {
                 name="Edit Profile"
                 component={EditProfileStack}
                 ini
-            // initialParams={{ userData: userData }}
             />
 
             <Tab.Screen
                 options={{
                     title: "Preferences",
                     tabBarLabel: "Preferences",
-                    // backgroundColor: "#f4511e",
                     headerTintColor: "#fff",
                     headerTitleStyle: {
                         fontWeight: "bold",
                     },
                 }}
                 name="Preferences"
-                component={EditProfileStack}
+                component={PreferenceStack}
                 ini
             // initialParams={{ userData: userData }}
             />
@@ -75,7 +76,7 @@ function TabNavigator({ userData }) {
     );
 }
 
-// Stack to show the Dashboard
+// Stack to show EditProfile
 function EditProfileStack({ userData }) {
     return (
         <StackEditProfile.Navigator initialRouteName="Edit Account">
@@ -86,6 +87,20 @@ function EditProfileStack({ userData }) {
                 initialParams={{ userData: userData }}
             />
         </StackEditProfile.Navigator>
+    );
+}
+
+// Stack to show Preferences
+function PreferenceStack({ userData }) {
+    return (
+        <StackPreference.Navigator initialRouteName="Preferences">
+            <StackPreference.Screen
+                name="Preferences"
+                component={PreferenceScreen}
+                options={navOptionHandler}
+                initialParams={{ userData: userData }}
+            />
+        </StackPreference.Navigator>
     );
 }
 
