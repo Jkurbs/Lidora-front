@@ -58,7 +58,7 @@ function TabNavigator({ userData }) {
                 ini
             />
 
-            <Tab.Screen
+            {/* <Tab.Screen
                 options={{
                     title: "Preferences",
                     tabBarLabel: "Preferences",
@@ -71,7 +71,7 @@ function TabNavigator({ userData }) {
                 component={PreferenceStack}
                 ini
             // initialParams={{ userData: userData }}
-            />
+            /> */}
         </Tab.Navigator>
     );
 }
