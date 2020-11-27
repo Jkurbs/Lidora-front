@@ -13,7 +13,7 @@ import { Entypo } from '@expo/vector-icons';
 class HeaderBar extends React.Component {
 
     showModal = () => {
-        this.props.show(true)
+        this.props.showCalendar(true)
     }
 
     hideModal = () => {
@@ -21,7 +21,10 @@ class HeaderBar extends React.Component {
     }
 
     buttonPressed = () => {
-        alert("HeaderBarbutton pressed")
+        this.props.handleMode('Add')
+        if(this.props.isModalActive === false){
+        this.props.showInv()
+        }
     }
 
     //INPUT SWITCH - SWITCHES BETWEEN REGULAR SEARCH INPUT AND CUSTOMER INPUT

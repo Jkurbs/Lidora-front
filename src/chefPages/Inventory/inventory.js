@@ -1,33 +1,48 @@
 import React from "react";
 import styles from "./inventory.styles";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Animated, Dimensions } from "react-native";
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
-import Alert from '../../components/alert'
+import Alert from '../../components/alert';
+import InventoryRightSideBar from '../../components/InventoryRightSidebar';
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
+
+const getWidth = Dimensions.get('window').width - 200;
 
 class Inventory extends React.Component {
 
     constructor() {
         super();
+        this.child = React.createRef();
         this.state = {
             userID: firebase.auth().currentUser.uid,
             tableHead: ['Name', 'Quantity', 'Unit', 'Actions'],
             tableData: [],
             filteredTableData: [],
-            item: null,
+            item: {},
+            data: [],
+            value: '',
             hasData: null,
             isSearching: false,
-            isAlertVisible: false
+            isAlertVisible: false,
+            isInvModalActive:false,
+            interpolateBar: this.animVal.interpolate({inputRange:[0,1],outputRange:[getWidth,getWidth-397]}),
+            windowWidth:"",
+            mode:'Add',
         };
         this.addInventoryItem = this.addInventoryItem.bind(this);
     }
+
+    animVal = new Animated.Value(0);
+    
+    animatedTransitionShrink = Animated.spring(this.animVal,{toValue:1})
+    animatedTransitionGrow = Animated.spring(this.animVal,{toValue:0})
 
     componentDidMount() {
         let currentComponent = this;
@@ -52,6 +67,17 @@ class Inventory extends React.Component {
                 });
             }
         });
+        let getWidth = ''
+        window.addEventListener('resize', function() {
+            // your custom logic
+            getWidth = Dimensions.get('window').width - 200;
+            currentComponent.setState({
+                interpolateBar: currentComponent.animVal.interpolate({inputRange:[0,1],outputRange:[getWidth,getWidth-397]})
+            })
+        });
+
+
+
     }
 
     // Handle inventory details mode 
@@ -138,11 +164,25 @@ class Inventory extends React.Component {
     };
 
     didSelectCell = (selectedIndex) => {
-        alert(selectedIndex)
+        this.handleMode("Details")
+        const item = {
+            name: this.state.tableData[selectedIndex][0],
+            quantity: this.state.tableData[selectedIndex][1],
+            unit: this.state.tableData[selectedIndex][2]
+        }
+        this.handleDetails(item)
+        if(this.state.isInvModalActive === false){
+        this.showInventoryModal()
+        }
+
+
     }
 
     leftActionSelected = (selectedIndex) => {
-
+        this.handleMode("Edit")
+        if(this.state.isInvModalActive === false){
+        this.showInventoryModal()
+        }
     }
 
     middleActionSelected = (item, selectedIndex) => {
@@ -154,11 +194,28 @@ class Inventory extends React.Component {
     }
 
     rightActionSelected = (selectedIndex) => {
-
+        this.handleMode("Details")
+        if(this.state.isInvModalActive === false){
+        this.showInventoryModal()
+        }
     }
 
-    showModal = () => {
+    showCalendarModal = () => {
         this.setState({ showCalendar: !this.state.showCalendar });
+    }
+
+    showInventoryModal = () => {
+        if(this.state.isInvModalActive === true){
+            this.setState({isInvModalActive: false})
+            this.child.current.handleSlide(true);
+            this.animatedTransitionGrow.start();
+
+        } else {
+            this.setState({isInvModalActive: true})
+            this.child.current.handleSlide(false);
+            this.animatedTransitionShrink.start();
+        }
+        
     }
 
     search = (searchTerm) => {
@@ -178,6 +235,21 @@ class Inventory extends React.Component {
         }
     }
 
+    handleWidth = () => {
+        let {isActive,translateX} = this.state;
+        Animated.spring(translateX, {
+            toValue: isActive ? -420 : 0,
+            duration: 20
+        }).start(finished => {
+    
+              this.setState((prevState, props) => ({
+                isActive: !prevState.isActive,
+              }));
+              console.log(this.state.isActive)
+            
+          });
+        };
+
     render() {
         return (
             <View style={styles.container}>
@@ -186,9 +258,13 @@ class Inventory extends React.Component {
                     subtitle={this.state.tableData.length}
                     search={this.search.bind(this)}
                     isSearchEnabled={true}
-                    show={this.showModal.bind(this)}
+                    showCalendar={this.showCalendarModal.bind(this)}
+                    showInv={this.showInventoryModal.bind(this)}
+                    handleMode={this.handleMode.bind(this)}
+                    isModalActive={this.state.isInvModalActive}
                 />
                 <ScrollView>
+                <Animated.View style={{width: this.state.interpolateBar}}>
                     <TableView
                         tableHead={this.state.tableHead}
                         tableData={this.state.isSearching ? this.state.filteredTableData : this.state.tableData}
@@ -202,7 +278,18 @@ class Inventory extends React.Component {
                         middleAction={this.middleActionSelected.bind(this)}
                         rightAction={this.rightActionSelected.bind(this)}
                     />
+                    </Animated.View>
                 </ScrollView>
+                <InventoryRightSideBar 
+                        isActive={this.state.isInvModalActive}
+                        showInv={this.showInventoryModal.bind(this)}
+                        mode={this.state.mode}
+                        ref={this.child}
+                        handleMode={this.handleMode.bind(this)}
+                        item={this.state.item}
+                        addInventoryItem={this.addInventoryItem}
+                        editInventoryITem={this.updateInventoryItem}
+                    />
                 <Alert
                     cancelAction={this.cancelAlert.bind(this)}
                     deleteAction={this.deleteInventoryItem.bind(this)}

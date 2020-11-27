@@ -3,6 +3,8 @@ import styles from "./menu.styles";
 import {
   View,
   ScrollView,
+  Dimensions,
+  Animated
 } from "react-native";
 
 import firebase from "../../firebase/Firebase";
@@ -12,13 +14,18 @@ import "firebase/firestore";
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
 import Alert from '../../components/alert'
+import RightSidebar from '../inventory/InventoryRightSidebar';
+
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
 
+const getWidth = Dimensions.get('window').width;
+
 class Menu extends React.Component {
   constructor() {
     super();
+    this.child = React.createRef();
     this.state = {
       userId: firebase.auth().currentUser.uid,
       ingredients: [],
@@ -28,13 +35,21 @@ class Menu extends React.Component {
       hasData: null,
       filteredTableData: [],
       isSearching: false,
-      isAlertVisible: false
+      isAlertVisible: false,
+      isRightSidebarActive: true,
+      interpolateBar: this.animVal.interpolate({ inputRange: [0, 1], outputRange: [getWidth, getWidth - 597] }),
+      windowWidth: ""
     };
 
     this.addMenuItem = this.addMenuItem.bind(this);
     this.updateMenuItem = this.updateMenuItem.bind(this);
     this.deleteMenuItem = this.deleteMenuItem.bind(this);
   }
+
+  animVal = new Animated.Value(0);
+
+  animatedTransitionShrink = Animated.spring(this.animVal, { toValue: 1 })
+  animatedTransitionGrow = Animated.spring(this.animVal, { toValue: 0 })
 
 
   //FETCH CURRENT CHEF MENU
@@ -67,6 +82,15 @@ class Menu extends React.Component {
         ingredients: ingredientArray
       })
       console.log("gradients", currentComponent.state.ingredients)
+    });
+
+    let getWidth = ''
+    window.addEventListener('resize', function () {
+      // your custom logic
+      getWidth = Dimensions.get('window').width;
+      currentComponent.setState({
+        interpolateBar: currentComponent.animVal.interpolate({ inputRange: [0, 1], outputRange: [getWidth, getWidth - 397] })
+      })
     });
   }
 
@@ -243,6 +267,32 @@ class Menu extends React.Component {
     console.log(this.state.showCalendar)
   }
 
+  showRightSideBar = () => {
+    this.setState({ isRightSidebarActive: !this.state.isRightSidebarActive })
+    this.child.current.handleSlide(this.state.isRightSidebarActive);
+    if (this.state.isRightSidebarActive === true) {
+      this.animatedTransitionShrink.start();
+
+    } else {
+      this.animatedTransitionGrow.start();
+    }
+  }
+
+  handleWidth = () => {
+    let { isActive, translateX } = this.state;
+    Animated.spring(translateX, {
+      toValue: isActive ? -420 : 0,
+      duration: 20
+    }).start(finished => {
+
+      this.setState((prevState, props) => ({
+        isActive: !prevState.isActive,
+      }));
+      console.log(this.state.isActive)
+
+    });
+  };
+
   search = (searchTerm) => {
     let filteredData = this.state.tableData.filter(dataRow => dataRow[1].toLowerCase().includes(searchTerm));
     this.setState({
@@ -261,9 +311,10 @@ class Menu extends React.Component {
           search={this.search.bind(this)}
           isSearchEnabled={true}
           show={this.showModal.bind(this)}
+          showRightSideBar={this.showRightSideBar.bind(this)}
         />
 
-        <ScrollView>
+        <Animated.View style={{ width: this.state.interpolateBar }}>
           <TableView
             tableHead={this.state.tableHead}
             tableData={this.state.isSearching ? this.state.filteredTableData : this.state.tableData}
@@ -277,13 +328,18 @@ class Menu extends React.Component {
             middleAction={this.middleActionSelected.bind(this)}
             rightAction={this.rightActionSelected.bind(this)}
           />
-        </ScrollView>
+        </Animated.View>
 
         <Alert
           cancelAction={this.cancelAlert.bind(this)}
           deleteAction={this.deleteMenuItem.bind(this)}
           isVisible={this.state.isAlertVisible}
           buttonTitle1={"Delete from menu"} />
+
+        <RightSidebar
+          isActive={this.state.isRightSidebarActive}
+          ref={this.child}
+        />
       </View>
 
     )
