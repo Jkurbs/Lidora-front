@@ -14,14 +14,18 @@ import "firebase/firestore";
 import "firebase/auth";
 import Button from '../../../components/buttons/mainButton'
 
+import * as DocumentPicker from 'expo-document-picker';
+
+
 var db = firebase.firestore();
 
 class EditProfileView extends React.Component {
+
     constructor() {
         super();
         this.state = {
             userId: firebase.auth().currentUser.uid,
-            imageURL: null,
+            image: null,
             firstName: null,
             lastName: null,
             username: null,
@@ -31,7 +35,19 @@ class EditProfileView extends React.Component {
         };
     }
 
-
+    // Pick image from computer folder 
+    pickDocument = async () => {
+        const result = await DocumentPicker.getDocumentAsync({
+            type: "image/*" // all images files
+        });
+        if (!result.cancelled) {
+            this.setState({
+                image: result,
+            });
+        } else {
+            // Show error to user
+        }
+    }
 
     componentDidMount() {
         let currentComponent = this
@@ -42,7 +58,7 @@ class EditProfileView extends React.Component {
                 const user = doc.data()
                 currentComponent.setState({
 
-                    imageURL: user.imageURL,
+                    image: user.imageURL,
                     firstName: user.first_name,
                     lastName: user.last_name,
                     username: user.username,
@@ -58,27 +74,56 @@ class EditProfileView extends React.Component {
         });
     }
 
-
-
     save = () => {
-        db.collection('chefs').doc(this.state.userId).update({
-            imageURL: this.state.imageURL,
-            first_name: this.state.firstName,
-            last_name: this.state.lastName,
-            // username: this.state.username,
-            // description: this.state.description,
-            // gender: this.state.gender,
-            email_address: this.state.email,
-        })
-            .then(function () {
-                console.log("Document successfully updated!");
-            })
-            .catch(function (error) {
-                // The document probably doesn't exist.
-                console.error("Error updating document: ", error);
-            });
-    };
 
+        var storage = firebase.storage().ref('chefs')
+
+        storage.put(this.state.image.file).then((snapshot) => {
+
+            snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                const userId = firebase.auth().currentUser.uid;
+                this.setState({ image: downloadURL })
+                db.collection('chefs').doc(userId).set({
+                    imageURL: downloadURL
+                }, { merge: true })
+                    .then(function () {
+                        console.log("Document successfully updated!");
+                    })
+                    .catch(function (error) {
+                        // The document probably doesn't exist.
+                        console.error("Error updating document: ", error);
+                    });
+            });
+        })
+
+        const user = firebase.auth().currentUser;
+
+
+        user.updateProfile({
+            displayName: this.state.firstName + ' ' + this.state.lastName,
+            photoURL: this.state.image,
+            email: this.state.email
+        }).then(function () {
+            // Update successful.
+            db.collection('chefs').doc(this.state.userId).set({
+                first_name: this.state.firstName,
+                last_name: this.state.lastName,
+                username: this.state.username,
+                description: this.state.description,
+                gender: this.state.gender,
+                email_address: this.state.email,
+            }, { merge: true })
+                .then(function () {
+                    console.log("Document successfully updated!");
+                })
+                .catch(function (error) {
+                    // The document probably doesn't exist.
+                    console.error("Error updating document: ", error);
+                });
+        }).catch(function (error) {
+            // An error happened.
+        });
+    };
 
     render() {
         return (
@@ -88,12 +133,11 @@ class EditProfileView extends React.Component {
                         <View style={styles.imageContainer}>
                             <Image style={{
                                 height: 50, width: 50, borderRadius: 25, backgroundColor: 'rgb(174,174,178)'
-                            }} source={{
-                                uri: this.state.imageURL,
-                            }} />
+                            }} source={this.state.image}
+                            />
                             <View style={{ flexDirection: 'column' }}>
                                 <Text style={styles.name}>{this.state.firstName} {this.state.lastName}</Text>
-                                <Text style={styles.imageButton}>Change Profile photo</Text>
+                                <Text onPress={this.pickDocument.bind(this)} style={styles.imageButton}>Change Profile photo</Text>
                             </View>
                         </View>
                         <View>
