@@ -112,7 +112,7 @@ class Add extends React.Component {
         super();
         const item = {
             key: generateKey(""),
-            name: "ADD NEW ITEM",
+            name: "Pick Ingredient",
             quantity: 12.29,
             unit: 'Piece'
         }
@@ -122,6 +122,10 @@ class Add extends React.Component {
             results: []
         }
     }
+
+    state = {
+        selectedItems: []
+      };
 
     handleSearch = (text) => {
         const filter = (a, f) => {
@@ -140,13 +144,28 @@ class Add extends React.Component {
 
         this.setState(state => {
             const limit = newArr.filter((val,i)=>i<10)
-            console.log(limit)
             return {
                 results: limit,
             };
         });
         
     }
+
+    onSelectedItemsChange = selectedItem => {
+
+        let ingredient = this.state.results.filter((ing)=>{
+            return ing.ID == selectedItem
+        })
+        this.setState(state => {
+            return {
+                item:selectedItem
+            };
+        });
+
+
+        console.log(this.state.item)
+        console.log(ingredient[0])
+      };
 
     render() {
         return (
@@ -159,11 +178,11 @@ class Add extends React.Component {
             </View>
             <MultiSelect
                 items={this.state.results}
-                uniqueKey="name"
+                uniqueKey="ID"
                 ref={(component) => { this.multiSelect = component }}
                 onSelectedItemsChange={this.onSelectedItemsChange}
                 selectedItems={this.state.selectedItems}
-                selectText="Pick Ingredients"
+                selectText={this.state.item.name}
                 searchInputPlaceholderText="Search Ingredients..."
                 onChangeInput={(text) => this.handleSearch(text)}
                 tagRemoveIconColor="#CCC"
