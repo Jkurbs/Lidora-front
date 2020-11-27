@@ -57,7 +57,6 @@ class EditProfileView extends React.Component {
             if (doc.exists) {
                 const user = doc.data()
                 currentComponent.setState({
-
                     image: user.imageURL,
                     firstName: user.first_name,
                     lastName: user.last_name,
