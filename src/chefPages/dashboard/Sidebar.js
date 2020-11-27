@@ -222,16 +222,14 @@ function Dashboard({ route }) {
 
     React.useEffect(() => {
         // Fetch Current chef 
-        db.collection('chefs').doc(userID).get().then(function (doc) {
+        db.collection('chefs').doc(userID).onSnapshot(function (doc) {
             console.log("data: ", doc.data())
             if (doc.exists) {
                 setUserData({ user: doc.data() })
             } else {
                 console.log("No such document!");
             }
-        }).catch(function (error) {
-            console.log("Error getting document:", error);
-        });
+        })
     }, [])
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard />

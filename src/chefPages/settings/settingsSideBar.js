@@ -1,9 +1,8 @@
 import * as React from "react";
-import { Text, View, Dimensions } from "react-native";
+import { Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import EditProfileScreen from './EditProfile/editProfile';
-import { ScrollView } from "react-native-gesture-handler";
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
@@ -17,8 +16,6 @@ const navOptionHandler = () => ({
 
 function TabNavigator({ userData }) {
 
-    console.log("DATA TAB: ", userData)
-
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
     const todayDate = today.toLocaleDateString("en-US", options);
@@ -31,7 +28,7 @@ function TabNavigator({ userData }) {
                 tabStyle: { marginBottom: 20 },
                 style: {
                     width: 200,
-                    paddingTop: 30,
+                    paddingTop: 120,
                 },
                 iconHorizontal: true,
                 labelSize: 13,
@@ -58,6 +55,22 @@ function TabNavigator({ userData }) {
                 ini
             // initialParams={{ userData: userData }}
             />
+
+            <Tab.Screen
+                options={{
+                    title: "Preferences",
+                    tabBarLabel: "Preferences",
+                    // backgroundColor: "#f4511e",
+                    headerTintColor: "#fff",
+                    headerTitleStyle: {
+                        fontWeight: "bold",
+                    },
+                }}
+                name="Preferences"
+                component={EditProfileStack}
+                ini
+            // initialParams={{ userData: userData }}
+            />
         </Tab.Navigator>
     );
 }
@@ -80,7 +93,6 @@ function Dashboard({ route }) {
 
     const phoneMaxWidth = 575.98
     const { navigation, userData } = route.params;
-    console.log("SIDE BAR USER DATA: ", userData)
 
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard />
@@ -92,11 +104,13 @@ function Dashboard({ route }) {
 
 function WebDashboard({ navigation, userData }) {
     return (
-        <View style={{ height: '100%', backgroundColor: 'red' }}>
-            <Text onPress={() => navigation.navigate("Dashboard", navigation = { navigation })}>Back</Text>
-            <View style={{ marginTop: 50, height: '100%' }} >
-                < TabNavigator userData={userData} />
+        <View style={{ height: '100%' }}>
+            <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 30, left: 20 }}>
+                <TouchableOpacity style={{ marginTop: 16, marginBottom: 20 }} onPress={() => navigation.navigate("Dashboard", navigation = { navigation })}>
+                    <Text style={{ fontWeight: '500' }}>Back</Text>
+                </TouchableOpacity>
             </View>
+            < TabNavigator userData={userData} />
         </View>
     )
 }

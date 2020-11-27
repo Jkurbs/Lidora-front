@@ -39,7 +39,8 @@ export default StyleSheet.create({
     inputView: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 8
+        marginTop: 8,
+        marginBottom: 20
     },
 
     formInput: {
@@ -57,7 +58,8 @@ export default StyleSheet.create({
 
     formTitle: {
         fontWeight: '500',
-        textAlign: 'right'
+        textAlign: 'right',
+        width: 90,
     },
 
     bioView: {
@@ -65,11 +67,10 @@ export default StyleSheet.create({
     },
 
     formInputDescription: {
-        marginLeft: 65,
+        marginLeft: 20,
         marginTop: 8,
         paddingLeft: 8,
         paddingTop: 8,
-
         fontSize: 14,
         textAlignVertical: 'top',
         borderColor: '#d6d6d6',

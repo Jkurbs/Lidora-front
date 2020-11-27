@@ -5,35 +5,94 @@ import {
     TextInput,
     TouchableOpacity,
     Text,
-    Image
+    Image,
+    ScrollView
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import firebase from "../../../firebase/Firebase";
 import "firebase/firestore";
 import "firebase/auth";
-import { ScrollView } from "react-native-gesture-handler";
+import Button from '../../../components/buttons/mainButton'
 
+var db = firebase.firestore();
 
 class EditProfileView extends React.Component {
     constructor() {
         super();
         this.state = {
-
+            userId: firebase.auth().currentUser.uid,
+            imageURL: null,
+            firstName: null,
+            lastName: null,
+            username: null,
+            description: null,
+            email: null,
+            gender: null
         };
     }
 
+
+
+    componentDidMount() {
+        let currentComponent = this
+
+        // Fetch Current chef 
+        db.collection('chefs').doc(currentComponent.state.userId).get().then(function (doc) {
+            if (doc.exists) {
+                const user = doc.data()
+                currentComponent.setState({
+
+                    imageURL: user.imageURL,
+                    firstName: user.first_name,
+                    lastName: user.last_name,
+                    username: user.username,
+                    description: user.description,
+                    gender: user.gender,
+                    email: user.email_address,
+                })
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function (error) {
+            console.log("Error getting document:", error);
+        });
+    }
+
+
+
+    save = () => {
+        db.collection('chefs').doc(this.state.userId).update({
+            imageURL: this.state.imageURL,
+            first_name: this.state.firstName,
+            last_name: this.state.lastName,
+            // username: this.state.username,
+            // description: this.state.description,
+            // gender: this.state.gender,
+            email_address: this.state.email,
+        })
+            .then(function () {
+                console.log("Document successfully updated!");
+            })
+            .catch(function (error) {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+            });
+    };
+
+
     render() {
-        const user = firebase.auth().currentUser;
         return (
             <View style={styles.container}>
-                <View style={styles.itemContainer}>
-                    <ScrollView style={{ marginLeft: 60, height: '100%' }} >
+                <ScrollView style={{ marginLeft: 60, height: '100%' }} >
+                    <View style={styles.itemContainer}>
                         <View style={styles.imageContainer}>
                             <Image style={{
                                 height: 50, width: 50, borderRadius: 25, backgroundColor: 'rgb(174,174,178)'
-                            }} source={require('../../../assets/img/chef1.jpg')} />
+                            }} source={{
+                                uri: this.state.imageURL,
+                            }} />
                             <View style={{ flexDirection: 'column' }}>
-                                <Text style={styles.name}>Kerby Jean</Text>
+                                <Text style={styles.name}>{this.state.firstName} {this.state.lastName}</Text>
                                 <Text style={styles.imageButton}>Change Profile photo</Text>
                             </View>
                         </View>
@@ -43,8 +102,8 @@ class EditProfileView extends React.Component {
                                 <TextInput
                                     style={styles.formInput}
                                     placeholder={"First name"}
-                                    onChangeText={(text) => (this.state.description = text)}
-                                    defaultValue={""}
+                                    onChangeText={(text) => (this.state.firstName = text)}
+                                    defaultValue={this.state.firstName}
                                 />
                             </View>
 
@@ -53,8 +112,8 @@ class EditProfileView extends React.Component {
                                 <TextInput
                                     style={styles.formInput}
                                     placeholder={"Last name"}
-                                    onChangeText={(text) => (this.state.description = text)}
-                                    defaultValue={""}
+                                    onChangeText={(text) => (this.state.lastName = text)}
+                                    defaultValue={this.state.lastName}
                                 />
                             </View>
 
@@ -64,10 +123,10 @@ class EditProfileView extends React.Component {
                                     <TextInput
                                         style={styles.formInput}
                                         placeholder={"Username"}
-                                        onChangeText={(text) => (this.state.description = text)}
-                                        defaultValue={""}
+                                        onChangeText={(text) => (this.state.username = text)}
+                                        defaultValue={this.state.username}
                                     />
-                                    <Text style={{ width: 445, marginTop: 8, marginLeft: 20, fontSize: 12, color: '#646464' }}>Help people discover your account by using the name you're known by: either your full name, nickname, or business name.</Text>
+                                    <Text style={{ paddingTop: 8, width: 445, marginLeft: 20, fontSize: 12, color: '#646464' }}>Help people discover your account by using the name you're known by: either your full name, nickname, or business name.</Text>
                                 </View>
                             </View>
 
@@ -77,13 +136,14 @@ class EditProfileView extends React.Component {
                                     style={styles.formInputDescription}
                                     multiline={true}
                                     maxLength={1000}
-                                    placeholder={"Bio"}
+                                    placeholder={"Description"}
                                     onChangeText={(text) => (this.state.description = text)}
-                                    defaultValue={""}
+                                    defaultValue={this.state.description}
                                 />
                             </View>
-                            <View>
-                                <Text>Personal Information</Text>
+
+                            <View style={{ marginLeft: 20, marginTop: 40, marginBottom: 20 }}>
+                                <Text style={{ fontSize: 20, fontWeight: '500' }}>Personal Information</Text>
                                 <Text style={{ color: '#646464' }}>This won't be a part of your public profile.</Text>
                             </View>
 
@@ -92,8 +152,8 @@ class EditProfileView extends React.Component {
                                 <TextInput
                                     style={styles.formInput}
                                     placeholder={"Email address"}
-                                    onChangeText={(text) => (this.state.description = text)}
-                                    defaultValue={""}
+                                    onChangeText={(text) => (this.state.email = text)}
+                                    defaultValue={this.state.email}
                                 />
                             </View>
                         </View>
@@ -103,7 +163,7 @@ class EditProfileView extends React.Component {
                             <Picker
                                 style={styles.formInput}
                                 onValueChange={(itemValue, itemIndex) =>
-                                    this.state.category = itemValue
+                                    this.state.gender = itemValue
                                 }>
                                 <Picker.Item
                                     label="Male"
@@ -115,17 +175,9 @@ class EditProfileView extends React.Component {
                                 />
                             </Picker>
                         </View>
-
-
-
-                        <TouchableOpacity
-                            // onPress={sendTicket}
-                            style={styles.editButton}
-                        >
-                            <Text style={styles.buttonText}>Send</Text>
-                        </TouchableOpacity>
-                    </ScrollView>
-                </View>
+                        <Button text={"Submit"} action={this.save.bind(this)} />
+                    </View>
+                </ScrollView>
             </View>
         );
     }
