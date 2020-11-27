@@ -9,8 +9,6 @@ import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
 import Alert from '../../components/alert';
 import InventoryRightSideBar from '../../components/InventoryRightSidebar';
-import {CSVReader, readRemoteFile} from 'react-papaparse';
-
 
 
 var db = firebase.firestore();
@@ -178,16 +176,6 @@ class Inventory extends React.Component {
         this.showInventoryModal()
         }
 
-        let csvData = require('../../assets/foodproducts.csv')
-        readRemoteFile(csvData, {
-            header: true,
-            step: function(row) {
-                console.log("Row:", row.data);
-            },
-            complete: function() {
-                console.log("All done!");
-            }
-          })
     }
 
     leftActionSelected = (selectedIndex) => {
