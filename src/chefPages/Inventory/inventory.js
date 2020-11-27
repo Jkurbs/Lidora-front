@@ -9,6 +9,9 @@ import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
 import Alert from '../../components/alert';
 import InventoryRightSideBar from '../../components/InventoryRightSidebar';
+import {CSVReader, readRemoteFile} from 'react-papaparse';
+
+
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
@@ -75,6 +78,9 @@ class Inventory extends React.Component {
                 interpolateBar: currentComponent.animVal.interpolate({inputRange:[0,1],outputRange:[getWidth,getWidth-397]})
             })
         });
+
+
+
     }
 
     // Handle inventory details mode 
@@ -171,6 +177,17 @@ class Inventory extends React.Component {
         if(this.state.isInvModalActive === false){
         this.showInventoryModal()
         }
+
+        let csvData = require('../../assets/foodproducts.csv')
+        readRemoteFile(csvData, {
+            header: true,
+            step: function(row) {
+                console.log("Row:", row.data);
+            },
+            complete: function() {
+                console.log("All done!");
+            }
+          })
     }
 
     leftActionSelected = (selectedIndex) => {
