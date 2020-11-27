@@ -268,6 +268,7 @@ class App extends React.Component {
                     navigation.navigate(this.state.userLoggedIn ? 'Dashboard' : 'Login',
                       {
                         navigation: navigation,
+                        userData: this.state.userData,
                         userID: this.state.userData.userID
                       });
                   }}

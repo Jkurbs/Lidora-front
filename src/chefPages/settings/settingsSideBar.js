@@ -1,13 +1,17 @@
 import * as React from "react";
-import { Image, Text, View, TouchableOpacity, Dimensions } from "react-native";
+import { Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import EditProfileScreen from './EditProfile/editProfile';
+import PreferenceScreen from './Preference/preference';
+
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
 const Tab = createSideTabNavigator();
+
 const StackEditProfile = createStackNavigator();
+const StackPreference = createStackNavigator();
 
 
 const navOptionHandler = () => ({
@@ -15,7 +19,7 @@ const navOptionHandler = () => ({
     header: null,
 });
 
-function TabNavigator({ navigation, userID }) {
+function TabNavigator({ userData }) {
 
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
@@ -29,7 +33,7 @@ function TabNavigator({ navigation, userID }) {
                 tabStyle: { marginBottom: 20 },
                 style: {
                     width: 200,
-                    paddingTop: 30,
+                    paddingTop: 120,
                 },
                 iconHorizontal: true,
                 labelSize: 13,
@@ -37,7 +41,6 @@ function TabNavigator({ navigation, userID }) {
                 tabWidth: 200,
                 headerStyle: {
                     backgroundColor: "#f4511e",
-                    // color: 'green'
                 },
             }}
         >
@@ -45,53 +48,84 @@ function TabNavigator({ navigation, userID }) {
                 options={{
                     title: "Edit Profile",
                     tabBarLabel: "Edit Profile",
-                    // backgroundColor: "#f4511e",
                     headerTintColor: "#fff",
                     headerTitleStyle: {
                         fontWeight: "bold",
                     },
                 }}
-                initialParams={{ navigation: navigation, userID: userID }}
                 name="Edit Profile"
                 component={EditProfileStack}
+                ini
             />
+
+            {/* <Tab.Screen
+                options={{
+                    title: "Preferences",
+                    tabBarLabel: "Preferences",
+                    headerTintColor: "#fff",
+                    headerTitleStyle: {
+                        fontWeight: "bold",
+                    },
+                }}
+                name="Preferences"
+                component={PreferenceStack}
+                ini
+            // initialParams={{ userData: userData }}
+            /> */}
         </Tab.Navigator>
     );
 }
 
-// Stack to show the Dashboard
-function EditProfileStack() {
+// Stack to show EditProfile
+function EditProfileStack({ userData }) {
     return (
         <StackEditProfile.Navigator initialRouteName="Edit Account">
             <StackEditProfile.Screen
                 name="Edit Account"
                 component={EditProfileScreen}
                 options={navOptionHandler}
+                initialParams={{ userData: userData }}
             />
         </StackEditProfile.Navigator>
+    );
+}
+
+// Stack to show Preferences
+function PreferenceStack({ userData }) {
+    return (
+        <StackPreference.Navigator initialRouteName="Preferences">
+            <StackPreference.Screen
+                name="Preferences"
+                component={PreferenceScreen}
+                options={navOptionHandler}
+                initialParams={{ userData: userData }}
+            />
+        </StackPreference.Navigator>
     );
 }
 
 function Dashboard({ route }) {
 
     const phoneMaxWidth = 575.98
-    const { navigation } = route.params;
+    const { navigation, userData } = route.params;
 
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard />
     } else {
-        return <WebDashboard navigation={navigation} />
+        return <WebDashboard navigation={navigation} userData={userData} />
     }
 }
 
 
-function WebDashboard({ navigation }) {
+function WebDashboard({ navigation, userData }) {
     return (
-        <View style={{ height: '100%', justifyContent: 'center' }}>
-            <Text onPress={() => navigation.navigate("Dashboard", navigation = { navigation })}>Back</Text>
-            <View style={{ borderRadius: 10, height: '80%', width: '80%', alignSelf: 'center' }}>
-                <TabNavigator />
+        <View style={{ height: '100%' }}>
+            <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 30, left: 20 }}>
+                <TouchableOpacity style={{ marginTop: 16, marginBottom: 20 }} onPress={() => navigation.navigate("Dashboard", navigation = { navigation })}>
+                    <Text style={{ fontWeight: '500' }}>Back</Text>
+                </TouchableOpacity>
             </View>
+            < TabNavigator userData={userData} />
         </View>
     )
 }
