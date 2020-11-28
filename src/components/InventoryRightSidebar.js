@@ -8,9 +8,7 @@ import RegularButton from '../components/buttons/regularButton';
 import { Picker } from '@react-native-picker/picker';
 import { Row } from 'react-native-table-component';
 import foodData from '../assets/foodData.json';
-import MultiSelect from 'react-native-multiple-select';
-import moment from 'moment'
-
+import MultiSelect from 'react-native-multiple-select'
 
 class InventoryRightSidebar extends React.Component {
 
@@ -163,6 +161,8 @@ class Add extends React.Component {
                 item:ingredient[0]
             };
         });
+
+        console.log(ingredient[0])
       };
 
     render() {
@@ -247,7 +247,7 @@ class Details extends React.Component {
             </View>
             <ModalTextBox title={'Name'} subtitle={this.props.item.name} />
             <ModalTextBox title={'Quantity'} subtitle={`${this.props.item.quantity} ${this.props.item.unit}`} />
-            <ModalTextBox title={'Date Added'} subtitle={moment.unix(this.props.item.dateAdded).format('MMM-DD-YYYY')} />
+            <ModalTextBox title={'Date Added'} subtitle={'TBA'} />
             </ScrollView >
         )
     }

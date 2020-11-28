@@ -9,7 +9,6 @@ import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
 import Alert from '../../components/alert';
 import InventoryRightSideBar from '../../components/InventoryRightSidebar';
-import moment from 'moment';
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
@@ -59,13 +58,9 @@ class Inventory extends React.Component {
                 querySnapshot.forEach(function (doc) {
                     const data = doc.data()
                     const propertyValues = [data.name, data.quantity, data.unit, '']
-                    const dateValue = [data.dateAdded,data.key]
                     let currentTableData = [...currentComponent.state.tableData];
-                    let currentData = [...currentComponent.state.data]
-                    currentData.push(dateValue)
                     currentTableData.push(propertyValues);
                     currentComponent.setState({
-                        data: currentData,
                         tableData: currentTableData,
                         hasData: true,
                     });
@@ -102,8 +97,6 @@ class Inventory extends React.Component {
 
     // Add new inventory item
     addInventoryItem = (item) => {
-        item["dateAdded"] = moment().format("X")
-        console.log(item)
         this.setState(state => {
             const data = [item, ...state.data];
             return {
@@ -146,18 +139,16 @@ class Inventory extends React.Component {
     // Delete menu Item 
     deleteInventoryItem = () => {
 
-        const item = this.state.item
-        console.log("theitem",item)
-
         // TODO: - Delete menu item in Firebase
-        let currentComponent = this
-        ref.doc(this.state.userID).collection("inventory").where('dateAdded', '==', item.dateAdded).get().then(function (snapshot) {
-            snapshot.forEach(function (doc) {
-                console.log(doc.id)
-                ref.doc(currentComponent.state.userID).collection("inventory").doc(doc.id).delete()
-            })
-        })
+        // let currentComponent = this
+        // ref.doc(this.state.userID).collection("inventory").where('key', '==', item.key).get().then(function (snapshot) {
+        //     snapshot.forEach(function (doc) {
+        //         console.log(doc.id)
+        //         ref.doc(currentComponent.state.userID).collection("inventory").doc(doc.id).delete()
+        //     })
+        // })
 
+        const item = this.state.item
 
         this.setState(state => {
             const data = state.tableData.filter(otherItem => otherItem !== item);
@@ -168,8 +159,7 @@ class Inventory extends React.Component {
             };
         });
 
-        // this.setState({ item: null, isAlertVisible: !this.state.isAlertVisible })
-        this.setState({ isAlertVisible: !this.state.isAlertVisible })
+        this.setState({ item: null, isAlertVisible: !this.state.isAlertVisible })
 
     };
 
@@ -178,11 +168,8 @@ class Inventory extends React.Component {
         const item = {
             name: this.state.tableData[selectedIndex][0],
             quantity: this.state.tableData[selectedIndex][1],
-            unit: this.state.tableData[selectedIndex][2],
-            dateAdded: this.state.data[selectedIndex][0],
+            unit: this.state.tableData[selectedIndex][2]
         }
-        console.log(item)
-        console.log("DATA",this.state.data)
         this.handleDetails(item)
         if(this.state.isInvModalActive === false){
         this.showInventoryModal()
@@ -199,14 +186,7 @@ class Inventory extends React.Component {
     }
 
     middleActionSelected = (item, selectedIndex) => {
-
-        const itemSelect = {
-            name: this.state.tableData[selectedIndex][0],
-            quantity: this.state.tableData[selectedIndex][1],
-            unit: this.state.tableData[selectedIndex][2],
-            dateAdded: this.state.data[selectedIndex][0],
-        }
-        this.setState({ item: itemSelect, isAlertVisible: !this.state.isAlertVisible })
+        this.setState({ item: item, isAlertVisible: !this.state.isAlertVisible })
     }
 
     cancelAlert = () => {
@@ -297,7 +277,6 @@ class Inventory extends React.Component {
                         leftAction={this.leftActionSelected.bind(this)}
                         middleAction={this.middleActionSelected.bind(this)}
                         rightAction={this.rightActionSelected.bind(this)}
-                        action={this.showInventoryModal.bind(this)}
                     />
                     </Animated.View>
                 </ScrollView>
