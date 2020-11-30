@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, StyleSheet, ActivityIndicator, TouchableOpacity, Text } from "react-native";
 
 class MainButton extends React.Component {
     render() {
         return (
             <TouchableOpacity style={styles.button}
                 onPress={() => this.props.action()}>
+                <ActivityIndicator hidesWhenStopped={true} animating={this.props.indicatorAnimating} color="gray" style={{ position: 'absolute', alignSelf: 'center' }} />
                 <Text style={styles.text}>{this.props.text}</Text>
             </TouchableOpacity>
         )

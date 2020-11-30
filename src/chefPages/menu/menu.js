@@ -191,7 +191,7 @@ class Menu extends React.Component {
     //check and Add Image to Firebase Storage
     //check if image changed
     if (typeof item.image != 'string') {
-      var storage = firebase.storage().ref(item.image.name)
+      var storage = firebase.storage().ref(this.state.image.name)
       let currentComponent = this
       storage.put(item.image.file).then((snapshot) => {
         snapshot.ref.getDownloadURL().then(function (downloadURL) {

@@ -22,8 +22,8 @@ class HeaderBar extends React.Component {
 
     buttonPressed = () => {
         this.props.handleMode('Add')
-        if(this.props.isModalActive === false){
-        this.props.showInv()
+        if (this.props.isModalActive === false) {
+            this.props.showInv()
         }
     }
 
@@ -37,7 +37,7 @@ class HeaderBar extends React.Component {
                             placeholder={'Search for an Item here'}
                             onChangeText={(text) => this.props.search(text)}
                         />
-                        <MainButton action={() => { this.buttonPressed() }} text={'Add'}></MainButton>
+                        <MainButton action={() => { this.buttonPressed() }} text={'Add'} indicatorAnimating={false}></MainButton>
                     </View>
                 </View>
             )
