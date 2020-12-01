@@ -159,24 +159,19 @@ class Inventory extends React.Component {
             })
         })
 
-        const itemF = {
-            name: item.name,
-            quantity: item.quantity,
-            unit: item.unit
-        }
+        const itemF = [item.name,item.quantity,item.unit,""]
 
         this.setState(state => {
-            const data = state.tableData.filter(otherItem => otherItem !== item);
-            const filteredData = state.filteredTableData.filter(otherItem => otherItem !== itemF);
+            const filteredData = state.filteredTableData.filter(otherItem => otherItem[0] !== itemF[0]);
             return {
-                tableData: data,
                 filteredTableData: filteredData
             };
         });
 
-        // this.setState({ item: null, isAlertVisible: !this.state.isAlertVisible })
         this.setState({ isAlertVisible: !this.state.isAlertVisible })
+        if(this.state.isInvModalActive == true){
         this.showInventoryModal()
+        }
     };
 
     didSelectCell = (selectedIndex) => {
@@ -244,7 +239,7 @@ class Inventory extends React.Component {
         this.setState({ showCalendar: !this.state.showCalendar });
     }
 
-    //for the Add your first item button
+    //for the "Add your first item" button
     addFirst = () => {
         this.handleMode("Add")
         if(this.state.isInvModalActive === false){
@@ -275,13 +270,13 @@ class Inventory extends React.Component {
             filteredTableData: filteredData,
             filteredRealData: filteredReal
         });
-
-        if (filteredData.length === 0) {
+        console.log(filteredData)
+        if (searchTerm.length === 0) {
             this.setState({
                 isSearching: false,
-                filteredTableData: [
+                filteredTableData: 
                     ["No result ", "try something else",]
-                ],
+                ,
             });
         }
     }

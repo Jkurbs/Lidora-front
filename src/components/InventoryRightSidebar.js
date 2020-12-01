@@ -115,8 +115,8 @@ class Add extends React.Component {
         const item = {
             key: generateKey(""),
             name: "Pick Ingredient",
-            quantity: 12.29,
-            unit: 'Piece',
+            quantity: 'N/A',
+            unit: 'N/A',
             dateAdded: moment().format("X"),
         }
 
