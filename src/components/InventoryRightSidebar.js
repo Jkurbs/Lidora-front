@@ -9,7 +9,7 @@ import { Picker } from '@react-native-picker/picker';
 import { Row } from 'react-native-table-component';
 import foodData from '../assets/foodData.json';
 import MultiSelect from 'react-native-multiple-select';
-import moment from 'moment'
+import moment from 'moment';
 
 
 class InventoryRightSidebar extends React.Component {
@@ -116,7 +116,8 @@ class Add extends React.Component {
             key: generateKey(""),
             name: "Pick Ingredient",
             quantity: 12.29,
-            unit: 'Piece'
+            unit: 'Piece',
+            dateAdded: moment().format("X"),
         }
 
         this.state = {
@@ -158,9 +159,12 @@ class Add extends React.Component {
         let ingredient = this.state.results.filter((ing)=>{
             return ing.ID == selectedItem
         })
+        console.log(ingredient[0])
         this.setState(state => {
             return {
-                item:ingredient[0]
+                item:{...state.item,
+                    ...ingredient[0]
+                }
             };
         });
       };
