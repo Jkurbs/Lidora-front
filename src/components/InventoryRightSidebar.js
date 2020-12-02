@@ -8,7 +8,9 @@ import RegularButton from '../components/buttons/regularButton';
 import { Picker } from '@react-native-picker/picker';
 import { Row } from 'react-native-table-component';
 import foodData from '../assets/foodData.json';
-import MultiSelect from 'react-native-multiple-select'
+import MultiSelect from 'react-native-multiple-select';
+import moment from 'moment';
+
 
 class InventoryRightSidebar extends React.Component {
 
@@ -17,7 +19,7 @@ class InventoryRightSidebar extends React.Component {
 
         const item = {
             key: 123,
-            name: "ADD NEW ITEM",
+            name: this.props.item.name,
             quantity: 12.29,
             unit: 'Piece'
         }
@@ -50,9 +52,14 @@ class InventoryRightSidebar extends React.Component {
     cancelModal = () => {
         this.props.showInv()
         // TODO: When canceling, find way to reset placeholder text in add item mode without lag
-        if(this.props.mode == 'Add'){
+        if(this.props.mode == 'Add' || this.props.mode == 'Edit'){
         this.props.handleMode("Details")
         }
+    }
+
+    handleSaveButtonClick = (editItem) => {
+        this.props.handleDetails(editItem)
+        this.props.updateInventoryItem(editItem)
     }
 
     renderChildComponent() {
@@ -61,11 +68,10 @@ class InventoryRightSidebar extends React.Component {
                 return <Details
                     item={this.props.item}
                     deleteInventoryItem={this.props.deleteInventoryItem}
-                    editInventoryItem={this.props.editInventoryItem}
                 />
             case "Edit":
                 return <Edit
-                    item={this.state.item} 
+                    item={this.props.item} 
                     handleSaveButtonClick={this.handleSaveButtonClick}
                     handleAddNewItemButtonClick={this.handleAddNewItemButtonClick}
                 />
@@ -113,8 +119,9 @@ class Add extends React.Component {
         const item = {
             key: generateKey(""),
             name: "Pick Ingredient",
-            quantity: 12.29,
-            unit: 'Piece'
+            quantity: 'N/A',
+            unit: 'N/A',
+            dateAdded: moment().format("X"),
         }
 
         this.state = {
@@ -156,13 +163,14 @@ class Add extends React.Component {
         let ingredient = this.state.results.filter((ing)=>{
             return ing.ID == selectedItem
         })
+        console.log(ingredient[0])
         this.setState(state => {
             return {
-                item:ingredient[0]
+                item:{...state.item,
+                    ...ingredient[0]
+                }
             };
         });
-
-        console.log(ingredient[0])
       };
 
     render() {
@@ -202,6 +210,7 @@ class Add extends React.Component {
                 searchInputStyle={{ height: 40 }}
                 single={true}
               />
+            <View style={(this.state.results.length == 0) ? {display:'none'} : {display:'inline'}}>
             <ModalTextField placeholder={"Add Quantity"}  onChangeText={(text) => this.state.item.quantity = text}/>
             <View>
             <Picker
@@ -216,6 +225,7 @@ class Add extends React.Component {
                             <Picker.Item label="Ounce" value="Ounce" />
                             <Picker.Item label="Liter" value="Liter" />
                         </Picker>
+                        </View>
             </View>
             </ScrollView >
         )
@@ -247,7 +257,7 @@ class Details extends React.Component {
             </View>
             <ModalTextBox title={'Name'} subtitle={this.props.item.name} />
             <ModalTextBox title={'Quantity'} subtitle={`${this.props.item.quantity} ${this.props.item.unit}`} />
-            <ModalTextBox title={'Date Added'} subtitle={'TBA'} />
+            <ModalTextBox title={'Date Added'} subtitle={moment.unix(this.props.item.dateAdded).format('MMM-DD-YYYY')} />
             </ScrollView >
         )
     }
@@ -258,17 +268,11 @@ class Edit extends React.Component {
 
     constructor(props) {
         super(props);
-        // const item = {
-        //     key: this.props.item.key,
-        //     name: this.props.item.name,
-        //     quantity: this.props.item.quantity,
-        //     unit: this.props.item.unit
-        // }
-                const item = {
-            key: '1234',
-            name: 'Testeditname',
-            quantity: 'testquantitiy',
-            unit: 'testunitsss'
+        const item = {
+            key: this.props.item.key,
+            name: this.props.item.name,
+            quantity: this.props.item.quantity,
+            unit: this.props.item.unit
         }
 
         this.state = {
@@ -279,47 +283,26 @@ class Edit extends React.Component {
     render() {
         return (
             <ScrollView style={{ height: '100%' }}>
-            <View style={styles.modalHeader}>
-                        <Text style={styles.titleText}>Edit Item</Text> 
-                        </View>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.formTitle}>Name</Text>
-                        <TextInput style={styles.formInput}
-                            placeholder={'Add a name'}
-                            onChangeText={(text) => this.state.item.name = text}
-                            defaultValue={this.props.item.name}
-                        />
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.formTitle}>Unit</Text>
-                        <Picker
+                <View style={styles.modalHeader}>
+            <Text style={styles.titleText}>Edit Item</Text> 
+            <View style={styles.saveButton}>
+            <RegularButton text={"Save"} action={()=>{this.props.handleSaveButtonClick(this.state.item)}} />
+            </View>
+            </View>
+                        <ModalTextBox title={'Name'} subtitle={this.props.item.name} />
+                        <ModalTextField placeholder={this.props.item.quantity}  onChangeText={(text) => this.state.item.quantity = text}/>
+            <View>
+            <Picker
                             selectedValue={this.state.language}
                             defaultValue={this.props.item.unit}
-                            style={styles.formInput}
-                            onValueChange={(itemValue, itemIndex) =>
-                                this.state.item.unit = itemValue}>
-
+                            style={styles.pickerStyle}
+                            onValueChange={value =>{this.state.item.unit = value}}>
                             <Picker.Item label="Piece" value="Piece" />
                             <Picker.Item label="Gram" value="Gram" />
                             <Picker.Item label="Ounce" value="Ounce" />
                             <Picker.Item label="Liter" value="Liter" />
                         </Picker>
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.formTitle}>Quantity</Text>
-                        <TextInput style={styles.formInput}
-                            placeholder={'Edit Quantity'}
-                            onChangeText={(text) => this.state.item.quantity = text}
-                            defaultValue={this.props.item.quantity}
-                        />
-                    </View>
-                    <View style={styles.detailsButtonContainer}>
-                        <TouchableOpacity
-                            onPress={()=>{this.props.handleSaveButtonClick(this.state.item)}}
-                            style={styles.editButton}>
-                            <Text style={styles.buttonText}>Save</Text>
-                        </TouchableOpacity>
-                    </View>
+                        </View>
             </ScrollView >
         )
     }
