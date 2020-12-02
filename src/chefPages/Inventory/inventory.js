@@ -189,8 +189,7 @@ class Inventory extends React.Component {
             unit: tableD[selectedIndex][2],
             dateAdded: realD[selectedIndex][1],
         }
-        console.log(item)
-        console.log("DATA",this.state.data)
+        
         this.handleDetails(item)
         if(this.state.isInvModalActive === false){
         this.showInventoryModal()
@@ -201,9 +200,30 @@ class Inventory extends React.Component {
 
     leftActionSelected = (selectedIndex) => {
         this.handleMode("Edit")
+
+        let tableD = this.state.tableData
+        let realD = this.state.data
+        // IF SEARCH IS ON GET DATA FROM FILTERED
+        if(this.state.isSearching === true){
+            tableD = this.state.filteredTableData
+            realD = this.state.filteredRealData
+        }
+        let item = {
+            name: tableD[selectedIndex][0],
+            quantity: tableD[selectedIndex][1],
+            unit: tableD[selectedIndex][2],
+            dateAdded: realD[selectedIndex][1],
+            key: realD[selectedIndex][0]
+        }
+        console.log("item",item)
+        this.setState({
+            item: item
+        })
+
         if(this.state.isInvModalActive === false){
         this.showInventoryModal()
         }
+
     }
 
     middleActionSelected = (item, selectedIndex) => {
@@ -335,7 +355,8 @@ class Inventory extends React.Component {
                         handleMode={this.handleMode.bind(this)}
                         item={this.state.item}
                         addInventoryItem={this.addInventoryItem}
-                        editInventoryITem={this.updateInventoryItem}
+                        updateInventoryItem={this.updateInventoryItem}
+                        handleDetails={this.handleDetails}
                     />
                 <Alert
                     cancelAction={this.cancelAlert.bind(this)}
