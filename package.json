@@ -10,6 +10,7 @@
     "deploy-hosting": "npm run predeploy && firebase deploy --only hosting"
   },
   "dependencies": {
+    "@react-native-community/checkbox": "^0.5.6",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-community/slider": "^3.0.3",
     "@react-native-firebase/firestore": "^7.8.7",
