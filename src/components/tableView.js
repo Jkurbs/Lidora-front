@@ -66,9 +66,8 @@ class TableView extends React.Component {
 
     render() {
         if (this.props.hasData === null) {
-            return (
-                <ActivityIndicator size={"small"} animating={!this.props.hasData} color={"gray"} />
-            )
+            return <ActivityIndicator size={"small"} animating={!this.props.hasData} color={"gray"} />
+
         } else if (this.props.hasData === false) {
             return (
                 <View style={styles.container}>
@@ -84,8 +83,7 @@ class TableView extends React.Component {
                             <Row data={this.props.tableHead} style={styles.head} textStyle={styles.headText} />
                             {
                                 this.props.tableData.map((rowData, index) => (
-                                    <TouchableOpacity onPress={this.props.didSelectCell.bind(this, index)}  >
-
+                                    <TouchableOpacity onPress={this.props.didSelectCell.bind(this, rowData, index)}  >
                                         <TableWrapper key={index} style={styles.row}>
                                             {
                                                 rowData.map((cellData, cellIndex) => (

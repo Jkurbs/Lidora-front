@@ -33,18 +33,18 @@ class Inventory extends React.Component {
             hasData: null,
             isSearching: false,
             isAlertVisible: false,
-            isInvModalActive:false,
-            interpolateBar: this.animVal.interpolate({inputRange:[0,1],outputRange:[getWidth,getWidth-397]}),
-            windowWidth:"",
-            mode:'Add',
+            isInvModalActive: false,
+            interpolateBar: this.animVal.interpolate({ inputRange: [0, 1], outputRange: [getWidth, getWidth - 397] }),
+            windowWidth: "",
+            mode: 'Add',
         };
         this.addInventoryItem = this.addInventoryItem.bind(this);
     }
 
     animVal = new Animated.Value(0);
-    
-    animatedTransitionShrink = Animated.spring(this.animVal,{toValue:1})
-    animatedTransitionGrow = Animated.spring(this.animVal,{toValue:0})
+
+    animatedTransitionShrink = Animated.spring(this.animVal, { toValue: 1 })
+    animatedTransitionGrow = Animated.spring(this.animVal, { toValue: 0 })
 
     componentDidMount() {
         let currentComponent = this;
@@ -74,11 +74,11 @@ class Inventory extends React.Component {
             }
         });
         let getWidth = ''
-        window.addEventListener('resize', function() {
+        window.addEventListener('resize', function () {
             // your custom logic
             getWidth = Dimensions.get('window').width - 200;
             currentComponent.setState({
-                interpolateBar: currentComponent.animVal.interpolate({inputRange:[0,1],outputRange:[getWidth,getWidth-397]})
+                interpolateBar: currentComponent.animVal.interpolate({ inputRange: [0, 1], outputRange: [getWidth, getWidth - 397] })
             })
         });
 
@@ -191,8 +191,8 @@ class Inventory extends React.Component {
         }
         
         this.handleDetails(item)
-        if(this.state.isInvModalActive === false){
-        this.showInventoryModal()
+        if (this.state.isInvModalActive === false) {
+            this.showInventoryModal()
         }
 
 
@@ -222,6 +222,7 @@ class Inventory extends React.Component {
 
         if(this.state.isInvModalActive === false){
         this.showInventoryModal()
+
         }
 
     }
@@ -250,8 +251,8 @@ class Inventory extends React.Component {
 
     rightActionSelected = (selectedIndex) => {
         this.handleMode("Details")
-        if(this.state.isInvModalActive === false){
-        this.showInventoryModal()
+        if (this.state.isInvModalActive === false) {
+            this.showInventoryModal()
         }
     }
 
@@ -269,17 +270,17 @@ class Inventory extends React.Component {
     
 
     showInventoryModal = () => {
-        if(this.state.isInvModalActive === true){
-            this.setState({isInvModalActive: false})
+        if (this.state.isInvModalActive === true) {
+            this.setState({ isInvModalActive: false })
             this.child.current.handleSlide(true);
             this.animatedTransitionGrow.start();
 
         } else {
-            this.setState({isInvModalActive: true})
+            this.setState({ isInvModalActive: true })
             this.child.current.handleSlide(false);
             this.animatedTransitionShrink.start();
         }
-        
+
     }
 
     search = (searchTerm) => {
@@ -302,19 +303,19 @@ class Inventory extends React.Component {
     }
 
     handleWidth = () => {
-        let {isActive,translateX} = this.state;
+        let { isActive, translateX } = this.state;
         Animated.spring(translateX, {
             toValue: isActive ? -420 : 0,
             duration: 20
         }).start(finished => {
-    
-              this.setState((prevState, props) => ({
+
+            this.setState((prevState, props) => ({
                 isActive: !prevState.isActive,
-              }));
-              console.log(this.state.isActive)
-            
-          });
-        };
+            }));
+            console.log(this.state.isActive)
+
+        });
+    };
 
     render() {
         return (
@@ -330,6 +331,7 @@ class Inventory extends React.Component {
                     isModalActive={this.state.isInvModalActive}
                 />
                 <ScrollView>
+
                 <Animated.View style={{width: this.state.interpolateBar}}>
                     <TableView
                         tableHead={this.state.tableHead}
@@ -358,6 +360,7 @@ class Inventory extends React.Component {
                         updateInventoryItem={this.updateInventoryItem}
                         handleDetails={this.handleDetails}
                     />
+
                 <Alert
                     cancelAction={this.cancelAlert.bind(this)}
                     deleteAction={this.deleteInventoryItem.bind(this)}
