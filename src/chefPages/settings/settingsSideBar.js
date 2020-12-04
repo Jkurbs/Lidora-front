@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import EditProfileScreen from './EditProfile/editProfile';
+import BankAccountScreen from './bank/bankAccounts'
 import PreferenceScreen from './Preference/preference';
 
 
@@ -11,6 +12,7 @@ const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 const Tab = createSideTabNavigator();
 
 const StackEditProfile = createStackNavigator();
+const StackBankAccount = createStackNavigator();
 const StackPreference = createStackNavigator();
 
 
@@ -72,6 +74,20 @@ function TabNavigator({ userData }) {
                 ini
             // initialParams={{ userData: userData }}
             /> */}
+
+            <Tab.Screen
+                options={{
+                    title: "Bank accounts",
+                    tabBarLabel: "Bank accounts",
+                    headerTintColor: "#fff",
+                    headerTitleStyle: {
+                        fontWeight: "bold",
+                    },
+                }}
+                name="Bank accounts"
+                component={BankAccountsStack}
+                ini
+            />
         </Tab.Navigator>
     );
 }
@@ -87,6 +103,20 @@ function EditProfileStack({ userData }) {
                 initialParams={{ userData: userData }}
             />
         </StackEditProfile.Navigator>
+    );
+}
+
+// Stack to show bank accounts 
+function BankAccountsStack({ userData }) {
+    return (
+        <StackBankAccount.Navigator initialRouteName="Bank accounts">
+            <StackBankAccount.Screen
+                name="Bank accounts"
+                component={BankAccountScreen}
+                options={navOptionHandler}
+                initialParams={{ userData: userData }}
+            />
+        </StackBankAccount.Navigator>
     );
 }
 

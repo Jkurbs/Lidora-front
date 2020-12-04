@@ -18,6 +18,8 @@
     "@react-navigation/drawer": "^5.10.0",
     "@react-navigation/native": "^5.7.6",
     "@react-navigation/stack": "^5.9.3",
+    "@stripe/react-stripe-js": "^1.1.2",
+    "@stripe/stripe-js": "^1.11.0",
     "events": "^3.2.0",
     "expo": "^39.0.4",
     "expo-document-picker": "~8.4.0",
@@ -43,7 +45,8 @@
     "react-native-web": "~0.13.12",
     "react-navigation-side-tabs": "0.0.7",
     "react-papaparse": "^3.11.0",
-    "reanimated-bottom-sheet": "^1.0.0-alpha.22"
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
+    "expo-payments-stripe": "~8.3.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"
