@@ -30,9 +30,6 @@ const navOptionHandler = () => ({
 });
 
 function TabNavigator({ navigation, userData }) {
-
-    console.log("USER DATA: ", userData)
-
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
     const todayDate = today.toLocaleDateString("en-US", options);
@@ -241,7 +238,7 @@ function Dashboard({ route }) {
 
 function WebDashboard({ userData, navigation }) {
     return (
-        <View style={{ height: '100%' }}>
+        <View style={{ height: windowHeight, maxHeight: '100%', backgroundColor: 'red' }}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
                 <Image style={{
                     height: 100, width: 100, borderRadius: 50, marginBottom: 16, backgroundColor: 'rgb(174,174,178)'
