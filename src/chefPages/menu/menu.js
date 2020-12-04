@@ -27,6 +27,7 @@ class Menu extends React.Component {
       filteredTableData: [],
       item: {},
       fullData: [],
+      filteredFullData: [],
       inventories: [],
       value: '',
       hasData: null,
@@ -170,17 +171,25 @@ class Menu extends React.Component {
 
   };
 
-  didSelectCell = (item, selectedIndex) => {
+  didSelectCell = (item,selectedIndex) => {
     this.handleMode("Details")
-
-    console.log("ITEM: ", item[1])
-    let filteredItem = this.state.fullData.filter(t => t.name === item[1]);
-    console.log("SELECTED ITEM: ", filteredItem)
-    this.handleDetails(filteredItem)
-    if (this.state.isInvModalActive === false) {
-      this.showInventoryModal()
+    let realD = this.state.fullData
+    console.log("realD",realD)
+    // IF SEARCH IS ON GET DATA FROM FILTERED
+    if(this.state.isSearching === true){
+        realD = this.state.filteredFullData
     }
-  }
+    item = {...realD[selectedIndex],
+      image:realD[selectedIndex].imageURL
+    }
+    console.log(item)
+    this.handleDetails(item)
+    if (this.state.isInvModalActive === false) {
+        this.showInventoryModal()
+    }
+
+
+}
 
   leftActionSelected = (selectedIndex) => {
     this.handleMode("Edit")
@@ -223,12 +232,15 @@ class Menu extends React.Component {
 
   search = (searchTerm) => {
     let filteredData = this.state.tableData.filter(dataRow => dataRow[1].toLowerCase().includes(searchTerm));
+    let filteredReal = this.state.fullData.filter(dataRow => dataRow.name.toLowerCase().includes(searchTerm));
+    console.log(filteredReal)
     this.setState({
       isSearching: true,
       filteredTableData: filteredData,
+      filteredFullData: filteredReal
     });
 
-    if (filteredData.length === 0) {
+    if (searchTerm.length === 0) {
       this.setState({
         isSearching: false,
         filteredTableData: [
