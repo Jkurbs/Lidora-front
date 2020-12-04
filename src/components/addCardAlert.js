@@ -4,10 +4,12 @@ import MainButton from './buttons/mainButton'
 import RegularButton from './buttons/regularButton'
 import AnimatedHideView from 'react-native-animated-hide-view';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
 
+import firebase from '../firebase/Firebase';
+import "firebase/firestore";
 
-
+var db = firebase.firestore();
+const ref = db.collection('chefs')
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
@@ -32,27 +34,31 @@ const Alert = ({ isVisible, stripePromise }) => {
     const elements = useElements();
 
     const handleSubmit = async (event) => {
-        const params = {
-            // mandatory
-            number: '4242424242424242',
-            expMonth: 11,
-            expYear: 17,
-            cvc: '223',
-            // optional
-            name: 'Test User',
-            currency: 'usd',
-            addressLine1: '123 Test Street',
-            addressLine2: 'Apt. 5',
-            addressCity: 'Test City',
-            addressState: 'Test State',
-            addressCountry: 'Test Country',
-            addressZip: '55555',
+        // Block native form submission.
+        // event.preventDefault();
+        if (!stripe || !elements) {
+            // Stripe.js has not loaded yet. Make sure to disable
+            // form submission until Stripe.js has loaded.
+            return;
+        }
+        // Get a reference to a mounted CardElement. Elements knows how
+        // to find your CardElement because there can only ever be one of
+        // each type of element.
 
+        CardElement.currency = 'usd'
+        const cardElement = elements.getElement(CardElement);
 
-        };
-
-        const token = await stripe.createTokenWithCardAsync(params);
-        console.log("TOKEN: ", token)
+        // Use your card Element with other Stripe.js APIs
+        stripe.createToken(cardElement).then(function (result) {
+            // Handle result.error or result.token
+            const cardId = result.token.card.id
+            console.log("TOKEN: ", result.token)
+            const token = result.token.id
+            // Send token and id to firebase 
+            ref.doc('spE8oRHDBChYPTVgF8BayBTJKmP2').collection('external_accounts').doc(cardId).set({
+                token: token,
+            });
+        });
     };
 
     return (

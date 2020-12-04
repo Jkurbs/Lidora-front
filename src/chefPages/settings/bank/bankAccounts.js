@@ -6,13 +6,19 @@ import Alert from '../../../components/alert';
 import CardAlert from '../../../components/addCardAlert'
 import firebase from '../../../firebase/Firebase';
 
-import { PaymentsStripe as Stripe } from 'expo-payments-stripe';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
 
-Stripe.setOptionsAsync({
-    publishableKey: 'pk_test_51HL8h8LjpR7kl7iGeWLOW7OGQw2qAix0ToeOkzAgOUceEiOUDsGDmuDI1tQyNWSkOiQvdwOxFBpQEw4rBoDuI3Dc00i6Fa8VWD', // Your key
-    androidPayMode: 'test', // [optional] used to set wallet environment (AndroidPay)
-    merchantId: 'your_merchant_id', // [optional] used for payments with ApplePay
-});
+
+// Make sure to call `loadStripe` outside of a component’s render to avoid
+// recreating the `Stripe` object on every render.
+const stripePromise = loadStripe('pk_test_51HL8h8LjpR7kl7iGeWLOW7OGQw2qAix0ToeOkzAgOUceEiOUDsGDmuDI1tQyNWSkOiQvdwOxFBpQEw4rBoDuI3Dc00i6Fa8VWD');
+
+// Stripe.setOptionsAsync({
+//     publishableKey: 'pk_test_51HL8h8LjpR7kl7iGeWLOW7OGQw2qAix0ToeOkzAgOUceEiOUDsGDmuDI1tQyNWSkOiQvdwOxFBpQEw4rBoDuI3Dc00i6Fa8VWD', // Your key
+//     androidPayMode: 'test', // [optional] used to set wallet environment (AndroidPay)
+//     merchantId: 'your_merchant_id', // [optional] used for payments with ApplePay
+// });
 
 import "firebase/firestore";
 
@@ -33,7 +39,7 @@ const Item = ({ account }) => (
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                     <Text style={styles.cardNumber}>{"****"}{account.last4}</Text>
                     <View style={{ justifyContent: 'center', backgroundColor: '#E1E1E1', height: 20, width: 50, borderRadius: 5, marginLeft: 5 }}>
-                        <Text style={{ fontWeight: '500', color: '#636161', alignSelf: 'center', fontSize: 12 }}>{account.currency.toUpperCase()}</Text>
+                        <Text style={{ fontWeight: '500', color: '#636161', alignSelf: 'center', fontSize: 12 }}>{account.currency}</Text>
                     </View>
                     <View style={{ justifyContent: 'center', backgroundColor: '#D6ECFF', height: 20, width: 50, borderRadius: 5, marginLeft: 5 }}>
                         <Text style={{ fontWeight: '500', color: '#0071D3', alignSelf: 'center', fontSize: 12 }}>Default</Text>
@@ -65,6 +71,7 @@ class BankAccounts extends React.Component {
 
     // Fetch bank accounts 
     componentDidMount() {
+        this.setState({ account: [] })
         let currentComponent = this;
         ref.doc(this.state.userID).collection("external_accounts").onSnapshot(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
@@ -116,12 +123,14 @@ class BankAccounts extends React.Component {
                         keyExtractor={item => item.token}
                     />
                 </ScrollView>
-                {/* <CardAlert
-                    stripe={Stripe}
-                    isVisible={this.state.isAlertVisible}
-                    cancelAction={this.cancelAlert.bind(this)}
+                <Elements stripe={stripePromise}>
+                    <CardAlert
+                        stripe={stripePromise}
+                        isVisible={this.state.isAlertVisible}
+                        cancelAction={this.cancelAlert.bind(this)}
 
-                /> */}
+                    />
+                </Elements>
             </View>
         );
     }
