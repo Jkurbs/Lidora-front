@@ -10,5 +10,12 @@
       "**/.*",
       "**/node_modules/**"
     ]
-  }
+  },
+  "appAssociation": "AUTO",
+  "rewrites": [
+    {
+      "source": "/user/**",
+      "dynamicLinks": true
+    }
+  ]
 }
