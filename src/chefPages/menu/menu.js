@@ -1,49 +1,43 @@
 import React from "react";
-import styles from "./menu.styles";
-import {
-  View,
-  ScrollView,
-  Dimensions,
-  Animated
-} from "react-native";
+import styles from './menu.styles';
+import { View, ScrollView, Animated, Dimensions } from "react-native";
 
 import firebase from "../../firebase/Firebase";
-import "firebase/auth";
 import "firebase/firestore";
 
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
-import Alert from '../../components/alert'
-import RightSidebar from '../inventory/InventoryRightSidebar';
-
+import Alert from '../../components/alert';
+// import MenuRightSideBar from '../../components/Me';
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
 
-const getWidth = Dimensions.get('window').width;
+const getWidth = Dimensions.get('window').width - 200;
 
 class Menu extends React.Component {
+
   constructor() {
     super();
     this.child = React.createRef();
     this.state = {
-      userId: firebase.auth().currentUser.uid,
-      ingredients: [],
+      userID: firebase.auth().currentUser.uid,
       tableHead: ['Image', 'Name', 'Price', 'Actions'],
       tableData: [],
-      item: null,
-      hasData: null,
       filteredTableData: [],
+      item: {},
+      fullData: [],
+      inventories: [],
+      value: '',
+      hasData: null,
       isSearching: false,
       isAlertVisible: false,
-      isRightSidebarActive: true,
-      interpolateBar: this.animVal.interpolate({ inputRange: [0, 1], outputRange: [getWidth, getWidth - 597] }),
-      windowWidth: ""
+      isInvModalActive: false,
+      interpolateBar: this.animVal.interpolate({ inputRange: [0, 1], outputRange: [getWidth, getWidth - 397] }),
+      windowWidth: "",
+      mode: 'Add',
     };
-
-    this.addMenuItem = this.addMenuItem.bind(this);
-    this.updateMenuItem = this.updateMenuItem.bind(this);
-    this.deleteMenuItem = this.deleteMenuItem.bind(this);
+    this.addInventoryItem = this.addInventoryItem.bind(this);
   }
 
   animVal = new Animated.Value(0);
@@ -51,115 +45,109 @@ class Menu extends React.Component {
   animatedTransitionShrink = Animated.spring(this.animVal, { toValue: 1 })
   animatedTransitionGrow = Animated.spring(this.animVal, { toValue: 0 })
 
-
-  //FETCH CURRENT CHEF MENU
   componentDidMount() {
-
     let currentComponent = this;
-    ref.doc(this.state.userId).collection("menu").onSnapshot(function (querySnapshot) {
+
+    ref.doc(this.state.userID).collection("menu").onSnapshot(function (querySnapshot) {
       querySnapshot.forEach(function (doc) {
         const data = doc.data()
         const propertyValues = [data.imageURL, data.name, data.price, '']
         let currentTableData = [...currentComponent.state.tableData];
+        let currentFullData = [...currentComponent.state.fullData];
         currentTableData.push(propertyValues);
+        currentFullData.push(data)
         currentComponent.setState({
           tableData: currentTableData,
+          fullData: currentFullData,
           hasData: true,
         });
       });
     });
+
+    ref.doc(this.state.userID).collection("menu").onSnapshot(function (querySnapshot) {
+      currentComponent.setState({ tableData: [], data: [] })
+
+      if (querySnapshot.empty) {
+        currentComponent.setState({
+          hasData: false,
+        });
+      } else {
+        querySnapshot.forEach(function (doc) {
+          const data = doc.data()
+          const detValues = [data.key, data.dateAdded, data.name]
+          let currentData = [...currentComponent.state.data]
+          currentData.push(detValues)
+          const propertyValues = [data.imageURL, data.name, data.price, '']
+          let currentTableData = [...currentComponent.state.tableData];
+          currentTableData.push(propertyValues);
+          currentComponent.setState({
+            data: currentData,
+            tableData: currentTableData,
+            hasData: true,
+          });
+        });
+      }
+    });
+
+
     // Fetch List of Ingredients
-    ref.doc(this.state.userId).collection("inventory").onSnapshot(function (querySnapshot) {
+    ref.doc(this.state.userID).collection("inventory").onSnapshot(function (querySnapshot) {
       let ingredientArray = []
       querySnapshot.forEach(function (doc) {
-        console.log(doc.id, " => ", doc.data());
         ingredientArray.push({
           id: doc.data().key,
           name: doc.data().name
         })
       });
       currentComponent.setState({
-        ingredients: ingredientArray
+        inventories: ingredientArray
       })
-      console.log("gradients", currentComponent.state.ingredients)
     });
 
     let getWidth = ''
     window.addEventListener('resize', function () {
       // your custom logic
-      getWidth = Dimensions.get('window').width;
+      getWidth = Dimensions.get('window').width - 200;
       currentComponent.setState({
         interpolateBar: currentComponent.animVal.interpolate({ inputRange: [0, 1], outputRange: [getWidth, getWidth - 397] })
       })
     });
   }
 
+  // Handle inventory details mode 
+  handleMode = (mode) => {
+    this.setState({
+      mode: mode
+    })
+  }
 
-  // Add new menu item
-  addMenuItem = (item, selectedItems) => {
-    this.setState(state => {
-      const data = [{
-        key: item.key,
-        name: item.name,
-        description: item.description,
-        price: item.price,
-        imageURL: item.image
-      }, ...state.data];
-      return {
-        data,
-        value: {
-          key: item.key,
-          name: item.name,
-          description: item.description,
-          price: item.price,
-          imageURL: item.image
-        },
-        item: {
-          key: item.key,
-          name: item.name,
-          description: item.description,
-          price: item.price,
-          imageURL: item.image
-        }
-      };
-    });
-    // Change menu mode 
-    this.handleMode("Details")
-    // Add menu item to Firebase 
-    ref.doc(this.state.userId).collection("menu").add(
-      {
-        key: item.key,
-        name: item.name,
-        description: item.description,
-        price: item.price,
-        ingredients: selectedItems || null
-      }
-    )
-
-    //check and Add Image to Firebase Storage
-    if (item.image != null) {
-      var storage = firebase.storage().ref(item.image.name)
-      let currentComponent = this
-      storage.put(item.image.file).then((snapshot) => {
-        snapshot.ref.getDownloadURL().then(function (downloadURL) {
-          console.log("File available at", downloadURL);
-          ref.doc(currentComponent.state.userId).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
-            snapshot.forEach(function (doc) {
-              console.log(doc.id)
-              ref.doc(currentComponent.state.userId).collection("menu").doc(doc.id).update(
-                {
-                  imageURL: downloadURL
-                }
-              )
-            })
-          })
-        });
-      })
-    }
+  // Show Iventory item details 
+  handleDetails = (item) => {
+    this.setState({
+      item: item,
+      mode: 'Details'
+    })
   };
 
-  // Update menu Item 
-  updateMenuItem = (item) => {
+  // Add new inventory item
+  addInventoryItem = (item) => {
+    this.setState(state => {
+      const data = [item, ...state.data];
+      return {
+        data,
+        value: item,
+        item: item
+      };
+    });
+    // TODO: - Add inventory item to Firebase 
+    ref.doc(this.state.userID).collection("inventory").add(
+      item
+    )
+    this.handleMode("Details")
+  };
+
+  // Update inventory Item 
+  updateInventoryItem = (item) => {
     this.setState(state => {
       const data = state.data.map((previousItem, j) => {
         if (j === item) {
@@ -174,44 +162,25 @@ class Menu extends React.Component {
     });
     // Update menu item in Firebase 
     let currentComponent = this
-    ref.doc(this.state.userId).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
+    ref.doc(this.state.userID).collection("inventory").where('key', '==', item.key).get().then(function (snapshot) {
       snapshot.forEach(function (doc) {
         console.log(doc.id)
-
-        ref.doc(currentComponent.state.userId).collection("menu").doc(doc.id).update(
-          {
-            key: item.key,
-            name: item.name,
-            description: item.description,
-            price: item.price,
-          }
-        )
+        ref.doc(currentComponent.state.userID).collection("inventory").doc(doc.id).update(item)
       })
     })
-    //check and Add Image to Firebase Storage
-    //check if image changed
-    if (typeof item.image != 'string') {
-      var storage = firebase.storage().ref(this.state.image.name)
-      let currentComponent = this
-      storage.put(item.image.file).then((snapshot) => {
-        snapshot.ref.getDownloadURL().then(function (downloadURL) {
-          console.log("File available at", downloadURL);
-          ref.doc(currentComponent.state.userId).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
-            snapshot.forEach(function (doc) {
-              ref.doc(currentComponent.state.userId).collection("menu").doc(doc.id).update(
-                {
-                  imageURL: downloadURL
-                }
-              )
-            })
-          })
-        });
-      })
-    }
   };
 
   // Delete menu Item 
-  deleteMenuItem = () => {
+  deleteInventoryItem = () => {
+
+    // TODO: - Delete menu item in Firebase
+    // let currentComponent = this
+    // ref.doc(this.state.userID).collection("inventory").where('key', '==', item.key).get().then(function (snapshot) {
+    //     snapshot.forEach(function (doc) {
+    //         console.log(doc.id)
+    //         ref.doc(currentComponent.state.userID).collection("inventory").doc(doc.id).delete()
+    //     })
+    // })
 
     const item = this.state.item
 
@@ -226,28 +195,22 @@ class Menu extends React.Component {
 
     this.setState({ item: null, isAlertVisible: !this.state.isAlertVisible })
 
-    // Delete menu item in Firebase
-    // let currentComponent = this
-    // ref.doc(this.state.userId).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
-    //   snapshot.forEach(function (doc) {
-    //     console.log(doc.id)
-    //     ref.doc(currentComponent.state.userId).collection("menu").doc(doc.id).delete()
-    //   })
-    // })
-
-    // Delete image from storage
-    // if (item.image != null) {
-    //   var storage = firebase.storage().ref(item.image.name)
-    //   storage.delete(item.image.name)
-    // }
   };
 
-  didSelectCell = (selectedIndex) => {
-
+  didSelectCell = (item, selectedIndex) => {
+    this.handleMode("Details")
+    let filteredItem = this.state.fullData.filter(t => t.name === item[1]);
+    this.handleDetails(filteredItem)
+    if (this.state.isInvModalActive === false) {
+      this.showInventoryModal()
+    }
   }
 
   leftActionSelected = (selectedIndex) => {
-
+    this.handleMode("Edit")
+    if (this.state.isInvModalActive === false) {
+      this.showInventoryModal()
+    }
   }
 
   middleActionSelected = (item, selectedIndex) => {
@@ -259,22 +222,43 @@ class Menu extends React.Component {
   }
 
   rightActionSelected = (selectedIndex) => {
-
+    this.handleMode("Details")
+    if (this.state.isInvModalActive === false) {
+      this.showInventoryModal()
+    }
   }
 
-  showModal = () => {
+  showCalendarModal = () => {
     this.setState({ showCalendar: !this.state.showCalendar });
-    console.log(this.state.showCalendar)
   }
 
-  showRightSideBar = () => {
-    this.setState({ isRightSidebarActive: !this.state.isRightSidebarActive })
-    this.child.current.handleSlide(this.state.isRightSidebarActive);
-    if (this.state.isRightSidebarActive === true) {
-      this.animatedTransitionShrink.start();
+  showInventoryModal = () => {
+    if (this.state.isInvModalActive === true) {
+      this.setState({ isInvModalActive: false })
+      this.child.current.handleSlide(true);
+      this.animatedTransitionGrow.start();
 
     } else {
-      this.animatedTransitionGrow.start();
+      this.setState({ isInvModalActive: true })
+      this.child.current.handleSlide(false);
+      this.animatedTransitionShrink.start();
+    }
+  }
+
+  search = (searchTerm) => {
+    let filteredData = this.state.tableData.filter(dataRow => dataRow[1].toLowerCase().includes(searchTerm));
+    this.setState({
+      isSearching: true,
+      filteredTableData: filteredData,
+    });
+
+    if (filteredData.length === 0) {
+      this.setState({
+        isSearching: false,
+        filteredTableData: [
+          ["No result ", "try something else",]
+        ],
+      });
     }
   }
 
@@ -293,56 +277,54 @@ class Menu extends React.Component {
     });
   };
 
-  search = (searchTerm) => {
-    let filteredData = this.state.tableData.filter(dataRow => dataRow[1].toLowerCase().includes(searchTerm));
-    this.setState({
-      isSearching: true,
-      filteredTableData: filteredData,
-    });
-  }
-
   render() {
     return (
-
       <View style={styles.container}>
         <HeaderBar
           title={"Menu"}
           subtitle={this.state.tableData.length}
           search={this.search.bind(this)}
           isSearchEnabled={true}
-          show={this.showModal.bind(this)}
-          showRightSideBar={this.showRightSideBar.bind(this)}
+          showCalendar={this.showCalendarModal.bind(this)}
+          showInv={this.showInventoryModal.bind(this)}
+          handleMode={this.handleMode.bind(this)}
+          isModalActive={this.state.isInvModalActive}
         />
-
-        <Animated.View style={{ width: this.state.interpolateBar }}>
-          <TableView
-            tableHead={this.state.tableHead}
-            tableData={this.state.isSearching ? this.state.filteredTableData : this.state.tableData}
-            hasData={this.state.hasData}
-            hasImage={true}
-            didSelectCell={this.didSelectCell.bind(this)}
-            leftImage={require('../../assets/icon/edit.png')}
-            middleImage={require('../../assets/icon/remove-100.png')}
-            rightImage={require('../../assets/icon/info-100.png')}
-            leftAction={this.leftActionSelected.bind(this)}
-            middleAction={this.middleActionSelected.bind(this)}
-            rightAction={this.rightActionSelected.bind(this)}
-          />
-        </Animated.View>
-
+        <ScrollView>
+          <Animated.View style={{ width: this.state.interpolateBar }}>
+            <TableView
+              tableHead={this.state.tableHead}
+              tableData={this.state.isSearching ? this.state.filteredTableData : this.state.tableData}
+              hasData={this.state.hasData}
+              hasImage={true}
+              didSelectCell={this.didSelectCell.bind(this)}
+              leftImage={require('../../assets/icon/edit.png')}
+              middleImage={require('../../assets/icon/remove-100.png')}
+              rightImage={require('../../assets/icon/info-100.png')}
+              leftAction={this.leftActionSelected.bind(this)}
+              middleAction={this.middleActionSelected.bind(this)}
+              rightAction={this.rightActionSelected.bind(this)}
+            />
+          </Animated.View>
+        </ScrollView>
+        {/* <MenuRightSideBar
+          inventories={this.state.inventories}
+          isActive={this.state.isInvModalActive}
+          showInv={this.showInventoryModal.bind(this)}
+          mode={this.state.mode}
+          ref={this.child}
+          handleMode={this.handleMode.bind(this)}
+          item={this.state.item}
+          addInventoryItem={this.addInventoryItem}
+          editInventoryITem={this.updateInventoryItem}
+        /> */}
         <Alert
           cancelAction={this.cancelAlert.bind(this)}
-          deleteAction={this.deleteMenuItem.bind(this)}
+          deleteAction={this.deleteInventoryItem.bind(this)}
           isVisible={this.state.isAlertVisible}
-          buttonTitle1={"Delete from menu"} />
-
-        <RightSidebar
-          isActive={this.state.isRightSidebarActive}
-          ref={this.child}
-        />
+          buttonTitle1={"Delete from inventory"} />
       </View>
-
-    )
+    );
   }
 }
 

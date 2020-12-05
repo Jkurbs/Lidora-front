@@ -3,8 +3,6 @@ import styles from './editProfile.styles';
 import {
     View,
     TextInput,
-    TouchableOpacity,
-    ActivityIndicator,
     Text,
     Image,
     ScrollView
@@ -14,6 +12,8 @@ import firebase from "../../../firebase/Firebase";
 import "firebase/firestore";
 import "firebase/auth";
 import Button from '../../../components/buttons/mainButton'
+import ReactPlaceholder from 'react-placeholder';
+
 
 import * as DocumentPicker from 'expo-document-picker';
 
@@ -142,17 +142,24 @@ class EditProfileView extends React.Component {
                 <ScrollView style={{ marginLeft: 60, height: '100%' }} >
                     <View style={styles.itemContainer}>
                         <View style={styles.imageContainer}>
-                            <Image style={{
-                                height: 50, width: 50, borderRadius: 25, backgroundColor: 'rgb(174,174,178)'
-                            }} source={this.state.image}
-                            />
+                            <ReactPlaceholder showLoadingAnimation={true} type='round' ready={this.state.image != null} style={{ width: 50, height: 50 }}>
+                                <Image style={{
+                                    height: 50, width: 50, borderRadius: 25, backgroundColor: 'rgb(174,174,178)'
+                                }} source={this.state.image}
+                                />
+                            </ReactPlaceholder>
+
                             <View style={{ flexDirection: 'column' }}>
-                                <Text style={styles.name}>{this.state.firstName} {this.state.lastName}</Text>
+                                <ReactPlaceholder showLoadingAnimation={true} type='text' rows={1} ready={this.state.firstName != null} >
+                                    <Text style={styles.name}>{this.state.firstName} {this.state.lastName}</Text>
+                                </ReactPlaceholder>
+
                                 <Text onPress={this.pickDocument.bind(this)} style={styles.imageButton}>Change Profile photo</Text>
                             </View>
                         </View>
                         <View>
                             <View style={styles.inputView}>
+
                                 <Text style={styles.formTitle}>First name</Text>
                                 <TextInput
                                     style={styles.formInput}
