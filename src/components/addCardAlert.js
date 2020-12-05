@@ -29,7 +29,8 @@ const options = () => ({
 })
 
 
-const Alert = ({ isVisible, stripePromise }) => {
+const Alert = ({ isVisible, stripePromise, cancelAction }) => {
+
     const stripe = useStripe();
     const elements = useElements();
 
@@ -45,20 +46,20 @@ const Alert = ({ isVisible, stripePromise }) => {
         // to find your CardElement because there can only ever be one of
         // each type of element.
 
-        CardElement.currency = 'usd'
         const cardElement = elements.getElement(CardElement);
 
         // Use your card Element with other Stripe.js APIs
-        stripe.createToken(cardElement).then(function (result) {
+        stripe.createToken(cardElement, { 'currency': 'usd' }).then(function (result) {
             // Handle result.error or result.token
             const cardId = result.token.card.id
-            console.log("TOKEN: ", result.token)
             const token = result.token.id
             // Send token and id to firebase 
             ref.doc('spE8oRHDBChYPTVgF8BayBTJKmP2').collection('external_accounts').doc(cardId).set({
                 token: token,
+                created: result.token.created
             });
         });
+        cancelAction()
     };
 
     return (
@@ -78,24 +79,10 @@ const Alert = ({ isVisible, stripePromise }) => {
                         options={{ options }}
                     />
                 </View>
-                {/* 
-                <View style={{ marginTop: 8, flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                    <View style={styles.input}>
-                        <CardExpiryElement
-                            options={{ options }}
-                        />
-                    </View>
-
-                    <View style={styles.input}>
-                        <CardCvcElement
-                            options={{ options }}
-                        />
-                    </View>
-                </View> */}
                 <Text style={styles.secondaryText}>Your payment methods are saved and stored securely.</Text>
                 <View style={styles.buttonContainer}>
-                    <RegularButton text={"Cancel"} />
-                    <MainButton action={handleSubmit} indicatorAnimating={false} text={"Add"} />
+                    <RegularButton action={cancelAction} text={"Cancel"} />
+                    <MainButton indicatorAnimating={!isVisible} action={handleSubmit} indicatorAnimating={!isVisible} text={"Add"} />
                 </View>
             </View>
         </AnimatedHideView >
@@ -152,8 +139,8 @@ const styles = StyleSheet.create({
     },
 
     image: {
-        width: 40,
-        height: 25,
+        width: 30,
+        height: 19,
     },
 
     secondaryText: {

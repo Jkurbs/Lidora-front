@@ -12,8 +12,10 @@ import SupportScreen from "../support/support";
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 
-const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
+import ReactPlaceholder from 'react-placeholder';
+import "react-placeholder/lib/reactPlaceholder.css";
 
+const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
 const Tab = createSideTabNavigator();
 const StackInventory = createStackNavigator();
@@ -22,16 +24,12 @@ const StackMenu = createStackNavigator();
 const StackDashboard = createStackNavigator();
 const StackSupport = createStackNavigator();
 
-
-
 const navOptionHandler = () => ({
     headerShown: false,
     header: null,
 });
 
 function TabNavigator({ navigation, userData }) {
-
-    console.log("USER DATA: ", userData)
 
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
@@ -220,6 +218,7 @@ function Dashboard({ route }) {
     var db = firebase.firestore();
     const [userData, setUserData] = React.useState({ user: [] })
 
+
     React.useEffect(() => {
         // Fetch Current chef 
         db.collection('chefs').doc(userID).onSnapshot(function (doc) {
@@ -241,13 +240,16 @@ function Dashboard({ route }) {
 
 function WebDashboard({ userData, navigation }) {
     return (
-        <View style={{ height: '100%' }}>
+        <View style={{ height: windowHeight, maxHeight: '100%' }}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
-                <Image style={{
-                    height: 100, width: 100, borderRadius: 50, marginBottom: 16, backgroundColor: 'rgb(174,174,178)'
-                }} source={{ uri: userData.user.imageURL }} />
-                <Text style={{ fontSize: 20, fontWeight: '500' }}>Welcome {userData.user.first_name}</Text>
-                {/* //userData = { userData }, navigation = { navigation } */}
+                <ReactPlaceholder showLoadingAnimation={true} type='round' delay={1000} ready={userData != null} style={{ width: 100, height: 100, marginBottom: 16 }}>
+                    <Image style={{
+                        height: 100, width: 100, borderRadius: 50, marginBottom: 16, backgroundColor: 'rgb(174,174,178)'
+                    }} source={{ uri: userData.user.imageURL }} />
+                </ReactPlaceholder>
+                <ReactPlaceholder showLoadingAnimation={true} type='text' rows={1} delay={1000} ready={userData != null} >
+                    <Text style={{ fontSize: 20, fontWeight: '500' }}>Welcome {userData.user.first_name}</Text>
+                </ReactPlaceholder>
                 <TouchableOpacity style={{ marginTop: 16, marginBottom: 20 }} onPress={() => navigation.navigate("Settings", { userData: userData, navigation: navigation })}>
                     <Text style={{ fontWeight: '500' }}>Settings</Text>
                 </TouchableOpacity>

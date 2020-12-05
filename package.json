@@ -47,6 +47,7 @@
     "react-native-web": "~0.13.12",
     "react-navigation-side-tabs": "0.0.7",
     "react-papaparse": "^3.11.0",
+    "react-placeholder": "^4.0.3",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22"
   },
   "devDependencies": {

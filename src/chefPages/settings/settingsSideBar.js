@@ -62,17 +62,16 @@ function TabNavigator({ userData }) {
 
             {/* <Tab.Screen
                 options={{
-                    title: "Preferences",
-                    tabBarLabel: "Preferences",
+                    title: "Change Password",
+                    tabBarLabel: "Change Password",
                     headerTintColor: "#fff",
                     headerTitleStyle: {
                         fontWeight: "bold",
                     },
                 }}
-                name="Preferences"
-                component={PreferenceStack}
+                name="Change password"
+                component={EditProfileStack}
                 ini
-            // initialParams={{ userData: userData }}
             /> */}
 
             <Tab.Screen
@@ -88,6 +87,21 @@ function TabNavigator({ userData }) {
                 component={BankAccountsStack}
                 ini
             />
+
+            {/* <Tab.Screen
+                options={{
+                    title: "Preferences",
+                    tabBarLabel: "Preferences",
+                    headerTintColor: "#fff",
+                    headerTitleStyle: {
+                        fontWeight: "bold",
+                    },
+                }}
+                name="Preferences"
+                component={PreferenceStack}
+                ini
+            // initialParams={{ userData: userData }}
+            /> */}
         </Tab.Navigator>
     );
 }
@@ -149,7 +163,7 @@ function Dashboard({ route }) {
 
 function WebDashboard({ navigation, userData }) {
     return (
-        <View style={{ height: '100%' }}>
+        <View style={{ height: windowHeight, maxHeight: '100%' }}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 30, left: 20 }}>
                 <TouchableOpacity style={{ marginTop: 16, marginBottom: 20 }} onPress={() => navigation.navigate("Dashboard", navigation = { navigation })}>
                     <Text style={{ fontWeight: '500' }}>Back</Text>

@@ -1,24 +1,19 @@
 import React from "react";
 import { StatusBar, View, Image, Text, FlatList, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 
-import Alert from '../../../components/alert';
-
 import CardAlert from '../../../components/addCardAlert'
 import firebase from '../../../firebase/Firebase';
 
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 
+import ReactPlaceholder from 'react-placeholder';
+
+
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
 const stripePromise = loadStripe('pk_test_51HL8h8LjpR7kl7iGeWLOW7OGQw2qAix0ToeOkzAgOUceEiOUDsGDmuDI1tQyNWSkOiQvdwOxFBpQEw4rBoDuI3Dc00i6Fa8VWD');
-
-// Stripe.setOptionsAsync({
-//     publishableKey: 'pk_test_51HL8h8LjpR7kl7iGeWLOW7OGQw2qAix0ToeOkzAgOUceEiOUDsGDmuDI1tQyNWSkOiQvdwOxFBpQEw4rBoDuI3Dc00i6Fa8VWD', // Your key
-//     androidPayMode: 'test', // [optional] used to set wallet environment (AndroidPay)
-//     merchantId: 'your_merchant_id', // [optional] used for payments with ApplePay
-// });
 
 import "firebase/firestore";
 
@@ -34,21 +29,37 @@ const FlatListItemSeparator = () => {
 const Item = ({ account }) => (
     <View style={styles.item}>
         <View style={{ flexDirection: 'row' }}>
-            <Image style={styles.image} source={require('../../../assets/icon/mastercard.png')} />
-            <View style={{ flexDirection: 'column', justifyContent: 'space-around' }}>
+
+            <ReactPlaceholder showLoadingAnimation={true} type='rect' ready={account.brand != null} style={{ width: 30, height: 30, alignSelf: 'center', borderRadius: 5 }}>
+                <Image style={styles.image} source={require(`../../../assets/icon/${account.brand ?? "unknown"}.png`)} />
+            </ReactPlaceholder>
+
+            <ReactPlaceholder showLoadingAnimation={true} type='text' rows={1} ready={account.last4 != null} style={{
+                width: 150, borderRadius: 5
+            }} >
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <Text style={styles.cardNumber}>{"****"}{account.last4}</Text>
-                    <View style={{ justifyContent: 'center', backgroundColor: '#E1E1E1', height: 20, width: 50, borderRadius: 5, marginLeft: 5 }}>
-                        <Text style={{ fontWeight: '500', color: '#636161', alignSelf: 'center', fontSize: 12 }}>{account.currency}</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                        <Text style={styles.cardNumber}>{"****"}{account.last4}</Text>
+                        <View style={{ justifyContent: 'center', backgroundColor: '#E1E1E1', height: 20, width: 50, borderRadius: 5, marginLeft: 5 }}>
+                            <Text style={{ fontWeight: '500', color: '#636161', alignSelf: 'center', fontSize: 12 }}>{account.currency ? (account.currency.toUpperCase()) : ('...')}</Text>
+                        </View>
+                        {
+                            account.isDefault ? (
+                                <View style={{ justifyContent: 'center', backgroundColor: '#D6ECFF', height: 20, width: 50, borderRadius: 5, marginLeft: 5 }}>
+                                    <Text style={{ fontWeight: '500', color: '#0071D3', alignSelf: 'center', fontSize: 12 }}>Default</Text>
+                                </View>
+                            ) : (
+                                    <View style={{ justifyContent: 'center', height: 20, width: 50, borderRadius: 5, marginLeft: 5 }}>
+                                        <Text style={{ fontWeight: '500', color: '#0071D3', alignSelf: 'center', fontSize: 12 }}></Text>
+                                    </View>
+                                )
+                        }
                     </View>
-                    <View style={{ justifyContent: 'center', backgroundColor: '#D6ECFF', height: 20, width: 50, borderRadius: 5, marginLeft: 5 }}>
-                        <Text style={{ fontWeight: '500', color: '#0071D3', alignSelf: 'center', fontSize: 12 }}>Default</Text>
-                    </View>
+                    <TouchableOpacity>
+                        <Image />
+                    </TouchableOpacity>
                 </View>
-                <View>
-                    <Text style={styles.date}>{"Date added: 12/53"}</Text>
-                </View>
-            </View>
+            </ReactPlaceholder>
         </View>
     </View>
 
@@ -71,11 +82,12 @@ class BankAccounts extends React.Component {
 
     // Fetch bank accounts 
     componentDidMount() {
-        this.setState({ account: [] })
         let currentComponent = this;
         ref.doc(this.state.userID).collection("external_accounts").onSnapshot(function (querySnapshot) {
+            currentComponent.setState({ accounts: [] })
             querySnapshot.forEach(function (doc) {
                 const data = doc.data()
+                if (data.brand === null) { return }
                 let accounts = [...currentComponent.state.accounts];
                 accounts.push(data)
                 currentComponent.setState({
@@ -110,9 +122,11 @@ class BankAccounts extends React.Component {
                         shadowColor: "#000",
                         shadowOpacity: 0.13,
                         shadowRadius: 10.68,
+                        borderWidth: 1,
+                        borderColor: 'rgb(239, 239, 239)'
 
                     }}>
-                    <Text style={{ alignSelf: 'center' }}>Add</Text>
+                    <Text style={{ alignSelf: 'center', color: '#3c4257', fontWeight: '500' }}>Add</Text>
                 </TouchableOpacity>
                 <ScrollView>
                     <FlatList
@@ -164,8 +178,9 @@ const styles = StyleSheet.create({
     },
 
     image: {
-        width: 25,
-        height: 16,
+        width: 30,
+        height: 30,
+        borderRadius: 2,
         marginRight: 16,
         alignSelf: 'center'
     }
