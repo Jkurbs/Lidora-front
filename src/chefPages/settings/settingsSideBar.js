@@ -148,20 +148,20 @@ function PreferenceStack({ userData }) {
     );
 }
 
-function Dashboard({ route }) {
+function Settings({ route }) {
 
     const phoneMaxWidth = 575.98
     const { navigation, userData } = route.params;
 
     if (windowWidth < phoneMaxWidth) {
-        return <MobileDashboard />
+        return <MobileSettings />
     } else {
-        return <WebDashboard navigation={navigation} userData={userData} />
+        return <WebSettings navigation={navigation} userData={userData} />
     }
 }
 
 
-function WebDashboard({ navigation, userData }) {
+function WebSettings({ navigation, userData }) {
     return (
         <View style={{ height: windowHeight, maxHeight: '100%' }}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 30, left: 20 }}>
@@ -174,11 +174,11 @@ function WebDashboard({ navigation, userData }) {
     )
 }
 
-function MobileDashboard() {
+function MobileSettings() {
     return (
         <View style={{ borderRadius: 10, height: '100%', width: '80%', alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 17, alignSelf: 'center' }}>Dashboard will soon be available on mobile.</Text>
         </View>
     )
 }
-export default Dashboard;
+export default Settings;
