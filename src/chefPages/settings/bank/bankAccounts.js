@@ -31,7 +31,13 @@ const Item = ({ account }) => (
         <View style={{ flexDirection: 'row' }}>
 
             <ReactPlaceholder showLoadingAnimation={true} type='rect' ready={account.brand != null} style={{ width: 30, height: 30, alignSelf: 'center', borderRadius: 5 }}>
-                <Image style={styles.image} source={require(`../../../assets/icon/${account.brand ?? "unknown"}.png`)} />
+                {account.brand ? (
+                    <Image style={styles.image} source={require(`../../../assets/icon/${account.brand.toLowerCase()}.png`)} />
+                ) : (
+                        <Image style={styles.image} source={require(`../../../assets/icon/unknown.png`)} />
+                    )
+                }
+
             </ReactPlaceholder>
 
             <ReactPlaceholder showLoadingAnimation={true} type='text' rows={1} ready={account.last4 != null} style={{
