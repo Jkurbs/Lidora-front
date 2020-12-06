@@ -295,6 +295,7 @@ class Edit extends React.Component {
                         defaultValue={this.props.item.unit}
                         style={styles.pickerStyle}
                         onValueChange={value => { this.state.item.unit = value }}>
+                        <Picker.Item label="Lb" value="Lb" />
                         <Picker.Item label="Piece" value="Piece" />
                         <Picker.Item label="Gram" value="Gram" />
                         <Picker.Item label="Ounce" value="Ounce" />

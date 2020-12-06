@@ -4,6 +4,7 @@ import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import EditProfileScreen from './EditProfile/editProfile';
 import BankAccountScreen from './bank/bankAccounts'
+import OrderSettingsScreen from './OrderSettings/orderSettings';
 import PreferenceScreen from './Preference/preference';
 
 
@@ -13,6 +14,7 @@ const Tab = createSideTabNavigator();
 
 const StackEditProfile = createStackNavigator();
 const StackBankAccount = createStackNavigator();
+const StackOrderSettings = createStackNavigator();
 const StackPreference = createStackNavigator();
 
 
@@ -57,10 +59,9 @@ function TabNavigator({ userData }) {
                 }}
                 name="Edit Profile"
                 component={EditProfileStack}
-                ini
             />
 
-            {/* <Tab.Screen
+            <Tab.Screen
                 options={{
                     title: "Change Password",
                     tabBarLabel: "Change Password",
@@ -71,8 +72,7 @@ function TabNavigator({ userData }) {
                 }}
                 name="Change password"
                 component={EditProfileStack}
-                ini
-            /> */}
+            />
 
             <Tab.Screen
                 options={{
@@ -85,10 +85,22 @@ function TabNavigator({ userData }) {
                 }}
                 name="Bank accounts"
                 component={BankAccountsStack}
-                ini
             />
 
-            {/* <Tab.Screen
+            <Tab.Screen
+                options={{
+                    title: "Order settings",
+                    tabBarLabel: "Order settings",
+                    headerTintColor: "#fff",
+                    headerTitleStyle: {
+                        fontWeight: "bold",
+                    },
+                }}
+                name="Order settings"
+                component={OrderSettingsStack}
+            />
+
+            <Tab.Screen
                 options={{
                     title: "Preferences",
                     tabBarLabel: "Preferences",
@@ -99,9 +111,7 @@ function TabNavigator({ userData }) {
                 }}
                 name="Preferences"
                 component={PreferenceStack}
-                ini
-            // initialParams={{ userData: userData }}
-            /> */}
+            />
         </Tab.Navigator>
     );
 }
@@ -131,6 +141,20 @@ function BankAccountsStack({ userData }) {
                 initialParams={{ userData: userData }}
             />
         </StackBankAccount.Navigator>
+    );
+}
+
+// Stack to show Order Settings
+function OrderSettingsStack({ userData }) {
+    return (
+        <StackOrderSettings.Navigator initialRouteName="Order settings">
+            <StackOrderSettings.Screen
+                name="Order settings"
+                component={OrderSettingsScreen}
+                options={navOptionHandler}
+                initialParams={{ userData: userData }}
+            />
+        </StackOrderSettings.Navigator>
     );
 }
 
