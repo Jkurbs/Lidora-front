@@ -174,7 +174,7 @@ class Menu extends React.Component {
   didSelectCell = (item,selectedIndex) => {
     this.handleMode("Details")
     let realD = this.state.fullData
-    console.log("realD",realD)
+    console.log(this.state.inventories)
     // IF SEARCH IS ON GET DATA FROM FILTERED
     if(this.state.isSearching === true){
         realD = this.state.filteredFullData

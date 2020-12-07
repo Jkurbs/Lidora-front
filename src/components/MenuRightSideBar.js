@@ -230,33 +230,32 @@ class Add extends React.Component {
                 <ModalTextField placeholder={"Add price"} onChangeText={(text) => this.state.item.quantity = text} />
 
                 <MultiSelect
-                    items={this.props.inventories}
-                    uniqueKey="ID"
-                    ref={(component) => { this.multiSelect = component }}
-                    onSelectedItemsChange={this.onSelectedItemsChange}
-                    selectedItems={this.state.selectedItems}
-                    selectText={this.state.item.name}
-                    searchInputPlaceholderText="Search Ingredients..."
-                    onChangeInput={(text) => this.handleSearch(text)}
-                    tagRemoveIconColor="#CCC"
-                    tagBorderColor="#CCC"
-                    tagTextColor="#CCC"
-                    selectedItemTextColor="#CCC"
-                    selectedItemIconColor="#CCC"
-                    itemTextColor="#000"
-                    displayKey="name"
-                    searchInputStyle={{ color: '#CCC' }}
-                    submitButtonColor="#CCC"
-                    submitButtonText="Submit"
-                    styleMainWrapper={{ marginTop: 7 }}
-                    styleTextDropdown={{ fontFamily: 'System', padding: 8 }}
-                    styleDropdownMenuSubsection={{ height: 40, borderRadius: 5, borderWidth: 1, borderColor: '#d6d6d6' }}
-                    styleRowList={{ height: 40 }}
-                    itemFontSize={13}
-                    styleListContainer={{ marginTop: 20 }}
-                    searchInputStyle={{ height: 40 }}
-                    single={true}
-                />
+                items={this.props.inventories}
+                uniqueKey="name"
+                ref={(component) => { this.multiSelect = component }}
+                onSelectedItemsChange={this.onSelectedItemsChange}
+                selectedItems={this.state.selectedItems}
+                selectText="Pick Ingredients"
+                searchInputPlaceholderText="Search Ingredients..."
+                onChangeInput={(text) => console.log(text)}
+                tagRemoveIconColor="#CCC"
+                tagBorderColor="#CCC"
+                tagTextColor="#CCC"
+                selectedItemTextColor="#CCC"
+                selectedItemIconColor="#CCC"
+                itemTextColor="#000"
+                displayKey="name"
+                searchInputStyle={{ color: '#CCC' }}
+                submitButtonColor="#CCC"
+                submitButtonText="Submit"
+                styleMainWrapper={{ marginTop: 7 }}
+                styleTextDropdown={{ fontFamily: 'System', padding: 8 }}
+                styleDropdownMenuSubsection={{ height: 40, borderRadius: 5, borderWidth: 1, borderColor: '#d6d6d6' }}
+                styleRowList={{ height: 40 }}
+                itemFontSize={13}
+                styleListContainer={{ marginTop: 20 }}
+                searchInputStyle={{ height: 40 }}
+              />
 
                 <View style={{}}>
                     <Text>Visibility</Text>
