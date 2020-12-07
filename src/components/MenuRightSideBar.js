@@ -230,7 +230,7 @@ class Add extends React.Component {
                 <ModalTextField placeholder={"Add price"} onChangeText={(text) => this.state.item.quantity = text} />
 
                 <MultiSelect
-                items={this.props.inventories}
+                items={[{name:"cool"},{name:"beans"}]}
                 uniqueKey="name"
                 ref={(component) => { this.multiSelect = component }}
                 onSelectedItemsChange={this.onSelectedItemsChange}
