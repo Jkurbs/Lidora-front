@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import EditProfileScreen from './EditProfile/editProfile';
+import ChangePasswordScreen from './Password/changePassword';
 import BankAccountScreen from './bank/bankAccounts'
 import OrderSettingsScreen from './OrderSettings/orderSettings';
 import PreferenceScreen from './Preference/preference';
@@ -13,6 +14,7 @@ const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 const Tab = createSideTabNavigator();
 
 const StackEditProfile = createStackNavigator();
+const StackChangePassword = createStackNavigator();
 const StackBankAccount = createStackNavigator();
 const StackOrderSettings = createStackNavigator();
 const StackPreference = createStackNavigator();
@@ -71,7 +73,7 @@ function TabNavigator({ userData }) {
                     },
                 }}
                 name="Change password"
-                component={EditProfileStack}
+                component={ChangePasswordStack}
             />
 
             <Tab.Screen
@@ -100,7 +102,7 @@ function TabNavigator({ userData }) {
                 component={OrderSettingsStack}
             />
 
-            <Tab.Screen
+            {/* <Tab.Screen
                 options={{
                     title: "Preferences",
                     tabBarLabel: "Preferences",
@@ -111,7 +113,7 @@ function TabNavigator({ userData }) {
                 }}
                 name="Preferences"
                 component={PreferenceStack}
-            />
+            /> */}
         </Tab.Navigator>
     );
 }
@@ -127,6 +129,19 @@ function EditProfileStack({ userData }) {
                 initialParams={{ userData: userData }}
             />
         </StackEditProfile.Navigator>
+    );
+}
+
+function ChangePasswordStack({ userData }) {
+    return (
+        <StackChangePassword.Navigator initialRouteName="Change Password">
+            <StackChangePassword.Screen
+                name="Change Password"
+                component={ChangePasswordScreen}
+                options={navOptionHandler}
+                initialParams={{ userData: userData }}
+            />
+        </StackChangePassword.Navigator>
     );
 }
 

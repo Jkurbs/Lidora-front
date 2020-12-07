@@ -39,7 +39,6 @@ class EditProfileView extends React.Component {
 
     componentDidMount() {
         let currentComponent = this
-
         // Fetch Current chef 
         db.collection('chefs').doc(currentComponent.state.userId).get().then(function (doc) {
             if (doc.exists) {
@@ -122,10 +121,12 @@ class EditProfileView extends React.Component {
             }, { merge: true })
                 .then(function () {
                     console.log("Document successfully updated!");
+                    alert("Account successfully updated!")
                     currentComponent.setState({ indicatorAnimating: false, buttonText: 'Submit' })
                 })
                 .catch(function (error) {
                     // The document probably doesn't exist.
+                    alert(error)
                     console.error("Error updating document: ", error);
                 });
         }).catch(function (error) {
