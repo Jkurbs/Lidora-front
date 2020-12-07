@@ -37,7 +37,7 @@ class PreferenceView extends React.Component {
                 backgroundColor: 'white'
             }}>
                 <View style={{ margin: 20 }} >
-                    <Text style={{ fontSize: 25 }}>Display</Text>
+                    <Text style={{ fontSize: 25 }}>Dark mode</Text>
                     <Switch
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
                         thumbColor={this.state.isEnabled ? "#f5dd4b" : "#f4f3f4"}

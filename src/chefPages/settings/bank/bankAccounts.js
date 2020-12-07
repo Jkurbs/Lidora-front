@@ -29,7 +29,6 @@ const FlatListItemSeparator = () => {
 const Item = ({ account }) => (
     <View style={styles.item}>
         <View style={{ flexDirection: 'row' }}>
-
             <ReactPlaceholder showLoadingAnimation={true} type='rect' ready={account.brand != null} style={{ width: 30, height: 30, alignSelf: 'center', borderRadius: 5 }}>
                 {account.brand ? (
                     <Image style={styles.image} source={require(`../../../assets/icon/${account.brand.toLowerCase()}.png`)} />
@@ -37,9 +36,7 @@ const Item = ({ account }) => (
                         <Image style={styles.image} source={require(`../../../assets/icon/unknown.png`)} />
                     )
                 }
-
             </ReactPlaceholder>
-
             <ReactPlaceholder showLoadingAnimation={true} type='text' rows={1} ready={account.last4 != null} style={{
                 width: 150, borderRadius: 5
             }} >
