@@ -5,10 +5,12 @@ import {
 } from 'react-native';
 import ModalTextField from '../components/modalTextField';
 import ModalTextBox from '../components/modalTextBox';
+import ModalMenuIngredient from '../components/modalMenuItemAddIngredient';
 import RegularButton from '../components/buttons/regularButton';
 import { Picker } from '@react-native-picker/picker';
 import foodData from '../assets/foodData.json';
-import MultiSelect from 'react-native-multiple-select'
+import MultiSelect from 'react-native-multiple-select';
+import * as DocumentPicker from 'expo-document-picker';
 
 
 const DATA = [
@@ -66,6 +68,35 @@ class MenuRightSidebar extends React.Component {
             item: item
         }
         this.renderChildComponent = this.renderChildComponent.bind(this);
+        this.pickDocument = this.pickDocument.bind(this);
+        this.handleSaveButtonClick = this.handleSaveButtonClick.bind(this);
+    }
+
+    // Pick image from computer folder 
+    pickDocument = async () => {
+        const result = await DocumentPicker.getDocumentAsync({
+        type: "image/*" // all images files
+        });
+        if (!result.cancelled) {
+        this.setState({
+            image: result,
+        });
+        } else {
+        // Show error to user
+        }
+    }
+
+    // Configure save button click 
+    handleSaveButtonClick(editItem) {
+        const item = this.props.item
+        editItem.image = this.state.image
+        this.props.item.name = editItem.name
+        this.props.item.price = editItem.price
+        this.props.item.description = editItem.description
+        this.props.item.imageURL = this.state.image
+        this.props.updateMenuItem(editItem)
+        this.props.handleMode("Details")
+        this.state.image = null
     }
 
     handleSlide = (checkActive) => {
@@ -109,8 +140,10 @@ class MenuRightSidebar extends React.Component {
             case "Add":
                 return <Add
                     item={this.props.item}
+                    image={this.state.image}
+                    ingredients={this.props.inventories}
                     handleMode={this.props.handleMode}
-                    addInventoryItem={this.props.addInventoryItem}
+                    addMenuItem={this.props.addMenuItem}
                     handleCancelButtonClick={this.handleCancelButtonClick}
                 />
         }
@@ -156,61 +189,62 @@ class Add extends React.Component {
 
         this.state = {
             item: item,
-            results: []
+            selectedItems: [],
+            addedIngredients: [],
         }
     }
 
-    state = {
-        selectedItems: []
-    };
 
-
-
-    handleSearch = (text) => {
-        const filter = (a, f) => {
-            let keys = Object.keys(f)
-            if (keys.length == 1) {
-                return a.filter(x => x[keys[0]].toLowerCase().includes(f[keys[0]].toLowerCase()))
-            } else return a.filter(x => Object.values(f).every(fv => {
-                return Object.values(x).some(v => v.toLowerCase().includes(fv.toLowerCase()))
-            }))
-        }
-
-        let arr = filter(foodData, { name: text })
-
-        let newArr = arr.sort((a, b) => (a.name.length > b.name.length) ? 1 : -1)
-
-
-        this.setState(state => {
-            const limit = newArr.filter((val, i) => i < 10)
-            return {
-                results: limit,
-            };
-        });
-
-    }
-
-    onSelectedItemsChange = selectedItem => {
-
-        let ingredient = this.state.results.filter((ing) => {
-            return ing.ID == selectedItem
+    onSelectedItemsChange = selectedItems => {
+        console.log(selectedItems)
+        let currentComponent = this
+        let ingredients = selectedItems.map((selectedIng)=>{
+            return this.props.ingredients.filter((ing)=>{
+                return ing.name == selectedIng
+            })[0]
         })
-        this.setState(state => {
-            return {
-                item: ingredient[0]
-            };
-        });
-        console.log(ingredient[0])
-    };
+        this.setState({ selectedItems });
+        //ADD INGREDIENT TO LIST IF IN selectedItems
+        ingredients.map((ingr)=>{
+            var foundIndex = this.state.addedIngredients.findIndex(x => x.id == ingr.id);
+            if(foundIndex === -1){
+                this.state.addedIngredients.push(ingr)
+            }
+        })
+        //REMOVE INGREDIENT FROM LIST IF NOT FOUND IN selectedItems
+        if(this.state.addedIngredients.length > 1){
+        this.state.addedIngredients.map((ingr)=>{
+            var foundIndex = ingredients.findIndex(x => x.id == ingr.id);
+            if(foundIndex === -1){
+                console.log("REMOVED",ingr)
+                this.state.addedIngredients = this.state.addedIngredients.filter((item)=>{
+                    return item.id != ingr.id 
+                })
+            }
+        })
+        }
+        console.log("ADDEDINGREDIENTS",this.state.addedIngredients)
+      };
+
+    onQuantityInput = (input,item) => {
+        console.log(input)
+        console.log(item)
+        let newItem = {...item,
+            quantity: input
+        }
+        console.log(newItem)
+        var foundIndex = this.state.addedIngredients.findIndex(x => x.id == newItem.id);
+        this.state.addedIngredients[foundIndex] = newItem;
+        console.log(this.state.addedIngredients)
+    }
 
     render() {
-        console.log("SIDE BAR INVENTORIES: ", this.props.inventories)
         return (
             <ScrollView style={{ height: '100%' }}>
                 <View style={styles.modalHeader}>
                     <Text style={styles.titleText}>Add Menu Item</Text>
                     <View style={styles.saveButton}>
-                        <RegularButton text={"Save"} action={this.props.addInventoryItem.bind(this, this.state.item)} />
+                        <RegularButton text={"Save"} action={this.props.addMenuItem.bind(this, this.state.item)} />
                     </View>
                 </View>
 
@@ -230,10 +264,11 @@ class Add extends React.Component {
                 <ModalTextField placeholder={"Add price"} onChangeText={(text) => this.state.item.quantity = text} />
 
                 <MultiSelect
-                items={[{name:"cool"},{name:"beans"}]}
+                hideTags
+                items={this.props.ingredients}
                 uniqueKey="name"
                 ref={(component) => { this.multiSelect = component }}
-                onSelectedItemsChange={this.onSelectedItemsChange}
+                onSelectedItemsChange={(item)=>this.onSelectedItemsChange(item)}
                 selectedItems={this.state.selectedItems}
                 selectText="Pick Ingredients"
                 searchInputPlaceholderText="Search Ingredients..."
@@ -256,7 +291,13 @@ class Add extends React.Component {
                 styleListContainer={{ marginTop: 20 }}
                 searchInputStyle={{ height: 40 }}
               />
-
+                <View style={(this.state.selectedItems.length == 0) ? {display:'none'} : {display:'inline'}}>
+                    <div>
+                        {this.state.addedIngredients.map(item =>
+                            <ModalMenuIngredient title={item.name} unit={item.unit} onChangeText={text=>this.onQuantityInput(text,item)}/>
+                            )}
+                    </div>
+                </View>
                 <View style={{}}>
                     <Text>Visibility</Text>
                     <Text style={{ color: '#646464' }}>If enabled the menu item will be visible to customers.</Text>

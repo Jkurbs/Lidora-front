@@ -195,7 +195,7 @@ class Add extends React.Component {
     }
 
     this.state = {
-      item: item
+      item: item,
     }
   }
   state = {
