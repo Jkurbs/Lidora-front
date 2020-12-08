@@ -109,40 +109,42 @@ class Menu extends React.Component {
   };
 
   // Add new menu item
-  addMenuItem = (item, selectedItems) => {
+  addMenuItem = (item) => {
+    console.log(item)
+
     this.setState(state => {
-      const data = [item, ...state.data];
+      const data = [item, ...state.fullData];
       return {
-        data,
+        
         value: item,
         item: item
       };
     });
-    // Change menu mode 
-    this.handleMode("Details")
-    console.log("slectedTEMS", selectedItems)
+
+
     // Add menu item to Firebase 
-    ref.doc(this.state.userId).collection("menu").add(
+    ref.doc(this.state.userID).collection("menu").add(
       {
         key: item.key,
         name: item.name,
         description: item.description,
         price: item.price,
-        ingredients: selectedItems || null
+        ingredients: item.ingredients,
+        isVisible: item.isVisible
       }
     )
-
     //check and Add Image to Firebase Storage
     if (item.image != null) {
       var storage = firebase.storage().ref(item.image.name)
+      let currentComponent = this;
       storage.put(item.image.file).then((snapshot) => {
         snapshot.ref.getDownloadURL().then(function (downloadURL) {
           console.log("File available at", downloadURL);
 
-          ref.where('key', '==', item.key).get().then(function (snapshot) {
+          ref.doc(currentComponent.state.userID).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
             snapshot.forEach(function (doc) {
               console.log(doc.id)
-              ref.doc(doc.id).update(
+              ref.doc(currentComponent.state.userID).collection("menu").doc(doc.id).update(
                 {
                   imageURL: downloadURL
                 }
@@ -152,7 +154,8 @@ class Menu extends React.Component {
         });
       })
     }
-
+    // Change menu mode 
+    this.handleMode("Details")
   };
 
 
@@ -209,20 +212,15 @@ class Menu extends React.Component {
   };
 
   // Delete menu Item 
-  deleteMenuItem = (item) => {
-    if (item.key === 1) { return }
-    this.setState(state => {
-      const data = state.data.filter(otherItem => otherItem.key !== item.key);
-      return {
-        data,
-        item: data[0]
-      };
-    });
+  deleteMenuItem = () => {
+    const item = this.state.item
+    let currentComponent = this
+    
     // Delete menu item in Firebase
-    ref.where('key', '==', item.key).get().then(function (snapshot) {
+    ref.doc(currentComponent.state.userID).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
       snapshot.forEach(function (doc) {
         console.log(doc.id)
-        ref.doc(doc.id).delete()
+        ref.doc(currentComponent.state.userID).collection("menu").doc(doc.id).delete()
       })
     })
 
@@ -232,6 +230,10 @@ class Menu extends React.Component {
       storage.delete(item.image.name)
     }
 
+    this.setState({ isAlertVisible: !this.state.isAlertVisible })
+    if(this.state.isInvModalActive == true){
+    this.showInventoryModal()
+    }
   };
 
   didSelectCell = (item,selectedIndex) => {
@@ -262,7 +264,18 @@ class Menu extends React.Component {
   }
 
   middleActionSelected = (item, selectedIndex) => {
-    this.setState({ item: item, isAlertVisible: !this.state.isAlertVisible })
+    let realD = this.state.fullData
+    console.log(this.state.inventories)
+    // IF SEARCH IS ON GET DATA FROM FILTERED
+    if(this.state.isSearching === true){
+        realD = this.state.filteredFullData
+    }
+    let newItem = {...realD[selectedIndex],
+      image:realD[selectedIndex].imageURL
+    }
+    console.log(newItem)
+    this.handleDetails(newItem)
+    this.setState({ item: newItem, isAlertVisible: !this.state.isAlertVisible })
   }
 
   cancelAlert = () => {
@@ -368,7 +381,6 @@ class Menu extends React.Component {
           item={this.state.item}
           addMenuItem={this.addMenuItem}
           updateMenuItem={this.updateMenuItem}
-          deleteMenuItem={this.deleteMenuItem}
         />
         <Alert
           cancelAction={this.cancelAlert.bind(this)}

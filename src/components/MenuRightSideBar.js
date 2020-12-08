@@ -65,7 +65,8 @@ class MenuRightSidebar extends React.Component {
             isActive: this.props.isActive,
             translateX: new Animated.Value(0),
             mode: this.props.mode,
-            item: item
+            item: item,
+            image: null,
         }
         this.renderChildComponent = this.renderChildComponent.bind(this);
         this.pickDocument = this.pickDocument.bind(this);
@@ -88,12 +89,7 @@ class MenuRightSidebar extends React.Component {
 
     // Configure save button click 
     handleSaveButtonClick(editItem) {
-        const item = this.props.item
         editItem.image = this.state.image
-        this.props.item.name = editItem.name
-        this.props.item.price = editItem.price
-        this.props.item.description = editItem.description
-        this.props.item.imageURL = this.state.image
         this.props.updateMenuItem(editItem)
         this.props.handleMode("Details")
         this.state.image = null
@@ -122,8 +118,13 @@ class MenuRightSidebar extends React.Component {
         }
     }
 
+    clearImage = () => {
+        this.setState({
+            image: null,
+        });
+    }
+
     renderChildComponent() {
-        console.log("THIS IS THE ITEM:", this.props.item.description)
         switch (this.props.mode) {
             case "Details":
                 return <Details
@@ -145,6 +146,8 @@ class MenuRightSidebar extends React.Component {
                     handleMode={this.props.handleMode}
                     addMenuItem={this.props.addMenuItem}
                     handleCancelButtonClick={this.handleCancelButtonClick}
+                    handleImagePicking={this.pickDocument}
+                    clearImage={this.clearImage}
                 />
         }
     }
@@ -178,20 +181,22 @@ const generateKey = (pre) => {
 // ADD ITEM COMPONENT 
 class Add extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         const item = {
             key: generateKey(""),
-            name: "Pick Ingredient",
-            quantity: 12.29,
-            unit: 'Piece'
+            name: "Add Name",
+            price: 0,
+            description:""
         }
 
         this.state = {
             item: item,
             selectedItems: [],
             addedIngredients: [],
+            isVisible: false,
         }
+        this.props.clearImage()
     }
 
 
@@ -238,30 +243,48 @@ class Add extends React.Component {
         console.log(this.state.addedIngredients)
     }
 
+    toggleSwitch = () => {
+        console.log('switchpressed')
+        this.setState(state => {
+            return {
+                isVisible: !state.isVisible
+            };
+        });
+        console.log(this.state.item.isVisible)
+    }
+
+    onSavePress = () => {
+        console.log('switchpressed')
+        let fullItem = this.state.item
+        fullItem.image = this.props.image
+        fullItem.ingredients = this.state.addedIngredients
+        fullItem.isVisible = this.state.isVisible
+        this.props.addMenuItem(this.state.item)
+        this.props.handleMode("Details")
+        this.props.clearImage()
+    }
+
     render() {
         return (
             <ScrollView style={{ height: '100%' }}>
                 <View style={styles.modalHeader}>
                     <Text style={styles.titleText}>Add Menu Item</Text>
                     <View style={styles.saveButton}>
-                        <RegularButton text={"Save"} action={this.props.addMenuItem.bind(this, this.state.item)} />
+                        <RegularButton text={"Save"} action={()=>this.onSavePress()} />
                     </View>
                 </View>
-
                 <View>
-
                     <Image
                         style={styles.detailsItemImage}
-                        source={this.props.item.image}
-                    // onLoad={() => this.state.item.image = this.props.image}
+                        source={this.props.image}
+                    onLoad={() => this.state.item.image = this.props.image}
                     />
-
-
+                <Text onPress={this.props.handleImagePicking} style={styles.addImageButton}>Add Image</Text>
                 </View>
 
-                <ModalTextField placeholder={"Add Name"} onChangeText={(text) => this.state.item.quantity = text} />
+                <ModalTextField placeholder={"Add Name"} onChangeText={(text) => this.state.item.name = text} />
 
-                <ModalTextField placeholder={"Add price"} onChangeText={(text) => this.state.item.quantity = text} />
+                <ModalTextField placeholder={"Add price"} onChangeText={(text) => this.state.item.price = text} />
 
                 <MultiSelect
                 hideTags
@@ -310,8 +333,8 @@ class Add extends React.Component {
                             trackColor={{ false: "#767577", true: "#81b0ff" }}
                             // thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
                             ios_backgroundColor="#3e3e3e"
-                        // onValueChange={toggleSwitch}
-                        // value={isEnabled}
+                        onValueChange={()=>this.toggleSwitch()}
+                        value={this.state.isVisible}
                         />
 
                     </View>
@@ -398,6 +421,7 @@ class Edit extends React.Component {
             item: item
         }
     }
+
 
     render() {
         return (
