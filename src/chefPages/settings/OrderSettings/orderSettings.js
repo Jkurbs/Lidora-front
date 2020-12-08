@@ -11,6 +11,7 @@ import firebase from "../../../firebase/Firebase";
 import "firebase/firestore";
 import "firebase/auth";
 import ReactPlaceholder from 'react-placeholder';
+import { Entypo } from '@expo/vector-icons';
 
 
 
@@ -21,9 +22,10 @@ Geocoder.init("AIzaSyBNaHVtCYg7DcmHfKNtiuTV2REcWwonbH4"); // use a valid API key
 
 var circle;
 
-const AnyReactComponent = ({ text, width }) =>
-
-    <View style={{ backgroundColor: 'red', width: width, height: 100 }}>{text}</View>;
+const Pin = ({ width }) =>
+    <View style={{ backgroundColor: 'red' }}>
+        <Entypo name="location-pin" size={30} color="black" />
+    </View>;
 
 const apiIsLoaded = (map, maps, center, radius) => {
     circle = new maps.Circle({
@@ -123,12 +125,11 @@ class OrderSettingsView extends React.Component {
                             }
                             yesIWantToUseGoogleMapApiInternals={true}
                         >
-                            {/* <AnyReactComponent
-                        lat={this.state.center.lat}
-                        lng={this.state.center.lng}
-                        width={this.state.width}
-                        text="Where you are"
-                    /> */}
+                            {/* <Pin
+                                lat={this.state.center.lat}
+                                lng={this.state.center.lng}
+                                width={this.state.width}
+                            /> */}
                         </GoogleMapReact>
 
                     </View>
