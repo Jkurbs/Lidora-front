@@ -231,7 +231,7 @@ class Menu extends React.Component {
       storage.delete(item.image.name)
     }
 
-    this.setState({ isAlertVisible: !this.state.isAlertVisible })
+    this.setState({ isAlertVisible: false })
     if(this.state.isInvModalActive == true){
     this.showInventoryModal()
     }
@@ -276,11 +276,11 @@ class Menu extends React.Component {
     }
     console.log(newItem)
     this.handleDetails(newItem)
-    this.setState({ item: newItem, isAlertVisible: !this.state.isAlertVisible })
+    this.setState({ item: newItem, isAlertVisible: true })
   }
 
   cancelAlert = () => {
-    this.setState({ isAlertVisible: !this.state.isAlertVisible })
+    this.setState({ isAlertVisible: false })
   }
 
   rightActionSelected = (selectedIndex) => {
