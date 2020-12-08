@@ -393,7 +393,7 @@ class Details extends React.Component {
                     renderSectionHeader={({ section: { title } }) => (
                         <Text style={styles.header}>{title}</Text>
                     )}
-                    sections={[{title:'Ingredients',data:[{name:"cheese",quantity:4,unit:'Gram'}]}]}
+                    sections={[{title:'Ingredients',data:this.props.item.ingredients}]}
                     keyExtractor={(item, index) => item + index}
                 />
                 <View style={styles.sectionList}>
