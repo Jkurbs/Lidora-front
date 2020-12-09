@@ -12,7 +12,7 @@ class ModalMenuIngredient extends Component {
                         >{this.props.title}
                         </Text>
                         <TextInput style={styles.subtitle}
-                            onChangeText={(text) => this.props.onChangeText(text.toLowerCase())}
+                            onChangeText={(text) => this.props.onChangeText(text)}
                             placeholder={this.props.quantity}
                         />
                         <Text style={styles.subtitle}>{this.props.unit}</Text>

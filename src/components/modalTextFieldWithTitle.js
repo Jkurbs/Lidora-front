@@ -13,7 +13,7 @@ class ModalTextFieldWithTitle extends Component {
                         </Text>
                         <TextInput style={styles.subtitle} 
                              placeholder={this.props.placeholder}
-                             onChangeText={(text) => this.props.onChangeText(text.toLowerCase())}></TextInput>
+                             onChangeText={(text) => this.props.onChangeText(text)}></TextInput>
                     </View>
                 </View>
             </View>

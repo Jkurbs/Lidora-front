@@ -8,7 +8,7 @@ class ModalTextField extends Component {
             <View style={{borderTop:'1px solid #d9d9d9'}}>
                 <TextInput style={styles.formInput}
                     placeholder={this.props.placeholder}
-                    onChangeText={(text) => this.props.onChangeText(text.toLowerCase())}
+                    onChangeText={(text) => this.props.onChangeText(text)}
                 >
 
                 </TextInput>
