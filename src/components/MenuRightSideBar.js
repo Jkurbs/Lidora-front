@@ -7,7 +7,7 @@ import ModalTextField from '../components/modalTextField';
 import ModalTextFieldWithTitle from '../components/modalTextFieldWithTitle';
 import ModalTextBox from '../components/modalTextBox';
 import ModalMenuIngredient from '../components/modalMenuItemAddIngredient';
-import ModalItemList from '../components/modalItemList';
+import ModalItemListIngr from './modalItemListIngr';
 import RegularButton from '../components/buttons/regularButton';
 import { Picker } from '@react-native-picker/picker';
 import foodData from '../assets/foodData.json';
@@ -402,7 +402,7 @@ class Details extends React.Component {
                     keyExtractor={(item, index) => item + index}
                 /> */}
                 <View>
-                <ModalItemList title={'Ingredients'} array={this.props.item.ingredients}/>
+                <ModalItemListIngr title={'Ingredients'} array={this.props.item.ingredients}/>
                 </View>
                 <View style={styles.sectionList}>
                     <Text style={styles.header}>Description</Text>
