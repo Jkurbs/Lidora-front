@@ -220,6 +220,7 @@ class Menu extends React.Component {
   // Delete menu Item 
   deleteMenuItem = () => {
     const item = this.state.item
+    console.log("ITEMTODELETE",item)
     let currentComponent = this
     
     // Delete menu item in Firebase
@@ -235,6 +236,19 @@ class Menu extends React.Component {
       var storage = firebase.storage().ref(item.image.name)
       storage.delete(item.image.name)
     }
+
+    //Delete item from filtereddata --- For when Search is active
+    console.log(item.image)
+    const itemF = [item.image, item.name, item.price, '']
+
+    this.setState(state => {
+      console.log("FILTERTABLEDATA",state.filteredTableData)
+      console.log("ITEMF",itemF)
+        const filteredData = state.filteredTableData.filter(otherItem => otherItem[1] !== itemF[1]);
+        return {
+            filteredTableData: filteredData
+        };
+    });
 
     this.setState({ isAlertVisible: false })
     if(this.state.isInvModalActive == true){
@@ -294,6 +308,7 @@ class Menu extends React.Component {
         realD = this.state.filteredFullData
     }
     let newItem = {...realD[selectedIndex],
+      key:realD[selectedIndex].key,
       image:realD[selectedIndex].imageURL
     }
     console.log(newItem)
