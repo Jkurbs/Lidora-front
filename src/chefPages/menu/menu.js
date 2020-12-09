@@ -116,7 +116,6 @@ class Menu extends React.Component {
     this.setState(state => {
       const data = [item, ...state.fullData];
       return {
-        
         value: item,
         item: item
       };
@@ -162,8 +161,10 @@ class Menu extends React.Component {
 
   // Update menu Item 
   updateMenuItem = (item) => {
+    let currentComponent = this
+    console.log("UPDATEITEM",item)
     this.setState(state => {
-      const data = state.data.map((previousItem, j) => {
+      const data = state.fullData.map((previousItem, j) => {
         if (j === item) {
           return item;
         } else {
@@ -175,31 +176,34 @@ class Menu extends React.Component {
       };
     });
     // Update menu item in Firebase 
-    ref.where('key', '==', item.key).get().then(function (snapshot) {
+    ref.doc(this.state.userID).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
       snapshot.forEach(function (doc) {
         console.log(doc.id)
-        ref.doc(doc.id).update(
+        ref.doc(currentComponent.state.userID).collection("menu").doc(doc.id).update(
           {
             key: item.key,
             name: item.name,
             description: item.description,
             price: item.price,
+            ingredients: item.ingredients,
+            isVisible: item.isVisible
           }
         )
       })
     })
     //check and Add Image to Firebase Storage
     //check if image changed
-    if (typeof item.image != 'string') {
+    if ( item.image !== null) {
+      let currentComponent = this;
       console.log("UPDATEDIMAGE", item.image)
       var storage = firebase.storage().ref(item.image.name)
       storage.put(item.image.file).then((snapshot) => {
         snapshot.ref.getDownloadURL().then(function (downloadURL) {
           console.log("File available at", downloadURL);
-          ref.where('key', '==', item.key).get().then(function (snapshot) {
+          ref.doc(currentComponent.state.userID).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
             snapshot.forEach(function (doc) {
               console.log(doc.id)
-              ref.doc(doc.id).update(
+              ref.doc(currentComponent.state.userID).collection("menu").doc(doc.id).update(
                 {
                   imageURL: downloadURL
                 }
@@ -209,7 +213,8 @@ class Menu extends React.Component {
         });
       })
     }
-
+        // Change menu mode 
+        this.handleMode("Details")
   };
 
   // Delete menu Item 
@@ -258,10 +263,27 @@ class Menu extends React.Component {
 }
 
   leftActionSelected = (selectedIndex) => {
-    this.handleMode("Edit")
+    if(this.state.mode == "Edit"){
+      
+    }
+    
+    let realD = this.state.fullData
+    console.log(this.state.inventories)
+    // IF SEARCH IS ON GET DATA FROM FILTERED
+    if(this.state.isSearching === true){
+        realD = this.state.filteredFullData
+    }
+    let item = {...realD[selectedIndex],
+      image:realD[selectedIndex].imageURL,
+    }
+    console.log("EDITACTIONSELECT",item)
+    this.setState({
+      item: item
+    })
     if (this.state.isInvModalActive === false) {
       this.showInventoryModal()
     }
+    this.handleMode("Edit")
   }
 
   middleActionSelected = (item, selectedIndex) => {

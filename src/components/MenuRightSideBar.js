@@ -4,6 +4,7 @@ import {
     Switch
 } from 'react-native';
 import ModalTextField from '../components/modalTextField';
+import ModalTextFieldWithTitle from '../components/modalTextFieldWithTitle';
 import ModalTextBox from '../components/modalTextBox';
 import ModalMenuIngredient from '../components/modalMenuItemAddIngredient';
 import RegularButton from '../components/buttons/regularButton';
@@ -66,7 +67,7 @@ class MenuRightSidebar extends React.Component {
             translateX: new Animated.Value(0),
             mode: this.props.mode,
             item: item,
-            image: null,
+            image: this.props.item.image,
         }
         this.renderChildComponent = this.renderChildComponent.bind(this);
         this.pickDocument = this.pickDocument.bind(this);
@@ -89,6 +90,8 @@ class MenuRightSidebar extends React.Component {
 
     // Configure save button click 
     handleSaveButtonClick(editItem) {
+        console.log('THediditemMAGE',editItem)
+        console.log('THISSPROPSEIMAGE',this.props.item.image)
         editItem.image = this.state.image
         this.props.updateMenuItem(editItem)
         this.props.handleMode("Details")
@@ -97,6 +100,9 @@ class MenuRightSidebar extends React.Component {
 
     handleSlide = (checkActive) => {
         let { isActive, translateX } = this.state;
+        if(checkActive === true){
+            this.props.handleMode("Details")
+        }
         Animated.spring(translateX, {
             toValue: checkActive ? 0 : -420,
             duration: 20
@@ -130,13 +136,19 @@ class MenuRightSidebar extends React.Component {
                 return <Details
                     item={this.props.item}
                     deleteInventoryItem={this.props.deleteInventoryItem}
-                    editInventoryItem={this.props.editInventoryItem}
+                    editMenuItem={this.props.editMenuItem}
                 />
             case "Edit":
                 return <Edit
-                    item={this.state.item}
+                    item={this.props.item}
+                    image={this.state.image}
+                    ingredients={this.props.inventories}
                     handleSaveButtonClick={this.handleSaveButtonClick}
                     handleAddNewItemButtonClick={this.handleAddNewItemButtonClick}
+                    updateMenuItem={this.props.updateMenuItem}
+                    handleMode={this.props.handleMode}
+                    handleImagePicking={this.pickDocument}
+                    clearImage={this.clearImage}
                 />
             case "Add":
                 return <Add
@@ -411,62 +423,181 @@ class Edit extends React.Component {
     constructor(props) {
         super(props);
         const item = {
-            key: '1234',
-            name: 'Testeditname',
-            quantity: 'testquantitiy',
-            unit: 'testunitsss'
+            key: this.props.item.key,
+            name: this.props.item.name,
+            price: this.props.item.price,
+            description: this.props.item.description,
+            ingredients: this.props.item.ingredients,
+            image: this.props.item.image,
+            isVisible: this.props.item.isVisible
+
         }
+        const initial = false
 
         this.state = {
-            item: item
+            item: item,
+            selectedItems: this.props.item.ingredients.map(ingr => ingr.name),
+            isActive: initial,
+            isVisActive: initial
         }
+    }
+
+    onSelectedItemsChange = selectedItems => {
+        console.log(selectedItems)
+        //change rendered value from props mode to state
+        this.setState(state => {
+            return {
+                isActive: true
+            };
+        });
+
+        let currentComponent = this
+        let ingredients = selectedItems.map((selectedIng)=>{
+            return this.props.ingredients.filter((ing)=>{
+                return ing.name == selectedIng
+            })[0]
+        })
+        this.setState({ selectedItems });
+        //ADD INGREDIENT TO LIST IF IN selectedItems
+        ingredients.map((ingr)=>{
+            var foundIndex = this.state.item.ingredients.findIndex(x => x.id == ingr.id);
+            if(foundIndex === -1){
+                this.state.item.ingredients.push(ingr)
+            }
+        })
+        //REMOVE INGREDIENT FROM LIST IF NOT FOUND IN selectedItems
+        if(this.state.item.ingredients.length > 1){
+            this.state.item.ingredients.map((ingr)=>{
+            var foundIndex = ingredients.findIndex(x => x.id == ingr.id);
+            if(foundIndex === -1){
+                console.log("REMOVED",ingr)
+                this.state.item.ingredients = this.state.item.ingredients.filter((item)=>{
+                    return item.id != ingr.id 
+                })
+            }
+        })
+        }
+        console.log("ADDEDINGREDIENTS",this.state.item.ingredients)
+      };
+
+    onQuantityInput = (input,item) => {
+        console.log(input)
+        console.log(item)
+        let newItem = {...item,
+            quantity: input
+        }
+        console.log(newItem)
+        var foundIndex = this.state.item.ingredients.findIndex(x => x.id == newItem.id);
+        this.state.item.ingredients[foundIndex] = newItem;
+        console.log(this.state.item.ingredients)
+    }
+
+    toggleSwitch = () => {
+        console.log('switchpressed')
+
+        //change rendered value from props mode to state
+        this.setState(state => {
+            return {
+                isVisActive: true
+            };
+        });
+
+        this.setState(state => {
+            return {
+                item:{...state.item,
+                    isVisible: !state.item.isVisible
+                }
+            };
+        });
+        console.log(this.state.item.isVisible)
+    }
+
+    onSavePress = () => {
+        this.props.handleSaveButtonClick(this.state.item)
     }
 
 
     render() {
+        let currentIngr
+        if (this.state.isActive === false){
+            currentIngr = this.props.item.ingredients
+        } else {
+            currentIngr = this.state.item.ingredients
+        }
         return (
             <ScrollView style={{ height: '120%' }}>
-                <View style={styles.modalHeader}>
-                    <Text style={styles.titleText}>Edit Item</Text>
-                </View>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.formTitle}>Name</Text>
-                    <TextInput style={styles.formInput}
-                        placeholder={'Add a name'}
-                        onChangeText={(text) => this.state.item.name = text}
-                        defaultValue={this.props.item.name}
+            <View style={styles.modalHeader}>
+            <Text style={styles.titleText}>Edit Item</Text> 
+            <View style={styles.saveButton}>
+            <RegularButton text={"Save"} action={()=>this.onSavePress()} />
+            </View>
+            </View>
+            <View>
+                    <Image
+                        style={styles.detailsItemImage}
+                        source={this.props.image}
                     />
+                <Text onPress={this.props.handleImagePicking} style={styles.addImageButton}>Add Image</Text>
                 </View>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.formTitle}>Unit</Text>
-                    <Picker
-                        selectedValue={this.state.language}
-                        defaultValue={this.props.item.unit}
-                        style={styles.formInput}
-                        onValueChange={(itemValue, itemIndex) =>
-                            this.state.item.unit = itemValue}>
+                        <ModalTextFieldWithTitle title={'Name'} placeholder={this.props.item.name} onChangeText={(text) => this.state.item.name = text} />
+                        <ModalTextFieldWithTitle title={'Price'} placeholder={this.props.item.price}  onChangeText={(text) => this.state.item.price = text}/>
+                        <ModalTextFieldWithTitle title={'Description'} placeholder={this.props.item.description}  onChangeText={(text) => this.state.item.description = text}/>
+                        <MultiSelect
+                hideTags
+                items={this.props.ingredients}
+                uniqueKey="name"
+                ref={(component) => { this.multiSelect = component }}
+                onSelectedItemsChange={(item)=>this.onSelectedItemsChange(item)}
+                selectedItems={(this.state.isActive === false) ? this.props.item.ingredients.map(ingr => ingr.name) : this.state.selectedItems}
+                selectText="Pick Ingredients"
+                searchInputPlaceholderText="Search Ingredients..."
+                onChangeInput={(text) => console.log(text)}
+                tagRemoveIconColor="#CCC"
+                tagBorderColor="#CCC"
+                tagTextColor="#CCC"
+                selectedItemTextColor="#CCC"
+                selectedItemIconColor="#CCC"
+                itemTextColor="#000"
+                displayKey="name"
+                searchInputStyle={{ color: '#CCC' }}
+                submitButtonColor="#CCC"
+                submitButtonText="Submit"
+                styleMainWrapper={{ marginTop: 7 }}
+                styleTextDropdown={{ fontFamily: 'System', padding: 8 }}
+                styleDropdownMenuSubsection={{ height: 40, borderRadius: 5, borderWidth: 1, borderColor: '#d6d6d6' }}
+                styleRowList={{ height: 40 }}
+                itemFontSize={13}
+                styleListContainer={{ marginTop: 20 }}
+                searchInputStyle={{ height: 40 }}
+              />
+                <View style={(this.state.selectedItems.length == 0) ? {display:'none'} : {display:'inline'}}>
+                    <div>
+                        {currentIngr.map(item =>
+                            <ModalMenuIngredient title={item.name} unit={item.unit} quantity={item.quantity} onChangeText={text=>this.onQuantityInput(text,item)}/>
+                            )}
+                    </div>
+                </View>
+                <View style={{}}>
+                    <Text>Visibility</Text>
+                    <Text style={{ color: '#646464' }}>If enabled the menu item will be visible to customers.</Text>
+                    <View style={{
+                        padding: 16,
+                        marginTop: 20, flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#F5F5F5',
+                    }}>
+                        <Text>Visible </Text>
+                        <Switch
+                            trackColor={{ false: "#767577", true: "#81b0ff" }}
+                            // thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                            ios_backgroundColor="#3e3e3e"
+                        onValueChange={()=>this.toggleSwitch()}
+                        value={this.state.isVisActive ? this.state.item.isVisible : this.props.item.isVisible}
+                        />
 
-                        <Picker.Item label="Piece" value="Piece" />
-                        <Picker.Item label="Gram" value="Gram" />
-                        <Picker.Item label="Ounce" value="Ounce" />
-                        <Picker.Item label="Liter" value="Liter" />
-                    </Picker>
+                    </View>
                 </View>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.formTitle}>Quantity</Text>
-                    <TextInput style={styles.formInput}
-                        placeholder={'Edit Quantity'}
-                        onChangeText={(text) => this.state.item.quantity = text}
-                        defaultValue={this.props.item.quantity}
-                    />
-                </View>
-                <View style={styles.detailsButtonContainer}>
-                    <TouchableOpacity
-                        onPress={() => { this.props.handleSaveButtonClick(this.state.item) }}
-                        style={styles.editButton}>
-                        <Text style={styles.buttonText}>Save</Text>
-                    </TouchableOpacity>
-                </View>
+            <View>
+
+                        </View>
             </ScrollView >
         )
     }

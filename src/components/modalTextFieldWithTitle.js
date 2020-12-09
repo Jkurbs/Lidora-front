@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Image, TextInput, StyleSheet } from 'react-native';
 import { Text } from 'react-native-svg';
 
-class ModalMenuIngredient extends Component {
+class ModalTextFieldWithTitle extends Component {
     render() {
         return (
             <View style={{ borderTop: '1px solid #d9d9d9' }}>
@@ -11,15 +11,12 @@ class ModalMenuIngredient extends Component {
                         <Text style={styles.title}
                         >{this.props.title}
                         </Text>
-                        <TextInput style={styles.subtitle}
-                            onChangeText={(text) => this.props.onChangeText(text.toLowerCase())}
-                            placeholder={this.props.quantity}
-                        />
-                        <Text style={styles.subtitle}>{this.props.unit}</Text>
+                        <TextInput style={styles.subtitle} 
+                             placeholder={this.props.placeholder}
+                             onChangeText={(text) => this.props.onChangeText(text.toLowerCase())}></TextInput>
                     </View>
                 </View>
             </View>
-
         )
     }
 }
@@ -46,15 +43,13 @@ const styles = StyleSheet.create({
     title: {
         textAlignVertical: 'center',
         fontWeight: 500,
-        maxWidth:'60%',
-        overflow:'hidden',
     },
 
     subtitle: {
         fontWeight: 400,
-        backgroundColor:'white'
+        textIndent: '25px',
     }
 
 });
 
-export default ModalMenuIngredient;
+export default ModalTextFieldWithTitle;
