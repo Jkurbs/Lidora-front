@@ -7,6 +7,7 @@ import ModalTextField from '../components/modalTextField';
 import ModalTextFieldWithTitle from '../components/modalTextFieldWithTitle';
 import ModalTextBox from '../components/modalTextBox';
 import ModalMenuIngredient from '../components/modalMenuItemAddIngredient';
+import ModalItemList from '../components/modalItemList';
 import RegularButton from '../components/buttons/regularButton';
 import { Picker } from '@react-native-picker/picker';
 import foodData from '../assets/foodData.json';
@@ -31,14 +32,6 @@ const DATA = [
         ]
     },
 ]
-
-const FlatListItemSeparator = () => {
-    return (
-        //Item Separator
-        <View style={styles.listItemSeparatorStyle} />
-    );
-};
-
 
 const Item = ({ name, quantity, unit }) => (
     <View>
@@ -397,7 +390,7 @@ class Details extends React.Component {
                 <ModalTextBox title={'Name'} subtitle={this.props.item.name} />
                 <ModalTextBox title={'Price'} subtitle={`${'$'}${this.props.item.price}`} />
 
-                <SectionList style={styles.sectionList}
+                {/* <SectionList style={styles.sectionList}
                     ItemSeparatorComponent={FlatListItemSeparator}
                     renderItem={({ item, index, section }) =>
                         <Item name={item.name} quantity={item.quantity} unit={item.unit} />
@@ -407,7 +400,10 @@ class Details extends React.Component {
                     )}
                     sections={[{title:'Ingredients',data:this.props.item.ingredients}]}
                     keyExtractor={(item, index) => item + index}
-                />
+                /> */}
+                <View>
+                <ModalItemList title={'Ingredients'} array={this.props.item.ingredients}/>
+                </View>
                 <View style={styles.sectionList}>
                     <Text style={styles.header}>Description</Text>
                     <Text style={[styles.item, styles.description]}>{this.props.item.description}</Text>
@@ -712,12 +708,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 13,
         alignSelf: 'center'
-    },
-
-    listItemSeparatorStyle: {
-        height: 0.5,
-        width: '100%',
-        backgroundColor: '#CECECE',
     },
 
     description: {
