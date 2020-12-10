@@ -1,0 +1,10 @@
+.darkWebDash div {
+  background-color: #2c2c2c !important;
+  color: #b7b7b7 !important;
+}
+.darkWebDash input {
+  color: white;
+  appearance: textfield;
+  background-color: #3b3b3b;
+  border-color: #858585;
+}

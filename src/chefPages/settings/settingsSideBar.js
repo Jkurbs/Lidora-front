@@ -195,7 +195,11 @@ function Settings({ route }) {
     if (windowWidth < phoneMaxWidth) {
         return <MobileSettings />
     } else {
-        return <WebSettings navigation={navigation} userData={userData} />
+        return (
+        <div className={true ? "darkWebDash" : "none"}>
+        <WebSettings navigation={navigation} userData={userData} />
+        </div>
+        )
     }
 }
 

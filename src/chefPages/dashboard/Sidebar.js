@@ -14,6 +14,7 @@ import "firebase/firestore";
 
 import ReactPlaceholder from 'react-placeholder';
 import "react-placeholder/lib/reactPlaceholder.css";
+import "./darkMode.css"
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
@@ -233,7 +234,11 @@ function Dashboard({ route }) {
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard />
     } else {
-        return <WebDashboard userData={userData} navigation={navigation} />
+        return (
+        <div className={true ? "darkWebDash" : "none"}>
+        <WebDashboard userData={userData} navigation={navigation} />
+        </div>
+        )
     }
 }
 
