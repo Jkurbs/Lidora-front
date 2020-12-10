@@ -31,13 +31,12 @@ class PreferenceView extends React.Component {
     }
 
     toggleSwitch = () => {
-        
-        console.log('switchpressed')
         this.setState(state => {
             return {
                 isEnabled: !state.isEnabled
             };
         });
+        this.props.route.params.localDarkToggle(!this.state.isEnabled)
         console.log(this.state.isEnabled)
         console.log(this.state.userID)
         //change Darkmode setting in firebase

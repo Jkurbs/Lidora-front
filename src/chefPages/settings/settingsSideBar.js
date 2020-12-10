@@ -25,7 +25,7 @@ const navOptionHandler = () => ({
     header: null,
 });
 
-function TabNavigator({ userData }) {
+function TabNavigator({ userData,localDarkToggle }) {
 
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
@@ -112,7 +112,7 @@ function TabNavigator({ userData }) {
                 }}
                 name="Preferences"
                 component={PreferenceStack}
-                initialParams={{userData:userData}}
+                initialParams={{userData:userData,localDarkToggle:localDarkToggle}}
             />
         </Tab.Navigator>
     );
@@ -175,14 +175,14 @@ function OrderSettingsStack({ userData }) {
 
 // Stack to show Preferences
 function PreferenceStack({route}) {
-    const {userData} = route.params
+    const {userData,localDarkToggle} = route.params
     return (
         <StackPreference.Navigator initialRouteName="Preferences">
             <StackPreference.Screen
                 name="Preferences"
                 component={PreferenceScreen}
                 options={navOptionHandler}
-                initialParams={{ userData: userData }}
+                initialParams={{ userData: userData,localDarkToggle:localDarkToggle }}
             />
         </StackPreference.Navigator>
     );
@@ -192,20 +192,25 @@ function Settings({ route }) {
 
     const phoneMaxWidth = 575.98
     const { navigation, userData } = route.params;
+    const [localDark,setLocalDark] = React.useState(userData.user.isDarkMode)
+
+    const localDarkToggle = (boolVal) =>{
+        setLocalDark(boolVal)
+    }
 
     if (windowWidth < phoneMaxWidth) {
         return <MobileSettings />
     } else {
         return (
-        <div className={userData.user.isDarkMode ? "darkWebDash" : "none"}>
-        <WebSettings navigation={navigation} userData={userData} />
+        <div className={localDark ? "darkWebDash" : "none"}>
+        <WebSettings navigation={navigation} userData={userData} localDarkToggle={localDarkToggle} />
         </div>
         )
     }
 }
 
 
-function WebSettings({ navigation, userData }) {
+function WebSettings({ navigation, userData, localDarkToggle }) {
     return (
         <View style={{ height: windowHeight, maxHeight: '100%' }}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 30, left: 20 }}>
@@ -213,7 +218,7 @@ function WebSettings({ navigation, userData }) {
                     <Text style={{ fontWeight: '500' }}>Back</Text>
                 </TouchableOpacity>
             </View>
-            < TabNavigator userData={userData} />
+            < TabNavigator userData={userData} localDarkToggle={localDarkToggle} />
         </View>
     )
 }
