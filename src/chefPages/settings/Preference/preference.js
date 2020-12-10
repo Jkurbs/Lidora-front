@@ -14,10 +14,11 @@ var db = firebase.firestore();
 
 class PreferenceView extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            isEnabled: false
+            isEnabled: props.route.params.userData.user.isDarkMode,
+            userID: props.route.params.userData.user.userID
         };
     }
 
@@ -28,6 +29,23 @@ class PreferenceView extends React.Component {
     save = () => {
 
     }
+
+    toggleSwitch = () => {
+        
+        console.log('switchpressed')
+        this.setState(state => {
+            return {
+                isEnabled: !state.isEnabled
+            };
+        });
+        console.log(this.state.isEnabled)
+        console.log(this.state.userID)
+        //change Darkmode setting in firebase
+        db.collection('chefs').doc(this.state.userID).update(
+            {isDarkMode:!this.state.isEnabled}   
+        )
+    }
+
 
     render() {
         return (
@@ -42,7 +60,7 @@ class PreferenceView extends React.Component {
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
                         thumbColor={this.state.isEnabled ? "#f5dd4b" : "#f4f3f4"}
                         ios_backgroundColor="#3e3e3e"
-                        // onValueChange={toggleSwitch}
+                        onValueChange={this.toggleSwitch}
                         value={this.state.isEnabled}
                     />
                 </View>

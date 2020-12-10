@@ -219,7 +219,6 @@ function Dashboard({ route }) {
     var db = firebase.firestore();
     const [userData, setUserData] = React.useState({ user: [] })
 
-
     React.useEffect(() => {
         // Fetch Current chef 
         db.collection('chefs').doc(userID).onSnapshot(function (doc) {
@@ -230,12 +229,15 @@ function Dashboard({ route }) {
                 console.log("No such document!");
             }
         })
+
     }, [])
+    //add userID to userData
+    userData.user.userID = userID
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard />
     } else {
         return (
-        <div className={true ? "darkWebDash" : "none"}>
+        <div className={userData.user.isDarkMode ? "darkWebDash" : "none"}>
         <WebDashboard userData={userData} navigation={navigation} />
         </div>
         )

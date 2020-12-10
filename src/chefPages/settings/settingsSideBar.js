@@ -30,7 +30,6 @@ function TabNavigator({ userData }) {
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
     const todayDate = today.toLocaleDateString("en-US", options);
-
     return (
         <Tab.Navigator
             tabBarOptions={{
@@ -102,7 +101,7 @@ function TabNavigator({ userData }) {
                 component={OrderSettingsStack}
             />
 
-            {/* <Tab.Screen
+            <Tab.Screen
                 options={{
                     title: "Preferences",
                     tabBarLabel: "Preferences",
@@ -113,7 +112,8 @@ function TabNavigator({ userData }) {
                 }}
                 name="Preferences"
                 component={PreferenceStack}
-            /> */}
+                initialParams={{userData:userData}}
+            />
         </Tab.Navigator>
     );
 }
@@ -174,7 +174,8 @@ function OrderSettingsStack({ userData }) {
 }
 
 // Stack to show Preferences
-function PreferenceStack({ userData }) {
+function PreferenceStack({route}) {
+    const {userData} = route.params
     return (
         <StackPreference.Navigator initialRouteName="Preferences">
             <StackPreference.Screen
@@ -196,7 +197,7 @@ function Settings({ route }) {
         return <MobileSettings />
     } else {
         return (
-        <div className={true ? "darkWebDash" : "none"}>
+        <div className={userData.user.isDarkMode ? "darkWebDash" : "none"}>
         <WebSettings navigation={navigation} userData={userData} />
         </div>
         )
