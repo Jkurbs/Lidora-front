@@ -14,6 +14,7 @@ import "firebase/firestore";
 
 import ReactPlaceholder from 'react-placeholder';
 import "react-placeholder/lib/reactPlaceholder.css";
+import "./darkMode.css"
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
@@ -218,7 +219,6 @@ function Dashboard({ route }) {
     var db = firebase.firestore();
     const [userData, setUserData] = React.useState({ user: [] })
 
-
     React.useEffect(() => {
         // Fetch Current chef 
         db.collection('chefs').doc(userID).onSnapshot(function (doc) {
@@ -229,11 +229,18 @@ function Dashboard({ route }) {
                 console.log("No such document!");
             }
         })
+
     }, [])
+    //add userID to userData
+    userData.user.userID = userID
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard />
     } else {
-        return <WebDashboard userData={userData} navigation={navigation} />
+        return (
+        <div className={userData.user.isDarkMode ? "darkWebDash" : "none"}>
+        <WebDashboard userData={userData} navigation={navigation} />
+        </div>
+        )
     }
 }
 
