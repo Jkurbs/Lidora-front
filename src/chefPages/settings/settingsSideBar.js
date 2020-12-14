@@ -25,7 +25,7 @@ const navOptionHandler = () => ({
     header: null,
 });
 
-function TabNavigator({ userData,localDarkToggle }) {
+function TabNavigator({ userData, localDarkToggle }) {
 
     var options = { weekday: "long", month: "long", day: "numeric" };
     var today = new Date();
@@ -101,7 +101,7 @@ function TabNavigator({ userData,localDarkToggle }) {
                 component={OrderSettingsStack}
             />
 
-            <Tab.Screen
+            {/* <Tab.Screen
                 options={{
                     title: "Preferences",
                     tabBarLabel: "Preferences",
@@ -113,7 +113,7 @@ function TabNavigator({ userData,localDarkToggle }) {
                 name="Preferences"
                 component={PreferenceStack}
                 initialParams={{userData:userData,localDarkToggle:localDarkToggle}}
-            />
+            /> */}
         </Tab.Navigator>
     );
 }
@@ -174,15 +174,15 @@ function OrderSettingsStack({ userData }) {
 }
 
 // Stack to show Preferences
-function PreferenceStack({route}) {
-    const {userData,localDarkToggle} = route.params
+function PreferenceStack({ route }) {
+    const { userData, localDarkToggle } = route.params
     return (
         <StackPreference.Navigator initialRouteName="Preferences">
             <StackPreference.Screen
                 name="Preferences"
                 component={PreferenceScreen}
                 options={navOptionHandler}
-                initialParams={{ userData: userData,localDarkToggle:localDarkToggle }}
+                initialParams={{ userData: userData, localDarkToggle: localDarkToggle }}
             />
         </StackPreference.Navigator>
     );
@@ -192,9 +192,9 @@ function Settings({ route }) {
 
     const phoneMaxWidth = 575.98
     const { navigation, userData } = route.params;
-    const [localDark,setLocalDark] = React.useState(userData.user.isDarkMode)
+    const [localDark, setLocalDark] = React.useState(userData.user.isDarkMode)
 
-    const localDarkToggle = (boolVal) =>{
+    const localDarkToggle = (boolVal) => {
         setLocalDark(boolVal)
     }
 
@@ -202,9 +202,9 @@ function Settings({ route }) {
         return <MobileSettings />
     } else {
         return (
-        <div className={localDark ? "darkWebDash" : "none"}>
-        <WebSettings navigation={navigation} userData={userData} localDarkToggle={localDarkToggle} />
-        </div>
+            <div className={localDark ? "darkWebDash" : "none"}>
+                <WebSettings navigation={navigation} userData={userData} localDarkToggle={localDarkToggle} />
+            </div>
         )
     }
 }
