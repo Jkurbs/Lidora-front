@@ -78,6 +78,5 @@ buck-out/
 
 # Expo
 .expo/*
-web-build/
 
 # @end expo-cli
