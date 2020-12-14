@@ -18,7 +18,7 @@ import {
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { DATA, FEATURESDATA } from "./home.data.js";
+import { FEATURESDATA } from "./home.data.js";
 
 import ApplyScreen from "../apply/Apply.js";
 import LegalScreen from "../legal/Legal.js";
@@ -27,6 +27,9 @@ import DashboardScreen from "../../chefPages/dashboard/Sidebar";
 import Footer from "../../components/Footer"
 
 import SettingScreen from '../../chefPages/settings/settingsSideBar';
+
+import * as Linking from "expo-linking";
+
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
@@ -248,17 +251,19 @@ class App extends React.Component {
   }
 
   render() {
+
     let currentURL = window.location.href
     let getChefID = currentURL.split("chefID/");
 
     console.log(getChefID[1])
-    if(typeof getChefID[1] != 'undefined'){
+    alert(currentURL)
+    if (typeof getChefID[1] != 'undefined') {
       return (
         <p>CUSTOM CHEF id={getChefID[1]} PAGE COMPONENT HERE!</p>
       );
     } else {
       return (
-        <NavigationContainer linking={{ enabled: true }} fallback={<Text>Loading...</Text>} theme={MyTheme}>
+        <NavigationContainer fallback={<Text>Loading...</Text>} theme={MyTheme}>
           <Stack.Navigator
             initialRouteName="Lidora"
             screenOptions={{
@@ -270,7 +275,7 @@ class App extends React.Component {
             <Stack.Screen name="Settings" component={SettingScreen} />
             <Stack.Screen name="Lidora" component={HomeScreen}
               options={({ navigation, route }) => ({
-  
+
                 headerRight: () => (
                   <TouchableOpacity
                     onPress={() => {
@@ -294,7 +299,7 @@ class App extends React.Component {
                       elevation: 7,
                     }}
                   >
-  
+
                     {this.state.userLoggedIn ? (
                       <Text style={{ alignSelf: 'center', fontSize: 12 }}>{'Dashboard'}
                         <Entypo name="chevron-small-right" size={12} color="black" />
