@@ -253,13 +253,12 @@ class App extends React.Component {
   render() {
 
     let currentURL = window.location.href
-    let getChefID = currentURL.split("chefID/");
+    let getChefandID = currentURL.split("?");
+    let getOnlyID = currentURL.split("=")[1]
 
-    console.log(getChefID[1])
-    alert(currentURL)
-    if (typeof getChefID[1] != 'undefined') {
+    if(typeof getChefandID[1] != 'undefined'){
       return (
-        <p>CUSTOM CHEF id={getChefID[1]} PAGE COMPONENT HERE!</p>
+        <p>CUSTOM CHEF PAGE COMPONENT HERE! the chef ID is {getOnlyID} </p>
       );
     } else {
       return (
