@@ -258,7 +258,7 @@ class App extends React.Component {
       );
     } else {
       return (
-        <NavigationContainer linking={{ enabled: true }} fallback={<Text>Loading...</Text>} theme={MyTheme}>
+        <NavigationContainer fallback={<Text>Loading...</Text>} theme={MyTheme}>
           <Stack.Navigator
             initialRouteName="Lidora"
             screenOptions={{
