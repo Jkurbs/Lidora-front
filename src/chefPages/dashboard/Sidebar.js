@@ -250,7 +250,7 @@ function Dashboard({ route }) {
 function WebDashboard({ userID, userData, navigation }) {
 
     const copyToClipboard = () => {
-        Clipboard.setString(`lidora.app/${userData.user.title}=${userID}`);
+        Clipboard.setString(`lidora.app/${userData.user.title.replace(/\s/g, '')}=${userID}`);
         alert("Link copied")
 
     };
@@ -292,7 +292,7 @@ function WebDashboard({ userID, userData, navigation }) {
 
 function MobileDashboard(userID, userData) {
     const copyToClipboard = () => {
-        Clipboard.setString(`lidora.app/${userData.user.title}=${userID}`);
+        Clipboard.setString(`lidora.app/${userData.user.title.replace(/\s/g, '')}=${userID}`);
         alert("Link copied")
     };
 
