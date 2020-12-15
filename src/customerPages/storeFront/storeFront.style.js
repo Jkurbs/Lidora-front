@@ -68,8 +68,6 @@ export default StyleSheet.create({
         width: '100%',
         height: 50,
         backgroundColor: '#F5F5F5',
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
         alignItems: 'center',
         justifyContent: 'center'
     },

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { View, Image, Text, SectionList, TouchableOpacity, TouchableHighlight, Dimensions } from "react-native";
+import { View, Image, Text, SectionList, TouchableOpacity, Dimensions } from "react-native";
 
 import firebase from "../../firebase/Firebase";
 import styles from './storeFront.style'
@@ -9,7 +9,7 @@ import "firebase/firestore";
 import ReactPlaceholder from 'react-placeholder';
 import "react-placeholder/lib/reactPlaceholder.css";
 
-import 'react-native-reanimated';
+import EmptyBag from '../../components/emptyBagView'
 
 import BottomSheet from 'reanimated-bottom-sheet';
 const { height } = Dimensions.get("window")
@@ -54,6 +54,8 @@ function StoreFront(props) {
     const [data, setData] = React.useState({ user: [] })
     const [menu, setMenu] = React.useState([])
     const [titles, setTitle] = React.useState({ headerTitle: "View Bag", LeftButtonTitle: "" })
+    const [selectedItem, setSelectedItem] = React.useState({})
+    const [bag, setBag] = React.useState([])
 
     const sheetRef = React.useRef(null);
 
@@ -82,9 +84,27 @@ function StoreFront(props) {
 
     }, [])
 
+
+    const selectItem = (item) => {
+        console.log(item.item.ingredients)
+        setSelectedItem(item.item)
+        sheetRef.current.snapTo(1)
+    }
+
+
+
+    const dismissItem = () => {
+        setSelectedItem(null)
+        sheetRef.current.snapTo(0)
+    }
+
+    const RenderIngredientsItem = (item) => (
+        <Text style={{ margin: 8, padding: 8, fontWeight: '500', fontSize: 15 }}>{item.item?.name ?? ""}</Text>
+    );
+
     const MenuCell = (item) => {
         return (
-            <TouchableOpacity onPress={() => { sheetRef.current.snapTo(2) }} >
+            <TouchableOpacity onPress={() => { selectItem(item) }} >
                 <View style={{ alignItems: 'center', margin: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: 'column', justifyContent: 'space-between', width: '70%' }}>
                         <Text style={styles.menuName}>{item.item.name}</Text>
@@ -99,19 +119,61 @@ function StoreFront(props) {
         )
     }
 
-    const renderContent = () => (
-        <View style={{ backgroundColor: 'white', height: height }}>
-            <View>
+    const renderContent = () => {
 
+
+        if (bag.length === 0 && selectedItem === null) {
+            return <EmptyBag />
+        } else {
+            <View style={{ backgroundColor: 'white', height: height }}>
+                <View style={{ padding: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <View style={{ flexDirection: 'column', maxWidth: '50%' }}>
+                        <Text style={styles.menuName}>{selectedItem?.name ?? ""}</Text>
+                        <Text style={styles.menuDescription}>{selectedItem?.description ?? ""}</Text>
+                    </View>
+                    <Image style={styles.menuImage} source={{
+                        uri: selectedItem?.imageURL ?? "",
+                    }} />
+                </View>
+                <View style={styles.listItemSeparatorStyle} />
+                <SectionList
+                    style={{ height: height, paddingBottom: 120 }}
+                    keyExtractor={(item, index) => item + index}
+                    sections={[
+                        {
+                            title: "Ingredients",
+                            data: selectedItem?.ingredients ?? []
+                        },
+                    ]}
+                    renderSectionHeader={({ section }) => {
+                        if (section.title === "user") { return null } else {
+                            return (
+                                <View style={styles.headerView}>
+                                    <Text style={styles.sectionTitle}>{section.title}</Text>
+                                </View>
+                            );
+                        }
+                    }}
+                    renderItem={({ item, section }) => {
+                        switch (section.title) {
+                            case "Ingredients":
+                                return <RenderIngredientsItem item={item} />
+                            default:
+                                break;
+                        }
+                    }}
+                    ItemSeparatorComponent={FlatListItemSeparator}
+                    stickySectionHeadersEnabled={false}
+                />
             </View>
-        </View>
-    );
+        }
+    }
 
     const renderHeader = () => (
         <View style={styles.header}>
-            {/* <TouchableOpacity onPress={() => { sheetRef.current.snapTo(0) }} style={{ justifyContent: 'center', position: 'absolute', left: 8 }}>
+            <TouchableOpacity onPress={() => { dismissItem() }} style={{ justifyContent: 'center', position: 'absolute', left: 8 }}>
                 <Text style={{ color: '#34C759', fontSize: 15, fontWeight: '500' }}>{titles.LeftButtonTitle}</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <Text style={styles.headerTitle} onPress={() => { sheetRef.current.snapTo(1) }}>{titles.headerTitle}</Text>
             <View style={[styles.listItemSeparatorStyle, { position: 'absolute', bottom: 0 }]} />
         </View>
@@ -122,7 +184,7 @@ function StoreFront(props) {
         <View style={styles.container}>
             <View>
                 <SectionList
-                    style={{ height: height, marginBottom: 80 }}
+                    style={{ height: height, paddingBottom: 120 }}
                     keyExtractor={(item, index) => item + index}
                     sections={[
                         // homogenous rendering between sections
@@ -155,7 +217,7 @@ function StoreFront(props) {
                             case "Additional Info":
                                 return <StoreInfoCell item={item} />
                             case "Menu":
-                                return <MenuCell item={item} ref={sheetRef} />
+                                return <MenuCell item={item} />
                             default:
                                 break;
                         }
@@ -165,12 +227,13 @@ function StoreFront(props) {
                 />
             </View>
             <BottomSheet
+                borderRadius={10}
                 ref={sheetRef}
                 initialSnap={0}
-                snapPoints={["15%", "90%"]}
+                snapPoints={["10%", "90%"]}
                 borderRadius={10}
                 // enabledBottomClamp={true}
-                enabledBottomInitialAnimation
+                // enabledBottomInitialAnimation
                 enabledInnerScrolling={false}
                 enabledGestureInteraction={false}
                 enabledHeaderGestureInteraction={true}
