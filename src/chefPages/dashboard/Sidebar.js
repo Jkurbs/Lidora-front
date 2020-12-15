@@ -224,7 +224,6 @@ function Dashboard({ route }) {
     React.useEffect(() => {
         // Fetch Current chef 
         db.collection('chefs').doc(userID).onSnapshot(function (doc) {
-            console.log("data: ", doc.data())
             if (doc.exists) {
                 setUserData({ user: doc.data() })
             } else {
@@ -240,7 +239,7 @@ function Dashboard({ route }) {
     } else {
         return (
             <div className={userData.user.isDarkMode ? "darkWebDash" : "none"}>
-                <WebDashboard userID={userID} userData={userData} navigation={navigation} />
+                <WebDashboard userData={userData} navigation={navigation} />
             </div>
         )
     }
