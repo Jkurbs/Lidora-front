@@ -45,7 +45,6 @@ class Menu extends React.Component {
     this.addMenuItem = this.addMenuItem.bind(this);
     this.updateMenuItem = this.updateMenuItem.bind(this);
     this.deleteMenuItem = this.deleteMenuItem.bind(this);
-    this.addInventoryItem = this.addInventoryItem.bind(this);
   }
 
   animVal = new Animated.Value(0);
@@ -453,7 +452,7 @@ class Menu extends React.Component {
 
         <Alert
           cancelAction={this.cancelAlert.bind(this)}
-          deleteAction={this.deleteInventoryItem.bind(this)}
+          deleteAction={this.deleteMenuItem.bind(this)}
           isVisible={this.state.isAlertVisible}
           buttonTitle1={"Delete from inventory"} />
       </View>
