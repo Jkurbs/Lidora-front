@@ -8,7 +8,9 @@ import "firebase/firestore";
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
 import Alert from '../../components/alert';
+
 import MenuRightSideBar from '../../components/MenuRightSideBar';
+
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
@@ -43,6 +45,7 @@ class Menu extends React.Component {
     this.addMenuItem = this.addMenuItem.bind(this);
     this.updateMenuItem = this.updateMenuItem.bind(this);
     this.deleteMenuItem = this.deleteMenuItem.bind(this);
+    this.addInventoryItem = this.addInventoryItem.bind(this);
   }
 
   animVal = new Animated.Value(0);
@@ -69,6 +72,33 @@ class Menu extends React.Component {
         });
       });
     });
+
+    ref.doc(this.state.userID).collection("menu").onSnapshot(function (querySnapshot) {
+      currentComponent.setState({ tableData: [], data: [] })
+
+      if (querySnapshot.empty) {
+        currentComponent.setState({
+          hasData: false,
+        });
+      } else {
+        querySnapshot.forEach(function (doc) {
+          const data = doc.data()
+          const detValues = [data.key, data.dateAdded, data.name]
+          let currentData = [...currentComponent.state.data]
+          currentData.push(detValues)
+          const propertyValues = [data.imageURL, data.name, data.price, '']
+          let currentTableData = [...currentComponent.state.tableData];
+          currentTableData.push(propertyValues);
+          currentComponent.setState({
+            data: currentData,
+            tableData: currentTableData,
+            hasData: true,
+          });
+        });
+      }
+    });
+
+
     // Fetch List of Ingredients
     ref.doc(this.state.userID).collection("inventory").onSnapshot(function (querySnapshot) {
       let ingredientArray = []
@@ -420,9 +450,10 @@ class Menu extends React.Component {
           addMenuItem={this.addMenuItem}
           updateMenuItem={this.updateMenuItem}
         />
+
         <Alert
           cancelAction={this.cancelAlert.bind(this)}
-          deleteAction={this.deleteMenuItem.bind(this)}
+          deleteAction={this.deleteInventoryItem.bind(this)}
           isVisible={this.state.isAlertVisible}
           buttonTitle1={"Delete from inventory"} />
       </View>

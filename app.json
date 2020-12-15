@@ -18,7 +18,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "kurbs-lidora.com"
+    },
+    "android": {
+      "package": "io.expo.client"
     },
     "web": {
       "favicon": "./src/assets/icon/favicon.png"

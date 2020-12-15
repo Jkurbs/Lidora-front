@@ -15,7 +15,6 @@ class ModalTextBox extends Component {
                     </View>
                 </View>
             </View>
-
         )
     }
 }

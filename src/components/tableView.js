@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     },
     head: { height: 74, paddingLeft: 20, paddingRight: 20, borderBottomColor: '#CECECE', borderBottomWidth: 1 },
     body: { height: 100, paddingLeft: 20, paddingRight: 20, borderBottomColor: '#CECECE', borderBottomWidth: 1 },
-    headText: { margin: 6, fontWeight: '500' },
+    headText: { margin: 6, fontWeight: '600' },
     text: { margin: 6, marginTop: 16 },
     row: { height: 100, padding: 20, flexDirection: 'row', borderBottomColor: '#CECECE', borderBottomWidth: 1 },
     image: { borderRadius: 10, width: 60, height: 60, backgroundColor: '#E1E1E1' },

@@ -10,7 +10,6 @@ import HeaderBar from '../../components/headerBar';
 import Alert from '../../components/alert';
 import InventoryRightSideBar from '../../components/InventoryRightSidebar';
 
-
 var db = firebase.firestore();
 const ref = db.collection('chefs')
 
@@ -50,8 +49,8 @@ class Inventory extends React.Component {
         let currentComponent = this;
         // Fetch Current chef 
         ref.doc(this.state.userID).collection("inventory").onSnapshot(function (querySnapshot) {
-            currentComponent.setState({ tableData: [], data:[] })
-            
+            currentComponent.setState({ tableData: [], data: [] })
+
             if (querySnapshot.empty) {
                 currentComponent.setState({
                     hasData: false,
@@ -59,7 +58,7 @@ class Inventory extends React.Component {
             } else {
                 querySnapshot.forEach(function (doc) {
                     const data = doc.data()
-                    const detValues = [data.key,data.dateAdded,data.name]
+                    const detValues = [data.key, data.dateAdded, data.name]
                     let currentData = [...currentComponent.state.data]
                     currentData.push(detValues)
                     const propertyValues = [data.name, data.quantity, data.unit, '']
@@ -81,9 +80,6 @@ class Inventory extends React.Component {
                 interpolateBar: currentComponent.animVal.interpolate({ inputRange: [0, 1], outputRange: [getWidth, getWidth - 397] })
             })
         });
-
-
-
     }
 
     // Handle inventory details mode 
@@ -103,7 +99,7 @@ class Inventory extends React.Component {
 
     // Add new inventory item
     addInventoryItem = (item) => {
-        console.log("ADDBUTTONPRESSED",item)
+        console.log("ADDBUTTONPRESSED", item)
 
         this.setState(state => {
             const data = [item, ...state.data];
@@ -148,7 +144,7 @@ class Inventory extends React.Component {
     deleteInventoryItem = () => {
 
         const item = this.state.item
-        console.log("theitem",item)
+        console.log("theitem", item)
 
         // TODO: - Delete menu item in Firebase
         let currentComponent = this
@@ -159,7 +155,7 @@ class Inventory extends React.Component {
             })
         })
 
-        const itemF = [item.name,item.quantity,item.unit,""]
+        const itemF = [item.name, item.quantity, item.unit, ""]
 
         this.setState(state => {
             const filteredData = state.filteredTableData.filter(otherItem => otherItem[0] !== itemF[0]);
@@ -169,8 +165,8 @@ class Inventory extends React.Component {
         });
 
         this.setState({ isAlertVisible: !this.state.isAlertVisible })
-        if(this.state.isInvModalActive == true){
-        this.showInventoryModal()
+        if (this.state.isInvModalActive == true) {
+            this.showInventoryModal()
         }
     };
 
@@ -179,7 +175,7 @@ class Inventory extends React.Component {
         let tableD = this.state.tableData
         let realD = this.state.data
         // IF SEARCH IS ON GET DATA FROM FILTERED
-        if(this.state.isSearching === true){
+        if (this.state.isSearching === true) {
             tableD = this.state.filteredTableData
             realD = this.state.filteredRealData
         }
@@ -189,13 +185,11 @@ class Inventory extends React.Component {
             unit: tableD[selectedIndex][2],
             dateAdded: realD[selectedIndex][1],
         }
-        
+
         this.handleDetails(item)
         if (this.state.isInvModalActive === false) {
             this.showInventoryModal()
         }
-
-
     }
 
     leftActionSelected = (selectedIndex) => {
@@ -204,7 +198,7 @@ class Inventory extends React.Component {
         let tableD = this.state.tableData
         let realD = this.state.data
         // IF SEARCH IS ON GET DATA FROM FILTERED
-        if(this.state.isSearching === true){
+        if (this.state.isSearching === true) {
             tableD = this.state.filteredTableData
             realD = this.state.filteredRealData
         }
@@ -215,13 +209,13 @@ class Inventory extends React.Component {
             dateAdded: realD[selectedIndex][1],
             key: realD[selectedIndex][0]
         }
-        console.log("item",item)
+        console.log("item", item)
         this.setState({
             item: item
         })
 
-        if(this.state.isInvModalActive === false){
-        this.showInventoryModal()
+        if (this.state.isInvModalActive === false) {
+            this.showInventoryModal()
 
         }
 
@@ -231,7 +225,7 @@ class Inventory extends React.Component {
         let tableD = this.state.tableData
         let realD = this.state.data
         // IF SEARCH IS ON GET DATA FROM FILTERED
-        if(this.state.isSearching === true){
+        if (this.state.isSearching === true) {
             tableD = this.state.filteredTableData
             realD = this.state.filteredRealData
         }
@@ -263,24 +257,22 @@ class Inventory extends React.Component {
     //for the "Add your first item" button
     addFirst = () => {
         this.handleMode("Add")
-        if(this.state.isInvModalActive === false){
+        if (this.state.isInvModalActive === false) {
             this.showInventoryModal()
-            }
+        }
     }
-    
+
 
     showInventoryModal = () => {
         if (this.state.isInvModalActive === true) {
             this.setState({ isInvModalActive: false })
             this.child.current.handleSlide(true);
             this.animatedTransitionGrow.start();
-
         } else {
             this.setState({ isInvModalActive: true })
             this.child.current.handleSlide(false);
             this.animatedTransitionShrink.start();
         }
-
     }
 
     search = (searchTerm) => {
@@ -295,7 +287,7 @@ class Inventory extends React.Component {
         if (searchTerm.length === 0) {
             this.setState({
                 isSearching: false,
-                filteredTableData: 
+                filteredTableData:
                     ["No result ", "try something else",]
                 ,
             });
@@ -360,6 +352,7 @@ class Inventory extends React.Component {
                         updateInventoryItem={this.updateInventoryItem}
                         handleDetails={this.handleDetails}
                     />
+
 
                 <Alert
                     cancelAction={this.cancelAlert.bind(this)}

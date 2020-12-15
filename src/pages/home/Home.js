@@ -18,7 +18,7 @@ import {
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { DATA, FEATURESDATA } from "./home.data.js";
+import { FEATURESDATA } from "./home.data.js";
 
 import ApplyScreen from "../apply/Apply.js";
 import LegalScreen from "../legal/Legal.js";
@@ -27,6 +27,9 @@ import DashboardScreen from "../../chefPages/dashboard/Sidebar";
 import Footer from "../../components/Footer"
 
 import SettingScreen from '../../chefPages/settings/settingsSideBar';
+
+import * as Linking from "expo-linking";
+
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
@@ -248,61 +251,74 @@ class App extends React.Component {
   }
 
   render() {
-    return (
-      <NavigationContainer theme={MyTheme}>
-        <Stack.Navigator
-          initialRouteName="Lidora"
-          screenOptions={{
-            headerMode: "none",
-            headerTransparent: true,
-          }}
-        >
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Settings" component={SettingScreen} />
-          <Stack.Screen name="Lidora" component={HomeScreen}
-            options={({ navigation, route }) => ({
-              headerRight: () => (
-                <TouchableOpacity
-                  onPress={() => {
-                    /* 1. Navigate to the Details route with params */
-                    navigation.navigate(this.state.userLoggedIn ? 'Dashboard' : 'Login',
-                      {
-                        navigation: navigation,
-                        userData: this.state.userData,
-                        userID: this.state.userData.userID
-                      });
-                  }}
-                  style={{
-                    justifyContent: 'center',
-                    alignContent: 'center', backgroundColor: 'white', marginRight: 16, width: 90, height: 40, borderRadius: 20, shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 3,
-                    },
-                    shadowOpacity: 0.29,
-                    shadowRadius: 4.65,
-                    elevation: 7,
-                  }}
-                >
 
-                  {this.state.userLoggedIn ? (
-                    <Text style={{ alignSelf: 'center', fontSize: 12 }}>{'Dashboard'}
-                      <Entypo name="chevron-small-right" size={12} color="black" />
-                    </Text>
-                  ) : (
-                      <Text style={{ alignSelf: 'center', fontSize: 14 }}>{'Login'}</Text>
-                    )}
-                  {/* <ActivityIndicator style={{ position: 'absolute' }} size={"small"} animating={!this.state.userLoggedIn} color={"gray"} /> */}
-                </TouchableOpacity>
-              ),
-            })}
-          />
-          <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={DashboardScreen} />
-          <Stack.Screen name="Apply" component={ApplyScreen} />
-          <Stack.Screen name="Legal" component={LegalScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
+    let currentURL = window.location.href
+    let getChefandID = currentURL.split("?");
+    let getOnlychefID = currentURL.split("chef=")[1]
+
+    if(typeof getOnlychefID != 'undefined'){
+      return (
+        <p>CUSTOM CHEF PAGE COMPONENT HERE! the chef ID is {getOnlychefID} </p>
+      );
+    } else {
+      return (
+        <NavigationContainer fallback={<Text>Loading...</Text>} theme={MyTheme}>
+          <Stack.Navigator
+            initialRouteName="Lidora"
+            screenOptions={{
+              headerMode: "none",
+              headerTransparent: true,
+            }}
+          >
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Settings" component={SettingScreen} />
+            <Stack.Screen name="Lidora" component={HomeScreen}
+              options={({ navigation, route }) => ({
+
+                headerRight: () => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      /* 1. Navigate to the Details route with params */
+                      navigation.navigate(this.state.userLoggedIn ? 'Dashboard' : 'Login',
+                        {
+                          navigation: navigation,
+                          userData: this.state.userData,
+                          userID: this.state.userData.userID
+                        });
+                    }}
+                    style={{
+                      justifyContent: 'center',
+                      alignContent: 'center', backgroundColor: 'white', marginRight: 16, width: 90, height: 40, borderRadius: 20, shadowColor: "#000",
+                      shadowOffset: {
+                        width: 0,
+                        height: 3,
+                      },
+                      shadowOpacity: 0.29,
+                      shadowRadius: 4.65,
+                      elevation: 7,
+                    }}
+                  >
+
+                    {this.state.userLoggedIn ? (
+                      <Text style={{ alignSelf: 'center', fontSize: 12 }}>{'Dashboard'}
+                        <Entypo name="chevron-small-right" size={12} color="black" />
+                      </Text>
+                    ) : (
+                        <Text style={{ alignSelf: 'center', fontSize: 14 }}>{'Login'}</Text>
+                      )}
+                    {/* <ActivityIndicator style={{ position: 'absolute' }} size={"small"} animating={!this.state.userLoggedIn} color={"gray"} /> */}
+                  </TouchableOpacity>
+                ),
+              })}
+            />
+            <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={DashboardScreen} />
+            <Stack.Screen name="Apply" component={ApplyScreen} />
+            <Stack.Screen name="Legal" component={LegalScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      );
+    }
+
   }
 }
 
