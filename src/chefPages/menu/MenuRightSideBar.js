@@ -8,7 +8,8 @@ import ModalTextFieldWithTitle from '../../components/modalTextFieldWithTitle';
 import ModalTextBox from '../../components/modalTextBox';
 import ModalMenuIngredient from '../../components/modalMenuItemAddIngredient';
 import ModalItemListIngr from '../../components/modalItemListIngr';
-import RegularButton from '../../components/buttons/regularButton'
+import RegularButton from '../../components/buttons/regularButton';
+import { Picker } from '@react-native-picker/picker';
 import MultiSelect from 'react-native-multiple-select';
 import * as DocumentPicker from 'expo-document-picker';
 

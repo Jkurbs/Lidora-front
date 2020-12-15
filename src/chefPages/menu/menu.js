@@ -302,8 +302,6 @@ class Menu extends React.Component {
     if (this.state.isInvModalActive === false) {
       this.showInventoryModal()
     }
-
-
   }
 
   leftActionSelected = (selectedIndex) => {
