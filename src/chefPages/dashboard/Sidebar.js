@@ -250,7 +250,7 @@ function Dashboard({ route }) {
 function WebDashboard({ userID, userData, navigation }) {
 
     const copyToClipboard = () => {
-        Clipboard.setString(`lidora.app/${userData.user.title.replace(/\s/g, '')}=${userID}`);
+        Clipboard.setString(`lidora.app/?${userData.user.title.replace(/\s/g, '')}=${userID}`);
         alert("Link copied")
 
     };
