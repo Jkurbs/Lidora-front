@@ -1,16 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image, Animated,Dimensions } from "react-native";
 import { registerRootComponent } from "expo";
-
-import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
-
 import firebase from '../../firebase/Firebase';
 import "firebase/firestore";
-
-import TableView from '../../components/tableView';
-import HeaderBar from '../../components/headerBar';
-import CalendarModal from '../../components/calendarModal';
-import InventoryRightSidebar from '../../components/inventoryRightSidebar';
+import VerifyModal from '../../components/customerComponents/verifyModal.js';
 
 
 
@@ -139,40 +132,8 @@ class Test2 extends React.Component {
     render() {
         return (
             <>
-            <HeaderBar 
-                title={"Menu"}
-                subtitle={"11 Items"}
-                search={""}
-                isSearchEnabled={true}
-                showCal={this.showCalendarModal.bind(this)}
-                showInv={this.showInventoryModal.bind(this)}
-                handleMode={this.handleMode.bind(this)}
-                isModalActive={this.state.isInvModalActive}
-                mode={this.state.mode}
-            />
-            <Animated.View style={{width: this.state.interpolateBar}}>
-            <TableView
-                tableHead={this.state.tableHead}
-                tableData={this.state.tableData}
-                hasData={this.state.hasData}
-                hasImage={true}
-                didSelectCell={this.didSelectCell.bind(this)}
-                leftImage={require('../../assets/icon/edit.png')}
-                middleImage={require('../../assets/icon/remove-100.png')}
-                rightImage={require('../../assets/icon/info-100.png')}
-                leftAction={this.leftActionSelected.bind(this)}
-                middleAction={this.leftActionSelected.bind(this)}
-                rightAction={this.rightActionSelected.bind(this)}
-            />
-            </Animated.View>
-            <CalendarModal
-                show={this.state.showCalendar}
-            />
-            <InventoryRightSidebar 
-                isActive={this.state.isInvModalActive}
-                mode={this.state.mode}
-                ref={this.child}
-            />
+            <p>YOLOSWAGEM</p>
+            <VerifyModal />
             </>
         )
     }
