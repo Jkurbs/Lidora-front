@@ -27,11 +27,11 @@ import DashboardScreen from "../../chefPages/dashboard/Sidebar";
 import Footer from "../../components/Footer"
 
 import SettingScreen from '../../chefPages/settings/settingsSideBar';
+import StoreFront from '../../customerPages/storeFront/storeFront'
 
 import * as Linking from "expo-linking";
 
-
-import firebase from "../../firebase/Firebase";
+import firebase from '../../firebase/Firebase';
 import "firebase/firestore";
 import "firebase/auth";
 import ActivityIndicator from '../../components/activityIndicator'
@@ -254,12 +254,11 @@ class App extends React.Component {
 
     let currentURL = window.location.href
     let getChefandID = currentURL.split("?");
-    let getOnlychefID = currentURL.split("chef=")[1]
+    let chefId = currentURL.split("=")[1]
 
-    if(typeof getOnlychefID != 'undefined'){
-      return (
-        <p>CUSTOM CHEF PAGE COMPONENT HERE! the chef ID is {getOnlychefID} </p>
-      );
+    if (typeof getChefandID[1] != 'undefined') {
+      return <StoreFront chefId={chefId} />
+
     } else {
       return (
         <NavigationContainer fallback={<Text>Loading...</Text>} theme={MyTheme}>

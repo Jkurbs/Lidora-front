@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image, Text, View, TouchableOpacity, Dimensions } from "react-native";
+import { Image, Text, View, TouchableOpacity, Dimensions, Clipboard } from "react-native";
 
 import { createSideTabNavigator } from "react-navigation-side-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -15,6 +15,8 @@ import "firebase/firestore";
 import ReactPlaceholder from 'react-placeholder';
 import "react-placeholder/lib/reactPlaceholder.css";
 import "./darkMode.css"
+
+import { Entypo } from '@expo/vector-icons';
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
@@ -49,7 +51,7 @@ function TabNavigator({ navigation, userData }) {
 
                 style: {
                     width: 200,
-                    paddingTop: 250,
+                    paddingTop: 300,
                 },
                 iconHorizontal: true,
                 labelSize: 13,
@@ -222,7 +224,6 @@ function Dashboard({ route }) {
     React.useEffect(() => {
         // Fetch Current chef 
         db.collection('chefs').doc(userID).onSnapshot(function (doc) {
-            console.log("data: ", doc.data())
             if (doc.exists) {
                 setUserData({ user: doc.data() })
             } else {
@@ -234,18 +235,25 @@ function Dashboard({ route }) {
     //add userID to userData
     userData.user.userID = userID
     if (windowWidth < phoneMaxWidth) {
-        return <MobileDashboard />
+        return <MobileDashboard userID={userID} userData={userData} />
     } else {
         return (
-        <div className={userData.user.isDarkMode ? "darkWebDash" : "none"}>
-        <WebDashboard userData={userData} navigation={navigation} />
-        </div>
+            <div className={userData.user.isDarkMode ? "darkWebDash" : "none"}>
+                <WebDashboard userData={userData} navigation={navigation} />
+            </div>
         )
     }
 }
 
 
-function WebDashboard({ userData, navigation }) {
+function WebDashboard({ userID, userData, navigation }) {
+
+    const copyToClipboard = () => {
+        Clipboard.setString(`lidora.app/?${userData.user.title.replace(/\s/g, '')}=${userID}`);
+        alert("Link copied")
+
+    };
+
     return (
         <View style={{ height: windowHeight, maxHeight: '100%' }}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
@@ -257,7 +265,13 @@ function WebDashboard({ userData, navigation }) {
                 <ReactPlaceholder showLoadingAnimation={true} type='text' rows={1} delay={1000} ready={userData != null} >
                     <Text style={{ fontSize: 20, fontWeight: '500' }}>Welcome {userData.user.first_name}</Text>
                 </ReactPlaceholder>
-                <TouchableOpacity style={{ marginTop: 16, marginBottom: 20 }} onPress={() => navigation.navigate("Settings", { userData: userData, navigation: navigation })}>
+                <TouchableOpacity onPress={() => copyToClipboard()}>
+                    <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ color: "gray", fontWeight: '500', fontSize: 14, marginRight: 8 }} >Copy your link</Text>
+                        <Entypo name="clipboard" size={12} color="gray" />
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ marginTop: 16, marginBottom: 40 }} onPress={() => navigation.navigate("Settings", { userData: userData, navigation: navigation })}>
                     <Text style={{ fontWeight: '500' }}>Settings</Text>
                 </TouchableOpacity>
             </View>
@@ -275,10 +289,21 @@ function WebDashboard({ userData, navigation }) {
     )
 }
 
-function MobileDashboard() {
+function MobileDashboard(userID, userData) {
+    const copyToClipboard = () => {
+        Clipboard.setString(`lidora.app/${userData.user.title.replace(/\s/g, '')}=${userID}`);
+        alert("Link copied")
+    };
+
     return (
         <View style={{ height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: 17, alignSelf: 'center' }}>Dashboard will soon be available on mobile.</Text>
+            <Text style={{ fontSize: 17, alignSelf: 'center', marginTop: 50 }}>Dashboard will soon be available on mobile.</Text>
+            <TouchableOpacity onPress={() => copyToClipboard()}>
+                <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <Text >Click to Copy your profile link</Text>
+                    <Entypo name="clipboard" size={20} color="gray" />
+                </View>
+            </TouchableOpacity>
         </View>
     )
 }
