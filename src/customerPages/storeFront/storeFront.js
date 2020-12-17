@@ -10,6 +10,7 @@ import ReactPlaceholder from 'react-placeholder';
 import "react-placeholder/lib/reactPlaceholder.css";
 
 import EmptyBag from '../../components/emptyBagView'
+import VerifyModal from '../../components/customerComponents/verifyModal'
 
 import BottomSheet from 'reanimated-bottom-sheet';
 const { height } = Dimensions.get("window")
@@ -245,6 +246,7 @@ function StoreFront(props) {
                 onCloseStart={() => setTitle({ headerTitle: "View Bag", LeftButtonTitle: "" })}>
 
             </BottomSheet>
+            <VerifyModal />
         </View>
     );
 }
