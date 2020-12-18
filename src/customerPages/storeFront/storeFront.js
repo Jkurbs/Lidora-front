@@ -17,6 +17,8 @@ const { height } = Dimensions.get("window")
 
 var db = firebase.firestore();
 
+var unsubscribe
+
 const FlatListItemSeparator = () => {
     return (
         //Item Separator
@@ -58,6 +60,7 @@ function StoreFront(props) {
     const [selectedItem, setSelectedItem] = React.useState({})
     const [bag, setBag] = React.useState([])
     const [verifyDisp, setVerifyDisp] = useState(true)
+    const [userLoggedIn,setUserLoggedIn] = useState(false)
 
     const sheetRef = React.useRef(null);
 
@@ -86,6 +89,20 @@ function StoreFront(props) {
 
     }, [])
 
+    //Verify if customer is logged in
+    React.useEffect(() => {
+        unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
+          if (user) {
+            setUserLoggedIn(true)
+            return
+          } else {
+            // No user is signed in.
+            setUserLoggedIn(false)
+          }
+        })
+
+    }, [])
+
     const checkLoggedIn = () => {
 
         
@@ -94,6 +111,22 @@ function StoreFront(props) {
     const loginUser = (info) => {
         console.log(info)
         console.log("LOGINBUTENPRESS")
+        firebase
+        .auth()
+        .signInWithEmailAndPassword(info.email, info.password)
+        .then(data => {
+            console.log("SUCCESS")
+        //   navigation.navigate('Dashboard', { navigation: navigation, userID: data.user.uid })
+        //   setIndicatorAnimating(false)
+        //   setLoginText("Login")
+        })
+        .catch(function (error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          console.log(errorMessage)
+          // ...
+        });
     }
 
 
@@ -257,7 +290,7 @@ function StoreFront(props) {
                 onCloseStart={() => setTitle({ headerTitle: "View Bag", LeftButtonTitle: "" })}>
 
             </BottomSheet>
-            <VerifyModal loginUser={loginUser} />
+            <VerifyModal loginUser={loginUser} userLoggedIn={userLoggedIn} />
         </View>
     );
 }

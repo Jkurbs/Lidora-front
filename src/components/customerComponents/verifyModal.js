@@ -20,8 +20,10 @@ function VerifyModal(props) {
         setBool(false)
     }
 
-
-        if(showAuth === true){
+        if(props.userLoggedIn === true){
+            return null
+        }
+        else if(showAuth === true){
             return (
                 <>
                 <View style={styles.container2}>
