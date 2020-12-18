@@ -24,6 +24,10 @@ function AuthenticatePage(props) {
         props.loginUser(loginInfo)
     }
 
+    const regMethod = () => {
+        props.regUser(regInfo)
+    }
+
     const TabDisplay = () => {
         if(tab === "login"){
             return (
@@ -47,7 +51,7 @@ function AuthenticatePage(props) {
                 <MobileInput placeholder={"Password"}onChangeText={(text) => regInfo.password = text}/>
                 <PrivacyPolicyText/>
                 <View style={styles.buttonWrap}>
-                <MobileButton2 text={'Register'}/>
+                <MobileButton2 text={'Register'} action={()=>regMethod()}/>
                 </View>
                 </View>
             )

@@ -93,6 +93,7 @@ function StoreFront(props) {
     React.useEffect(() => {
         unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           if (user) {
+            console.log(user,"USER")
             setUserLoggedIn(true)
             return
           } else {
@@ -119,6 +120,28 @@ function StoreFront(props) {
         //   navigation.navigate('Dashboard', { navigation: navigation, userID: data.user.uid })
         //   setIndicatorAnimating(false)
         //   setLoginText("Login")
+        })
+        .catch(function (error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          console.log(errorMessage)
+          // ...
+        });
+    }
+
+    const regUser = (info) => {
+        console.log(info)
+        console.log("REGBUTENPRESS")
+        firebase
+        .auth()
+        .createUserWithEmailAndPassword(info.email, info.password)
+        .then(data => {
+            console.log("regSUCCESS",data)
+            console.log(data.user.uid)
+            db.collection('customers').doc(data.user.uid).update({
+                phone: info.phone
+            })
         })
         .catch(function (error) {
           // Handle Errors here.
@@ -290,7 +313,7 @@ function StoreFront(props) {
                 onCloseStart={() => setTitle({ headerTitle: "View Bag", LeftButtonTitle: "" })}>
 
             </BottomSheet>
-            <VerifyModal loginUser={loginUser} userLoggedIn={userLoggedIn} />
+            <VerifyModal loginUser={loginUser} regUser={regUser} userLoggedIn={userLoggedIn} />
         </View>
     );
 }
