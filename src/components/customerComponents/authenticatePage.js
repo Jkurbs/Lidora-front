@@ -3,29 +3,69 @@ import React, { Component, useState } from 'react';
 import { Text, View, StyleSheet, Dimensions, Modal, TouchableOpacity } from 'react-native';
 import AnimatedHideView from 'react-native-animated-hide-view';
 import MobileButton from './mobileButton';
+import MobileButton2 from './mobileButton2';
+import MobileInput from './mobileInput';
 const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
-function AuthenticatePage() {
-    const [bool,setBool] = useState(true)
+function AuthenticatePage(props) {
+    const [tab,setTab] = useState("login")
+    const [loginInfo,setLoginInfo] = useState({})
+    const [regInfo,setRegInfo] = useState({})
 
-    const continueGuest = () => {
-        setBool(false)
+    const PrivacyPolicyText = () => {
+        return (
+            <View style={{display:'flex',flexDirection:'row'}}>
+                <Text >By signing up, you agree to our</Text><TouchableOpacity onPressIn={()=>console.log("TERMS")}><Text style={{fontWeight:'600'}}> Terms & Privacy </Text></TouchableOpacity>
+            </View>
+        )
+    }
+
+    const loginMethod = () => {
+        props.loginUser(loginInfo)
+    }
+
+    const TabDisplay = () => {
+        if(tab === "login"){
+            return (
+                <View style={styles.loginDisp}>
+                <Text style={styles.title}>[PH]Login</Text>
+                <MobileInput placeholder={"Email Address"} onChangeText={(text) => loginInfo.email = text}/>
+                <MobileInput placeholder={"Password"} onChangeText={(text) => loginInfo.password = text}/>
+                <PrivacyPolicyText />
+                <View style={styles.buttonWrap}>
+                <MobileButton2 text={'Login'} action={()=>loginMethod()}/>
+                </View>
+                </View>
+            )
+        }
+        else if(tab === "register") {
+            return (
+                <View style={styles.regDisp}>
+                <Text style={styles.title}>[PH]Register</Text>
+                <MobileInput placeholder={"Email Address"} onChangeText={(text) => regInfo.email = text}/>
+                <MobileInput placeholder={"Phone Number"} onChangeText={(text) => regInfo.phone = text}/>
+                <MobileInput placeholder={"Password"}onChangeText={(text) => regInfo.password = text}/>
+                <PrivacyPolicyText/>
+                <View style={styles.buttonWrap}>
+                <MobileButton2 text={'Register'}/>
+                </View>
+                </View>
+            )
+        }
 
     }
+
 
         return (
             <View style={styles.container}>
             <View style={styles.alert}>
-            <TouchableOpacity style={styles.loginTab}>
-                <Text style={styles.TabText}>Login</Text>
+            <TouchableOpacity style={[styles.loginTab,(tab !== "login") ? {backgroundColor:'#cccccc'} : {backgroundImage:'linear-gradient(180deg, #00CF46 0%, #3BFE7D 100%);'}]} onPressIn={()=>setTab("login")}>
+                <Text style={[styles.TabText,(tab !== "login") ? null : {color:'white'}]}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.registerTab}>
-                <Text style={styles.TabText}>Register</Text>
+            <TouchableOpacity style={[styles.registerTab,(tab !== "register") ? {backgroundColor:'#cccccc'} : {backgroundImage:'linear-gradient(180deg, #00CF46 0%, #3BFE7D 100%);'}]} onPressIn={()=>setTab("register")}>
+                <Text style={[styles.TabText,(tab !== "register") ? null : {color:'white'}]}>Register</Text>
             </TouchableOpacity>
-            <Text style={styles.title}>[PH]Authenticate</Text>
-            <View style={styles.buttonWrap}>
-            <MobileButton text={'Login'}/>
-            </View>
+            <TabDisplay/>
             </View>
             </View>
         )
@@ -34,7 +74,7 @@ function AuthenticatePage() {
     const styles = StyleSheet.create({
 
         container: {
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            backgroundColor: 'white',
             height: '100%',
             width: '100%',
             position: 'absolute',
@@ -57,6 +97,7 @@ function AuthenticatePage() {
             paddingTop:'7px',
             fontSize:'20px',
             color: '#808080',
+            fontWeight:'100'
         },
 
         registerTab:{
@@ -73,7 +114,7 @@ function AuthenticatePage() {
         alert: {
             backgroundColor: 'white',
             width: '80%',
-            height: 320,
+            height: 380,
             shadowColor: "#000",
             shadowColor: "#000",
             shadowOpacity: 0.13,

@@ -1,4 +1,4 @@
-import React from "react";
+import React , { Component, useState } from "react";
 
 import { View, Image, Text, SectionList, TouchableOpacity, Dimensions } from "react-native";
 
@@ -57,6 +57,7 @@ function StoreFront(props) {
     const [titles, setTitle] = React.useState({ headerTitle: "View Bag", LeftButtonTitle: "" })
     const [selectedItem, setSelectedItem] = React.useState({})
     const [bag, setBag] = React.useState([])
+    const [verifyDisp, setVerifyDisp] = useState(true)
 
     const sheetRef = React.useRef(null);
 
@@ -84,6 +85,16 @@ function StoreFront(props) {
         })
 
     }, [])
+
+    const checkLoggedIn = () => {
+
+        
+    }
+
+    const loginUser = (info) => {
+        console.log(info)
+        console.log("LOGINBUTENPRESS")
+    }
 
 
     const selectItem = (item) => {
@@ -227,7 +238,7 @@ function StoreFront(props) {
                     stickySectionHeadersEnabled={false}
                 />
             </View>
-            <BottomSheet
+            <BottomSheet 
                 borderRadius={10}
                 ref={sheetRef}
                 initialSnap={0}
@@ -246,7 +257,7 @@ function StoreFront(props) {
                 onCloseStart={() => setTitle({ headerTitle: "View Bag", LeftButtonTitle: "" })}>
 
             </BottomSheet>
-            <VerifyModal />
+            <VerifyModal loginUser={loginUser} />
         </View>
     );
 }
