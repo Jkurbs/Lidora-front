@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 
-import { View, Image, Text, SectionList, TouchableOpacity, Dimensions } from "react-native";
+import { View, Image, Text, SectionList, ScrollView, TouchableOpacity, Dimensions, TextInput } from "react-native";
 
 import firebase from "../../firebase/Firebase";
 import styles from './storeFront.style'
@@ -12,6 +12,7 @@ import "react-placeholder/lib/reactPlaceholder.css";
 import EmptyBag from '../../components/emptyBagView'
 
 import BottomSheet from 'reanimated-bottom-sheet';
+import { } from "react-native-gesture-handler";
 const { height } = Dimensions.get("window")
 
 var db = firebase.firestore();
@@ -51,15 +52,22 @@ function StoreInfoCell(item) {
 
 function StoreFront(props) {
 
-    const [data, setData] = React.useState({ user: [] })
-    const [menu, setMenu] = React.useState([])
-    const [titles, setTitle] = React.useState({ headerTitle: "View Bag", LeftButtonTitle: "" })
-    const [selectedItem, setSelectedItem] = React.useState({})
-    const [bag, setBag] = React.useState([])
+    // States 
+    const [data, setData] = useState({ user: [] })
+    const [menu, setMenu] = useState([])
+    const [titles, setTitle] = useState({ headerTitle: "View Bag", LeftButtonTitle: "" })
+    const [selectedItem, setSelectedItem] = useState(null)
+    const [order, setOrder] = useState({ quantity: 1, note: "" })
+    const [bag, setBag] = useState([])
 
-    const sheetRef = React.useRef(null);
+    const [isInnerScrollEnabled, setIsInnerScrollEnabled] = useState(false)
 
-    React.useEffect(() => {
+    // Refs 
+    const sheetRef = useRef(null);
+    const scrollRef = useRef(null)
+
+    // Fetchs 
+    useEffect(() => {
         // Fetch Current chef 
         db.collection('chefs').doc(props.chefId).get().then(function (doc) {
             if (doc.exists) {
@@ -70,7 +78,7 @@ function StoreFront(props) {
         })
     }, [])
 
-    React.useEffect(() => {
+    useEffect(() => {
         // Fetch Current chef menu
         db.collection('chefs').doc(props.chefId).collection("menu").get().then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
@@ -81,7 +89,6 @@ function StoreFront(props) {
                 }
             })
         })
-
     }, [])
 
 
@@ -91,16 +98,65 @@ function StoreFront(props) {
         sheetRef.current.snapTo(1)
     }
 
-
-
     const dismissItem = () => {
         setSelectedItem(null)
         sheetRef.current.snapTo(0)
     }
 
+
+    const onOpenEnd = () => {
+        if (scrollRef.current !== null) {
+            setIsInnerScrollEnabled(true)
+            scrollRef.current.forceUpdate()
+        }
+    }
+
+    const onCloseEnd = () => {
+        if (scrollRef.current !== null) {
+            setIsInnerScrollEnabled(false)
+            scrollRef.current.forceUpdate()
+        }
+    }
+
+
+    const RenderItemInfos = (item) => (
+        <View style={styles.itemDescriptionContainer}>
+            <View style={{ flexDirection: 'column', maxWidth: '50%' }}>
+                <Text style={styles.menuName}>{item.item?.name ?? ""}</Text>
+                <Text style={styles.menuDescription}>{item.item?.description ?? ""}</Text>
+                <Text style={styles.menuPrice}>${item.item?.price ?? ""}</Text>
+            </View>
+            <Image style={styles.menuImage} source={{
+                uri: item.item?.imageURL ?? "",
+            }} />
+        </View>
+    );
+
+
     const RenderIngredientsItem = (item) => (
         <Text style={{ margin: 8, padding: 8, fontWeight: '500', fontSize: 15 }}>{item.item?.name ?? ""}</Text>
     );
+
+    const RenderInstructions = () => (
+        <View>
+            <TextInput
+                style={{ height: 60, padding: 20 }}
+                placeholder={"Add a note (Extra sauce, no salt, etc.)"}
+                onChangeText={(text) => setOrder({ note: text })}
+            />
+            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
+                <TouchableOpacity pointerEvents={() => { order.quantity < 2 ? 'none' : "auto" }} onPress={() => { order.quantity < 2 ? setOrder({ quantity: 1 }) : setOrder({ quantity: order.quantity - 1 }) }} style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: 'black', justifyContent: 'center', }}>
+                    <Text style={{ alignSelf: 'center', color: 'white' }}>-</Text>
+                </TouchableOpacity>
+                <Text style={{ alignSelf: 'center', margin: 8 }}>{order.quantity}</Text>
+                <TouchableOpacity onPress={() => setOrder({ quantity: order.quantity + 1 })} style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: 'black', justifyContent: 'center', }}>
+                    <Text style={{ alignSelf: 'center', color: 'white' }}>+</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+
+
 
     const MenuCell = (item) => {
         return (
@@ -120,52 +176,55 @@ function StoreFront(props) {
     }
 
     const renderContent = () => {
-
-
-        if (bag.length === 0 && selectedItem === null) {
+        if (selectedItem === null) {
             return <EmptyBag />
         } else {
-            <View style={{ backgroundColor: 'white', height: height }}>
-                <View style={{ padding: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <View style={{ flexDirection: 'column', maxWidth: '50%' }}>
-                        <Text style={styles.menuName}>{selectedItem?.name ?? ""}</Text>
-                        <Text style={styles.menuDescription}>{selectedItem?.description ?? ""}</Text>
-                    </View>
-                    <Image style={styles.menuImage} source={{
-                        uri: selectedItem?.imageURL ?? "",
-                    }} />
+            return (
+                <View style={styles.bagContainer}>
+                    <SectionList
+                        ref={scrollRef}
+                        style={{}}
+                        keyExtractor={(item, index) => item + index}
+                        sections={[
+                            { title: "Infos", data: [selectedItem] },
+                            { title: "Ingredients", data: selectedItem?.ingredients ?? [] },
+                            { title: "Special Instructions", data: [0] },
+                        ]}
+                        renderSectionHeader={({ section }) => {
+                            if (section.title === "Infos") {
+                                return <Text></Text>
+                            } else {
+                                return (
+                                    <View style={styles.headerView}>
+                                        <Text style={styles.sectionTitle}>{section.title}</Text>
+                                    </View>
+                                );
+                            }
+
+                        }}
+                        renderItem={({ item, section }) => {
+                            switch (section.title) {
+                                case "Infos":
+                                    return <RenderItemInfos item={item} />
+                                case "Ingredients":
+                                    return <RenderIngredientsItem item={item} />
+                                case "Special Instructions":
+                                    return <RenderInstructions />
+                                default:
+                                    break;
+                            }
+                        }}
+                        pointerEvents={isInnerScrollEnabled === true ? 'auto' : 'none'}
+                        scrollEnabled={isInnerScrollEnabled}
+                        ItemSeparatorComponent={FlatListItemSeparator}
+                        stickySectionHeadersEnabled={false}
+                    />
+
+                    <View style={styles.listItemSeparatorStyle} />
+
+
                 </View>
-                <View style={styles.listItemSeparatorStyle} />
-                <SectionList
-                    style={{ height: height, paddingBottom: 120 }}
-                    keyExtractor={(item, index) => item + index}
-                    sections={[
-                        {
-                            title: "Ingredients",
-                            data: selectedItem?.ingredients ?? []
-                        },
-                    ]}
-                    renderSectionHeader={({ section }) => {
-                        if (section.title === "user") { return null } else {
-                            return (
-                                <View style={styles.headerView}>
-                                    <Text style={styles.sectionTitle}>{section.title}</Text>
-                                </View>
-                            );
-                        }
-                    }}
-                    renderItem={({ item, section }) => {
-                        switch (section.title) {
-                            case "Ingredients":
-                                return <RenderIngredientsItem item={item} />
-                            default:
-                                break;
-                        }
-                    }}
-                    ItemSeparatorComponent={FlatListItemSeparator}
-                    stickySectionHeadersEnabled={false}
-                />
-            </View>
+            )
         }
     }
 
@@ -227,22 +286,20 @@ function StoreFront(props) {
                 />
             </View>
             <BottomSheet
-                borderRadius={10}
                 ref={sheetRef}
                 initialSnap={0}
                 snapPoints={["10%", "90%"]}
-                borderRadius={10}
-                // enabledBottomClamp={true}
-                // enabledBottomInitialAnimation
-                enabledInnerScrolling={false}
-                enabledGestureInteraction={false}
-                enabledHeaderGestureInteraction={true}
-                enabledContentGestureInteraction={true}
+                // enabledInnerScrolling={true}
+                // enabledGestureInteraction={false}
+                // enabledHeaderGestureInteraction={true}
+                // enabledContentGestureInteraction={false}
                 renderContent={renderContent}
                 renderHeader={renderHeader}
-
                 onOpenStart={() => setTitle({ headerTitle: "", LeftButtonTitle: "Dismiss" })}
-                onCloseStart={() => setTitle({ headerTitle: "View Bag", LeftButtonTitle: "" })}>
+                onCloseStart={() => setTitle({ headerTitle: "View Bag", LeftButtonTitle: "" })}
+                onOpenEnd={onOpenEnd}
+                onCloseEnd={onCloseEnd}
+            >
 
             </BottomSheet>
         </View>
