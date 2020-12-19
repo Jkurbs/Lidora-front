@@ -5,17 +5,26 @@ import { View, Image, Text, SectionList, TouchableOpacity, Dimensions } from "re
 import firebase from "../../firebase/Firebase";
 import styles from './storeFront.style'
 import "firebase/firestore";
+// import authNative from '@react-native-firebase/auth'
 
 import ReactPlaceholder from 'react-placeholder';
 import "react-placeholder/lib/reactPlaceholder.css";
-
 import EmptyBag from '../../components/emptyBagView'
 import VerifyModal from '../../components/customerComponents/verifyModal'
-
+import * as FirebaseRecaptcha from "expo-firebase-recaptcha";
 import BottomSheet from 'reanimated-bottom-sheet';
+import { auth } from "firebase";
+import firebaseApp from "../../firebase/Firebase";
+import * as firebase2 from 'firebase'
 const { height } = Dimensions.get("window")
 
+
 var db = firebase.firestore();
+
+var provider = new auth.PhoneAuthProvider();
+firebase.auth().useDeviceLanguage();
+
+// var applicationVerifier = new auth.RecaptchaVerifier("recaptcha-container");
 
 var unsubscribe
 
@@ -53,7 +62,7 @@ function StoreInfoCell(item) {
 }
 
 function StoreFront(props) {
-
+    const recaptchaVerifier = React.useRef(null);
     const [data, setData] = React.useState({ user: [] })
     const [menu, setMenu] = React.useState([])
     const [titles, setTitle] = React.useState({ headerTitle: "View Bag", LeftButtonTitle: "" })
@@ -61,7 +70,9 @@ function StoreFront(props) {
     const [bag, setBag] = React.useState([])
     const [verifyDisp, setVerifyDisp] = useState(true)
     const [userLoggedIn,setUserLoggedIn] = useState(false)
-
+      // If null, no SMS has been sent
+    const [confirm, setConfirm] = useState(null);
+    const firebaseConfig = firebase2.apps.length ? firebase2.app().options : undefined
     const sheetRef = React.useRef(null);
 
     React.useEffect(() => {
@@ -133,24 +144,52 @@ function StoreFront(props) {
     const regUser = (info) => {
         console.log(info)
         console.log("REGBUTENPRESS")
-        firebase
-        .auth()
-        .createUserWithEmailAndPassword(info.email, info.password)
-        .then(data => {
-            console.log("regSUCCESS",data)
-            console.log(data.user.uid)
-            db.collection('customers').doc(data.user.uid).update({
-                phone: info.phone
+            firebase
+            .auth()
+            .createUserWithEmailAndPassword(info.email, info.password)
+            .then(data => {
+                console.log("regSUCCESS",data)
+                console.log(data.user.uid)
+                db.collection('customers').doc(data.user.uid).update({
+                    phone: info.phone
+                })
             })
-        })
-        .catch(function (error) {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          console.log(errorMessage)
-          // ...
-        });
+            .catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorMessage)
+            // ...
+            });
+            verifyPhoneNumber(info.phone)
+
     }
+
+    // Handle the verify phone button press
+    async function verifyPhoneNumber(phoneNumber) {
+        console.log("VERIFYINGPHONE",phoneNumber)
+        const phoneProvider = new firebase2.auth.PhoneAuthProvider();
+        const verificationId = await phoneProvider.verifyPhoneNumber('+17207052327',recaptchaVerifier.current)
+        setConfirm(verificationId);
+    }
+
+  // Handle confirm code button press
+    async function confirmCode() {
+        try {
+        const credential = auth.PhoneAuthProvider.credential(
+            confirm.verificationId,
+            code,
+        );
+        let userData = await auth().currentUser.linkWithCredential(credential);
+        setUser(userData.user);
+        } catch (error) {
+        if (error.code == 'auth/invalid-verification-code') {
+            console.log('Invalid code.');
+        } else {
+            console.log('Account linking error');
+        }
+        }
+  }
 
 
     const selectItem = (item) => {
@@ -313,7 +352,12 @@ function StoreFront(props) {
                 onCloseStart={() => setTitle({ headerTitle: "View Bag", LeftButtonTitle: "" })}>
 
             </BottomSheet>
-            <VerifyModal loginUser={loginUser} regUser={regUser} userLoggedIn={userLoggedIn} />
+            <FirebaseRecaptcha.FirebaseRecaptchaVerifierModal 
+                ref={recaptchaVerifier}
+                firebaseConfig={firebaseConfig}
+                attemptInvisibleVerification={true}
+            />
+            <VerifyModal loginUser={loginUser} regUser={regUser} confirmCode={confirmCode} userLoggedIn={userLoggedIn} />
         </View>
     );
 }

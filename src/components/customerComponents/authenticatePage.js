@@ -5,12 +5,22 @@ import AnimatedHideView from 'react-native-animated-hide-view';
 import MobileButton from './mobileButton';
 import MobileButton2 from './mobileButton2';
 import MobileInput from './mobileInput';
-const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
+//firebase imports
+import firebase from '../../firebase/Firebase';
+import "firebase/firestore";
+import "firebase/auth";
+
+var db = firebase.firestore();
 
 function AuthenticatePage(props) {
     const [tab,setTab] = useState("login")
     const [loginInfo,setLoginInfo] = useState({})
-    const [regInfo,setRegInfo] = useState({})
+    const [regInfo,setRegInfo] = useState({
+        email:'xxx',
+        phone:'xxx',
+        password:123
+    })
+    const [isRegHasData,setIsRegHasData] = useState(false)
 
     const PrivacyPolicyText = () => {
         return (
@@ -24,13 +34,33 @@ function AuthenticatePage(props) {
         props.loginUser(loginInfo)
     }
 
-    const regMethod = () => {
-        props.regUser(regInfo)
+    const nextMethod = () => {
+        //phone num format
+        var phoneno = /^\d{10}$/;
+        //email format
+        let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if(regInfo.phone.match(phoneno) && regInfo.password.length >= 6 && re.test(regInfo.email) ){
+            //Data is correct format
+            setIsRegHasData(true)
+            props.regUser(regInfo)
+        } 
+        else
+        {
+        alert("Invalid phone format");
+        return false;
+        }
+
     }
+    const regMethod = () => {
+        props.confirmCode(regInfo.code)
+    }
+
 
     const TabDisplay = () => {
         if(tab === "login"){
             return (
+                //Login Screen
                 <View style={styles.loginDisp}>
                 <Text style={styles.title}>[PH]Login</Text>
                 <MobileInput placeholder={"Email Address"} onChangeText={(text) => loginInfo.email = text}/>
@@ -43,18 +73,36 @@ function AuthenticatePage(props) {
             )
         }
         else if(tab === "register") {
-            return (
-                <View style={styles.regDisp}>
-                <Text style={styles.title}>[PH]Register</Text>
-                <MobileInput placeholder={"Email Address"} onChangeText={(text) => regInfo.email = text}/>
-                <MobileInput placeholder={"Phone Number"} onChangeText={(text) => regInfo.phone = text}/>
-                <MobileInput placeholder={"Password"}onChangeText={(text) => regInfo.password = text}/>
-                <PrivacyPolicyText/>
-                <View style={styles.buttonWrap}>
-                <MobileButton2 text={'Register'} action={()=>regMethod()}/>
-                </View>
-                </View>
-            )
+            if(isRegHasData !== true){
+                //Register Screen
+                return (
+                    <View style={styles.regDisp}>
+                    <Text style={styles.title}>[PH]Register</Text>
+                    <MobileInput placeholder={"Email Address"} onChangeText={(text) => regInfo.email = text}/>
+                    <MobileInput placeholder={"Phone Number"} onChangeText={(text) => regInfo.phone = text}/>
+                    <MobileInput placeholder={"Password"}onChangeText={(text) => regInfo.password = text}/>
+                    <PrivacyPolicyText/>
+                    <View style={styles.buttonWrap}>
+                    <MobileButton2 text={'Next'} action={()=>nextMethod()} />
+                    </View>
+                    </View>
+                )
+            } else {
+                //Show Verification Screen
+                return (
+                    <View style={styles.regDisp}>
+                    <Text style={styles.title}>[PH]Enter Verification code sent to {regInfo.phone}</Text>
+                    <MobileInput placeholder={"Verification Code"} onChangeText={(text) => regInfo.code = text}/>
+                    <View style={styles.buttonWrap}>
+                    <p id="verify">
+                    <MobileButton2 text={'Verify'} action={()=>regMethod()} />
+                    </p>
+                    </View>
+                    <TouchableOpacity onPressIn={()=>setIsRegHasData(false)}><Text style={{fontWeight:'600'}}> Change Number </Text></TouchableOpacity>
+                    </View>
+                )
+            }
+
         }
 
     }

@@ -27,7 +27,7 @@ function VerifyModal(props) {
             return (
                 <>
                 <View style={styles.container2}>
-                <AuthenticatePage loginUser={props.loginUser} regUser={props.regUser}/> 
+                <AuthenticatePage loginUser={props.loginUser} regUser={props.regUser} confirmCode={props.confirmCode}/> 
                 </View>
                 </>
             )
