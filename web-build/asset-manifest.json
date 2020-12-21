@@ -1,6 +1,7 @@
 {
   "files": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "app.js": "/static/js/app.ebaf93cc.chunk.js",
     "app.js.map": "/static/js/app.ebaf93cc.chunk.js.map",
     "runtime~app.js": "/static/js/runtime~app.2e9f1821.js",
@@ -15,6 +16,14 @@
     "static/js/2.0fc457c1.chunk.js": "/static/js/2.0fc457c1.chunk.js",
     "static/js/2.0fc457c1.chunk.js.map": "/static/js/2.0fc457c1.chunk.js.map",
 >>>>>>> Added add to bag button
+=======
+    "app.js": "/static/js/app.7e410808.chunk.js",
+    "app.js.map": "/static/js/app.7e410808.chunk.js.map",
+    "runtime~app.js": "/static/js/runtime~app.2e9f1821.js",
+    "runtime~app.js.map": "/static/js/runtime~app.2e9f1821.js.map",
+    "static/js/2.d8024227.chunk.js": "/static/js/2.d8024227.chunk.js",
+    "static/js/2.d8024227.chunk.js.map": "/static/js/2.d8024227.chunk.js.map",
+>>>>>>> Added black background
     "fonts/AntDesign.ttf": "/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/./fonts/Feather.ttf",
@@ -34,10 +43,14 @@
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "static/js/2.67d0d146.chunk.js.LICENSE.txt": "/static/js/2.67d0d146.chunk.js.LICENSE.txt",
 =======
     "static/js/2.0fc457c1.chunk.js.LICENSE.txt": "/static/js/2.0fc457c1.chunk.js.LICENSE.txt",
 >>>>>>> Added add to bag button
+=======
+    "static/js/2.d8024227.chunk.js.LICENSE.txt": "/static/js/2.d8024227.chunk.js.LICENSE.txt",
+>>>>>>> Added black background
     "static/media/americanExpress.png": "/static/media/americanExpress.55d0c788.png",
     "static/media/cancel.png": "/static/media/cancel.2eb524b7.png",
     "static/media/chef.jpg": "/static/media/chef.c58137aa.jpg",
@@ -61,11 +74,16 @@
   "entrypoints": [
     "static/js/runtime~app.2e9f1821.js",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "static/js/2.67d0d146.chunk.js",
     "static/js/app.ebaf93cc.chunk.js"
 =======
     "static/js/2.0fc457c1.chunk.js",
     "static/js/app.eafb44e1.chunk.js"
 >>>>>>> Added add to bag button
+=======
+    "static/js/2.d8024227.chunk.js",
+    "static/js/app.7e410808.chunk.js"
+>>>>>>> Added black background
   ]
 }
