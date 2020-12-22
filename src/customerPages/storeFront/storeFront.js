@@ -182,9 +182,8 @@ const StoreInfoCell= (item) => {
             </View>
             <TouchableOpacity style={{ justifyContent: 'center', marginTop: 16, borderRadius: 5, height: 60, width: '90%', alignSelf: 'center', backgroundColor: 'black'}}> 
             <View style={{alignSelf: 'center'}}>
-            <Text style={{color: '#F6F8FA', alignSelf: 'center', fontWeight: '500', fontSize: 15}}>Add to bag</Text>
+                <Text style={{color: '#F6F8FA', alignSelf: 'center', fontWeight: '500', fontSize: 15}}>Add to bag</Text>
                 <Text style={{alignSelf: 'flex-end', color: '#F6F8FA'}}>${total}</Text>
-
             </View>
                
             </TouchableOpacity>
