@@ -14,37 +14,22 @@ import ReactPlaceholder from 'react-placeholder';
 
 const { height, width } = Dimensions.get("window")
 
+
+function handleLink() {
+    const supported = Linking.canOpenURL(url);
+    if (supported) {
+        window.open(url, '_blank');
+    } else {
+        Alert.alert(`Don't know how to open this URL: ${url}`);
+    }
+}
+
 const FlatListItemSeparator = () => {
     return (
         <View style={styles.listItemSeparatorStyle} />
     );
 };
 
-function ChefCell(item) {
-    return (
-        <View>
-            <ReactPlaceholder color='red' showLoadingAnimation={false} type='rect' ready={item != null} style={{ height: 250, width: '100%' }}>
-                <Image style={styles.storeImage} source={{ uri: item.item.user.imageURL }} />
-            </ReactPlaceholder>
-            <View style={styles.storeInfoContainer}>
-                <Text style={styles.title}>{item.item.user.title}</Text>
-                <Text style={styles.description}>{item.item.user.description}</Text>
-            </View>
-            <View style={styles.listItemSeparatorStyle} />
-        </View>
-    )
-}
-
-function StoreInfoCell(item) {
-    return (
-        <View>
-            <View style={{ margin: 20, marginTop: 10, marginBottom: 10 }}>
-                <Text style={styles.description}>{item.item.user.city}, {item.item.user.state}</Text>
-            </View>
-            <View style={styles.listItemSeparatorStyle} />
-        </View>
-    )
-}
 
 function StoreFront(props) {
     // States 
@@ -55,15 +40,15 @@ function StoreFront(props) {
     const [quantity, setQuantity] = useState(1)
     const [total, setTotal] = useState(0)
     const [note, setNote] = useState("")
-    const [bag, setBag] = useState([])
     const[isOpen, setIsOpen] = useState(false) 
     const [opacity, setOpacity] = useState(new Animated.Value(0))
-    const [isInnerScrollEnabled, setIsInnerScrollEnabled] = useState(false)
+    var [scrollY, setScrollY] = useState(new Animated.Value(0))
 
     // Refs  
     const bs = React.createRef(null);
-    const sheetRef = useRef(null);
     const scrollRef = useRef(null)
+
+    const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
 
     // Fetchs 
     useEffect(() => {
@@ -179,23 +164,30 @@ const StoreInfoCell= (item) => {
         </View>
     );
 
-        const RenderInstructions = () => (
-        
+ const RenderInstructions = () => (
         <View style={{ flex: 1, marginBottom: 50}}>
             <TextInput
                 style={{ height: 60, padding: 20 }}
                 placeholder={"Add a note (Extra sauce, no salt, etc.)"}
-                onChangeText={(text) => setOrder({ note: text })}
+                onChangeText={(text) => setNote(text)}
             />
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
-                <TouchableOpacity pointerEvents={() => { order.quantity < 2 ? 'none' : "auto" }} onPress={() => { order.quantity < 2 ? setOrder({ quantity: 1 }) : setOrder({ quantity: order.quantity - 1 }) }} style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: 'black', justifyContent: 'center', }}>
-                    <Text style={{ alignSelf: 'center', color: 'white' }}>-</Text>
+                <TouchableOpacity pointerEvents={() => { quantity < 2 ? 'none' : "auto" }} onPress={() => { calculateTotal(false) }} style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: 'black', justifyContent: 'center', }}>
+                    <Text style={{ alignSelf: 'center', color: '#F6F8FA' }}>-</Text>
                 </TouchableOpacity>
-                <Text style={{ alignSelf: 'center', margin: 8 }}>{order.quantity}</Text>
-                <TouchableOpacity onPress={() => setOrder({ quantity: order.quantity + 1 })} style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: 'black', justifyContent: 'center', }}>
-                    <Text style={{ alignSelf: 'center', color: 'white' }}>+</Text>
+                <Text style={{ alignSelf: 'center', margin: 8 }}>{quantity}</Text>
+                <TouchableOpacity onPress={() => calculateTotal(true)} style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: 'black', justifyContent: 'center'}}>
+                    <Text style={{ alignSelf: 'center', color: '#F6F8FA', fontWeight: '500' }}>+</Text>
                 </TouchableOpacity>
             </View>
+            <TouchableOpacity style={{ justifyContent: 'center', marginTop: 16, borderRadius: 5, height: 60, width: '90%', alignSelf: 'center', backgroundColor: 'black'}}> 
+            <View style={{alignSelf: 'center'}}>
+            <Text style={{color: '#F6F8FA', alignSelf: 'center', fontWeight: '500', fontSize: 15}}>Add to bag</Text>
+                <Text style={{alignSelf: 'flex-end', color: '#F6F8FA'}}>${total}</Text>
+
+            </View>
+               
+            </TouchableOpacity>
         </View>
     )
 
@@ -264,9 +256,10 @@ const StoreInfoCell= (item) => {
     setTimeout(() => {
         
     }, 50);
+    setScrollY(new Animated.Value(0))
     setIsOpen(true)
     setQuantity(1)
-    setTotal(item.item.price)
+    setTotal(item?.item?.price ?? 0.0)
     setSelectedItem(item?.item ?? null)
     bs.current.snapTo(1);
     Animated.timing(opacity, {
@@ -275,6 +268,24 @@ const StoreInfoCell= (item) => {
       useNativeDriver: true,
     }).start();
   };
+
+
+var backgroundColor = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: ['#06090E', '#F6F8FA']
+});
+
+
+var headerHeight = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [50, 1]
+});
+
+
+var sectionViewCornerRadius = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [20, 0]
+});
 
 
   const renderBackDrop = () => (
@@ -303,11 +314,15 @@ const StoreInfoCell= (item) => {
     return (
         <SafeAreaProvider>
             <SafeAreaView style={{flex: 1}} forceInset={{top: 'always'}}>
-            <View style={styles.container}>
-        
-        <SectionList
-            style={{height: height, backgroundColor: 'white', borderTopLeftRadius: 20,
-            borderTopRightRadius: 20 }}
+               
+            <Animated.View style={[styles.container,{
+              backgroundColor: backgroundColor
+            }]}>
+                 <Animated.View onPress={()=> handleLink()} style={[{alignSelf: 'center', justifyContent: 'center'}, {height: headerHeight}]}>
+                    <Text style={{color: '#F6F8FA', fontSize: 13, fontWeight: '500', textDecorationLine: 'underline'}}>Get the latest on our COVID-19 response</Text>
+                </Animated.View>
+        <AnimatedSectionList
+            style={[{height: height, backgroundColor: 'white'}, {borderTopLeftRadius: sectionViewCornerRadius, borderTopRightRadius: sectionViewCornerRadius}]}
             keyExtractor={(item, index) => item + index}
 
             sections={[
@@ -347,6 +362,11 @@ const StoreInfoCell= (item) => {
                 }
             }}
 
+            onScroll={Animated.event(
+                [{ nativeEvent: { contentOffset:  { y: scrollY }}}],
+                // { useNativeDriver: true }
+              )}
+
             scrollEventThrottle={16}
             refreshing={false}
             ref={scrollRef}
@@ -354,7 +374,7 @@ const StoreInfoCell= (item) => {
             stickySectionHeadersEnabled={false}
         />
 
-{isOpen && renderBackDrop()}
+        {isOpen && renderBackDrop()}
 
         <BottomSheet
           ref={bs}
@@ -366,7 +386,7 @@ const StoreInfoCell= (item) => {
           onOpenStart={() => setTitle({ headerTitle: "", LeftButtonTitle: "Dismiss" })}
         onCloseStart={() => setTitle({ headerTitle: "View Bag", LeftButtonTitle: "" })}
         />
-      </View>
+      </Animated.View>
             </SafeAreaView>
 
 </SafeAreaProvider>

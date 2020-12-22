@@ -6,7 +6,7 @@ export default StyleSheet.create({
 
     container: {
         fontFamily: "System",
-        backgroundColor: 'white',
+        // backgroundColor: '#06090E',
         flex: 1,
         overflow: 'hidden'
     },
