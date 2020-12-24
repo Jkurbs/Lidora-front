@@ -6,9 +6,11 @@ import MobileButton from './mobileButton';
 import MobileButton2 from './mobileButton2';
 import MobileInput from './mobileInput';
 //firebase imports
+import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from 'expo-firebase-recaptcha';
 import firebase from '../../firebase/Firebase';
+import { auth } from "firebase";
 import "firebase/firestore";
-import "firebase/auth";
+import * as firebase2 from 'firebase'
 
 var db = firebase.firestore();
 

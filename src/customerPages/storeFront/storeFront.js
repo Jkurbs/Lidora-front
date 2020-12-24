@@ -352,11 +352,6 @@ function StoreFront(props) {
                 onCloseStart={() => setTitle({ headerTitle: "View Bag", LeftButtonTitle: "" })}>
 
             </BottomSheet>
-            <FirebaseRecaptcha.FirebaseRecaptchaVerifierModal 
-                ref={recaptchaVerifier}
-                firebaseConfig={firebaseConfig}
-                attemptInvisibleVerification={true}
-            />
             <VerifyModal loginUser={loginUser} regUser={regUser} confirmCode={confirmCode} userLoggedIn={userLoggedIn} />
         </View>
     );
