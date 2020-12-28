@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/static/js/app.e0ed3427.chunk.js",
-    "app.js.map": "/static/js/app.e0ed3427.chunk.js.map",
+    "app.js": "/static/js/app.fc9d95da.chunk.js",
+    "app.js.map": "/static/js/app.fc9d95da.chunk.js.map",
     "runtime~app.js": "/static/js/runtime~app.2e9f1821.js",
     "runtime~app.js.map": "/static/js/runtime~app.2e9f1821.js.map",
-    "static/js/2.ef2c474c.chunk.js": "/static/js/2.ef2c474c.chunk.js",
-    "static/js/2.ef2c474c.chunk.js.map": "/static/js/2.ef2c474c.chunk.js.map",
+    "static/js/2.8be25374.chunk.js": "/static/js/2.8be25374.chunk.js",
+    "static/js/2.8be25374.chunk.js.map": "/static/js/2.8be25374.chunk.js.map",
     "fonts/AntDesign.ttf": "/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/./fonts/Feather.ttf",
@@ -24,7 +24,7 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
-    "static/js/2.ef2c474c.chunk.js.LICENSE.txt": "/static/js/2.ef2c474c.chunk.js.LICENSE.txt",
+    "static/js/2.8be25374.chunk.js.LICENSE.txt": "/static/js/2.8be25374.chunk.js.LICENSE.txt",
     "static/media/americanExpress.png": "/static/media/americanExpress.55d0c788.png",
     "static/media/cancel.png": "/static/media/cancel.2eb524b7.png",
     "static/media/chef.jpg": "/static/media/chef.c58137aa.jpg",
@@ -47,7 +47,7 @@
   },
   "entrypoints": [
     "static/js/runtime~app.2e9f1821.js",
-    "static/js/2.ef2c474c.chunk.js",
-    "static/js/app.e0ed3427.chunk.js"
+    "static/js/2.8be25374.chunk.js",
+    "static/js/app.fc9d95da.chunk.js"
   ]
 }

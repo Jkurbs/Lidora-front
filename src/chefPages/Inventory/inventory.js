@@ -99,7 +99,6 @@ class Inventory extends React.Component {
 
     // Add new inventory item
     addInventoryItem = (item) => {
-        console.log("ADDBUTTONPRESSED", item)
 
         this.setState(state => {
             const data = [item, ...state.data];
@@ -194,7 +193,6 @@ class Inventory extends React.Component {
 
     leftActionSelected = (selectedIndex) => {
         this.handleMode("Edit")
-
         let tableD = this.state.tableData
         let realD = this.state.data
         // IF SEARCH IS ON GET DATA FROM FILTERED
@@ -209,7 +207,6 @@ class Inventory extends React.Component {
             dateAdded: realD[selectedIndex][1],
             key: realD[selectedIndex][0]
         }
-        console.log("item", item)
         this.setState({
             item: item
         })

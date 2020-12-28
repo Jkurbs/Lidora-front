@@ -199,6 +199,11 @@ function MenuStack() {
                 component={MenuScreen}
                 options={navOptionHandler}
             />
+            <StackDashboard.Screen
+                name="test"
+                component={MenuScreen}
+                options={navOptionHandler}
+            />
         </StackMenu.Navigator>
     );
 }
@@ -275,7 +280,6 @@ function WebDashboard({ userID, userData, navigation }) {
                     <Text style={{ fontWeight: '500' }}>Settings</Text>
                 </TouchableOpacity>
             </View>
-
             <View style={{ flexDirection: 'column', justifyContent: 'space-around', position: "absolute", zIndex: 100, bottom: 50, left: 20 }}>
                 <TouchableOpacity style={{ marginBottom: 20 }} onPress={() => signOut(navigation)}>
                     <Text style={{ color: 'rgb(142, 142, 147)' }}>Log Out</Text>

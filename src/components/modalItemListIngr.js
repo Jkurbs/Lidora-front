@@ -8,7 +8,6 @@ class ModalItemList extends Component {
         if (typeof this.props.array != "undefined") {
             currentArr = this.props.array
         }
-        console.log(currentArr, "ISARRAY")
         return (
             <>
                 <Text style={styles.header}>{this.props.title}</Text>
@@ -54,6 +53,7 @@ const styles = StyleSheet.create({
         fontSize: 13,
         alignSelf: 'center'
     },
+
     item: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -74,8 +74,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         padding: 8
     },
-
-
 });
 
 export default ModalItemList;
