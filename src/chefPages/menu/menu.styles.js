@@ -7,7 +7,7 @@ export default StyleSheet.create({
         fontFamily: "System",
         backgroundColor: '#F5F5F7',
         flex: 1,
-        color: '#111'
+        color: '#111', 
     },
 
     flatListItemSeparator: {

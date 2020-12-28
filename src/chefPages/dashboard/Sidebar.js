@@ -20,7 +20,7 @@ import { Entypo } from '@expo/vector-icons';
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
-const Tab = createSideTabNavigator();
+const Stack = createStackNavigator();
 const StackInventory = createStackNavigator();
 const StackOrders = createStackNavigator();
 const StackMenu = createStackNavigator();
@@ -39,33 +39,15 @@ function TabNavigator({ navigation, userData }) {
     const todayDate = today.toLocaleDateString("en-US", options);
 
     return (
-        <Tab.Navigator
-            navigationOptions={{
-                // Hide the header from AppNavigator stack
-                header: false,
-            }}
-            tabBarOptions={{
-                activeTintColor: "#34C759",
-                inactiveTintColor: "black",
-                tabStyle: { marginBottom: 20 },
+        <Stack.Navigator
+            // navigationOptions={navOptionHandler}
 
-                style: {
-                    width: 200,
-                    paddingTop: 300,
-                },
-                iconHorizontal: true,
-                labelSize: 13,
-                showLabel: true,
-                tabWidth: 200,
-                header: false,
-
-                headerStyle: {
-                    backgroundColor: "#f4511e",
-                    color: 'green'
-                },
+            screenOptions={{
+                headerShown: false
             }}
+            
         >
-            <Tab.Screen
+            <Stack.Screen
                 options={{
                     title: todayDate,
                     tabBarLabel: "Dashboard",
@@ -80,7 +62,7 @@ function TabNavigator({ navigation, userData }) {
                 component={DashboardStack}
             />
 
-            <Tab.Screen
+            <Stack.Screen
                 options={{
                     title: todayDate,
                     tabBarLabel: "Menu",
@@ -94,7 +76,7 @@ function TabNavigator({ navigation, userData }) {
                 component={MenuStack}
             />
 
-            <Tab.Screen
+            <Stack.Screen
                 options={{
                     title: todayDate,
                     tabBarLabel: "Inventory",
@@ -107,8 +89,8 @@ function TabNavigator({ navigation, userData }) {
                 }}
                 name="Inventory"
                 component={InventoryStack}
-            ></Tab.Screen>
-            <Tab.Screen
+            />
+            <Stack.Screen
                 options={{
                     title: todayDate,
                     tabBarLabel: "Customer orders",
@@ -121,7 +103,7 @@ function TabNavigator({ navigation, userData }) {
                 name="Orders"
                 component={OrdersStack}
             />
-            <Tab.Screen
+            <Stack.Screen
                 options={{
                     title: todayDate,
                     tabBarLabel: "",
@@ -134,7 +116,7 @@ function TabNavigator({ navigation, userData }) {
                 name="Support"
                 component={SupportStack}
             />
-        </Tab.Navigator>
+        </Stack.Navigator>
     );
 }
 
@@ -199,11 +181,6 @@ function MenuStack() {
                 component={MenuScreen}
                 options={navOptionHandler}
             />
-            <StackDashboard.Screen
-                name="test"
-                component={MenuScreen}
-                options={navOptionHandler}
-            />
         </StackMenu.Navigator>
     );
 }
@@ -256,42 +233,17 @@ function WebDashboard({ userID, userData, navigation }) {
     const copyToClipboard = () => {
         Clipboard.setString(`lidora.app/?${userData.user.title.replace(/\s/g, '')}=${userID}`);
         alert("Link copied")
-
     };
 
     return (
-        <View style={{ height: windowHeight, maxHeight: '100%' }}>
-            <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
-                <ReactPlaceholder showLoadingAnimation={true} type='round' delay={1000} ready={userData != null} style={{ width: 100, height: 100, marginBottom: 16 }}>
-                    <Image style={{
-                        height: 100, width: 100, borderRadius: 50, marginBottom: 16, backgroundColor: 'rgb(174,174,178)'
-                    }} source={{ uri: userData.user.imageURL }} />
-                </ReactPlaceholder>
-                <ReactPlaceholder showLoadingAnimation={true} type='text' rows={1} delay={1000} ready={userData != null} >
-                    <Text style={{ fontSize: 20, fontWeight: '500' }}>Welcome {userData.user.first_name}</Text>
-                </ReactPlaceholder>
-                <TouchableOpacity onPress={() => copyToClipboard()}>
-                    <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={{ color: "gray", fontWeight: '500', fontSize: 14, marginRight: 8 }} >Copy your link</Text>
-                        <Entypo name="clipboard" size={12} color="gray" />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={{ marginTop: 16, marginBottom: 40 }} onPress={() => navigation.navigate("Settings", { userData: userData, navigation: navigation })}>
-                    <Text style={{ fontWeight: '500' }}>Settings</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={{ flexDirection: 'column', justifyContent: 'space-around', position: "absolute", zIndex: 100, bottom: 50, left: 20 }}>
-                <TouchableOpacity style={{ marginBottom: 20 }} onPress={() => signOut(navigation)}>
-                    <Text style={{ color: 'rgb(142, 142, 147)' }}>Log Out</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Support')}>
-                    <Text style={{ color: 'rgb(142, 142, 147)', fontWeight: '500' }}>Support</Text>
-                </TouchableOpacity>
-            </View>
-            <TabNavigator navigation={navigation} userData={userData} />
+
+      <View style={{ height: windowHeight, maxHeight: '100%' }}>
+            <SideBar userData={userData} navigation={navigation}/>
         </View >
+       
     )
 }
+
 
 function MobileDashboard(userID, userData) {
     const copyToClipboard = () => {
@@ -311,4 +263,87 @@ function MobileDashboard(userID, userData) {
         </View>
     )
 }
+
+
+
+
+function SideBar({userData, navigation}) {
+    const [selected, setSelected] = React.useState({ name: "#" })
+
+    const optionSelected = (name) => {
+        setSelected({name: name})
+    }
+
+    const buttonStyle = (name) => {
+            if (name === selected.name ){
+            return {
+                marginTop: 16,
+                marginBottom: 40,
+                backgroundColor: 'blue' 
+            }
+            } else {
+                return {
+                    marginTop: 16,
+                    marginBottom: 40,
+                    backgroundColor: 'red' 
+                }
+            }
+
+    }
+
+
+
+
+    return (
+        <View style={{height: '100%', backgroundColor: 'blue'}}>
+            <View style={{width: 200, height: '100%', backgroundColor: 'white', borderRightColor: 'gray', borderRightWidth: 1}}>
+            <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
+                <ReactPlaceholder showLoadingAnimation={true} type='round' delay={1000} ready={userData != null} style={{ width: 100, height: 100, marginBottom: 16 }}>
+                    <Image style={{
+                        height: 100, width: 100, borderRadius: 50, marginBottom: 16, backgroundColor: 'rgb(174,174,178)'
+                    }} source={{ uri: userData.user.imageURL }} />
+                </ReactPlaceholder>
+                <ReactPlaceholder showLoadingAnimation={true} type='text' rows={1} delay={1000} ready={userData != null} >
+                    <Text style={{ fontSize: 20, fontWeight: '500' }}>Welcome {userData.user.first_name}</Text>
+                </ReactPlaceholder>
+                <TouchableOpacity onPress={() => copyToClipboard()}>
+                    <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ color: "gray", fontWeight: '500', fontSize: 14, marginRight: 8 }} >Copy your link</Text>
+                        <Entypo name="clipboard" size={12} color="gray" />
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={buttonStyle("Dashboard")}  onPress={() =>{optionSelected("Dashboard"); navigation.navigate("Menu", { userData: userData, navigation: navigation })} }>
+                    <Text style={{ fontWeight: '500' }}>Settings</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={buttonStyle("1")}  onPress={() =>{optionSelected("1"); navigation.navigate("Menu", { userData: userData, navigation: navigation })} }>
+                    <Text style={{ fontWeight: '500' }}>Settings</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={buttonStyle("2")}  onPress={() =>{optionSelected("2"); navigation.navigate("Menu", { userData: userData, navigation: navigation })} }>
+                    <Text style={{ fontWeight: '500' }}>Settings</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={{ flexDirection: 'column', justifyContent: 'space-around', position: "absolute", zIndex: 100, bottom: 50, left: 20 }}>
+                <TouchableOpacity style={{ marginBottom: 20 }} onPress={() => signOut(navigation)}>
+                    <Text style={{ color: 'rgb(142, 142, 147)' }}>Log Out</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('Support')}>
+                    <Text style={{ color: 'rgb(142, 142, 147)', fontWeight: '500' }}>Support</Text>
+                </TouchableOpacity>
+            </View>
+            </View>
+            <View style={{width: windowWidth-200, height: '100%', position: 'absolute', left: 200}}>
+            <TabNavigator navigation={navigation} userData={userData} />
+
+            </View>
+
+        </View>
+    )
+}
+
+
+
+
 export default Dashboard;
