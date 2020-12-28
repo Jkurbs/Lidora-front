@@ -26,7 +26,7 @@ export default class App extends React.Component {
                 <StatusBar style="auto" />
                 <View style={{ marginTop: 60, position: 'absolute' }} >
                     <Text style={{ marginLeft: 8, marginBottom: 40, fontSize: 30 }}>Legal</Text>
-                    <Text style={{ margin: 8, fontSize: 17 }}>Contractual Relationship..........
+                    <Text style={{ margin: 8, fontSize: 17 }}>Contractual Relationship
                     These Terms of Use ("Terms") govern your access or use, from within the United States and its territories and possessions, of the applications, websites, content, products, and services (the "Services," as more fully defined below in Section 3) made available in the United States and its territories and possessions by Lidora USA, LLC and its parents, subsidiaries, representatives, affiliates, officers and directors (collectively, "Lidora"). PLEASE READ THESE TERMS CAREFULLY, AS THEY CONSTITUTE A LEGAL AGREEMENT BETWEEN YOU AND LIDORA. In these Terms, the words "including" and "include" mean "including, but not limited to."
                     By accessing or using the Services, you confirm your agreement to be bound by these Terms. If you do not agree to these Terms, you may not access or use the Services. These Terms expressly supersede prior agreements or arrangements with you. Lidora may immediately terminate these Terms or any Services with respect to you, or generally cease offering or deny access to the Services or any portion thereof, at any time for any reason.
 
