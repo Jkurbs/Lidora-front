@@ -118,6 +118,7 @@ class MenuRightSidebar extends React.Component {
                 return <Add
                     item={this.props.item}
                     image={this.state.image}
+                    group={this.props.group}
                     ingredients={this.props.inventories}
                     handleMode={this.props.handleMode}
                     addMenuItem={this.props.addMenuItem}
@@ -247,6 +248,7 @@ class Add extends React.Component {
         fullItem.image = this.props.image
         fullItem.ingredients = this.state.addedIngredients
         fullItem.isVisible = this.state.isVisible
+        fullItem.group = this.props.group
         this.props.addMenuItem(this.state.item)
         this.props.handleMode("Details")
         this.props.clearImage()
@@ -274,16 +276,6 @@ class Add extends React.Component {
 
                 <MultiSelectField
                     results={this.state.results}
-                    items={this.props.ingredients}
-                    item={this.props.item}
-                    selectedItems={this.state.selectedItems}
-                    isActive={this.state.isActive}
-                    onSelected={this.onSelectedItemsChange}
-                    onChangeInput={this.handleSearch}
-                />
-
-                <MultiSelectField
-                    results={["test", "test"]}
                     items={this.props.ingredients}
                     item={this.props.item}
                     selectedItems={this.state.selectedItems}
@@ -368,7 +360,6 @@ class Details extends React.Component {
                 />
                 <ModalTextBox title={'Name'} subtitle={this.props.item.name} />
                 <ModalTextBox title={'Price'} subtitle={`${'$'}${this.props.item.price}`} />
-
                 <View>
                     <ModalItemListIngr title={'Ingredients'} array={this.props.item.ingredients} />
                 </View>
@@ -684,7 +675,10 @@ const styles = StyleSheet.create({
     },
 
     description: {
-        height: 'auto'
+        height: 'auto', 
+        borderTop: '1px solid #d9d9d9', 
+        borderBottom: '1px solid #d9d9d9'
+
     },
 
     formInput: {

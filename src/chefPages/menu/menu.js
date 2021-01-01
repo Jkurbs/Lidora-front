@@ -7,7 +7,7 @@ import "firebase/firestore";
 
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
-import Alert from '../../components/alert';
+import Alert from '../../components/Alerts/alert';
 
 import MenuRightSideBar from './MenuRightSideBar';
 
@@ -24,6 +24,7 @@ class Menu extends React.Component {
     this.child = React.createRef();
     this.state = {
       userID: firebase.auth().currentUser.uid,
+      group: null,
       tableHead: ['Image', 'Name', 'Price', 'Actions'],
       tableData: [],
       filteredTableData: [],
@@ -52,51 +53,40 @@ class Menu extends React.Component {
   animatedTransitionShrink = Animated.spring(this.animVal, { toValue: 1 })
   animatedTransitionGrow = Animated.spring(this.animVal, { toValue: 0 })
 
-  componentDidMount() {
+  componentDidUpdate(prevProps, nextProp) {
     let currentComponent = this;
+    const group = this.props.route.params.group
+    if (group !== this.state.group) {
 
-    ref.doc(this.state.userID).collection("menu").onSnapshot(function (querySnapshot) {
-      currentComponent.setState({ tableData: [], fullData: [] })
-      querySnapshot.forEach(function (doc) {
-        const data = doc.data()
-        const propertyValues = [data.imageURL, data.name, data.price, '']
-        let currentTableData = [...currentComponent.state.tableData];
-        let currentFullData = [...currentComponent.state.fullData];
-        currentTableData.push(propertyValues);
-        currentFullData.push(data)
-        currentComponent.setState({
-          tableData: currentTableData,
-          fullData: currentFullData,
-          hasData: true,
-        });
-      });
-    });
-
-    ref.doc(this.state.userID).collection("menu").onSnapshot(function (querySnapshot) {
-      currentComponent.setState({ tableData: [], data: [] })
-
-      if (querySnapshot.empty) {
-        currentComponent.setState({
-          hasData: false,
-        });
-      } else {
-        querySnapshot.forEach(function (doc) {
-          const data = doc.data()
-          const detValues = [data.key, data.dateAdded, data.name]
-          let currentData = [...currentComponent.state.data]
-          currentData.push(detValues)
-          const propertyValues = [data.imageURL, data.name, data.price, '']
-          let currentTableData = [...currentComponent.state.tableData];
-          currentTableData.push(propertyValues);
+      ref.doc(this.state.userID).collection("menu").where("group", "==", group).onSnapshot(function (querySnapshot) {
+        currentComponent.setState({ tableData: [], data: [], group: group })
+        if (querySnapshot.empty) {
           currentComponent.setState({
-            data: currentData,
-            tableData: currentTableData,
-            hasData: true,
+            hasData: false,
           });
-        });
-      }
-    });
+        } else {
+          querySnapshot.forEach(function (doc) {
+            const data = doc.data()
+            const propertyValues = [data.imageURL, data.name, data.price, '']
+            let currentTableData = [...currentComponent.state.tableData];
+            let currentFullData = [...currentComponent.state.fullData];
+            currentTableData.push(propertyValues);
+            currentFullData.push(data)
+            currentComponent.setState({
+              tableData: currentTableData,
+              fullData: currentFullData,
+              hasData: true,
+            });
+          });
+        }
+      });
+    }
+  }
 
+
+  componentDidMount() {
+
+    let currentComponent = this;
 
     // Fetch List of Ingredients
     ref.doc(this.state.userID).collection("inventory").onSnapshot(function (querySnapshot) {
@@ -157,7 +147,8 @@ class Menu extends React.Component {
         description: item.description,
         price: item.price,
         ingredients: item.ingredients,
-        isVisible: item.isVisible
+        isVisible: item.isVisible, 
+        group: item.group
       }
     )
     //check and Add Image to Firebase Storage
@@ -390,7 +381,7 @@ class Menu extends React.Component {
     return (
       <View style={styles.container}>
         <HeaderBar
-          title={"Menu"}
+          title={`Menu for ${this.props.route.params.group}`}
           subtitle={this.state.tableData.length}
           search={this.search.bind(this)}
           isSearchEnabled={true}
@@ -413,6 +404,7 @@ class Menu extends React.Component {
               leftAction={this.leftActionSelected.bind(this)}
               middleAction={this.middleActionSelected.bind(this)}
               rightAction={this.rightActionSelected.bind(this)}
+              action={this.showInventoryModal.bind(this)}
             />
           </Animated.View>
         </ScrollView>
@@ -426,6 +418,7 @@ class Menu extends React.Component {
           item={this.state.item}
           addMenuItem={this.addMenuItem}
           updateMenuItem={this.updateMenuItem}
+          group={this.props.route.params.group}
         />
 
         <Alert

@@ -218,15 +218,14 @@ class App extends React.Component {
   }
 
   // Verify if user is logged in
-  componentWillMount() {
+  componentDidMount() {
     const currentComponent = this
     unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
-        currentComponent.setState({ userLoggedIn: true })
-
         db.collection('chefs').doc(user.uid).get().then(function (doc) {
           if (doc.exists) {
             currentComponent.setState({
+              userLoggedIn: true,
               userData: {
                 user: doc.data(),
                 userID: user.uid
@@ -241,6 +240,7 @@ class App extends React.Component {
         return
       } else {
         // No user is signed in.
+        alert("No user")
         currentComponent.setState({ userLoggedIn: false })
       }
     })
@@ -322,104 +322,3 @@ class App extends React.Component {
 }
 
 export default registerRootComponent(App);
-
-{/* Current chefs section */ }
-{/* <View style={{ marginTop: 60, width: '100%' }}>
-          <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
-            Some of our chefs
-        </Text>
-          <FlatList
-            style={{ marginTop: 40 }}
-            data={DATA}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-          />  */}
-{/* Consumer section */ }
-{/* <View
-            style={{
-              width: windowWidth,
-              alignItems: "center",
-              alignContent: "center",
-            }}
-          >
-            <View
-              style={{ marginTop: 90, alignItems: "center", width: windowWidth }}
-            >
-              <Text
-                style={{
-                  width: windowWidth,
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: normalize(30),
-                  fontWeight: "500",
-                }}
-              >
-                {value}
-              </Text>
-              <Text
-                style={{
-                  marginTop: 20,
-                  marginBottom: 50,
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: 17,
-                }}
-              >
-                {messageValue}
-              </Text>
-              <View
-                style={{
-                  padding: 10,
-                  width: windowWidth,
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <TextInput
-                  style={{
-                    backgroundColor: "#f4f9f4",
-                    height: 60,
-                    width: windowWidth - 50,
-                    paddingHorizontal: 16,
-                    borderRadius: 6,
-                  }}
-                  placeholder={"Email address"}
-                  onChangeText={(text) => setText(text)}
-                  defaultValue={customerEmail}
-                />
-                <Text
-                  onPress={sendToEmailList}
-                  style={{
-                    borderRadius: 6,
-                    marginLeft: 10,
-                    padding: 20,
-                    backgroundColor: "black",
-                    color: "white",
-                  }}
-                >
-                  Send
-            </Text>
-              </View> */}
-{/* Footer */ }
-{/* <View
-        style={{
-          alignItems: "center",
-          marginTop: 30,
-          marginBottom: 20,
-          padding: 20,
-        }}>
-        <Ionicons
-          onPress={handleSocialPress}
-          name="logo-instagram"
-          size={26}
-          color="gray"
-        />
-        <Text style={{ padding: 15, color: "black" }}>
-          Lidora {"\u00A9"} 2020
-        </Text>
-        <Text onPress={() => navigation.navigate("Legal")}>
-          Privacy & Legal
-        </Text>
-      </View> */}

@@ -20,6 +20,7 @@ class ModalItemList extends Component {
                                         <Text style={styles.title}>{item.name}</Text>
                                         <Text style={styles.title}>{`${item.quantity} ${item.unit}`}</Text>
                                     </View>
+                                    <View style={{borderBottom: '1px solid #d9d9d9'}}/>
                                 </View>
                             )}
                         </div>
