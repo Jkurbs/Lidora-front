@@ -10,7 +10,6 @@ class ModalTextField extends Component {
                     placeholder={this.props.placeholder}
                     onChangeText={(text) => this.props.onChangeText(text.toLowerCase())}
                 >
-
                 </TextInput>
             </View>
 
@@ -28,7 +27,7 @@ const styles = StyleSheet.create({
         height: '42px',
         width: '100%',
         backgroundColor: '#F5F5F5',
-        textIndent: '25px',
+        // textIndent: '25px',
     },
 
 });

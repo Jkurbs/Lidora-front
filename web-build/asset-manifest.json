@@ -1,11 +1,20 @@
 {
   "files": {
+<<<<<<< HEAD
+    "app.js": "/static/js/app.cc10f7e6.chunk.js",
+    "app.js.map": "/static/js/app.cc10f7e6.chunk.js.map",
+    "runtime~app.js": "/static/js/runtime~app.2e9f1821.js",
+    "runtime~app.js.map": "/static/js/runtime~app.2e9f1821.js.map",
+    "static/js/2.fcc01959.chunk.js": "/static/js/2.fcc01959.chunk.js",
+    "static/js/2.fcc01959.chunk.js.map": "/static/js/2.fcc01959.chunk.js.map",
+=======
     "app.js": "/static/js/app.d80d51a5.chunk.js",
     "app.js.map": "/static/js/app.d80d51a5.chunk.js.map",
     "runtime~app.js": "/static/js/runtime~app.2e9f1821.js",
     "runtime~app.js.map": "/static/js/runtime~app.2e9f1821.js.map",
     "static/js/2.c370ba8a.chunk.js": "/static/js/2.c370ba8a.chunk.js",
     "static/js/2.c370ba8a.chunk.js.map": "/static/js/2.c370ba8a.chunk.js.map",
+>>>>>>> main
     "fonts/AntDesign.ttf": "/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/./fonts/Feather.ttf",
@@ -24,7 +33,11 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
+<<<<<<< HEAD
+    "static/js/2.fcc01959.chunk.js.LICENSE.txt": "/static/js/2.fcc01959.chunk.js.LICENSE.txt",
+=======
     "static/js/2.c370ba8a.chunk.js.LICENSE.txt": "/static/js/2.c370ba8a.chunk.js.LICENSE.txt",
+>>>>>>> main
     "static/media/americanExpress.png": "/static/media/americanExpress.55d0c788.png",
     "static/media/cancel.png": "/static/media/cancel.2eb524b7.png",
     "static/media/chef.jpg": "/static/media/chef.c58137aa.jpg",
@@ -47,7 +60,12 @@
   },
   "entrypoints": [
     "static/js/runtime~app.2e9f1821.js",
+<<<<<<< HEAD
+    "static/js/2.fcc01959.chunk.js",
+    "static/js/app.cc10f7e6.chunk.js"
+=======
     "static/js/2.c370ba8a.chunk.js",
     "static/js/app.d80d51a5.chunk.js"
+>>>>>>> main
   ]
 }

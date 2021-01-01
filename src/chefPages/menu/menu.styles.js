@@ -7,8 +7,7 @@ export default StyleSheet.create({
         fontFamily: "System",
         backgroundColor: '#F5F5F7',
         flex: 1,
-        color: '#111'
-        // height: windowHeight,
+        color: '#111', 
     },
 
     flatListItemSeparator: {
@@ -41,7 +40,6 @@ export default StyleSheet.create({
     },
 
     secondaryTitle: {
-        // color: 'rgb(99, 99, 102)',
         marginBottom: 10
     },
 

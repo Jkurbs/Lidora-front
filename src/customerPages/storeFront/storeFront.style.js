@@ -6,9 +6,27 @@ export default StyleSheet.create({
 
     container: {
         fontFamily: "System",
-        backgroundColor: 'white',
+        // backgroundColor: '#06090E',
         flex: 1,
         overflow: 'hidden'
+    },
+
+    topBar: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000, 
+        elevation: 1000
+      },
+
+
+    sectionList: {
+        flexGrow: 0
     },
 
     listItemSeparatorStyle: {
@@ -69,14 +87,47 @@ export default StyleSheet.create({
         height: 50,
         backgroundColor: '#F5F5F5',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center', 
     },
 
     headerTitle: {
         fontSize: 17,
         fontWeight: '600',
         alignSelf: 'center'
-    }
+    },
+
+
+
+    bagContainer: {
+        // flex:1,
+        height: height,
+        backgroundColor: 'white', 
+    },
+
+    itemDescriptionContainer: {
+        padding: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    }, 
+
+    contentContainerStyle: {
+        padding: 16,
+        backgroundColor: '#F3F4F9',
+    },
+      panelHandle: {
+        width: 40,
+        height: 2,
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        borderRadius: 4
+      },
+      item: {
+        padding: 20,
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        alignItems: 'center',
+        marginVertical: 10,
+      },
 })
 
 
