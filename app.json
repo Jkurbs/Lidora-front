@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon/icon.png",
-    "entryPoint": "./src/pages/home/Home.js",
+    "entryPoint": "./src/pages/home/home.js",
     "splash": {
       "image": "./src/assets/img/splash.png",
       "resizeMode": "contain",
