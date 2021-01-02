@@ -535,6 +535,9 @@ import EmptyBag from '../../components/emptyBagView'
 import BottomSheet from 'reanimated-bottom-sheet';
 import ReactPlaceholder from 'react-placeholder';
 
+var unsubscribe
+
+
 const { height, width } = Dimensions.get("window")
 
 
@@ -550,14 +553,13 @@ function handleLink() {
 const FlatListItemSeparator = () => {
     return (
         <View style={styles.listItemSeparatorStyle} />
-    );
-};
-
+    )
+}
 
 function StoreFront(props) {
     // States 
     const [data, setData] = useState({ user: [] })
-    const [menu, setMenu] = useState([])
+    const [menu, setMenu] = useState()
     const [titles, setTitle] = useState({ headerTitle: "View Bag", LeftButtonTitle: "" })
     const [selectedItem, setSelectedItem] = useState(null)
     const [quantity, setQuantity] = useState(1)
@@ -580,7 +582,7 @@ function StoreFront(props) {
             if (doc.exists) {
                 setData({ user: doc.data() })
             } else {
-                console.log("No such document!");
+                setData({ user: null })
             }
         })
     }, [])
@@ -588,15 +590,118 @@ function StoreFront(props) {
     useEffect(() => {
         // Fetch Current chef menu
         db.collection('chefs').doc(props.chefId).collection("menu").get().then(function (querySnapshot) {
-            querySnapshot.forEach(function (doc) {
-                if (doc.exists) {
-                    setMenu(oldArray => [...oldArray, doc.data()]);
+            querySnapshot.forEach(function (menuDoc) {
+                if (menuDoc.exists) {
+                    db.collection('chefs').doc(props.chefId).collection("menu_categories").orderBy("date_added", "asc").get().then(function (querySnapshot) {
+                        querySnapshot.forEach(function (doc) { 
+                            console.log(1)
+
+                            const groupName =  doc.data().name
+                            const menuItem = {
+                                title:  groupName, 
+                                data:  menuDoc.data()
+                            }
+                            console.log(menuItem.title)
+                            return
+                            //setMenu(oldArray => [...oldArray, menuItem]);
+                        })
+                    })
                 } else {
                     console.log("No such document!");
                 }
             })
         })
     }, [])
+
+  // Handle confirm code button press
+    async function confirmCode() {
+            try {
+            const credential = auth.PhoneAuthProvider.credential(
+                confirm.verificationId,
+                code,
+            );
+            let userData = await auth().currentUser.linkWithCredential(credential);
+            setUser(userData.user);
+            } catch (error) {
+            if (error.code == 'auth/invalid-verification-code') {
+                console.log('Invalid code.');
+            } else {
+                console.log('Account linking error');
+            }
+        }
+    }
+
+    //Verify if customer is logged in
+    React.useEffect(() => {
+        unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
+          if (user) {
+            console.log(user,"USER")
+            setUserLoggedIn(true)
+            return
+          } else {
+            // No user is signed in.
+            setUserLoggedIn(false)
+          }
+        })
+
+    }, [])
+
+    const checkLoggedIn = () => {
+        
+    }
+
+    const loginUser = (info) => {
+        console.log(info)
+        console.log("LOGINBUTENPRESS")
+        firebase
+        .auth()
+        .signInWithEmailAndPassword(info.email, info.password)
+        .then(data => {
+            console.log("SUCCESS")
+        //   navigation.navigate('Dashboard', { navigation: navigation, userID: data.user.uid })
+        //   setIndicatorAnimating(false)
+        //   setLoginText("Login")
+        })
+        .catch(function (error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          console.log(errorMessage)
+          // ...
+        });
+    }
+
+    const regUser = (info) => {
+        console.log(info)
+        console.log("REGBUTENPRESS")
+            firebase
+            .auth()
+            .createUserWithEmailAndPassword(info.email, info.password)
+            .then(data => {
+                console.log("regSUCCESS",data)
+                console.log(data.user.uid)
+                db.collection('customers').doc(data.user.uid).update({
+                    phone: info.phone
+                })
+            })
+            .catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorMessage)
+            // ...
+            });
+            verifyPhoneNumber(info.phone)
+
+    }
+
+    // Handle the verify phone button press
+    async function verifyPhoneNumber(phoneNumber) {
+        console.log("VERIFYINGPHONE",phoneNumber)
+        const phoneProvider = new firebase2.auth.PhoneAuthProvider();
+        const verificationId = await phoneProvider.verifyPhoneNumber('+17207052327',recaptchaVerifier.current)
+        setConfirm(verificationId);
+    }
 
     const calculateTotal = (add) => {
         if (add) {
@@ -610,9 +715,9 @@ function StoreFront(props) {
                 setQuantity(quantity - 1)
                 const result =  +(total - selectedItem.price).toFixed(2)
                 setTotal(result)
-            }
-        }
+         }
     }
+}
 
 
 const ChefCell = (item) => {
@@ -659,22 +764,24 @@ const StoreInfoCell= (item) => {
         )
     }
 
-      const renderHeader = () => (
-        <View style={styles.header}>
-            <TouchableOpacity onPress={ onClose } style={{ justifyContent: 'center', position: 'absolute', left: 16 }}>
-                <Text style={{ color: '#34C759', fontSize: 17, fontWeight: '500', alignSelf: 'center' }}>{titles.LeftButtonTitle}</Text>
-            </TouchableOpacity>
-            <Text style={styles.headerTitle} onPress={()=>onOpen()}>{titles.headerTitle}</Text>
-            <View style={[styles.listItemSeparatorStyle, { position: 'absolute', bottom: 0 }]} />
-        </View>
-    )
+    const renderHeader = () => {
+        return (
+            <View style={styles.header}>
+                <TouchableOpacity onPress={ onClose } style={{ justifyContent: 'center', position: 'absolute', left: 16 }}>
+                    <Text style={{ color: '#34C759', fontSize: 17, fontWeight: '500', alignSelf: 'center' }}>{titles.LeftButtonTitle}</Text>
+                </TouchableOpacity>
+                <Text style={styles.headerTitle} onPress={()=>onOpen()}>{titles.headerTitle}</Text>
+                <View style={[styles.listItemSeparatorStyle, { position: 'absolute', bottom: 0 }]} />
+            </View>
+        ) 
+    }
 
 
     const RenderIngredientsItem = (item) => (
         <Text style={{ margin: 8, padding: 8, fontWeight: '500', fontSize: 15 }}>{item.item?.name ?? ""}</Text>
     );
 
-        const RenderItemInfos = (item) => (
+    const RenderItemInfos = (item) => (
         <View style={styles.itemDescriptionContainer}>
             <View style={{ flexDirection: 'column', maxWidth: '50%' }}>
                 <Text style={styles.menuName}>{item.item?.name ?? ""}</Text>
@@ -687,7 +794,7 @@ const StoreInfoCell= (item) => {
         </View>
     );
 
- const RenderInstructions = () => (
+    const RenderInstructions = () => (
         <View style={{ flex: 1, marginBottom: 50}}>
             <TextInput
                 style={{ height: 60, padding: 20 }}
@@ -713,8 +820,7 @@ const StoreInfoCell= (item) => {
         </View>
     )
 
-      const renderContent = () => {
-
+    const renderContent = () => {
         if (selectedItem === null) {
             return <EmptyBag />
         } else {
@@ -738,7 +844,6 @@ const StoreInfoCell= (item) => {
                                     </View>
                                 );
                             }
-
                         }}
                         renderItem={({ item, section }) => {
                             switch (section.title) {
@@ -846,7 +951,6 @@ var sectionViewCornerRadius = scrollY.interpolate({
         <AnimatedSectionList
             style={[{height: height, backgroundColor: 'white'}, {borderTopLeftRadius: sectionViewCornerRadius, borderTopRightRadius: sectionViewCornerRadius}]}
             keyExtractor={(item, index) => item + index}
-
             sections={[
                 // homogenous rendering between sections
                 {
@@ -856,10 +960,6 @@ var sectionViewCornerRadius = scrollY.interpolate({
                 {
                     title: "Additional Info",
                     data: [data],
-                },
-                {
-                    title: "Menu",
-                    data: menu
                 },
             ]}
             renderSectionHeader={({ section }) => {
@@ -892,7 +992,7 @@ var sectionViewCornerRadius = scrollY.interpolate({
             scrollEventThrottle={16}
             refreshing={false}
             ref={scrollRef}
-            ItemSeparatorComponent={FlatListItemSeparator}
+            // ItemSeparatorComponent={FlatListItemSeparator}
             stickySectionHeadersEnabled={false}
         />
 

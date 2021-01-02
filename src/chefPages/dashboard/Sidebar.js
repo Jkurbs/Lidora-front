@@ -285,6 +285,7 @@ function SideBarItems({userID, userData, navigation, menuOptions}) {
 
     const addsubMenu = () => {
         setIsAlertVisible(!isAlertVisible)
+        
         db.collection('chefs').doc(userID).collection("menu_categories").doc().set({
             name: groupName,
             date_added: moment().format("X"),
@@ -324,8 +325,6 @@ function SideBarItems({userID, userData, navigation, menuOptions}) {
 
     const Item = ({ title }) => (
         <View 
-        // onMouseEnter={() =>  setIsHoveringMenuItem(true)}
-        // onMouseLeave={() =>  setIsHoveringMenuItem(false)}
         style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <TouchableOpacity style={buttonStyle(title)} 
             onPress={() =>{
