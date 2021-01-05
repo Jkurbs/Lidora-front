@@ -15,6 +15,7 @@ import * as firebase2 from 'firebase'
 var db = firebase.firestore();
 
 function AuthenticatePage(props) {
+    const recaptchaVerifier = React.useRef(null);
     const [tab,setTab] = useState("login")
     const [loginInfo,setLoginInfo] = useState({})
     const [regInfo,setRegInfo] = useState({
@@ -112,6 +113,11 @@ function AuthenticatePage(props) {
 
         return (
             <View style={styles.container}>
+            <FirebaseRecaptchaVerifierModal
+                ref={recaptchaVerifier}
+                firebaseConfig={firebaseConfig}
+                attemptInvisibleVerification={attemptInvisibleVerification}
+            />
             <View style={styles.alert}>
             <TouchableOpacity style={[styles.loginTab,(tab !== "login") ? {backgroundColor:'#cccccc'} : {backgroundImage:'linear-gradient(180deg, #00CF46 0%, #3BFE7D 100%);'}]} onPressIn={()=>setTab("login")}>
                 <Text style={[styles.TabText,(tab !== "login") ? null : {color:'white'}]}>Login</Text>
