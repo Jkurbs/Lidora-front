@@ -16,6 +16,7 @@ var db = firebase.firestore();
 
 function AuthenticatePage(props) {
     const recaptchaVerifier = React.useRef(null);
+    const firebaseConfig = firebase2.apps.length ? firebase2.app().options : undefined;
     const [tab,setTab] = useState("login")
     const [loginInfo,setLoginInfo] = useState({})
     const [regInfo,setRegInfo] = useState({
@@ -24,7 +25,7 @@ function AuthenticatePage(props) {
         password:123
     })
     const [isRegHasData,setIsRegHasData] = useState(false)
-
+    const attemptInvisibleVerification = false;
     const PrivacyPolicyText = () => {
         return (
             <View style={{display:'flex',flexDirection:'row'}}>
@@ -46,7 +47,6 @@ function AuthenticatePage(props) {
         if(regInfo.phone.match(phoneno) && regInfo.password.length >= 6 && re.test(regInfo.email) ){
             //Data is correct format
             setIsRegHasData(true)
-            props.regUser(regInfo)
         } 
         else
         {
@@ -94,6 +94,11 @@ function AuthenticatePage(props) {
                 //Show Verification Screen
                 return (
                     <View style={styles.regDisp}>
+                    <FirebaseRecaptchaVerifierModal
+                        ref={recaptchaVerifier}
+                        firebaseConfig={firebaseConfig}
+                        attemptInvisibleVerification={attemptInvisibleVerification}
+                    /> 
                     <Text style={styles.title}>[PH]Enter Verification code sent to {regInfo.phone}</Text>
                     <MobileInput placeholder={"Verification Code"} onChangeText={(text) => regInfo.code = text}/>
                     <View style={styles.buttonWrap}>
@@ -113,11 +118,6 @@ function AuthenticatePage(props) {
 
         return (
             <View style={styles.container}>
-            <FirebaseRecaptchaVerifierModal
-                ref={recaptchaVerifier}
-                firebaseConfig={firebaseConfig}
-                attemptInvisibleVerification={attemptInvisibleVerification}
-            />
             <View style={styles.alert}>
             <TouchableOpacity style={[styles.loginTab,(tab !== "login") ? {backgroundColor:'#cccccc'} : {backgroundImage:'linear-gradient(180deg, #00CF46 0%, #3BFE7D 100%);'}]} onPressIn={()=>setTab("login")}>
                 <Text style={[styles.TabText,(tab !== "login") ? null : {color:'white'}]}>Login</Text>
