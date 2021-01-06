@@ -1,33 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, SafeAreaView, Image, Text, SectionList, TouchableOpacity, Dimensions, TextInput, Linking, Animated,} from "react-native";
+import { 
+    View, SafeAreaView, Image, Text, SectionList, TouchableOpacity,
+    Dimensions, TextInput, Animated
+} from "react-native";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
-import firebase from "../../firebase/Firebase";
+import firebase from "../../firebase/Firebase"
 import styles from './storeFront.style'
-import "firebase/firestore";
+import { SimpleLineIcons } from '@expo/vector-icons'
+import BottomSheet from 'reanimated-bottom-sheet'
+import ReactPlaceholder from 'react-placeholder'
+import Footer from "../../components/Footer"
+
 var db = firebase.firestore();
 
-import EmptyBag from '../../components/emptyBagView'
-import BottomSheet from 'reanimated-bottom-sheet';
-import ReactPlaceholder from 'react-placeholder';
-
-import Collapsible from 'react-native-collapsible';
-
-
-var unsubscribe
-
+var unsubscribe;
 
 const { height, width } = Dimensions.get("window")
-
-
-function handleLink() {
-    const supported = Linking.canOpenURL(url);
-    if (supported) {
-        window.open(url, '_blank');
-    } else {
-        Alert.alert(`Don't know how to open this URL: ${url}`);
-    }
-}
 
 const FlatListItemSeparator = () => {
     return (
@@ -36,8 +24,6 @@ const FlatListItemSeparator = () => {
 }
 
 function StoreFront(props) {
-
-    useTraceUpdate(props);
 
     // States 
     const [data, setData] = useState({ user: [] })
@@ -50,23 +36,20 @@ function StoreFront(props) {
     const[isOpen, setIsOpen] = useState(false) 
     const [opacity, setOpacity] = useState(new Animated.Value(0))
     var [scrollY, setScrollY] = useState(new Animated.Value(0))
-    const [isCollapsed, setIsCollapsed] = useState(true)
-
 
     // Refs  
     const bs = React.createRef(null);
     const scrollRef = useRef(null)
-
     const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
-
+    
     useEffect(() => {
         // Fetch Current chef menu
-
         let sectionListData = []
         let isCancelled = false;
 
         setMenu([]);
 
+        // Fetch chefs 
         async function fetchChef() {
              await db.collection('chefs').doc(props.chefId).get().then(function (doc) {
                 if (doc.exists) {
@@ -75,13 +58,12 @@ function StoreFront(props) {
                     userObj["data"] = [doc.data()]
                     sectionListData.push(userObj)
                 } else {
-                   // setData({ user: null })
+                    console.log("Chefs doesn't exist")
                 }
             })
         }
-
-
         
+        // Fetch Menus 
         async function fetchMenu() {
             await db.collection('chefs').doc(props.chefId).collection("menu").get().then(function (querySnapshot) {
                 let array = []
@@ -100,15 +82,13 @@ function StoreFront(props) {
                     sectionListData.push(newObj)
                     }
                     )
-    
+
                     if (!isCancelled) {
                         setMenu(sectionListData);
                     }                
                 // map and filter array here
             });
         }
-     
-
 
         fetchChef();
         fetchMenu();
@@ -118,7 +98,52 @@ function StoreFront(props) {
         
     }, [])
 
-  // Handle confirm code button press
+
+    // Open Bottom Sheet
+    const onOpen = (item) => {
+        setTimeout(() => {
+            
+        }, 50);
+        setScrollY(new Animated.Value(0))
+        setIsOpen(true)
+        setQuantity(1)
+        setTotal(item?.item?.price ?? 0.0)
+        setSelectedItem(item?.item ?? null)
+        bs.current.snapTo(1);
+        Animated.timing(opacity, {
+          toValue: 0.7,
+          duration: 300,
+          useNativeDriver: true,
+        }).start();
+      };
+
+    // Close Bottom Sheet
+    const onClose = () => {
+        setSelectedItem(null)
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 350,
+          useNativeDriver: true,
+        }).start();
+        bs.current.snapTo(0);
+        setTimeout(() => {
+            setIsOpen(false)
+        }, 50);
+    };
+
+    // Show background when bottom sheet is open
+    const renderBackDrop = () => (
+        <Animated.View
+          style={[styles.backdrop, {opacity: opacity,
+          }]}>
+          <TouchableOpacity
+            style={{ width: width, height: height,  backgroundColor: 'transparent',}}
+            activeOpacity={1}
+            onPress={onClose}/>
+        </Animated.View>
+    );
+
+    // Handle confirm code button press
     async function confirmCode() {
             try {
             const credential = auth.PhoneAuthProvider.credential(
@@ -203,6 +228,8 @@ function StoreFront(props) {
         setConfirm(verificationId);
     }
 
+
+    // Calculate total amount 
     const calculateTotal = (add) => {
         if (add) {
             setQuantity(quantity + 1)
@@ -211,47 +238,49 @@ function StoreFront(props) {
         } else {
             if (quantity < 2) {
                 return 
-            }  else {
+            } else {
                 setQuantity(quantity - 1)
                 const result =  +(total - selectedItem.price).toFixed(2)
                 setTotal(result)
-         }
+            }
+        }
     }
-}
 
-
-const ChefCell = (item) => {
-    return (
-        <View style={{justifyContent: 'center', alignItems: "center", padding: 20}}>
-            <ReactPlaceholder color='red' showLoadingAnimation={false} type='rect' ready={item != null} style={{ height: 250, width: '100%' }}>
-                <Image style={styles.storeImage} source={{ uri: item.item.imageURL }} />
-            </ReactPlaceholder>
-            <View style={styles.storeInfoContainer}>
-                <Text style={styles.title}>{item.item.title}</Text>
-                <Text style={styles.description}>{item.item.description}</Text>
+    // Cell to show the chef
+    const ChefCell = (item) => {
+        return (
+            <View style={{justifyContent: 'center', alignItems: "center", padding: 20}}>
+                <ReactPlaceholder color='red' showLoadingAnimation={false} type='rect' ready={item != null} style={{ height: 250, width: '100%' }}>
+                    <Image style={styles.storeImage} source={{ uri: item.item.imageURL }} />
+                </ReactPlaceholder>
+                <View style={styles.storeInfoContainer}>
+                    <Text style={styles.title}>{item.item.title}</Text>
+                    <Text style={styles.description}>{item.item.description}</Text>
+                </View>
+                <View style={styles.listItemSeparatorStyle} />
+                <View style={{ margin: 20, marginTop: 10, marginBottom: 10 }}>
+                    <Text style={styles.info}>{item.item.city}, {item.item.state}</Text>
+                    <Text style={styles.info}>{item.item.email_address}</Text>
+                </View>
+                <View style={styles.listItemSeparatorStyle} />
             </View>
-            <View style={styles.listItemSeparatorStyle} />
-            <View style={{ margin: 20, marginTop: 10, marginBottom: 10 }}>
-                <Text style={styles.info}>{item.item.city}, {item.item.state}</Text>
-                <Text style={styles.info}>{item.item.email_address}</Text>
-            </View>
-            <View style={styles.listItemSeparatorStyle} />
-        </View>
-    )
-}
+        )
+    }
 
-const StoreInfoCell= (item) => {
-    return (
-        <View>
-            <View style={{ margin: 20, marginTop: 10, marginBottom: 10 }}>
-                <Text style={styles.description}>{item.item.user.city}, {item.item.user.state}</Text>
-                <Text style={styles.description}>{item.item.user.email_address}</Text>
+    // Cell to show the chef infos
+    const StoreInfoCell= (item) => {
+        return (
+            <View>
+                <View style={{ margin: 20, marginTop: 10, marginBottom: 10 }}>
+                    <Text style={styles.description}>{item.item.user.city}, {item.item.user.state}</Text>
+                    <Text style={styles.description}>{item.item.user.email_address}</Text>
+                </View>
+                <View style={styles.listItemSeparatorStyle} />
             </View>
-            <View style={styles.listItemSeparatorStyle} />
-        </View>
-    )
-}
+        )
+    }
 
+    // Cell to show the  menu
     const MenuCell = (item) => {
         return (
             <TouchableOpacity onPress={()=>onOpen(item)} >
@@ -269,6 +298,8 @@ const StoreInfoCell= (item) => {
         )
     }
 
+
+    // SectionList header 
     const renderHeader = () => {
         return (
             <View style={styles.header}>
@@ -281,35 +312,10 @@ const StoreInfoCell= (item) => {
         ) 
     }
 
-    // Combos
-    const RenderCombos = (item) => (
-        <View style={{ alignItems: 'center', margin: 20, flexDirection: 'row' }}>
-            <Image style={styles.comboImage} source={{
-                        uri: item.item.imageURL,
-            }} />
-           <Text style={{fontSize: 14}}>{item.item?.name ?? ""}</Text>
-        </View>
-    );
+    // MARK: - BAG 
 
-
-    const RenderIngredientsItem = (item) => (
-  
-        <View>
-            <Text onPress={()=> {setIsCollapsed(!isCollapsed)}}>Test</Text>
-             <Collapsible collapsed={isCollapsed} align="center">
-            <View style={{height: 100, backgroundColor: 'red'}}>
-              <Text>
-                Bacon ipsum dolor amet chuck turducken landjaeger tongue spare
-                ribs
-              </Text>
-            </View>
-          </Collapsible>
-
-        </View>
-       
-    );
-
-    const RenderItemInfos = (item) => (
+    // Cell to show Item Infos
+    const ItemInfosCell = (item) => (
         <View style={styles.itemDescriptionContainer}>
             <View style={{ flexDirection: 'column', maxWidth: '50%' }}>
                 <Text style={styles.menuName}>{item.item?.name ?? ""}</Text>
@@ -322,7 +328,28 @@ const StoreInfoCell= (item) => {
         </View>
     );
 
-    const RenderInstructions = () => (
+    // Cell to show Combos
+    const CombosCell = (item) => (
+        <View style={{ alignItems: 'center', margin: 20, flexDirection: 'row' }}>
+            <Image style={styles.comboImage} source={{
+                        uri: item.item.imageURL,
+            }} />
+           <Text style={{fontSize: 14}}>{item.item?.name ?? ""}</Text>
+        </View>
+    );
+
+
+    // TODO 
+
+    const RenderIngredientsItem = (item) => (
+        <View>
+
+        </View>
+    );
+
+
+    // Cell to add instruction to bag
+    const InstructionsCell = () => (
         <View style={{ flex: 1, marginBottom: 50}}>
             <TextInput
                 style={{ height: 60, padding: 20 }}
@@ -343,152 +370,98 @@ const StoreInfoCell= (item) => {
                 <Text style={{color: '#F6F8FA', alignSelf: 'center', fontWeight: '500', fontSize: 15}}>Add to bag</Text>
                 <Text style={{alignSelf: 'flex-end', color: '#F6F8FA'}}>${total}</Text>
             </View>
-               
             </TouchableOpacity>
         </View>
     )
 
+
+
+    // Render Item when selected
+
     const renderContent = () => {
-        
+
         if (selectedItem === null) {
-            return <EmptyBag />
-        } else {
-
-            const groupMenus = menu.filter(group => group.title == selectedItem.group)
-            const result = groupMenus[0].data.filter(a => a.name != selectedItem.name)
-
-            return (
-                <View style={styles.bagContainer}>
-                    <SectionList
-                        style={{borderTopLeftRadius: 5, borderTopRightRadius: 5, marginTop: 30, paddingBottom: '70%'}}
-                        keyExtractor={(item, index) => item + index}
-                        sections={[
-                            { title: "Infos", data: [selectedItem] },
-                            { title: "Comes with", data: result },
-                            { title: "Ingredients", data: selectedItem?.ingredients ?? [] },
-                            { title: "Special Instructions", data: [0] },
-                        ]}
-                        renderSectionHeader={({ section }) => {
-                            if (section.title === "Infos") {
-                                return <Text></Text>
-                            } else {
-                                return (
-                                    <View style={styles.headerView}>
-                                        <Text style={styles.sectionTitle}>{section.title}</Text>
-                                    </View>
-                                );
-                            }
-                        }}
-                        renderItem={({ item, section }) => {
-                            switch (section.title) {
-                                case "Infos":
-                                    return <RenderItemInfos item={item} />
-                                case "Comes with":
-                                    return <RenderCombos item={item} />
-                                case "Ingredients":
-                                    return <RenderIngredientsItem item={item} />
-                                case "Special Instructions":
-                                    return <RenderInstructions />
-                                default:
-                                    break
-                                   
-                            }
-                        }}
-                        ItemSeparatorComponent={FlatListItemSeparator}
-                        stickySectionHeadersEnabled={false}
-                    />
-                    <View style={styles.listItemSeparatorStyle} />
-                </View>
-            )
+            return
         }
-    }
+    
+        const groupMenus = menu.filter(group => group.title == selectedItem.group)
+        const result = groupMenus[0].data.filter(a => a.name != selectedItem.name)
 
-  const onClose = () => {
-    setSelectedItem(null)
-    Animated.timing(opacity, {
-      toValue: 0,
-      duration: 350,
-      useNativeDriver: true,
-    }).start();
-    bs.current.snapTo(0);
-    setTimeout(() => {
-        setIsOpen(false)
-    }, 50);
-  };
-
-  const onOpen = (item) => {
-    setTimeout(() => {
+        return (
+            <View style={styles.bagContainer}>
+                <SectionList
+                    style={{borderTopLeftRadius: 5, borderTopRightRadius: 5, marginTop: 30, paddingBottom: '70%'}}
+                    keyExtractor={(item, index) => item + index}
+                    sections={[
+                        { title: "Infos", data: [selectedItem] },
+                        { title: "Comes with", data: result },
+                        { title: "Ingredients", data: selectedItem?.ingredients ?? [] },
+                        { title: "Special Instructions", data: [0] },
+                    ]}
+                    renderSectionHeader={({ section }) => {
+                        if (section.title === "Infos") {
+                            return <Text></Text>
+                        } else {
+                            return (
+                                <View style={styles.headerView}>
+                                    <Text style={styles.sectionTitle}>{section.title}</Text>
+                                </View>
+                            );
+                        }
+                    }}
+                    renderItem={({ item, section }) => {
+                        console.log("SECTION", section)
+                        switch (section.title) {
+                            case "Infos":
+                                return <ItemInfosCell item={item} />
+                            case "Comes with":
+                                return <CombosCell item={item} />
+                            case "Ingredients":
+                                return <RenderIngredientsItem item={item} />
+                            case "Special Instructions":
+                                return <InstructionsCell />
+                            default:
+                                break
+                        }
+                    }}
+                    ItemSeparatorComponent={FlatListItemSeparator}
+                    stickySectionHeadersEnabled={false}
+                />
+                <View style={styles.listItemSeparatorStyle} />
+            </View>
+        )
         
-    }, 50);
-    setScrollY(new Animated.Value(0))
-    setIsOpen(true)
-   /// setQuantity(1)
-   // setTotal(item?.item?.price ?? 0.0)
-    setSelectedItem(item?.item ?? null)
-    bs.current.snapTo(1);
-    Animated.timing(opacity, {
-      toValue: 0.7,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  };
-
-
-var backgroundColor = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: ['#06090E', '#F6F8FA']
-});
-
-
-var headerHeight = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [50, 1]
-});
-
-
-var sectionViewCornerRadius = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [20, 0]
-});
-
-
-  const renderBackDrop = () => (
-    <Animated.View
-      style={{
-        opacity: opacity,
-        backgroundColor: '#000',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-      }}>
-      <TouchableOpacity
-        style={{
-          width: width,
-          height:height,
-          backgroundColor: 'transparent',
-        }}
-        activeOpacity={1}
-        onPress={onClose}
-      />
-    </Animated.View>
-  );
+    }
 
     
    if (data.user != null) {
-
     return (
         <SafeAreaProvider>
             <SafeAreaView style={{flex: 1}}>
-            <Animated.View style={[styles.container,{
-              backgroundColor: backgroundColor
-            }]}>
-                 <Animated.View onPress={()=> handleLink()} style={[{alignSelf: 'center', justifyContent: 'center'}, {height: headerHeight}]}>
-                    <Text style={{color: '#F6F8FA', fontSize: 13, fontWeight: '500', textDecorationLine: 'underline'}}>Get the latest on our COVID-19 response</Text>
-                </Animated.View>
+        <Animated.View style={[styles.container]}>
+
+        {/* Header */}
+           <Animated.View style={[{backgroundColor: 'white', height: 45, alignItems: 'center', justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: '#ecf0f1'}]}>
+               <View style={{ position: 'absolute', right: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
+                    <TouchableOpacity onPress={ onClose } style={{  }}>
+                        <SimpleLineIcons name="options" size={18} color="black" />
+                    </TouchableOpacity>
+               </View>
+
+               <View style={{ position: 'absolute', left: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
+               <TouchableOpacity onPress={ onClose } style={{  }}>
+                   <Image source={require('../../assets/icon/bag.png')} style={{height: 27, width: 27}}/>
+                   <View style={{backgroundColor: 'rgb( 255, 59, 48)', padding: 6, height: 14, width: 14, borderRadius: 7, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center'}}>
+                       <Text style={{color: '#ecf0f1', fontSize: 11, fontWeight: '700'}}>1</Text>
+                    </View>
+                  </TouchableOpacity>
+               </View>
+           
+           </Animated.View>
+
+        {/* Section List */}
         <AnimatedSectionList
-            style={[{height: height, backgroundColor: 'white'}, {borderTopLeftRadius: sectionViewCornerRadius, borderTopRightRadius: sectionViewCornerRadius}]}
+            style={[{height: height, backgroundColor: 'white'}]}
             keyExtractor={(item, index) => item + index}
             sections={ menu }
             renderSectionHeader={({ section }) => {
@@ -513,13 +486,11 @@ var sectionViewCornerRadius = scrollY.interpolate({
 
             onScroll={Animated.event(
                 [{ nativeEvent: { contentOffset:  { y: scrollY }}}],
-                // { useNativeDriver: true }
               )}
 
             scrollEventThrottle={16}
             refreshing={false}
             ref={scrollRef}
-            // ItemSeparatorComponent={FlatListItemSeparator}
             stickySectionHeadersEnabled={false}
         />
 
@@ -536,30 +507,17 @@ var sectionViewCornerRadius = scrollY.interpolate({
         onCloseStart={() => setTitle({ headerTitle: "View Bag", LeftButtonTitle: "" })}
         />
       </Animated.View>
-            </SafeAreaView>
 
-    </SafeAreaProvider>
+        {/* Footer */}
+        <Footer/>
+
+        </SafeAreaView>
+ </SafeAreaProvider>
       
     );
    } else {
         return null
    }
 }
-
-function useTraceUpdate(props) {
-    const prev = useRef(props);
-    useEffect(() => {
-      const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
-        if (prev.current[k] !== v) {
-          ps[k] = [prev.current[k], v];
-        }
-        return ps;
-      }, {});
-      if (Object.keys(changedProps).length > 0) {
-        console.log('Changed props:', changedProps);
-      }
-      prev.current = props;
-    });
-  }
 
 export default  React.memo(StoreFront)

@@ -149,6 +149,19 @@ export default StyleSheet.create({
         alignItems: 'center',
         marginVertical: 10,
       },
+
+
+      // Bag 
+
+      backdrop: {
+        backgroundColor: '#000',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }
+
 })
 
 
