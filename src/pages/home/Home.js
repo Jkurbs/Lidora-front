@@ -29,6 +29,7 @@ import Footer from "../../components/Footer"
 import SettingScreen from '../../chefPages/settings/settingsSideBar';
 import StoreFront from '../../customerPages/storeFront/storeFront'
 
+
 import * as Linking from "expo-linking";
 
 import firebase from '../../firebase/Firebase';
@@ -269,7 +270,7 @@ class App extends React.Component {
               headerTransparent: true,
             }}
           >
-            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} props={props}  />
             <Stack.Screen name="Settings" component={SettingScreen} />
             <Stack.Screen name="Lidora" component={HomeScreen}
               options={({ navigation, route }) => ({
@@ -313,6 +314,7 @@ class App extends React.Component {
             <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={DashboardScreen} />
             <Stack.Screen name="Apply" component={ApplyScreen} />
             <Stack.Screen name="Legal" component={LegalScreen} />
+
           </Stack.Navigator>
         </NavigationContainer>
       );

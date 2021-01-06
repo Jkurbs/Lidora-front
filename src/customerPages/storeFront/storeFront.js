@@ -3,15 +3,24 @@ import {
     View, SafeAreaView, Image, Text, SectionList, TouchableOpacity,
     Dimensions, TextInput, Animated
 } from "react-native";
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import firebase from "../../firebase/Firebase"
+
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+
 import styles from './storeFront.style'
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SimpleLineIcons } from '@expo/vector-icons'
+import firebase from "../../firebase/Firebase"
 import BottomSheet from 'reanimated-bottom-sheet'
 import ReactPlaceholder from 'react-placeholder'
 import Footer from "../../components/Footer"
+import CustomerSettingsScreen from '../CustomerSettings'
+
+const Stack = createStackNavigator();
 
 var db = firebase.firestore();
+
+var chefId; 
 
 var unsubscribe;
 
@@ -25,10 +34,15 @@ const FlatListItemSeparator = () => {
 
 function StoreFront(props) {
 
+    const chefId = props.chefId
+    const navigation = props.navigation
+
+
+
+
     // States 
     const [data, setData] = useState({ user: [] })
     const [menu, setMenu] = useState([])
-    const [titles, setTitle] = useState({ headerTitle: "View Bag", LeftButtonTitle: "" })
     const [selectedItem, setSelectedItem] = useState(null)
     const [quantity, setQuantity] = useState(1)
     const [total, setTotal] = useState(0)
@@ -51,7 +65,7 @@ function StoreFront(props) {
 
         // Fetch chefs 
         async function fetchChef() {
-             await db.collection('chefs').doc(props.chefId).get().then(function (doc) {
+             await db.collection('chefs').doc(chefId).get().then(function (doc) {
                 if (doc.exists) {
                     let userObj = {}
                     userObj["title"] = "user"
@@ -65,7 +79,7 @@ function StoreFront(props) {
         
         // Fetch Menus 
         async function fetchMenu() {
-            await db.collection('chefs').doc(props.chefId).collection("menu").get().then(function (querySnapshot) {
+            await db.collection('chefs').doc(chefId).collection("menu").where("isVisible",  "==", true).get().then(function (querySnapshot) {
                 let array = []
     
                 querySnapshot.forEach(function(doc) {
@@ -95,7 +109,6 @@ function StoreFront(props) {
         return () => {
             isCancelled = true;
           };
-        
     }, [])
 
 
@@ -172,7 +185,6 @@ function StoreFront(props) {
             // setUserLoggedIn(false)
           }
         })
-
     }, [])
 
     const checkLoggedIn = () => {
@@ -304,9 +316,8 @@ function StoreFront(props) {
         return (
             <View style={styles.header}>
                 <TouchableOpacity onPress={ onClose } style={{ justifyContent: 'center', position: 'absolute', left: 16 }}>
-                    <Text style={{ color: '#34C759', fontSize: 17, fontWeight: '500', alignSelf: 'center' }}>{titles.LeftButtonTitle}</Text>
+                    <Text style={{ color: '#34C759', fontSize: 17, fontWeight: '500', alignSelf: 'center' }}>Dismiss</Text>
                 </TouchableOpacity>
-                <Text style={styles.headerTitle} onPress={()=>onOpen()}>{titles.headerTitle}</Text>
                 <View style={[styles.listItemSeparatorStyle, { position: 'absolute', bottom: 0 }]} />
             </View>
         ) 
@@ -328,6 +339,7 @@ function StoreFront(props) {
         </View>
     );
 
+
     // Cell to show Combos
     const CombosCell = (item) => (
         <View style={{ alignItems: 'center', margin: 20, flexDirection: 'row' }}>
@@ -339,8 +351,7 @@ function StoreFront(props) {
     );
 
 
-    // TODO 
-
+    // MARK: - TODO 
     const RenderIngredientsItem = (item) => (
         <View>
 
@@ -443,7 +454,7 @@ function StoreFront(props) {
         {/* Header */}
            <Animated.View style={[{backgroundColor: 'white', height: 45, alignItems: 'center', justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: '#ecf0f1'}]}>
                <View style={{ position: 'absolute', right: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
-                    <TouchableOpacity onPress={ onClose } style={{  }}>
+                    <TouchableOpacity onPress={()=> {navigation.navigate("Customer-settings")} } style={{  }}>
                         <SimpleLineIcons name="options" size={18} color="black" />
                     </TouchableOpacity>
                </View>
@@ -487,7 +498,6 @@ function StoreFront(props) {
             onScroll={Animated.event(
                 [{ nativeEvent: { contentOffset:  { y: scrollY }}}],
               )}
-
             scrollEventThrottle={16}
             refreshing={false}
             ref={scrollRef}
@@ -503,16 +513,13 @@ function StoreFront(props) {
           renderHeader={renderHeader}
           renderContent={renderContent}
           onCloseEnd={onClose}
-          onOpenStart={() => setTitle({ headerTitle: "", LeftButtonTitle: "Dismiss" })}
-        onCloseStart={() => setTitle({ headerTitle: "View Bag", LeftButtonTitle: "" })}
         />
       </Animated.View>
 
         {/* Footer */}
         <Footer/>
-
-        </SafeAreaView>
- </SafeAreaProvider>
+    </SafeAreaView>
+</SafeAreaProvider>
       
     );
    } else {
@@ -520,4 +527,20 @@ function StoreFront(props) {
    }
 }
 
-export default  React.memo(StoreFront)
+function App(props) {
+    const chefId = props.chefId
+    return (
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName="StoreFront" screenOptions={{ headerShown: false}}>
+                
+            <Stack.Screen name="StoreFront">
+                {props => <StoreFront {...props} chefId={chefId} screenOptions={{ headerShown: false, headerMode: "none", headerTransparent: true}} />}
+            </Stack.Screen>
+                
+                <Stack.Screen name="Customer-settings" component={CustomerSettingsScreen}/>
+            </Stack.Navigator>
+        </NavigationContainer>
+    )
+}
+
+export default App
