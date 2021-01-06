@@ -6,9 +6,11 @@ export default StyleSheet.create({
 
     container: {
         fontFamily: "System",
-        // backgroundColor: '#06090E',
+        backgroundColor: 'white',
         flex: 1,
-        overflow: 'hidden'
+        overflow: 'hidden', 
+        textTransform: 'capitalize'
+
     },
 
     topBar: {
@@ -36,25 +38,37 @@ export default StyleSheet.create({
     },
 
     sectionTitle: {
-        fontSize: 23,
+        fontSize: 20,
         fontWeight: '500',
         paddingLeft: 20,
         marginTop: 20
     },
 
     storeImage: {
-        width: '100%',
-        height: 200
+        width: 80,
+        height: 80, 
+        borderRadius: 40, 
+        borderWidth: 4, 
+        borderColor: '#ecf0f1'
     },
 
     title: {
-        fontSize: 25,
-        fontWeight: '500'
+        fontSize: 18,
+        fontWeight: '500', 
+        textAlign: 'center'
     },
 
     description: {
+        marginTop: 16,
         color: 'gray',
-        fontSize: 14
+        fontSize: 14, 
+        textAlign: 'center'
+    },
+
+    info: {
+        color: 'gray',
+        fontSize: 14, 
+        textAlign: 'center'
     },
 
     storeInfoContainer: {
@@ -62,8 +76,8 @@ export default StyleSheet.create({
     },
 
     menuImage: {
-        width: 70,
-        height: 70,
+        width: 65,
+        height: 65,
         borderRadius: 5
     },
 
@@ -97,6 +111,13 @@ export default StyleSheet.create({
     },
 
 
+
+    comboImage: {
+        width: 40,
+        height: 40,
+        borderRadius: 20, 
+        marginRight: 16
+    },
 
     bagContainer: {
         // flex:1,
