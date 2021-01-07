@@ -6,13 +6,18 @@ import MobileButton from './mobileButton';
 import MobileButton2 from './mobileButton2';
 import MobileInput from './mobileInput';
 //firebase imports
+import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from 'expo-firebase-recaptcha';
 import firebase from '../../firebase/Firebase';
+import { auth } from "firebase";
 import "firebase/firestore";
-import "firebase/auth";
+import * as firebase2 from 'firebase'
 
 var db = firebase.firestore();
 
 function AuthenticatePage(props) {
+    const recaptchaVerifier = React.useRef(null);
+    const [verificationId, setVerificationId] = React.useState();
+    const firebaseConfig = firebase2.apps.length ? firebase2.app().options : undefined;
     const [tab,setTab] = useState("login")
     const [loginInfo,setLoginInfo] = useState({})
     const [regInfo,setRegInfo] = useState({
@@ -21,7 +26,7 @@ function AuthenticatePage(props) {
         password:123
     })
     const [isRegHasData,setIsRegHasData] = useState(false)
-
+    const attemptInvisibleVerification = false;
     const PrivacyPolicyText = () => {
         return (
             <View style={{display:'flex',flexDirection:'row'}}>
@@ -40,14 +45,30 @@ function AuthenticatePage(props) {
         //email format
         let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-        if(regInfo.phone.match(phoneno) && regInfo.password.length >= 6 && re.test(regInfo.email) ){
+        // if(regInfo.phone.match(phoneno) && regInfo.password.length >= 6 && re.test(regInfo.email) ){
+        if(regInfo.password.length >= 6 && re.test(regInfo.email) ){
             //Data is correct format
             setIsRegHasData(true)
-            props.regUser(regInfo)
+            async () => {
+                try {
+                  const phoneProvider = new auth.PhoneAuthProvider()
+                  console.log("VERIFYING")
+                  const verificationId = await phoneProvider.verifyPhoneNumber(
+                    regInfo.phone,
+                    recaptchaVerifier.current
+                  );
+                  setVerificationId(verificationId);
+                  showMessage({
+                    text: 'Verification code has been sent to your phone.',
+                  });
+                } catch (err) {
+                  showMessage({ text: `Error: ${err.message}`, color: 'red' });
+                }
+              }
         } 
         else
         {
-        alert("Invalid phone format");
+        alert("Invalid input");
         return false;
         }
 
@@ -91,6 +112,11 @@ function AuthenticatePage(props) {
                 //Show Verification Screen
                 return (
                     <View style={styles.regDisp}>
+                    <FirebaseRecaptchaVerifierModal
+                        ref={recaptchaVerifier}
+                        firebaseConfig={firebaseConfig}
+                        attemptInvisibleVerification={attemptInvisibleVerification}
+                    /> 
                     <Text style={styles.title}>[PH]Enter Verification code sent to {regInfo.phone}</Text>
                     <MobileInput placeholder={"Verification Code"} onChangeText={(text) => regInfo.code = text}/>
                     <View style={styles.buttonWrap}>
