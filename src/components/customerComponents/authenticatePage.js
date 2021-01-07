@@ -16,6 +16,7 @@ var db = firebase.firestore();
 
 function AuthenticatePage(props) {
     const recaptchaVerifier = React.useRef(null);
+    const [verificationId, setVerificationId] = React.useState();
     const firebaseConfig = firebase2.apps.length ? firebase2.app().options : undefined;
     const [tab,setTab] = useState("login")
     const [loginInfo,setLoginInfo] = useState({})
@@ -44,13 +45,30 @@ function AuthenticatePage(props) {
         //email format
         let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-        if(regInfo.phone.match(phoneno) && regInfo.password.length >= 6 && re.test(regInfo.email) ){
+        // if(regInfo.phone.match(phoneno) && regInfo.password.length >= 6 && re.test(regInfo.email) ){
+        if(regInfo.password.length >= 6 && re.test(regInfo.email) ){
             //Data is correct format
             setIsRegHasData(true)
+            async () => {
+                try {
+                  const phoneProvider = new auth.PhoneAuthProvider()
+                  console.log("VERIFYING")
+                  const verificationId = await phoneProvider.verifyPhoneNumber(
+                    regInfo.phone,
+                    recaptchaVerifier.current
+                  );
+                  setVerificationId(verificationId);
+                  showMessage({
+                    text: 'Verification code has been sent to your phone.',
+                  });
+                } catch (err) {
+                  showMessage({ text: `Error: ${err.message}`, color: 'red' });
+                }
+              }
         } 
         else
         {
-        alert("Invalid phone format");
+        alert("Invalid input");
         return false;
         }
 
