@@ -59,7 +59,6 @@
     "react-papaparse": "^3.11.0",
     "react-placeholder": "^4.0.3",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
-    "react-native-safe-area-context": "3.1.4",
     "react-native-webview": "10.7.0"
   },
   "devDependencies": {

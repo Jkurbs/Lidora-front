@@ -1,10 +1,14 @@
 
 import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { TouchableOpacity, Image, Text, View, StyleSheet, TextInput } from 'react-native';
+import { block } from 'react-native-reanimated';
+import { render } from 'react-native-web';
 
 import SearchTextField from '../components/searchTextField'
 import MainButton from './buttons/mainButton';
 import DropDown from '../components/dropDown'
+import { Entypo } from '@expo/vector-icons';
+
 
 class HeaderBar extends React.Component {
 

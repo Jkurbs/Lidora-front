@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
-    TouchableOpacity, Image, Text, View, StyleSheet, TextInput, Animated, ScrollView,
-    Switch, Dimensions
+    TouchableOpacity, Image, Text, View, StyleSheet, TextInput, Animated, ScrollView, SectionList,
+    Switch
 } from 'react-native';
 import ModalTextField from '../../components/modalTextField';
 import ModalTextFieldWithTitle from '../../components/modalTextFieldWithTitle';
@@ -10,13 +10,37 @@ import ModalMenuIngredient from '../../components/modalMenuItemAddIngredient';
 import ModalItemListIngr from '../../components/modalItemListIngr';
 import RegularButton from '../../components/buttons/regularButton';
 import { Picker } from '@react-native-picker/picker';
-import MultiSelectField from '../../components/MultiSelectField';
-import * as DocumentPicker from 'expo-document-picker';
-import foodData from '../../assets/foodData.json';
 import MultiSelect from 'react-native-multiple-select';
+import * as DocumentPicker from 'expo-document-picker';
 
 
-const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
+const DATA = [
+    {
+        "title": "Ingredients",
+        "data": [
+            {
+                "name": "Banana",
+                "quantity": 1,
+                "unit": 'gram'
+            },
+            {
+                "name": "Dates",
+                "quantity": 1,
+                "unit": 'gram'
+            },
+        ]
+    },
+]
+
+const Item = ({ name, quantity, unit }) => (
+    <View>
+        <View style={styles.item}>
+            <Text style={styles.title}>{name}</Text>
+            <Text style={styles.title}>{`${quantity}${unit}`}</Text>
+        </View>
+    </View>
+
+);
 
 
 class MenuRightSidebar extends React.Component {
@@ -58,6 +82,8 @@ class MenuRightSidebar extends React.Component {
 
     // Configure save button click 
     handleSaveButtonClick(editItem) {
+        console.log('THediditemMAGE', editItem)
+        console.log('THISSPROPSEIMAGE', this.props.item.image)
         editItem.image = this.state.image
         this.props.updateMenuItem(editItem)
         this.props.handleMode("Details")
@@ -77,6 +103,8 @@ class MenuRightSidebar extends React.Component {
             this.setState((prevState, props) => ({
                 isActive: !prevState.isActive,
             }));
+            console.log(this.state.isActive)
+
         });
     };
 
@@ -118,7 +146,6 @@ class MenuRightSidebar extends React.Component {
                 return <Add
                     item={this.props.item}
                     image={this.state.image}
-                    group={this.props.group}
                     ingredients={this.props.inventories}
                     handleMode={this.props.handleMode}
                     addMenuItem={this.props.addMenuItem}
@@ -172,42 +199,23 @@ class Add extends React.Component {
             selectedItems: [],
             addedIngredients: [],
             isVisible: false,
-            results:[]
         }
         this.props.clearImage()
     }
 
-    handleSearch = (text) => {
-        const filter = (a, f) => {
-            let keys = Object.keys(f)
-            if (keys.length == 1) {
-                return a.filter(x => x[keys[0]].toLowerCase().includes(f[keys[0]].toLowerCase()))
-            } else return a.filter(x => Object.values(f).every(fv => {
-                return Object.values(x).some(v => v.toLowerCase().includes(fv.toLowerCase()))
-            }))
-        }
-
-        let arr = filter(foodData, { name: text })
-        let newArr = arr.sort((a, b) => (a.name.length > b.name.length) ? 1 : -1)
-
-        this.setState(state => {
-            const limit = newArr.filter((val, i) => i < 10)
-            return {
-                results: limit,
-            };
-        });
-    }
 
     onSelectedItemsChange = selectedItems => {
+        console.log(selectedItems)
+        let currentComponent = this
         let ingredients = selectedItems.map((selectedIng) => {
-            return foodData.filter((ing) => {
+            return this.props.ingredients.filter((ing) => {
                 return ing.name == selectedIng
             })[0]
         })
         this.setState({ selectedItems });
         //ADD INGREDIENT TO LIST IF IN selectedItems
         ingredients.map((ingr) => {
-            var foundIndex = this.state.addedIngredients.findIndex(x => x.name == ingr.name);
+            var foundIndex = this.state.addedIngredients.findIndex(x => x.id == ingr.id);
             if (foundIndex === -1) {
                 this.state.addedIngredients.push(ingr)
             }
@@ -215,40 +223,47 @@ class Add extends React.Component {
         //REMOVE INGREDIENT FROM LIST IF NOT FOUND IN selectedItems
         if (this.state.addedIngredients.length > 1) {
             this.state.addedIngredients.map((ingr) => {
-                var foundIndex = ingredients.findIndex(x => x.name == ingr.name);
+                var foundIndex = ingredients.findIndex(x => x.id == ingr.id);
                 if (foundIndex === -1) {
+                    console.log("REMOVED", ingr)
                     this.state.addedIngredients = this.state.addedIngredients.filter((item) => {
-                        return item.name != ingr.name
+                        return item.id != ingr.id
                     })
                 }
             })
         }
+        console.log("ADDEDINGREDIENTS", this.state.addedIngredients)
     };
 
     onQuantityInput = (input, item) => {
-        var foundIndex = this.state.addedIngredients.findIndex(x => x.name == item.name);
-        this.state.addedIngredients[foundIndex].quantity = input;
-    }
-
-    onUnitChange = (unit, item) => {
-        var foundIndex = this.state.addedIngredients.findIndex(x => x.name == item.name);
-        this.state.addedIngredients[foundIndex].unit = unit;
+        console.log(input)
+        console.log(item)
+        let newItem = {
+            ...item,
+            quantity: input
+        }
+        console.log(newItem)
+        var foundIndex = this.state.addedIngredients.findIndex(x => x.id == newItem.id);
+        this.state.addedIngredients[foundIndex] = newItem;
+        console.log(this.state.addedIngredients)
     }
 
     toggleSwitch = () => {
+        console.log('switchpressed')
         this.setState(state => {
             return {
                 isVisible: !state.isVisible
             };
         });
+        console.log(this.state.item.isVisible)
     }
 
     onSavePress = () => {
+        console.log('switchpressed')
         let fullItem = this.state.item
         fullItem.image = this.props.image
         fullItem.ingredients = this.state.addedIngredients
         fullItem.isVisible = this.state.isVisible
-        fullItem.group = this.props.group
         this.props.addMenuItem(this.state.item)
         this.props.handleMode("Details")
         this.props.clearImage()
@@ -256,7 +271,7 @@ class Add extends React.Component {
 
     render() {
         return (
-            <ScrollView style={{height: '100%', paddingBottom: 200 }}   contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView style={{ height: '100%' }}>
                 <View style={styles.modalHeader}>
                     <Text style={styles.titleText}>Add Menu Item</Text>
                     <View style={styles.saveButton}>
@@ -267,58 +282,72 @@ class Add extends React.Component {
                     <Image
                         style={styles.detailsItemImage}
                         source={this.props.image}
-                        onLoad={() => this.state.item.image = this.props.image} />
+                        onLoad={() => this.state.item.image = this.props.image}
+                    />
                     <Text onPress={this.props.handleImagePicking} style={styles.addImageButton}>Add Image</Text>
                 </View>
 
                 <ModalTextField placeholder={"Add Name"} onChangeText={(text) => this.state.item.name = text} />
+
                 <ModalTextField placeholder={"Add price"} onChangeText={(text) => this.state.item.price = text} />
 
-                <MultiSelectField
-                    results={this.state.results}
+                <MultiSelect
+                    hideTags
                     items={this.props.ingredients}
-                    item={this.props.item}
+                    uniqueKey="name"
+                    ref={(component) => { this.multiSelect = component }}
+                    onSelectedItemsChange={(item) => this.onSelectedItemsChange(item)}
                     selectedItems={this.state.selectedItems}
-                    isActive={this.state.isActive}
-                    onSelected={this.onSelectedItemsChange}
-                    onChangeInput={this.handleSearch}
+                    selectText="Pick Ingredients"
+                    searchInputPlaceholderText="Search Ingredients..."
+                    onChangeInput={(text) => console.log(text)}
+                    tagRemoveIconColor="#CCC"
+                    tagBorderColor="#CCC"
+                    tagTextColor="#CCC"
+                    selectedItemTextColor="#CCC"
+                    selectedItemIconColor="#CCC"
+                    itemTextColor="#000"
+                    displayKey="name"
+                    searchInputStyle={{ color: '#CCC' }}
+                    submitButtonColor="#CCC"
+                    submitButtonText="Submit"
+                    styleMainWrapper={{ marginTop: 7 }}
+                    styleTextDropdown={{ fontFamily: 'System', padding: 8 }}
+                    styleDropdownMenuSubsection={{ height: 40, borderRadius: 5, borderWidth: 1, borderColor: '#d6d6d6' }}
+                    styleRowList={{ height: 40 }}
+                    itemFontSize={13}
+                    styleListContainer={{ marginTop: 20 }}
+                    searchInputStyle={{ height: 40 }}
                 />
-
-                <View>
-                <Text style={{ padding: 8, fontWeight: '500', fontSize: 20}}>{(this.state.selectedItems.length == 0) ? "": "Ingredients"}</Text>
-                    <View style={(this.state.selectedItems.length == 0) ? { display: 'none' } : { display: 'inline' }}>
-                        <div>
-                            {this.state.addedIngredients.map(item =>
-                                <ModalMenuIngredient title={item.name} placeholder={"Add quantity"} onChangeText={text => this.onQuantityInput(text, item)} onUnitChange={value => this.onUnitChange(value, item)}/>
-                            )}
-                        </div>
-                    </View>
-                </View> 
-               
-                <View style={{marginTop: 8}}>
-                    <View style={{padding: 8}}>
-                    <Text style={{fontWeight: '500', fontSize: 20}}>Visibility</Text>
+                <View style={(this.state.selectedItems.length == 0) ? { display: 'none' } : { display: 'inline' }}>
+                    <div>
+                        {this.state.addedIngredients.map(item =>
+                            <ModalMenuIngredient title={item.name} unit={item.unit} onChangeText={text => this.onQuantityInput(text, item)} />
+                        )}
+                    </div>
+                </View>
+                <View style={{}}>
+                    <Text>Visibility</Text>
                     <Text style={{ color: '#646464' }}>If enabled the menu item will be visible to customers.</Text>
-                    </View>
                     <View style={{
-                         borderTop: '1px solid #d9d9d9', borderBottom: '1px solid #d9d9d9', height: 42,
-                         alignItems: 'center',
                         padding: 16,
-                        marginTop: 8, flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#F5F5F5',
+                        marginTop: 20, flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#F5F5F5',
                     }}>
                         <Text>Visible </Text>
                         <Switch
-                            trackColor={{ false: "white", true: "rgb(48, 209, 88)" }}
-                            thumbColor={'white'}
+                            trackColor={{ false: "#767577", true: "#81b0ff" }}
+                            // thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                            ios_backgroundColor="#3e3e3e"
                             onValueChange={() => this.toggleSwitch()}
                             value={this.state.isVisible}
                         />
+
                     </View>
                 </View>
 
-                <View style={{marginTop: 8}}>
-                    <Text style={{fontWeight: '500', fontSize: 20, padding: 8}}>Description</Text>
-                    <TextInput style={[styles.textBox, {borderTop: '1px solid #d9d9d9', borderBottom: '1px solid #d9d9d9'}]}
+                <View>
+                    <Text>Description</Text>
+                    <TextInput style={styles.textBox}
                         multiline={true}
                         maxLength={100}
                         placeholder={'Add a description'}
@@ -360,6 +389,18 @@ class Details extends React.Component {
                 />
                 <ModalTextBox title={'Name'} subtitle={this.props.item.name} />
                 <ModalTextBox title={'Price'} subtitle={`${'$'}${this.props.item.price}`} />
+
+                {/* <SectionList style={styles.sectionList}
+                    ItemSeparatorComponent={FlatListItemSeparator}
+                    renderItem={({ item, index, section }) =>
+                        <Item name={item.name} quantity={item.quantity} unit={item.unit} />
+                    }
+                    renderSectionHeader={({ section: { title } }) => (
+                        <Text style={styles.header}>{title}</Text>
+                    )}
+                    sections={[{title:'Ingredients',data:this.props.item.ingredients}]}
+                    keyExtractor={(item, index) => item + index}
+                /> */}
                 <View>
                     <ModalItemListIngr title={'Ingredients'} array={this.props.item.ingredients} />
                 </View>
@@ -393,73 +434,63 @@ class Edit extends React.Component {
             item: item,
             selectedItems: this.props.item.ingredients.map(ingr => ingr.name),
             isActive: initial,
-            isVisActive: initial, 
-            isVisible: false,
-            results:[], 
-            addedIngredients: [],
-
+            isVisActive: initial
         }
     }
 
-
     onSelectedItemsChange = selectedItems => {
+        console.log(selectedItems)
+        //change rendered value from props mode to state
+        this.setState(state => {
+            return {
+                isActive: true
+            };
+        });
+
+        let currentComponent = this
         let ingredients = selectedItems.map((selectedIng) => {
-            return foodData.filter((ing) => {
+            return this.props.ingredients.filter((ing) => {
                 return ing.name == selectedIng
             })[0]
         })
         this.setState({ selectedItems });
         //ADD INGREDIENT TO LIST IF IN selectedItems
         ingredients.map((ingr) => {
-            var foundIndex = this.state.addedIngredients.findIndex(x => x.name == ingr.name);
+            var foundIndex = this.state.item.ingredients.findIndex(x => x.id == ingr.id);
             if (foundIndex === -1) {
-                this.state.addedIngredients.push(ingr)
+                this.state.item.ingredients.push(ingr)
             }
         })
         //REMOVE INGREDIENT FROM LIST IF NOT FOUND IN selectedItems
-        if (this.state.addedIngredients.length > 1) {
-            this.state.addedIngredients.map((ingr) => {
-                var foundIndex = ingredients.findIndex(x => x.name == ingr.name);
+        if (this.state.item.ingredients.length > 1) {
+            this.state.item.ingredients.map((ingr) => {
+                var foundIndex = ingredients.findIndex(x => x.id == ingr.id);
                 if (foundIndex === -1) {
-                    this.state.addedIngredients = this.state.addedIngredients.filter((item) => {
-                        return item.name != ingr.name
+                    console.log("REMOVED", ingr)
+                    this.state.item.ingredients = this.state.item.ingredients.filter((item) => {
+                        return item.id != ingr.id
                     })
                 }
             })
         }
+        console.log("ADDEDINGREDIENTS", this.state.item.ingredients)
     };
 
     onQuantityInput = (input, item) => {
+        console.log(input)
+        console.log(item)
         let newItem = {
             ...item,
             quantity: input
         }
+        console.log(newItem)
         var foundIndex = this.state.item.ingredients.findIndex(x => x.id == newItem.id);
         this.state.item.ingredients[foundIndex] = newItem;
-    }
-
-    handleSearch = (text) => {
-        const filter = (a, f) => {
-            let keys = Object.keys(f)
-            if (keys.length == 1) {
-                return a.filter(x => x[keys[0]].toLowerCase().includes(f[keys[0]].toLowerCase()))
-            } else return a.filter(x => Object.values(f).every(fv => {
-                return Object.values(x).some(v => v.toLowerCase().includes(fv.toLowerCase()))
-            }))
-        }
-
-        let arr = filter(foodData, { name: text })
-        let newArr = arr.sort((a, b) => (a.name.length > b.name.length) ? 1 : -1)
-
-        this.setState(state => {
-            const limit = newArr.filter((val, i) => i < 10)
-            return {
-                results: limit,
-            };
-        });
+        console.log(this.state.item.ingredients)
     }
 
     toggleSwitch = () => {
+        console.log('switchpressed')
 
         //change rendered value from props mode to state
         this.setState(state => {
@@ -476,6 +507,7 @@ class Edit extends React.Component {
                 }
             };
         });
+        console.log(this.state.item.isVisible)
     }
 
     onSavePress = () => {
@@ -491,7 +523,7 @@ class Edit extends React.Component {
             currentIngr = this.state.item.ingredients
         }
         return (
-            <ScrollView style={{height: '100%', paddingBottom: 200 }} contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView style={{ height: '120%' }}>
                 <View style={styles.modalHeader}>
                     <Text style={styles.titleText}>Edit Item</Text>
                     <View style={styles.saveButton}>
@@ -508,18 +540,34 @@ class Edit extends React.Component {
                 <ModalTextFieldWithTitle title={'Name'} placeholder={this.props.item.name} onChangeText={(text) => this.state.item.name = text} />
                 <ModalTextFieldWithTitle title={'Price'} placeholder={this.props.item.price} onChangeText={(text) => this.state.item.price = text} />
                 <ModalTextFieldWithTitle title={'Description'} placeholder={this.props.item.description} onChangeText={(text) => this.state.item.description = text} />
-    
-
-                <MultiSelectField
-                    results={this.state.results}
+                <MultiSelect
+                    hideTags
                     items={this.props.ingredients}
-                    item={this.props.item}
+                    uniqueKey="name"
+                    ref={(component) => { this.multiSelect = component }}
+                    onSelectedItemsChange={(item) => this.onSelectedItemsChange(item)}
                     selectedItems={(this.state.isActive === false) ? this.props.item.ingredients.map(ingr => ingr.name) : this.state.selectedItems}
-                    isActive={this.state.isActive}
-                    onSelected={(item) => this.onSelectedItemsChange(item)}
-                    onChangeInput={this.handleSearch}
+                    selectText="Pick Ingredients"
+                    searchInputPlaceholderText="Search Ingredients..."
+                    onChangeInput={(text) => console.log(text)}
+                    tagRemoveIconColor="#CCC"
+                    tagBorderColor="#CCC"
+                    tagTextColor="#CCC"
+                    selectedItemTextColor="#CCC"
+                    selectedItemIconColor="#CCC"
+                    itemTextColor="#000"
+                    displayKey="name"
+                    searchInputStyle={{ color: '#CCC' }}
+                    submitButtonColor="#CCC"
+                    submitButtonText="Submit"
+                    styleMainWrapper={{ marginTop: 7 }}
+                    styleTextDropdown={{ fontFamily: 'System', padding: 8 }}
+                    styleDropdownMenuSubsection={{ height: 40, borderRadius: 5, borderWidth: 1, borderColor: '#d6d6d6' }}
+                    styleRowList={{ height: 40 }}
+                    itemFontSize={13}
+                    styleListContainer={{ marginTop: 20 }}
+                    searchInputStyle={{ height: 40 }}
                 />
-                <Text style={{ padding: 8, fontWeight: '500', fontSize: 20}}>Ingredients</Text>
                 <View style={(this.state.selectedItems.length == 0) ? { display: 'none' } : { display: 'inline' }}>
                     <div>
                         {currentIngr.map(item =>
@@ -527,36 +575,26 @@ class Edit extends React.Component {
                         )}
                     </div>
                 </View>
-
-                <View style={{marginTop: 8}}>
-                    <View style={{padding: 8}}>
-                    <Text style={{fontWeight: '500', fontSize: 20}}>Visibility</Text>
+                <View style={{}}>
+                    <Text>Visibility</Text>
                     <Text style={{ color: '#646464' }}>If enabled the menu item will be visible to customers.</Text>
-                    </View>
                     <View style={{
-                         borderTop: '1px solid #d9d9d9', borderBottom: '1px solid #d9d9d9', height: 42,
-                         alignItems: 'center',
                         padding: 16,
-                        marginTop: 8, flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#F5F5F5',
+                        marginTop: 20, flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#F5F5F5',
                     }}>
                         <Text>Visible </Text>
                         <Switch
-                            trackColor={{ false: "white", true: "rgb(48, 209, 88)" }}
-                            thumbColor={'white'}
+                            trackColor={{ false: "#767577", true: "#81b0ff" }}
+                            // thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                            ios_backgroundColor="#3e3e3e"
                             onValueChange={() => this.toggleSwitch()}
                             value={this.state.isVisActive ? this.state.item.isVisible : this.props.item.isVisible}
                         />
+
                     </View>
                 </View>
-                <View style={{marginTop: 8}}>
-                    <Text style={{fontWeight: '500', fontSize: 20, padding: 8}}>Description</Text>
-                    <TextInput style={[styles.textBox, {borderTop: '1px solid #d9d9d9', borderBottom: '1px solid #d9d9d9'}]}
-                        multiline={true}
-                        maxLength={100}
-                        placeholder={'Add a description'}
-                        onChangeText={(text) => this.state.item.description = text}
-                        defaultValue={this.props.item.description}
-                    />
+                <View>
+
                 </View>
             </ScrollView >
         )
@@ -675,10 +713,7 @@ const styles = StyleSheet.create({
     },
 
     description: {
-        height: 'auto', 
-        borderTop: '1px solid #d9d9d9', 
-        borderBottom: '1px solid #d9d9d9'
-
+        height: 'auto'
     },
 
     formInput: {
@@ -700,7 +735,7 @@ const styles = StyleSheet.create({
         height: '80px',
         width: '100%',
         backgroundColor: '#F5F5F5',
-        textAlignVertical: 'center', 
+        textAlignVertical: 'center'
     },
 
     textBoxText: {
@@ -709,12 +744,4 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
         top: '20%'
     },
-
-    addImageButton: {
-        alignSelf: 'center', 
-        fontWeight: '500', 
-        color: 'gray', 
-        marginBottom: 8 
-
-    }
 })

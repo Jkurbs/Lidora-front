@@ -9,6 +9,7 @@ import foodData from '../assets/foodData.json';
 import MultiSelect from 'react-native-multiple-select';
 import moment from 'moment';
 
+
 class InventoryRightSidebar extends React.Component {
 
     constructor(props) {

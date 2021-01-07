@@ -5,7 +5,7 @@ import styles from "./orders.styles";
 
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
-import Alert from '../../components/Alerts/alert'
+import Alert from '../../components/alert'
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
