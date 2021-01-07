@@ -270,7 +270,7 @@ class App extends React.Component {
               headerTransparent: true,
             }}
           >
-            <Stack.Screen name="Login" component={LoginScreen} props={props}  />
+            <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Settings" component={SettingScreen} />
             <Stack.Screen name="Lidora" component={HomeScreen}
               options={({ navigation, route }) => ({

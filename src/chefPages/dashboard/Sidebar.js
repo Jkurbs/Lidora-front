@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image, Text, View, TouchableOpacity, Dimensions, Clipboard, FlatList } from "react-native";
+import { Image, Text, View, TouchableOpacity, Dimensions, Clipboard } from "react-native";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import MenuScreen from "../menu/menu";
@@ -9,6 +9,10 @@ import OrdersScreen from "../order/Order.web";
 import SupportScreen from "../support/support";
 
 import firebase from "../../firebase/Firebase";
+
+import * as firebaseSDK from 'firebase';
+
+
 import "firebase/firestore";
 var db = firebase.firestore();
 
@@ -16,12 +20,14 @@ import moment from 'moment'
 
 import ReactPlaceholder from 'react-placeholder';
 import "react-placeholder/lib/reactPlaceholder.css";
-import "./darkMode.css"
 
 import Alert from '../../components/Alerts/itemAlert'
 
 import { Entypo } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+
+import DraggableFlatList from 'react-native-draggable-flatlist'
+
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
 
@@ -200,7 +206,6 @@ function SideBar({ route }) {
     const phoneMaxWidth = 575.98
     // get name and picture from firebase
     const [userData, setUserData] = React.useState({ user: [] })
-    const [menuOptions, setMenuOptions] = React.useState([])
 
     React.useEffect(() => {
         // Fetch Current chef 
@@ -213,24 +218,13 @@ function SideBar({ route }) {
         })
     }, [])
 
-    React.useEffect(() => {
-        db.collection('chefs').doc(userID ?? firebase.auth().currentUser.uid).collection("menu_categories").orderBy("date_added", "asc").onSnapshot(function (snapshot) {
-            setMenuOptions([])
-            snapshot.forEach(function (doc) {  
-                setMenuOptions(prevState => [...prevState, doc.data().name])
-            })
-        })
-    }, [])
-
     //add userID to userData
     userData.user.userID = userID
     if (windowWidth < phoneMaxWidth) {
         return <MobileDashboard userID={userID} userData={userData} />
     } else {
         return (
-            <div className={userData.user.isDarkMode ? "darkWebDash" : "none"}>
-                <WebDashboard userID={userID} userData={userData} navigation={navigation} menuOptions={menuOptions} />
-            </div>
+            <WebDashboard userID={userID} userData={userData} navigation={navigation} />
         )
     }
 }
@@ -267,7 +261,20 @@ function MobileDashboard(userID, userData) {
 
 
 
-function SideBarItems({userID, userData, navigation, menuOptions}) {
+function SideBarItems({userID, userData, navigation}) {
+
+    const [menuOptions, setMenuOptions] = React.useState([])
+    const groupsRef =  db.collection('chefs').doc(userID ?? firebase.auth().currentUser.uid).collection("settings").doc("menu")
+
+    React.useEffect(() => {
+        groupsRef.get().then(function (doc) {
+            setMenuOptions([])
+            if (doc.exists) {
+                setMenuOptions(doc.data().groups ?? [])
+            }
+        })
+    }, [])
+
 
     const copyToClipboard = () => {
         Clipboard.setString(`lidora.app/?${userData.user.title.replace(/\s/g, '')}=${userID}`);
@@ -284,15 +291,13 @@ function SideBarItems({userID, userData, navigation, menuOptions}) {
     }
 
     const addsubMenu = () => {
-        setIsAlertVisible(!isAlertVisible)
-        
-        db.collection('chefs').doc(userID).collection("menu_categories").doc().set({
-            name: groupName,
-            date_added: moment().format("X"),
+        groupsRef.update({
+            "groups":  firebaseSDK.firestore.FieldValue.arrayUnion(groupName)
         })
         .then(function() {
             console.log("Document successfully written!");
             setMenuOptions(prevState => [...prevState, groupName])
+            setIsAlertVisible(!isAlertVisible)
         })
         .catch(function(error) {
             console.error("Error writing document: ", error);
@@ -311,7 +316,7 @@ function SideBarItems({userID, userData, navigation, menuOptions}) {
                 backgroundColor: '#d9d9d9',
                 padding: 5, 
                 borderRadius: 2, 
-                fontSize: 14
+                fontSize: 14, 
             }
         } else {
             return {
@@ -322,26 +327,43 @@ function SideBarItems({userID, userData, navigation, menuOptions}) {
         }
     }
 
+    const reorderMenuItems = (data) => {
+        groupsRef.update({
+            groups: data
+        })
+        .then(function() {
+            console.log("Document successfully updated!");
+        })
+        .catch(function(error) {
+            // The document probably doesn't exist.
+            console.error("Error updating document: ", error);
+        });
 
-    const Item = ({ title }) => (
-        <View 
-        style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <TouchableOpacity style={buttonStyle(title)} 
-            onPress={() =>{
+
+        setMenuOptions(data)
+    }
+
+
+    const Item = ({ title, drag, isActive }) => (
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <TouchableOpacity style={[buttonStyle(title), {
+              width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]} 
+            onLongPress={drag}
+            onPress={() => {
                 optionSelected(title); navigation.navigate("Menu", {
                     screen:"Menu",
-                    params: {
-                        userData: userData, navigation: navigation, group: title
-                    }
+                    params: { userData: userData, navigation: navigation, group: title }
                     })}}>
                 <Text style={{ fontWeight: '500', fontSize: 12 }}>{title}</Text>
+                <Image style={{height: 25, width: 25, tintColor:'gray'}} source={require("../../assets/icon/handle.png")}/>
             </TouchableOpacity>
+           
         </View>
       );
 
-    const renderItem = ({ item }) => (
-        <Item title={item} />
-      );
+    const renderItem = ({ item, drag, isActive }) => (
+        <Item title={item} drag={drag} isActive={isActive} />
+    );
 
     return (
         <View style={{height: '100%', backgroundColor: 'blue'}}>
@@ -383,11 +405,15 @@ function SideBarItems({userID, userData, navigation, menuOptions}) {
                         <Ionicons name="ios-add-circle" size={22} color="rgb(0, 112, 201)" />
                     </TouchableOpacity>
                      </View>
-                     <FlatList
+
+                    <DraggableFlatList
                         data={menuOptions}
+                        dra
                         renderItem={renderItem}
-                        keyExtractor={item => item.id}
-                        />
+                        keyExtractor={(item, index) => `draggable-item-${item}`}
+                        onDragEnd={({ data }) => reorderMenuItems(data)}
+                    />
+                    
                 </View>
 
                 {/* Inventory */}

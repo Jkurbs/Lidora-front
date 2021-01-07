@@ -38,8 +38,6 @@ function StoreFront(props) {
     const navigation = props.navigation
 
 
-
-
     // States 
     const [data, setData] = useState({ user: [] })
     const [menu, setMenu] = useState([])
@@ -79,6 +77,7 @@ function StoreFront(props) {
         
         // Fetch Menus 
         async function fetchMenu() {
+
             await db.collection('chefs').doc(chefId).collection("menu").where("isVisible",  "==", true).get().then(function (querySnapshot) {
                 let array = []
     
@@ -421,7 +420,6 @@ function StoreFront(props) {
                         }
                     }}
                     renderItem={({ item, section }) => {
-                        console.log("SECTION", section)
                         switch (section.title) {
                             case "Infos":
                                 return <ItemInfosCell item={item} />
@@ -454,7 +452,7 @@ function StoreFront(props) {
         {/* Header */}
            <Animated.View style={[{backgroundColor: 'white', height: 45, alignItems: 'center', justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: '#ecf0f1'}]}>
                <View style={{ position: 'absolute', right: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
-                    <TouchableOpacity onPress={()=> {navigation.navigate("Customer-settings")} } style={{  }}>
+                    <TouchableOpacity onPress={()=> {navigation.navigate("Settings")} } style={{  }}>
                         <SimpleLineIcons name="options" size={18} color="black" />
                     </TouchableOpacity>
                </View>
@@ -531,13 +529,11 @@ function App(props) {
     const chefId = props.chefId
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="StoreFront" screenOptions={{ headerShown: false}}>
-                
+            <Stack.Navigator initialRouteName="StoreFront" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="StoreFront">
                 {props => <StoreFront {...props} chefId={chefId} screenOptions={{ headerShown: false, headerMode: "none", headerTransparent: true}} />}
             </Stack.Screen>
-                
-                <Stack.Screen name="Customer-settings" component={CustomerSettingsScreen}/>
+                <Stack.Screen name="Settings" component={CustomerSettingsScreen}/>
             </Stack.Navigator>
         </NavigationContainer>
     )

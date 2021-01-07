@@ -4,13 +4,15 @@ import {
     StyleSheet
 } from "react-native";
 
+import { Entypo } from '@expo/vector-icons';
+
 const DATA = [
     {
       title: "Payment",
       data: ["Payment"]
     },
     {
-      title: "Sides",
+      title: "Logins",
       data: ["Log Out"]
     },
   ];
@@ -22,23 +24,42 @@ const FlatListItemSeparator = () => {
 }
 
 function CustomerSettings(props) {
+
+  const navigation = props.navigation
     
     // Cell to show the chef
     const Item = ({ title }) => (
         <View style={styles.item}>
           <Text style={styles.title}>{title}</Text>
+          <Entypo name="chevron-right" size={24} color="Gray" />
         </View>
     );
 
     return (
-        <View>
+        <View style={styles.container}>
+          {/* Header */}
+          <View style={[{backgroundColor: 'white', height: 45, alignItems: 'center', justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: '#ecf0f1'}]}>
+            <Text style={{fontWeight: '500', fontSize: 18}}>Settings</Text>
+               <View style={{ position: 'absolute', left: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
+                    <TouchableOpacity onPress={()=> {navigation.pop()} } style={{  }}>
+                      <Entypo name="chevron-left" size={24} color="black" />
+                    </TouchableOpacity>
+               </View>
+           </View>
             <SectionList
+                style={styles.sectionList}
                 sections={DATA}
                 keyExtractor={(item, index) => item + index}
                 renderItem={({ item }) => <Item title={item} />}
-                renderSectionHeader={({ section: { title } }) => (
-                    <Text style={styles.header}>{title}</Text>
-                )}/>
+                renderSectionHeader={({ section }) => {
+                  console
+                  if (section.title === "Payments") {
+                      return <Text></Text>
+                  } else {
+                    <Text style={styles.header}>{section.title}</Text>
+
+                  }
+                }}/>
         </View>
     )
 }
@@ -46,19 +67,25 @@ function CustomerSettings(props) {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      marginHorizontal: 16
+      backgroundColor: '#fff'
+    },
+    sectionList: {
+      padding: 8
     },
     item: {
-      backgroundColor: "#f9c2ff",
-      padding: 20,
-      marginVertical: 8
+      backgroundColor: "#fff",
+      height: 50, 
+      justifyContent: 'space-between', 
+      flexDirection: 'row',
+      marginTop: 8
     },
     header: {
-      fontSize: 32,
+      fontSize: 20,
+      fontWeight: '500',
       backgroundColor: "#fff"
     },
     title: {
-      fontSize: 24
+      fontSize: 17
     }
   });
   
