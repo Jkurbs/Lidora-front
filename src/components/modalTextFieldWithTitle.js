@@ -27,29 +27,34 @@ const styles = StyleSheet.create({
         padding: 8,
         fontSize: 14,
         color: '#000000',
-        height: '42px',
+        height: 42,
         width: '100%',
         backgroundColor: '#F5F5F5',
-        textAlignVertical: 'center'
-    },
+        justifyContent: 'center', 
+    }, 
 
     textBoxText: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        textAlignVertical: 'center',
-        top: '20%'
-    },
+        alignItems: 'center'
+    }, 
 
     title: {
-        textAlignVertical: 'center',
         fontWeight: 500,
-    },
+        maxWidth: '60%',
+        overflow: 'hidden',
+        textAlign: 'center', 
+        alignSelf:'center'
 
+    }, 
     subtitle: {
         fontWeight: 400,
-        textIndent: '25px',
-    }
-
+        backgroundColor: '#F5F5F5', 
+        textAlignVertical: 'right', 
+        height: 42, 
+        // textAlign: 'right', 
+        padding: 8
+    },
 });
 
 export default ModalTextFieldWithTitle;

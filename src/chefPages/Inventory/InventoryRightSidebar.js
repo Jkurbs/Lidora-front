@@ -31,17 +31,13 @@ class InventoryRightSidebar extends React.Component {
 
     handleSlide = (checkActive) => {
         let { isActive, translateX } = this.state;
-        console.log("BING", checkActive)
         Animated.spring(translateX, {
             toValue: checkActive ? -420 : 0,
             duration: 20
         }).start(finished => {
-
             this.setState((prevState, props) => ({
                 isActive: !prevState.isActive,
             }));
-            console.log(this.state.isActive)
-
         });
     };
 
@@ -148,8 +144,5 @@ const styles = StyleSheet.create({
         right: '10px',
         top: '-10px',
     }
-
-
-
 })
 

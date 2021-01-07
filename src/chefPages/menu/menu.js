@@ -7,7 +7,7 @@ import "firebase/firestore";
 
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
-import Alert from '../../components/alert';
+import Alert from '../../components/Alerts/alert';
 
 import MenuRightSideBar from './MenuRightSideBar';
 
@@ -24,6 +24,7 @@ class Menu extends React.Component {
     this.child = React.createRef();
     this.state = {
       userID: firebase.auth().currentUser.uid,
+      group: null,
       tableHead: ['Image', 'Name', 'Price', 'Actions'],
       tableData: [],
       filteredTableData: [],
@@ -52,51 +53,40 @@ class Menu extends React.Component {
   animatedTransitionShrink = Animated.spring(this.animVal, { toValue: 1 })
   animatedTransitionGrow = Animated.spring(this.animVal, { toValue: 0 })
 
-  componentDidMount() {
+  componentDidUpdate(prevProps, nextProp) {
     let currentComponent = this;
+    const group = this.props.route.params.group
+    if (group !== this.state.group) {
 
-    ref.doc(this.state.userID).collection("menu").onSnapshot(function (querySnapshot) {
-      currentComponent.setState({ tableData: [], fullData: [] })
-      querySnapshot.forEach(function (doc) {
-        const data = doc.data()
-        const propertyValues = [data.imageURL, data.name, data.price, '']
-        let currentTableData = [...currentComponent.state.tableData];
-        let currentFullData = [...currentComponent.state.fullData];
-        currentTableData.push(propertyValues);
-        currentFullData.push(data)
-        currentComponent.setState({
-          tableData: currentTableData,
-          fullData: currentFullData,
-          hasData: true,
-        });
-      });
-    });
-
-    ref.doc(this.state.userID).collection("menu").onSnapshot(function (querySnapshot) {
-      currentComponent.setState({ tableData: [], data: [] })
-
-      if (querySnapshot.empty) {
-        currentComponent.setState({
-          hasData: false,
-        });
-      } else {
-        querySnapshot.forEach(function (doc) {
-          const data = doc.data()
-          const detValues = [data.key, data.dateAdded, data.name]
-          let currentData = [...currentComponent.state.data]
-          currentData.push(detValues)
-          const propertyValues = [data.imageURL, data.name, data.price, '']
-          let currentTableData = [...currentComponent.state.tableData];
-          currentTableData.push(propertyValues);
+      ref.doc(this.state.userID).collection("menu").where("group", "==", group).onSnapshot(function (querySnapshot) {
+        currentComponent.setState({ tableData: [], data: [], group: group })
+        if (querySnapshot.empty) {
           currentComponent.setState({
-            data: currentData,
-            tableData: currentTableData,
-            hasData: true,
+            hasData: false,
           });
-        });
-      }
-    });
+        } else {
+          querySnapshot.forEach(function (doc) {
+            const data = doc.data()
+            const propertyValues = [data.imageURL, data.name, data.price, '']
+            let currentTableData = [...currentComponent.state.tableData];
+            let currentFullData = [...currentComponent.state.fullData];
+            currentTableData.push(propertyValues);
+            currentFullData.push(data)
+            currentComponent.setState({
+              tableData: currentTableData,
+              fullData: currentFullData,
+              hasData: true,
+            });
+          });
+        }
+      });
+    }
+  }
 
+
+  componentDidMount() {
+
+    let currentComponent = this;
 
     // Fetch List of Ingredients
     ref.doc(this.state.userID).collection("inventory").onSnapshot(function (querySnapshot) {
@@ -140,8 +130,6 @@ class Menu extends React.Component {
 
   // Add new menu item
   addMenuItem = (item) => {
-    console.log(item)
-
     this.setState(state => {
       const data = [item, ...state.fullData];
       return {
@@ -159,7 +147,8 @@ class Menu extends React.Component {
         description: item.description,
         price: item.price,
         ingredients: item.ingredients,
-        isVisible: item.isVisible
+        isVisible: item.isVisible, 
+        group: item.group
       }
     )
     //check and Add Image to Firebase Storage
@@ -168,11 +157,9 @@ class Menu extends React.Component {
       let currentComponent = this;
       storage.put(item.image.file).then((snapshot) => {
         snapshot.ref.getDownloadURL().then(function (downloadURL) {
-          console.log("File available at", downloadURL);
 
           ref.doc(currentComponent.state.userID).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
             snapshot.forEach(function (doc) {
-              console.log(doc.id)
               ref.doc(currentComponent.state.userID).collection("menu").doc(doc.id).update(
                 {
                   imageURL: downloadURL
@@ -191,7 +178,6 @@ class Menu extends React.Component {
   // Update menu Item 
   updateMenuItem = (item) => {
     let currentComponent = this
-    console.log("UPDATEITEM", item)
     this.setState(state => {
       const data = state.fullData.map((previousItem, j) => {
         if (j === item) {
@@ -207,7 +193,6 @@ class Menu extends React.Component {
     // Update menu item in Firebase 
     ref.doc(this.state.userID).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
       snapshot.forEach(function (doc) {
-        console.log(doc.id)
         ref.doc(currentComponent.state.userID).collection("menu").doc(doc.id).update(
           {
             key: item.key,
@@ -224,14 +209,11 @@ class Menu extends React.Component {
     //check if image changed
     if (item.image !== null) {
       let currentComponent = this;
-      console.log("UPDATEDIMAGE", item.image)
       var storage = firebase.storage().ref(item.image.name)
       storage.put(item.image.file).then((snapshot) => {
         snapshot.ref.getDownloadURL().then(function (downloadURL) {
-          console.log("File available at", downloadURL);
           ref.doc(currentComponent.state.userID).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
             snapshot.forEach(function (doc) {
-              console.log(doc.id)
               ref.doc(currentComponent.state.userID).collection("menu").doc(doc.id).update(
                 {
                   imageURL: downloadURL
@@ -249,13 +231,11 @@ class Menu extends React.Component {
   // Delete menu Item 
   deleteMenuItem = () => {
     const item = this.state.item
-    console.log("ITEMTODELETE", item)
     let currentComponent = this
 
     // Delete menu item in Firebase
     ref.doc(currentComponent.state.userID).collection("menu").where('key', '==', item.key).get().then(function (snapshot) {
       snapshot.forEach(function (doc) {
-        console.log(doc.id)
         ref.doc(currentComponent.state.userID).collection("menu").doc(doc.id).delete()
       })
     })
@@ -267,12 +247,9 @@ class Menu extends React.Component {
     }
 
     //Delete item from filtereddata --- For when Search is active
-    console.log(item.image)
     const itemF = [item.image, item.name, item.price, '']
 
     this.setState(state => {
-      console.log("FILTERTABLEDATA", state.filteredTableData)
-      console.log("ITEMF", itemF)
       const filteredData = state.filteredTableData.filter(otherItem => otherItem[1] !== itemF[1]);
       return {
         filteredTableData: filteredData
@@ -288,7 +265,6 @@ class Menu extends React.Component {
   didSelectCell = (item, selectedIndex) => {
     this.handleMode("Details")
     let realD = this.state.fullData
-    console.log(this.state.inventories)
     // IF SEARCH IS ON GET DATA FROM FILTERED
     if (this.state.isSearching === true) {
       realD = this.state.filteredFullData
@@ -297,7 +273,6 @@ class Menu extends React.Component {
       ...realD[selectedIndex],
       image: realD[selectedIndex].imageURL
     }
-    console.log(item)
     this.handleDetails(item)
     if (this.state.isInvModalActive === false) {
       this.showInventoryModal()
@@ -310,7 +285,6 @@ class Menu extends React.Component {
     }
 
     let realD = this.state.fullData
-    console.log(this.state.inventories)
     // IF SEARCH IS ON GET DATA FROM FILTERED
     if (this.state.isSearching === true) {
       realD = this.state.filteredFullData
@@ -319,7 +293,6 @@ class Menu extends React.Component {
       ...realD[selectedIndex],
       image: realD[selectedIndex].imageURL,
     }
-    console.log("EDITACTIONSELECT", item)
     this.setState({
       item: item
     })
@@ -331,7 +304,6 @@ class Menu extends React.Component {
 
   middleActionSelected = (item, selectedIndex) => {
     let realD = this.state.fullData
-    console.log(this.state.inventories)
     // IF SEARCH IS ON GET DATA FROM FILTERED
     if (this.state.isSearching === true) {
       realD = this.state.filteredFullData
@@ -341,7 +313,6 @@ class Menu extends React.Component {
       key: realD[selectedIndex].key,
       image: realD[selectedIndex].imageURL
     }
-    console.log(newItem)
     this.handleDetails(newItem)
     this.setState({ item: newItem, isAlertVisible: true })
   }
@@ -377,7 +348,6 @@ class Menu extends React.Component {
   search = (searchTerm) => {
     let filteredData = this.state.tableData.filter(dataRow => dataRow[1].toLowerCase().includes(searchTerm));
     let filteredReal = this.state.fullData.filter(dataRow => dataRow.name.toLowerCase().includes(searchTerm));
-    console.log(filteredReal)
     this.setState({
       isSearching: true,
       filteredTableData: filteredData,
@@ -404,8 +374,6 @@ class Menu extends React.Component {
       this.setState((prevState, props) => ({
         isActive: !prevState.isActive,
       }));
-      console.log(this.state.isActive)
-
     });
   };
 
@@ -413,7 +381,7 @@ class Menu extends React.Component {
     return (
       <View style={styles.container}>
         <HeaderBar
-          title={"Menu"}
+          title={`Menu for ${this.props.route.params.group}`}
           subtitle={this.state.tableData.length}
           search={this.search.bind(this)}
           isSearchEnabled={true}
@@ -436,6 +404,7 @@ class Menu extends React.Component {
               leftAction={this.leftActionSelected.bind(this)}
               middleAction={this.middleActionSelected.bind(this)}
               rightAction={this.rightActionSelected.bind(this)}
+              action={this.showInventoryModal.bind(this)}
             />
           </Animated.View>
         </ScrollView>
@@ -449,6 +418,7 @@ class Menu extends React.Component {
           item={this.state.item}
           addMenuItem={this.addMenuItem}
           updateMenuItem={this.updateMenuItem}
+          group={this.props.route.params.group}
         />
 
         <Alert
