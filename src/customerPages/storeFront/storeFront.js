@@ -534,6 +534,7 @@ var db = firebase.firestore();
 import EmptyBag from '../../components/emptyBagView'
 import BottomSheet from 'reanimated-bottom-sheet';
 import ReactPlaceholder from 'react-placeholder';
+import VerifyModal from '../../components/customerComponents/verifyModal'
 
 var unsubscribe
 
@@ -568,6 +569,7 @@ function StoreFront(props) {
     const[isOpen, setIsOpen] = useState(false) 
     const [opacity, setOpacity] = useState(new Animated.Value(0))
     var [scrollY, setScrollY] = useState(new Animated.Value(0))
+    const [userLoggedIn,setUserLoggedIn] = useState(false)
 
     // Refs  
     const bs = React.createRef(null);
@@ -1010,7 +1012,7 @@ var sectionViewCornerRadius = scrollY.interpolate({
         />
       </Animated.View>
             </SafeAreaView>
-
+            <VerifyModal loginUser={loginUser} regUser={regUser} confirmCode={confirmCode} userLoggedIn={userLoggedIn} />
 </SafeAreaProvider>
       
     );
