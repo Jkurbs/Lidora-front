@@ -73,7 +73,6 @@ class MenuRightSidebar extends React.Component {
             toValue: checkActive ? 0 : -420,
             duration: 20
         }).start(finished => {
-
             this.setState((prevState, props) => ({
                 isActive: !prevState.isActive,
             }));

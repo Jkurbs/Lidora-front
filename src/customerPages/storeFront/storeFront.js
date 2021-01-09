@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { pure } from 'recompose';
+
 import { 
     View, SafeAreaView, Image, Text, SectionList, TouchableOpacity,
     Dimensions, TextInput, Animated
@@ -20,7 +22,7 @@ const Stack = createStackNavigator();
 
 var db = firebase.firestore();
 
-var chefId; 
+const snapPoints = ["0%", "90%"]
 
 var unsubscribe;
 
@@ -37,9 +39,7 @@ function StoreFront(props) {
     const chefId = props.chefId
     const navigation = props.navigation
 
-
     // States 
-    const [data, setData] = useState({ user: [] })
     const [menu, setMenu] = useState([])
     const [selectedItem, setSelectedItem] = useState(null)
     const [quantity, setQuantity] = useState(1)
@@ -77,30 +77,30 @@ function StoreFront(props) {
         
         // Fetch Menus 
         async function fetchMenu() {
-
-            await db.collection('chefs').doc(chefId).collection("menu").where("isVisible",  "==", true).get().then(function (querySnapshot) {
-                let array = []
-    
-                querySnapshot.forEach(function(doc) {
-                    // doc.data() is never undefined for query doc snapshots
-                    array.push(doc.data())
-                });
-    
-                const groups = [...new Set(array.map(item => item.group))]; 
-    
-                groups.forEach( item => {
-                    let newObj = {}
-                    newObj["title"] = item
-                    newObj["data"] = array.filter(a => a.group == item)
-                    sectionListData.push(newObj)
-                    }
-                    )
-
-                    if (!isCancelled) {
-                        setMenu(sectionListData);
-                    }                
-                // map and filter array here
-            });
+            const groupsRef =  db.collection('chefs').doc(chefId).collection("settings").doc("menu")
+            await groupsRef.get().then(function (doc) {
+                if (doc.exists) {
+                    const menuOptions = doc.data().groups ?? []
+                     db.collection('chefs').doc(chefId).collection("menu").where("isVisible",  "==", true).get().then(function (querySnapshot) {
+                        let array = []
+            
+                        querySnapshot.forEach(function(doc) {
+                            array.push(doc.data())
+                        });
+                        
+                        menuOptions.forEach(item => {
+                            let newObj = {}
+                            newObj["title"] = item
+                            newObj["data"] = array.filter(a => a.group == item)
+                            sectionListData.push(newObj)
+                        })
+        
+                        if (!isCancelled) {
+                            setMenu(sectionListData);
+                        }                
+                    });
+                }
+            })
         }
 
         fetchChef();
@@ -313,11 +313,11 @@ function StoreFront(props) {
     // SectionList header 
     const renderHeader = () => {
         return (
-            <View style={styles.header}>
-                <TouchableOpacity onPress={ onClose } style={{ justifyContent: 'center', position: 'absolute', left: 16 }}>
-                    <Text style={{ color: '#34C759', fontSize: 17, fontWeight: '500', alignSelf: 'center' }}>Dismiss</Text>
+            <View style={styles.sectionListHeader}>
+                <TouchableOpacity onPress={()=> onClose() } style={styles.sectionListHeaderButton}>
+                    <Text style={styles.sectionListHeaderText}>Dismiss</Text>
                 </TouchableOpacity>
-                <View style={[styles.listItemSeparatorStyle, { position: 'absolute', bottom: 0 }]} />
+                <View style={styles.sectionListHeaderSeparator} />
             </View>
         ) 
     }
@@ -327,7 +327,7 @@ function StoreFront(props) {
     // Cell to show Item Infos
     const ItemInfosCell = (item) => (
         <View style={styles.itemDescriptionContainer}>
-            <View style={{ flexDirection: 'column', maxWidth: '50%' }}>
+            <View style={ styles.itemDescriptionContentContainer}>
                 <Text style={styles.menuName}>{item.item?.name ?? ""}</Text>
                 <Text style={styles.menuDescription}>{item.item?.description ?? ""}</Text>
                 <Text style={styles.menuPrice}>${item.item?.price ?? ""}</Text>
@@ -341,9 +341,9 @@ function StoreFront(props) {
 
     // Cell to show Combos
     const CombosCell = (item) => (
-        <View style={{ alignItems: 'center', margin: 20, flexDirection: 'row' }}>
+        <View style={styles.groupContainer}>
             <Image style={styles.comboImage} source={{
-                        uri: item.item.imageURL,
+                uri: item.item.imageURL,
             }} />
            <Text style={{fontSize: 14}}>{item.item?.name ?? ""}</Text>
         </View>
@@ -384,23 +384,19 @@ function StoreFront(props) {
         </View>
     )
 
-
-
     // Render Item when selected
 
     const renderContent = () => {
-
         if (selectedItem === null) {
             return
         }
-    
         const groupMenus = menu.filter(group => group.title == selectedItem.group)
         const result = groupMenus[0].data.filter(a => a.name != selectedItem.name)
 
         return (
             <View style={styles.bagContainer}>
                 <SectionList
-                    style={{borderTopLeftRadius: 5, borderTopRightRadius: 5, marginTop: 30, paddingBottom: '70%'}}
+                    style={styles.bagSectionList}
                     keyExtractor={(item, index) => item + index}
                     sections={[
                         { title: "Infos", data: [selectedItem] },
@@ -442,9 +438,9 @@ function StoreFront(props) {
         
     }
 
-    
-   if (data.user != null) {
-    return (
+    // renderContent.whyDidYouRender = true
+
+    return (   
         <SafeAreaProvider>
             <SafeAreaView style={{flex: 1}}>
         <Animated.View style={[styles.container]}>
@@ -506,7 +502,7 @@ function StoreFront(props) {
 
         <BottomSheet
           ref={bs}
-          snapPoints={["0%", "90%"]}
+          snapPoints={snapPoints}
           initialSnap={0}
           renderHeader={renderHeader}
           renderContent={renderContent}
@@ -520,9 +516,6 @@ function StoreFront(props) {
 </SafeAreaProvider>
       
     );
-   } else {
-        return null
-   }
 }
 
 function App(props) {
@@ -539,4 +532,4 @@ function App(props) {
     )
 }
 
-export default App
+export default pure(App)

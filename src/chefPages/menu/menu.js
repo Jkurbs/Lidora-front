@@ -10,12 +10,21 @@ import HeaderBar from '../../components/headerBar';
 import Alert from '../../components/Alerts/alert';
 
 import MenuRightSideBar from './MenuRightSideBar';
+import { set } from "react-native-reanimated";
 
 
 var db = firebase.firestore();
 const ref = db.collection('chefs')
 
 const getWidth = Dimensions.get('window').width - 200;
+
+var MODE = {
+  Add: 'Add', 
+  Details: 'Details',
+  Edit: 'Edit', 
+};
+
+
 
 class Menu extends React.Component {
 
@@ -25,7 +34,7 @@ class Menu extends React.Component {
     this.state = {
       userID: firebase.auth().currentUser.uid,
       group: null,
-      tableHead: ['Image', 'Name', 'Price', 'Actions'],
+      tableHead: ['Image', 'Name', 'Price', 'Group', 'Actions'],
       tableData: [],
       filteredTableData: [],
       item: {},
@@ -85,7 +94,6 @@ class Menu extends React.Component {
 
 
   componentDidMount() {
-
     let currentComponent = this;
 
     // Fetch List of Ingredients

@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/static/js/app.2b3ff954.chunk.js",
-    "app.js.map": "/static/js/app.2b3ff954.chunk.js.map",
+    "app.js": "/static/js/app.4f2b13a3.chunk.js",
+    "app.js.map": "/static/js/app.4f2b13a3.chunk.js.map",
     "runtime~app.js": "/static/js/runtime~app.2e9f1821.js",
     "runtime~app.js.map": "/static/js/runtime~app.2e9f1821.js.map",
-    "static/js/2.baed8a40.chunk.js": "/static/js/2.baed8a40.chunk.js",
-    "static/js/2.baed8a40.chunk.js.map": "/static/js/2.baed8a40.chunk.js.map",
+    "static/js/2.cc42c5e4.chunk.js": "/static/js/2.cc42c5e4.chunk.js",
+    "static/js/2.cc42c5e4.chunk.js.map": "/static/js/2.cc42c5e4.chunk.js.map",
     "fonts/AntDesign.ttf": "/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/./fonts/Feather.ttf",
@@ -24,7 +24,7 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
-    "static/js/2.baed8a40.chunk.js.LICENSE.txt": "/static/js/2.baed8a40.chunk.js.LICENSE.txt",
+    "static/js/2.cc42c5e4.chunk.js.LICENSE.txt": "/static/js/2.cc42c5e4.chunk.js.LICENSE.txt",
     "static/media/americanExpress.png": "/static/media/americanExpress.55d0c788.png",
     "static/media/bag.png": "/static/media/bag.08019946.png",
     "static/media/cancel.png": "/static/media/cancel.2eb524b7.png",
@@ -37,6 +37,7 @@
     "static/media/discover.png": "/static/media/discover.56347c71.png",
     "static/media/edit.png": "/static/media/edit.d2519798.png",
     "static/media/favicon.png": "/static/media/favicon.fa4783d1.png",
+    "static/media/handle.png": "/static/media/handle.ac03be03.png",
     "static/media/info-100.png": "/static/media/info-100.8ecbdcb8.png",
     "static/media/inventory.png": "/static/media/inventory.f88a3754.png",
     "static/media/mastercard.png": "/static/media/mastercard.1a4a5d92.png",
@@ -48,7 +49,7 @@
   },
   "entrypoints": [
     "static/js/runtime~app.2e9f1821.js",
-    "static/js/2.baed8a40.chunk.js",
-    "static/js/app.2b3ff954.chunk.js"
+    "static/js/2.cc42c5e4.chunk.js",
+    "static/js/app.4f2b13a3.chunk.js"
   ]
 }

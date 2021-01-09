@@ -1,3 +1,6 @@
+// import '../../wdyr';
+
+
 import React, { useState, useCallback } from "react";
 import { registerRootComponent } from "expo";
 import { StatusBar } from "expo-status-bar";

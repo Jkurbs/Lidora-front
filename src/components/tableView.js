@@ -9,6 +9,8 @@ class TableView extends React.Component {
 
     constructor(props) {
         super(props);
+
+        console.log("table props: ", props)
     }
 
     imageElement = (data, index) => (
@@ -54,9 +56,12 @@ class TableView extends React.Component {
     };
 
     returnedData(cellIndex, selectedIndex, cellData, rowData) {
+
+       // alert(rowData.length)
+
         if (cellIndex === 0) {
             return this.imageElement(rowData[0], selectedIndex)
-        } else if (cellIndex === 3) {
+        } else if (cellIndex === rowData.length-1) {
             return this.actionElement(rowData, selectedIndex)
         } else {
             return cellData

@@ -21,6 +21,7 @@
     "@react-navigation/stack": "^5.9.3",
     "@stripe/react-stripe-js": "^1.1.2",
     "@stripe/stripe-js": "^1.11.0",
+    "@welldone-software/why-did-you-render": "^6.0.5",
     "events": "^3.2.0",
     "expo": "^39.0.4",
     "expo-document-picker": "~8.4.0",
@@ -63,7 +64,8 @@
     "react-navigation-side-tabs": "0.0.7",
     "react-papaparse": "^3.11.0",
     "react-placeholder": "^4.0.3",
-    "reanimated-bottom-sheet": "^1.0.0-alpha.22"
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
+    "recompose": "^0.30.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

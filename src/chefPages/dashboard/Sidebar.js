@@ -300,6 +300,9 @@ function SideBarItems({userID, userData, navigation}) {
             setIsAlertVisible(!isAlertVisible)
         })
         .catch(function(error) {
+            groupsRef.set({
+                "groups":  groupName
+            })
             console.error("Error writing document: ", error);
             setIsAlertVisible(!isAlertVisible)
         });
@@ -369,14 +372,10 @@ function SideBarItems({userID, userData, navigation}) {
         <View style={{height: '100%', backgroundColor: 'blue'}}>
             <View style={{width: 200, height: '100%', backgroundColor: 'white', borderRight:'1px solid #d9d9d9'}}>
             <View style={{ flexDirection: 'column', position: "absolute", zIndex: 100, top: 50, left: 20 }}>
-                <ReactPlaceholder showLoadingAnimation={true} type='round' delay={1000} ready={userData != null} style={{ width: 100, height: 100, marginBottom: 16 }}>
                     <Image style={{
                         height: 100, width: 100, borderRadius: 50, marginBottom: 16, backgroundColor: 'rgb(174,174,178)'
                     }} source={{ uri: userData.user.imageURL }}/>
-                </ReactPlaceholder>
-                <ReactPlaceholder showLoadingAnimation={true} type='text' rows={1} delay={1000} ready={userData != null} >
                     <Text style={{ fontSize: 20, fontWeight: '500' }}>Welcome {userData.user.first_name}</Text>
-                </ReactPlaceholder>
                 <TouchableOpacity onPress={() => copyToClipboard()}>
                     <View style={{ marginTop: 10, marginBottom: 16, flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={{ color: "gray", fontWeight: '500', fontSize: 14, marginRight: 8 }} >Copy your link</Text>
