@@ -4,7 +4,6 @@ import { Text, View, StyleSheet, Dimensions, Modal, TouchableOpacity } from 'rea
 import AnimatedHideView from 'react-native-animated-hide-view';
 import MobileButton from './mobileButton';
 import AuthenticatePage from './authenticatePage';
-const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
 function VerifyModal(props) {
     const [bool,setBool] = useState(true)
@@ -36,8 +35,8 @@ function VerifyModal(props) {
             return (
                 <AnimatedHideView visible={bool} style={styles.container}>
                     <View style={styles.alert}>
-                        <Text style={styles.title}>[PH]Welcome to ChefVicky</Text>
-                        <Text style={styles.secondaryText}>[PH]Organic Juices and Salads crafted for you, High nutrient-rich foods for sustaining health. Detox coaching also available.</Text>
+                        <Text style={styles.title}>Welcome to {props.storeTitle}</Text>
+                        <Text style={styles.secondaryText}>{props.storeDescription}</Text>
                         <View style={styles.buttonWrap}>
                         <MobileButton text={'Authenticate'} action={authActive}/>
                         </View>

@@ -189,16 +189,13 @@ function StoreFront(props) {
             console.log('Account linking error');
         }
         }
-  }
-
+    }
 
     const selectItem = (item) => {
         console.log(item.item.ingredients)
         setSelectedItem(item.item)
         sheetRef.current.snapTo(1)
     }
-
-
 
     const dismissItem = () => {
         setSelectedItem(null)
@@ -227,8 +224,6 @@ function StoreFront(props) {
     }
 
     const renderContent = () => {
-
-
         if (bag.length === 0 && selectedItem === null) {
             return <EmptyBag />
         } else {
