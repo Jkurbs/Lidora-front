@@ -22,8 +22,8 @@ function AuthenticatePage(props) {
     const [loginInfo, setLoginInfo] = useState({})
     
     const [registerInfo, setRegInfo] = useState({
-        email:'xxx',
-        phone:'xxx',
+        email: null,
+        phone: null,
         code: '',
         password:123
     })

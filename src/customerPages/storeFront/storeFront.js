@@ -68,7 +68,7 @@ const NavBar = (props) => {
                 : 
                 <TouchableOpacity onPress={()=> {props.navigation.navigate("Authenticate")} } style={{ alignSelf: 'flex-end', margin: 8  }}>
                     <Text onPress={() => {
-                            navigation.navigate('Authenticate');
+                            props.navigation.navigate('Authenticate');
                         }}
                     style={{fontWeight: '500'}}>Login
                     </Text>

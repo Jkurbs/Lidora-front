@@ -135,6 +135,7 @@ class Menu extends React.Component {
 
   // Add new menu item
   addMenuItem = (item) => {
+    alert(this.props.grouped)
     this.setState(state => {
       const data = [item, ...state.fullData];
       return {
@@ -154,8 +155,7 @@ class Menu extends React.Component {
         ingredients: item.ingredients,
         isVisible: item.isVisible, 
         group: item.group, 
-        isGrouped: this.props.grouped
-
+        isGrouped: true
       }
     )
     //check and Add Image to Firebase Storage
