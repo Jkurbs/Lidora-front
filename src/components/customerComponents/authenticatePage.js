@@ -177,7 +177,7 @@ function AuthenticatePage(props) {
             if(isRegHasData !== true){
                 //Register Screen
                 return (
-                    <View style={styles.container}>
+                    <View style={styles.loginContainer}>
                         <div id="captcha"></div>
                         <Text style={styles.headerText}>Create your account</Text>
                         <MobileInput placeholder={"Email Address"} onChangeText={(text) => registerInfo.email = text}/>
@@ -214,7 +214,7 @@ function AuthenticatePage(props) {
                         <Text style={styles.loginText}>Verify</Text>
                     </TouchableOpacity>
                     </View>
-                    <TouchableOpacity onPressIn={()=>setIsRegHasData(false)}>
+                    <TouchableOpacity onPressIn={()=> {isLogin ? setTab("login"): setTab("register") } }>
                         <Text style={{fontWeight:'600'}}>Change Number</Text>
                     </TouchableOpacity>
                 </View>
