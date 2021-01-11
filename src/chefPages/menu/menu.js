@@ -4,13 +4,10 @@ import { View, ScrollView, Animated, Dimensions } from "react-native";
 
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
-
 import TableView from '../../components/tableView';
 import HeaderBar from '../../components/headerBar';
 import Alert from '../../components/Alerts/alert';
-
 import MenuRightSideBar from './MenuRightSideBar';
-import { set } from "react-native-reanimated";
 
 
 var db = firebase.firestore();
@@ -34,7 +31,7 @@ class Menu extends React.Component {
     this.state = {
       userID: firebase.auth().currentUser.uid,
       group: null,
-      tableHead: ['Image', 'Name', 'Price', 'Group', 'Actions'],
+      tableHead: ['Image', 'Name', 'Price', 'Actions'],
       tableData: [],
       filteredTableData: [],
       item: {},
@@ -76,7 +73,7 @@ class Menu extends React.Component {
         } else {
           querySnapshot.forEach(function (doc) {
             const data = doc.data()
-            const propertyValues = [data.imageURL, data.name, data.price, '']
+            const propertyValues = [data.imageURL, data.name, `$${data.price}`, '']
             let currentTableData = [...currentComponent.state.tableData];
             let currentFullData = [...currentComponent.state.fullData];
             currentTableData.push(propertyValues);
@@ -156,7 +153,9 @@ class Menu extends React.Component {
         price: item.price,
         ingredients: item.ingredients,
         isVisible: item.isVisible, 
-        group: item.group
+        group: item.group, 
+        isGrouped: this.props.grouped
+
       }
     )
     //check and Add Image to Firebase Storage

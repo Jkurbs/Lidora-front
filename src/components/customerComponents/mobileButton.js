@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignSelf:'center',
         margin: 8,
-        backgroundImage: 'linear-gradient(180deg, #00CF46 0%, #3BFE7D 100%);',
+        backgroundImage: 'linear-gradient(180deg, #2EA44F 0%, #238636 100%);',
         maxWidth:'343px'
     },
     text: {

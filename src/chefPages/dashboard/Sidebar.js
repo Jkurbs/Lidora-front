@@ -54,6 +54,8 @@ function TabNavigator({ navigation, userData }) {
             screenOptions={{
                 headerShown: false
             }}>
+
+
             <Stack.Screen
                 options={{
                     title: todayDate,
@@ -275,7 +277,6 @@ function SideBarItems({userID, userData, navigation}) {
         })
     }, [])
 
-
     const copyToClipboard = () => {
         Clipboard.setString(`lidora.app/?${userData.user.title.replace(/\s/g, '')}=${userID}`);
         alert("Link copied")
@@ -284,7 +285,7 @@ function SideBarItems({userID, userData, navigation}) {
     const [selected, setSelected] = React.useState({ name: "Dash" })
     const [isAlertVisible, setIsAlertVisible] = React.useState(false)
     const [groupName, setNewGroupName] = React.useState("")
-    // const [isHoveringMenuItem, setIsHoveringMenuItem] = React.useState(false)
+    const [isGrouped, setIsGrouped] = React.useState(false)
 
     const cancelAlert = () => {
         setIsAlertVisible(!isAlertVisible)
@@ -295,13 +296,12 @@ function SideBarItems({userID, userData, navigation}) {
             "groups":  firebaseSDK.firestore.FieldValue.arrayUnion(groupName)
         })
         .then(function() {
-            console.log("Document successfully written!");
             setMenuOptions(prevState => [...prevState, groupName])
             setIsAlertVisible(!isAlertVisible)
         })
         .catch(function(error) {
             groupsRef.set({
-                "groups":  groupName
+                "groups":  groupName, 
             })
             console.error("Error writing document: ", error);
             setIsAlertVisible(!isAlertVisible)
@@ -341,8 +341,6 @@ function SideBarItems({userID, userData, navigation}) {
             // The document probably doesn't exist.
             console.error("Error updating document: ", error);
         });
-
-
         setMenuOptions(data)
     }
 
@@ -355,7 +353,7 @@ function SideBarItems({userID, userData, navigation}) {
             onPress={() => {
                 optionSelected(title); navigation.navigate("Menu", {
                     screen:"Menu",
-                    params: { userData: userData, navigation: navigation, group: title }
+                    params: { userData: userData, navigation: navigation, group: title, isGrouped: isGrouped }
                     })}}>
                 <Text style={{ fontWeight: '500', fontSize: 12 }}>{title}</Text>
                 <Image style={{height: 25, width: 25, tintColor:'gray'}} source={require("../../assets/icon/handle.png")}/>
@@ -389,7 +387,7 @@ function SideBarItems({userID, userData, navigation}) {
 
 
                 {/* General */}
-                <View style={{marginTop: 20}}>
+                {/* <View style={{marginTop: 20}}>
                     <Text style={{fontWeight: '500', fontSize: 16}}>General</Text> 
                     <TouchableOpacity style={buttonStyle("Dash")}  onPress={() =>{optionSelected("Dash"); navigation.navigate("Dash",  { params: { userData: userData, navigation: navigation } })} }>
                         <Text style={{ fontWeight: '500', fontSize: 12 }}>Dashboard</Text>
@@ -435,12 +433,12 @@ function SideBarItems({userID, userData, navigation}) {
             <View style={{width: windowWidth-200, height: '100%', position: 'absolute', left: 200}}>
             <TabNavigator navigation={navigation} userData={userData} />
             </View>
-
             <Alert
                 cancelAction={cancelAlert}
                 addAction={addsubMenu}
                 onTextChange={(text) => {setNewGroupName(text)}}
                 isVisible={isAlertVisible}
+                groupSales={(value) => {setIsGrouped(value)}}
                 buttonTitle1={"Add"} />
         </View>
     )

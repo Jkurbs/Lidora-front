@@ -12,7 +12,6 @@ function VerifyModal(props) {
 
     const continueGuest = () => {
         setBool(false)
-
     }
 
     const authActive = () => {
@@ -36,8 +35,8 @@ function VerifyModal(props) {
             return (
                 <AnimatedHideView visible={bool} style={styles.container}>
                     <View style={styles.alert}>
-                        <Text style={styles.title}>[PH]Welcome to ChefVicky</Text>
-                        <Text style={styles.secondaryText}>[PH]Organic Juices and Salads crafted for you, High nutrient-rich foods for sustaining health. Detox coaching also available.</Text>
+                        <Text style={styles.title}>Welcome to {props.storeName}</Text>
+                        <Text style={styles.secondaryText}>{props.storeDescription}</Text>
                         <View style={styles.buttonWrap}>
                         <MobileButton text={'Authenticate'} action={authActive}/>
                         </View>
@@ -58,8 +57,8 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%',
         position: 'absolute',
-        zIndex: 99999,
-        justifyContent:'flex-end'
+        justifyContent:'flex-end', 
+        bottom: 0
     },
 
     container2: {
@@ -126,7 +125,7 @@ const styles = StyleSheet.create({
     },
 
     continueText: {
-        color: '#0099ff',
+        color: 'rgba(27, 31, 35, 0.15)',
         fontSize: 17,
         textAlign:'center',
         fontWeight:"500"

@@ -244,7 +244,6 @@ class App extends React.Component {
         return
       } else {
         // No user is signed in.
-        alert("No user")
         currentComponent.setState({ userLoggedIn: false })
       }
     })
@@ -258,10 +257,10 @@ class App extends React.Component {
 
     let currentURL = window.location.href
     let getChefandID = currentURL.split("?");
-    let chefId = currentURL.split("=")[1]
+    let storeName = currentURL.split("=")[1]
 
     if (typeof getChefandID[1] != 'undefined') {
-      return <StoreFront chefId={chefId} />
+      return <StoreFront storeName={storeName} />
 
     } else {
       return (

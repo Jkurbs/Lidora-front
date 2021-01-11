@@ -3,33 +3,65 @@ import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-nati
 import RegularButton from '../buttons/regularButton'
 import AnimatedHideView from 'react-native-animated-hide-view';
 import { TextInput } from 'react-native-gesture-handler';
-const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
+const { width: windowWidth} = Dimensions.get("window");
 
-class ItemAlert extends Component {
-    render() {
-        return (
-            <AnimatedHideView visible={this.props.isVisible} style={styles.container}>
-                <View style={styles.alert}>
-                    <Text style={styles.title}>Create a New menu Group</Text>
-                    <Text style={styles.secondaryText}>You can add menu items to this group, and customers will be able to shop by different groups.</Text>
-                    <View style={styles.inputContainer}>
-                        <Text style={{fontWeight: '500'}}>Group Name</Text>
-                        <TextInput 
-                            style={styles.textInput}
-                            autoCapitalize={'words'}
-                            onChangeText={(text) => {this.props.onTextChange(text)}}/>
-                    </View>
-                    <View style={styles.buttonContainer}>
-                        <RegularButton action={this.props.cancelAction} text={"Cancel"} />
+function RadioButton(props) {
+    return (
+        <View style={{
+          height: 15,
+          width: 15,
+          borderRadius: 7.5,
+          borderWidth: 1,
+          borderColor:  props.selected ? '#2EA44F' : 'gray',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 5}}>
+          {
+            props.selected ?
+              <View style={{
+                height: 11,
+                width: 11,
+                margin: 3,
+                borderRadius: 5.5,
+                backgroundColor: '#2EA44F',
+                alignSelf: 'center'
+              }}/>
+              : null
+          }
+        </View>
+    );
+  }
 
-                        <TouchableOpacity onPress={this.props.addAction} style={styles.button}>
-                                <Text style={styles.text}>{"Add"}</Text>
-                        </TouchableOpacity>
-                        </View>
+
+function ItemAlert(props) {
+
+    const [selected, setSelected] = React.useState(false)
+
+    return (
+        <AnimatedHideView visible={props.isVisible} style={styles.container}>
+            <View style={styles.alert}>
+                <Text style={styles.title}>Create a New menu Group</Text>
+                {/* <Text style={styles.secondaryText}>Customers will be able to shop by different groups.</Text> */}
+                <View style={styles.inputContainer}>
+                    <Text style={{fontWeight: '500'}}>Group Name</Text>
+                    <TextInput 
+                        style={styles.textInput}
+                        autoCapitalize={'words'}
+                        onChangeText={(text) => {props.onTextChange(text)}}/>
                 </View>
-            </AnimatedHideView>
-        )
-    }
+                <TouchableOpacity onPress={()=> {setSelected(!selected); props.groupSales(!selected)}} style={{flexDirection: 'row', marginTop: 16}}>
+                    <RadioButton selected={selected}/>
+                <Text style={{marginLeft: 8}}>Sell all items in this group together</Text>
+                </TouchableOpacity>
+                <View style={styles.buttonContainer}>
+                    <RegularButton action={props.cancelAction} text={"Cancel"} />
+                    <TouchableOpacity onPress={props.addAction} style={styles.button}>
+                        <Text style={styles.text}>{"Add"}</Text>
+                    </TouchableOpacity>
+                    </View>
+            </View>
+        </AnimatedHideView>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -69,7 +101,7 @@ const styles = StyleSheet.create({
 
     inputContainer: {
 
-        marginTop: 16
+        marginTop: 8
     },
 
     textInput: {

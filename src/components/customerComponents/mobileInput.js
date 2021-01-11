@@ -1,36 +1,39 @@
 import React, { Component } from 'react';
-import { View, Image, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
 
 class MobileInput extends Component {
     render() {
         return (
-
             <View>
-                <TextInput style={styles.formInput}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={styles.inputTitle}>{this.props.placeholder}</Text>
+                </View>
+                <TextInput style={styles.input}
                     placeholder={this.props.placeholder}
-                    onChangeText={(text) => this.props.onChangeText(text)}
-                >
-
-                </TextInput>
+                    secureTextEntry={this.props.secureTextEntry ?? false}
+                    onChangeText={(text) => this.props.onChangeText(text)}>
+                </TextInput>                        
             </View>
-
         )
     }
 }
 
 const styles = StyleSheet.create({
-    formInput: {
+    input: {
+        marginTop: 8,
         padding: 8,
-        fontSize: 12,
-        color:'#8E8E93',
-        textAlignVertical: 'top',
+        padding: 8,
+        fontSize: 14,
         borderColor: '#d6d6d6',
-        height: '42px',
-        width: '100%',
-        backgroundColor: '#E9E9E9',
-        textIndent: '25px',
-        marginBottom:'11px',
-        borderRadius:'5px'
+        borderWidth: 1,
+        borderRadius: 5,
+        height: 50,
+        backgroundColor: 'white'
+      },
+
+    inputTitle: {
+        fontWeight: '490', 
+        marginTop: 16
     },
 
 });

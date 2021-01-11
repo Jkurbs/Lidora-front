@@ -10,7 +10,6 @@ export default StyleSheet.create({
         flex: 1,
         overflow: 'hidden', 
         textTransform: 'capitalize'
-
     },
 
     topBar: {

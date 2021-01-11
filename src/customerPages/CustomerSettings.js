@@ -1,21 +1,18 @@
-import React, { useState, useRef, useEffect } from "react";
-import { 
-    View, Text, SectionList, TouchableOpacity, 
-    StyleSheet
-} from "react-native";
-
+import React from "react";
+import { View, Text, SectionList, TouchableOpacity, StyleSheet } from "react-native";
+import firebase from '../firebase/Firebase'
 import { Entypo } from '@expo/vector-icons';
 
 const DATA = [
-    {
-      title: "Payment",
+  {
+    title: "Payment",
       data: ["Payment"]
-    },
-    {
-      title: "Logins",
-      data: ["Log Out"]
-    },
-  ];
+  },
+  {
+    title: "Logins",
+    data: ["Log Out"]
+  },
+];
 
 const FlatListItemSeparator = () => {
     return (
@@ -23,17 +20,31 @@ const FlatListItemSeparator = () => {
     )
 }
 
+
 function CustomerSettings(props) {
 
   const navigation = props.navigation
     
     // Cell to show the chef
-    const Item = ({ title }) => (
-        <View style={styles.item}>
-          <Text style={styles.title}>{title}</Text>
-          <Entypo name="chevron-right" size={24} color="Gray" />
-        </View>
-    );
+    const Item = ({ title }) => {
+      if (title == "Log Out") {
+        return (
+          <TouchableOpacity onPress={() => signOut(navigation) } style={styles.item}>
+            <Text style={styles.title}>{title}</Text>
+            <Entypo name="chevron-right" size={24} color="Gray" />
+          </TouchableOpacity>
+        )
+      } else {
+        return (
+          <View style={styles.item}>
+            <Text style={styles.title}>{title}</Text>
+            <Entypo name="chevron-right" size={24} color="Gray" />
+          </View>
+        )
+        
+
+      }   
+  }
 
     return (
         <View style={styles.container}>
@@ -50,9 +61,8 @@ function CustomerSettings(props) {
                 style={styles.sectionList}
                 sections={DATA}
                 keyExtractor={(item, index) => item + index}
-                renderItem={({ item }) => <Item title={item} />}
+                renderItem={({ item, index }) => <Item title={item}/>}
                 renderSectionHeader={({ section }) => {
-                  console
                   if (section.title === "Payments") {
                       return <Text></Text>
                   } else {
@@ -62,6 +72,17 @@ function CustomerSettings(props) {
                 }}/>
         </View>
     )
+}
+
+// Sign out 
+function signOut(navigation) {
+  firebase.auth().signOut().then(function () {
+      // Sign-out successful.
+      navigation.navigate("Authenticate")
+  }).catch(function (error) {
+      // An error happened.
+      alert(error)
+  });
 }
 
 const styles = StyleSheet.create({
