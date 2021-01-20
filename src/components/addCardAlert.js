@@ -31,8 +31,10 @@ const options = () => ({
 
 const Alert = ({ isVisible, stripePromise, cancelAction }) => {
 
+    var user = firebase.auth().currentUser;
     const stripe = useStripe();
     const elements = useElements();
+    
 
     const handleSubmit = async (event) => {
         // Block native form submission.
@@ -54,7 +56,8 @@ const Alert = ({ isVisible, stripePromise, cancelAction }) => {
             const cardId = result.token.card.id
             const token = result.token.id
             // Send token and id to firebase 
-            ref.doc('spE8oRHDBChYPTVgF8BayBTJKmP2').collection('external_accounts').doc(cardId).set({
+
+            ref.doc(user.uid).collection('external_accounts').doc(cardId).set({
                 token: token,
                 created: result.token.created
             });

@@ -16,7 +16,6 @@ const phoneMaxWidth = 575.98
 function AuthenticatePage(props) {
 
     const navigation = props.navigation
-    const data = props.route.params
 
     const [tab,setTab] = useState("login")
     const [loginInfo, setLoginInfo] = useState({})
@@ -46,16 +45,28 @@ function AuthenticatePage(props) {
 
     // Handle the verify phone button press
     async function verifyPhoneNumber(phoneNumber) {
+
+        if (isLogin) { 
+            setLoginText("Login") 
+        } else {
+            setRegisterText("Register")
+        }
+
         var captcha = new firebase2.auth.RecaptchaVerifier('captcha', {
             'size': 'invisible',
-            'callback': (response) => {
-              setTab("confirmation")
+            'callback': (response) => { 
+                
             }
           });
         var provider = new firebase2.auth.PhoneAuthProvider();
         provider.verifyPhoneNumber(`+1${phoneNumber}`, captcha)
             .then(function(verificationId) {
                 setVerificationId(verificationId)
+                setLoginInfo({})
+                setRegInfo({})
+                setIndicatorAnimating(false)
+                setTab("confirmation")
+                console.log("INDICATOR: ", indicatorAnimating)
         })
     }
 
@@ -99,6 +110,7 @@ function AuthenticatePage(props) {
 
     // Handle sign with email
     const signInWithEmail = () => {
+
         if (isNaN(loginInfo.email)) {
             setLoginText("")
             setIndicatorAnimating(true)
@@ -116,6 +128,8 @@ function AuthenticatePage(props) {
                 // ...
               });
         } else {
+            setLoginText("")
+            setIndicatorAnimating(true)
             setIsLogin(true)
             verifyPhoneNumber(loginInfo.email)
         }
@@ -214,7 +228,7 @@ function AuthenticatePage(props) {
                         <Text style={styles.loginText}>Verify</Text>
                     </TouchableOpacity>
                     </View>
-                    <TouchableOpacity onPressIn={()=> {isLogin ? setTab("login"): setTab("register") } }>
+                    <TouchableOpacity style={styles.changeNumber} onPressIn={()=> {isLogin ? setTab("login"): setTab("register") } }>
                         <Text style={{fontWeight:'600'}}>Change Number</Text>
                     </TouchableOpacity>
                 </View>
@@ -376,7 +390,7 @@ function AuthenticatePage(props) {
           loginButton: {
             borderWidth: 1,
             borderRadius: 6,
-            marginTop: 40,
+            marginTop: 20,
             height: 50,
             justifyContent: "center",
             borderColor: 'rgba(27, 31, 35, 0.15)',
@@ -389,6 +403,10 @@ function AuthenticatePage(props) {
             fontWeight: '500',
             fontSize: 15
           },
+
+          changeNumber: {
+              marginTop: 16
+          }
     });
 
 export default AuthenticatePage;

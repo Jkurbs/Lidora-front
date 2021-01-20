@@ -31,15 +31,15 @@ function CustomerSettings(props) {
         return (
           <TouchableOpacity onPress={() => signOut(navigation) } style={styles.item}>
             <Text style={styles.title}>{title}</Text>
-            <Entypo name="chevron-right" size={24} color="Gray" />
+            <Entypo name="chevron-right" size={24} color="#C9D1D9" />
           </TouchableOpacity>
         )
       } else {
         return (
-          <View style={styles.item}>
+          <TouchableOpacity  onPress={() => navigation.navigate("Payments")} style={styles.item}>
             <Text style={styles.title}>{title}</Text>
-            <Entypo name="chevron-right" size={24} color="Gray" />
-          </View>
+            <Entypo name="chevron-right" size={24} color="#C9D1D9" />
+          </TouchableOpacity>
         )
         
 
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
       backgroundColor: "#fff"
     },
     title: {
-      fontSize: 17
+      fontSize: 15
     }
   });
   

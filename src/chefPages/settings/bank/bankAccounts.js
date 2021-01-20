@@ -9,8 +9,6 @@ import { Elements } from '@stripe/react-stripe-js';
 
 import ReactPlaceholder from 'react-placeholder';
 
-
-
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
 const stripePromise = loadStripe('pk_test_51HL8h8LjpR7kl7iGeWLOW7OGQw2qAix0ToeOkzAgOUceEiOUDsGDmuDI1tQyNWSkOiQvdwOxFBpQEw4rBoDuI3Dc00i6Fa8VWD');
@@ -145,7 +143,6 @@ class BankAccounts extends React.Component {
                         stripe={stripePromise}
                         isVisible={this.state.isAlertVisible}
                         cancelAction={this.cancelAlert.bind(this)}
-
                     />
                 </Elements>
             </View>

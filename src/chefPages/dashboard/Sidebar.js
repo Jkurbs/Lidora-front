@@ -265,6 +265,7 @@ function MobileDashboard(userID, userData) {
 
 function SideBarItems({userID, userData, navigation}) {
 
+    // Add all items in states
     const [menuOptions, setMenuOptions] = React.useState([])
     const groupsRef =  db.collection('chefs').doc(userID ?? firebase.auth().currentUser.uid).collection("settings").doc("menu")
 

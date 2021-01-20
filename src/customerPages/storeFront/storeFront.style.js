@@ -48,7 +48,7 @@ export default StyleSheet.create({
         height: 100, 
         borderRadius: 50, 
         borderWidth: 4, 
-        borderColor: '#ecf0f1'
+        borderColor: '#ecf0f1', 
     },
 
     title: {
@@ -119,7 +119,7 @@ export default StyleSheet.create({
         width: '100%',
         backgroundColor: '#C8C8C8',
         position: 'absolute',
-         bottom: 0
+        bottom: 0
     },
 
 
@@ -139,7 +139,6 @@ export default StyleSheet.create({
     },
 
     bagContainer: {
-        // flex:1,
         height: height,
         backgroundColor: 'white', 
     },
@@ -188,16 +187,44 @@ export default StyleSheet.create({
       bagSectionList: {
         borderTopLeftRadius: 5, 
         borderTopRightRadius: 5,
-         marginTop: 30, 
-         paddingBottom: '70%'
+        paddingBottom: '70%'
       },
 
       // group 
       groupContainer: {
         alignItems: 'center',
-        margin: 20, 
+        justifyContent: 'space-between',
+        margin: 8, 
+        marginLeft: 20,
+        marginRight: 20,
         flexDirection: 'row'
-      }
+      },
+
+
+      // Checkout 
+
+    checkoutItemCellContainer: {
+        padding: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    }, 
+
+    checkoutItemContainer: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+
+    menuQuantity: {
+        fontWeight: '600', 
+        marginRight: 8, 
+        color: 'gray'
+    },
+
+    Container: {
+        flexDirection: 'column',
+        maxWidth: '50%'
+    },
 
 })
 
