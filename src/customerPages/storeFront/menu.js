@@ -29,7 +29,7 @@ const Menu = forwardRef((props, ref) => {
                     const groups = doc.data().groups ?? []
                     const groupOptions = doc.data().groupOptions ?? {}
 
-                    db.collection('chefs').doc(chef.id).collection("menu").where("isVisible",  "==", true).get().then(function (querySnapshot) {
+                    db.collection('chefs').doc(chef.id).collection("menu").where("isVisible",  "==", true).where("combo",  "!=", "").get().then(function (querySnapshot) {
                         let array = []
             
                         querySnapshot.forEach(function(doc) {
@@ -71,7 +71,7 @@ const Menu = forwardRef((props, ref) => {
      return (
         <View>
             <SectionList
-                style={{backgroundColor: 'white', height: height}}
+                style={{ paddingBottom: 120, backgroundColor: 'white', height: height}}
                 ListHeaderComponent={<ChefHighlight chef={props.chef}/>}
                 keyExtractor={(item, index) => item.name}
                 sections={ data }
@@ -83,8 +83,11 @@ const Menu = forwardRef((props, ref) => {
                     );
                 }}
                 renderItem={({ item, section }) => {
-                    console.log("ITEM: ", item)
-                    //return <MenuCell item={item} onOpen={onOpen}/>
+                    if (item.combo != null) {
+                        return <MenuCell onOpen={onOpen}/>
+                    } else {
+                        return <MenuCell item={item} onOpen={onOpen}/>
+                    }
                 }}
                 scrollEventThrottle={16}
                 refreshing={false}

@@ -1,12 +1,11 @@
 
 
-import React, { useState, forwardRef } from "react";
-import {  View, SectionList, Image, Text, TouchableOpacity, TextInput} from "react-native";
+import React, { forwardRef } from "react";
+import {  View, SectionList, Image, Text, TouchableOpacity} from "react-native";
 import styles from './storeFront.style'
 import BottomSheet from 'reanimated-bottom-sheet'
 import ComboItemCell from './comboItemCell'
 import Stepper from './stepper'
-import { Group } from "react-native";
 
 const snapPoints = ["0%", "90%"]
 
@@ -15,7 +14,7 @@ const Sheet = forwardRef((props, ref) => {
 
     const selectedItem = props.selectedItem.item
     const data = props.selectedItem.data
-    const groupMenus = data.filter(group => group.title == selectedItem.group)
+    const groupMenus = data.filter(group => group.title == selectedItem.group) 
 
     const FlatListItemSeparator = () => {
         return ( <View style={styles.listItemSeparatorStyle}/> )
@@ -26,7 +25,6 @@ const Sheet = forwardRef((props, ref) => {
             if (item.key === props.itemId) {
                 item["total"] = props.total
                 item["quantity"] = props.quantity
-                console.log(`Quantity: `, props.quantity)
             } 
         })
     }
@@ -36,15 +34,16 @@ const Sheet = forwardRef((props, ref) => {
         const combo = groupMenus[0].combo
         if (combo) {
             groupMenus[0].data.forEach(async function(item) {
-                if (item.total === undefined) { item.total = item.price}
-                if (item.quantity === undefined) {item.quantity = 1}
-                console.log(`${item.name}: `, item.quantity)
-                props.item(item)
+                let copiedItem = JSON.parse(JSON.stringify(item))
+                if (copiedItem.total === undefined) { copiedItem.total = copiedItem.price}
+                if (copiedItem.quantity === undefined) {copiedItem.quantity = 1}
+                props.item(copiedItem)
             })
         } else {
-            selectedItem["total"] = total
-            selectedItem["quantity"] = quantity ?? 1
-            props.item(selectedItem)
+            let copiedItem = JSON.parse(JSON.stringify(selectedItem))
+            copiedItem["total"] = total
+            copiedItem["quantity"] = quantity ?? 1
+            props.item(copiedItem)
         }
       onClose()
     }
@@ -96,20 +95,20 @@ const Sheet = forwardRef((props, ref) => {
     }
     
     const renderContent = () => {
+
         if (data.length === 0) { return }
+
         const result = groupMenus[0].data
         const combo = groupMenus[0].combo
 
         const regularSection = [
             { title: "Infos", data: [selectedItem] },
-            // { title: "Ingredients", data: selectedItem?.ingredients ?? [] },
             { title: "Special Instructions", data: [0] },
         ]
 
         const comboSection = [
             { title: "Infos", data: [selectedItem] },
             { title: "Combo", data: result },
-            // { title: "Ingredients", data: selectedItem?.ingredients ?? [] },
             { title: "Special Instructions", data: [0] },
         ]
 
@@ -137,8 +136,6 @@ const Sheet = forwardRef((props, ref) => {
                                 return <ItemInfosCell item={item} />
                             case "Combo":
                                 return <CombosCell item={item} />
-                            // case "Ingredients":
-                            //     return <RenderIngredientsItem item={item} />
                             case "Special Instructions":
                                 return <InstructionsCell combo={combo} group={groupMenus} />
                             default:

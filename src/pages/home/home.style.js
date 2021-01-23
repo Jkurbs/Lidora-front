@@ -25,7 +25,6 @@ export default StyleSheet.create({
         width: windowWidth,
         height: '100%',
         flexDirection: "row",
-        justifyContent: 'space-between'
-        // alignItems: "center"
+        justifyContent: 'space-between', 
     },
 });

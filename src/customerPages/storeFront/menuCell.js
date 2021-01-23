@@ -6,6 +6,7 @@ import styles from './storeFront.style'
 
 function MenuCell(props) {
     const item = props.item
+    console.log("Menu cell: ", item)
     return (
         <TouchableOpacity onPress={()=>  props.onOpen(item)} >
             <View style={{ alignItems: 'center', margin: 20, flexDirection: 'row', justifyContent: 'space-between'}}>

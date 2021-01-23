@@ -27,19 +27,6 @@ function NavBar(props) {
     if (user.uid != props.chefId) {
         return (
             <View style={[{backgroundColor: 'white', height: 45, alignItems: 'center', justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: '#ecf0f1'}]}>
-                <View style={{ position: 'absolute', left: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
-                    <TouchableOpacity onPress={()=>{props.navigation.navigate("Checkout", {items: props.items})}}>
-                        <Image source={require('../assets/icon/bag.png')} style={{height: 27, width: 27}}/>
-                        {
-                            props.quantity === null ? 
-                                null
-                            :
-                                <View style={{backgroundColor: 'rgb( 255, 59, 48)', padding: 6, height: 14, width: 14, borderRadius: 7, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center'}}>
-                                    <Text style={{color: '#ecf0f1', fontSize: 11, fontWeight: '700'}}>{itemsCount}</Text>
-                                </View>
-                        }
-                    </TouchableOpacity>
-                </View>
                 { 
                 userLoggedIn ?
                 <View style={{ width: '100%', height: '100%', alignItems: 'center' , flexDirection: 'row', justifyContent: 'space-between'}}>

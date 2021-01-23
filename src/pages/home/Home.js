@@ -91,6 +91,7 @@ const Item = ({ title, image }) => (
   </View>
 );
 
+
 class HomeScreen extends React.Component {
 
   constructor() {
@@ -136,6 +137,7 @@ class HomeScreen extends React.Component {
   );
 
   render() {
+
     return (
 
       <SafeAreaView style={styles.container} >
@@ -210,6 +212,8 @@ const MyTheme = {
 };
 
 class App extends React.Component {
+
+
   constructor() {
     super()
     this.state = {
@@ -222,6 +226,7 @@ class App extends React.Component {
   }
 
   // Verify if user is logged in
+
   componentDidMount() {
     const currentComponent = this
     unsubscribe = firebase.auth().onAuthStateChanged(function (user) {

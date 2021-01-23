@@ -100,7 +100,9 @@ export default StyleSheet.create({
         height: 50,
         backgroundColor: '#F5F5F5',
         alignItems: 'center',
-        justifyContent: 'center', 
+        justifyContent: 'center',
+        borderTopLeftRadius: 10, 
+        borderTopRightRadius: 10 
     },
 
     sectionListHeaderButton: {
@@ -226,6 +228,24 @@ export default StyleSheet.create({
         maxWidth: '50%'
     },
 
+    // Totals 
+
+    totalItemTitle: {
+        fontSize: 14, 
+        fontWeight: '500'
+    },
+
+    totalItemValue: {
+        fontSize: 14, 
+    },
+
+    removeImage: {
+        marginLeft: 14,
+        width: 25, 
+        height: 25, 
+        tintColor: 'gray', 
+
+    }
 })
 
 
