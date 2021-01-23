@@ -62,7 +62,7 @@ function StoreFront(props) {
         <View style={styles.container}>
         <NavBar quantity={bag.length} items={bag} chefId={chef.id} navigation={navigation}/>
         <Menu ref={ref} storeName={storeName} chef={chef} chefId={chef.id} selectedItem={(item, data) => setSelectedItem({item: item, data: data})}/>
-        <Sheet selectedItem={selectedItem} ref={ref} item={ (item) => {addToBag(item)}}/>
+        {/* <Sheet selectedItem={selectedItem} ref={ref} item={ (item) => {addToBag(item)}}/> */}
         { 
         bag.length === 0 ?
             null
