@@ -1,7 +1,4 @@
-// import '../../wdyr';
-
-
-import React, { useState, useCallback } from "react";
+import React from "react";
 import { registerRootComponent } from "expo";
 import { StatusBar } from "expo-status-bar";
 import styles from "./home.style";
@@ -31,14 +28,10 @@ import Footer from "../../components/Footer"
 
 import SettingScreen from '../../chefPages/settings/settingsSideBar';
 import StoreFront from '../../customerPages/storeFront/storeFront'
-
-
 import * as Linking from "expo-linking";
-
 import firebase from '../../firebase/Firebase';
 import "firebase/firestore";
 import "firebase/auth";
-import ActivityIndicator from '../../components/activityIndicator'
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
@@ -313,15 +306,12 @@ class App extends React.Component {
                     ) : (
                         <Text style={{ alignSelf: 'center', fontSize: 14 }}>{'Login'}</Text>
                       )}
-                    {/* <ActivityIndicator style={{ position: 'absolute' }} size={"small"} animating={!this.state.userLoggedIn} color={"gray"} /> */}
                   </TouchableOpacity>
                 ),
-              })}
-            />
+              })}/>
             <Stack.Screen options={{ headerShown: false }} name="Dashboard" component={DashboardScreen} />
             <Stack.Screen name="Apply" component={ApplyScreen} />
             <Stack.Screen name="Legal" component={LegalScreen} />
-
           </Stack.Navigator>
         </NavigationContainer>
       );

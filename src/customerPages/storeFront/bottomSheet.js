@@ -1,5 +1,3 @@
-
-
 import React, { forwardRef } from "react";
 import {  View, SectionList, Image, Text, TouchableOpacity} from "react-native";
 import styles from './storeFront.style'
@@ -153,11 +151,12 @@ const Sheet = forwardRef((props, ref) => {
     const onClose = () => {
         ref.current.snapTo(0);
     };
-    
+
     return (
         <BottomSheet ref={ref} snapPoints={snapPoints} initialSnap={0}
         renderHeader={renderHeader}
         renderContent={renderContent}
+        enabledGestureInteraction={false}
     />) 
 })
 

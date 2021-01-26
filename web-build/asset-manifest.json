@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/static/js/app.2c27179a.chunk.js",
-    "app.js.map": "/static/js/app.2c27179a.chunk.js.map",
+    "app.js": "/static/js/app.620ae168.chunk.js",
+    "app.js.map": "/static/js/app.620ae168.chunk.js.map",
     "runtime~app.js": "/static/js/runtime~app.2e9f1821.js",
     "runtime~app.js.map": "/static/js/runtime~app.2e9f1821.js.map",
-    "static/js/2.7200fead.chunk.js": "/static/js/2.7200fead.chunk.js",
-    "static/js/2.7200fead.chunk.js.map": "/static/js/2.7200fead.chunk.js.map",
+    "static/js/2.648823a3.chunk.js": "/static/js/2.648823a3.chunk.js",
+    "static/js/2.648823a3.chunk.js.map": "/static/js/2.648823a3.chunk.js.map",
     "fonts/AntDesign.ttf": "/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/./fonts/Feather.ttf",
@@ -24,18 +24,14 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
-    "static/js/2.7200fead.chunk.js.LICENSE.txt": "/static/js/2.7200fead.chunk.js.LICENSE.txt",
+    "static/js/2.648823a3.chunk.js.LICENSE.txt": "/static/js/2.648823a3.chunk.js.LICENSE.txt",
     "static/media/americanExpress.png": "/static/media/americanExpress.d0a7c369.png",
-    "static/media/bag.png": "/static/media/bag.edc825c8.png",
+    "static/media/bag.png": "/static/media/bag.ef4accb6.png",
     "static/media/cancel.png": "/static/media/cancel.2eb524b7.png",
-    "static/media/chef.jpg": "/static/media/chef.c58137aa.jpg",
-    "static/media/chef1.jpg": "/static/media/chef1.a5540a7f.jpg",
-    "static/media/chef2.jpg": "/static/media/chef2.c282e6e4.jpg",
-    "static/media/chef3.jpg": "/static/media/chef3.1f62e776.jpg",
     "static/media/cook.svg": "/static/media/cook.c578acbe.svg",
     "static/media/delivery.png": "/static/media/delivery.0bbb4e1f.png",
     "static/media/discover.png": "/static/media/discover.16db80c1.png",
-    "static/media/edit.png": "/static/media/edit.d2519798.png",
+    "static/media/edit.png": "/static/media/edit.6ea35684.png",
     "static/media/favicon.png": "/static/media/favicon.fa4783d1.png",
     "static/media/handle.png": "/static/media/handle.df8a0658.png",
     "static/media/info-100.png": "/static/media/info-100.8ecbdcb8.png",
@@ -43,13 +39,13 @@
     "static/media/mastercard.png": "/static/media/mastercard.1a4a5d92.png",
     "static/media/order.png": "/static/media/order.ab65c687.png",
     "static/media/remove-100.png": "/static/media/remove-100.26f02664.png",
-    "static/media/search.png": "/static/media/search.9dc4f2b2.png",
+    "static/media/search.png": "/static/media/search.7602d216.png",
     "static/media/test.svg": "/static/media/test.4dc53998.svg",
     "static/media/visa.png": "/static/media/visa.aad596a9.png"
   },
   "entrypoints": [
     "static/js/runtime~app.2e9f1821.js",
-    "static/js/2.7200fead.chunk.js",
-    "static/js/app.2c27179a.chunk.js"
+    "static/js/2.648823a3.chunk.js",
+    "static/js/app.620ae168.chunk.js"
   ]
 }
