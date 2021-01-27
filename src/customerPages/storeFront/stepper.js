@@ -40,7 +40,7 @@ function Stepper(props) {
                     </TouchableOpacity>
                 </View>
             }
-            <TouchableOpacity onPress={()=> { props.addToBag(total, quantity) }} style={[styles.mainButton, {position: 'relative'}]}> 
+            <TouchableOpacity onPress={()=> { props.addToBag(total, quantity) }} style={[styles.mainButton, {position: 'relative', bottom: 20}]}> 
                 <View style={styles.mainButtonContainer}>
                     <Text style={styles.mainButtonText}>Add to bag</Text>
                     <Text style={styles.mainButtonSecondaryText}>${total}</Text>

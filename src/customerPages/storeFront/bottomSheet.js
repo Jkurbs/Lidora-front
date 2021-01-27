@@ -148,7 +148,7 @@ const Sheet = forwardRef((props, ref) => {
         )
     }
 
-    const onClose = () => {
+    const onClose = async () => {
         ref.current.snapTo(0);
     };
 

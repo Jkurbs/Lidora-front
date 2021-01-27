@@ -34,11 +34,11 @@ const Menu = forwardRef((props, ref) => {
                     db.collection('chefs').doc(chef.id).collection("menu").where("isVisible",  "==", true).get().then(function (querySnapshot) {
                         let array = []
             
-                        querySnapshot.forEach(function(doc) {
+                        querySnapshot.forEach(async function(doc) {
                             array.push(doc.data())
                         });
                         
-                        groups.forEach(item => {
+                        groups.forEach(async function (item) {
                             let newObj = {}
                             newObj["title"] = item
                             newObj["combo"] = groupOptions[item]
@@ -60,8 +60,7 @@ const Menu = forwardRef((props, ref) => {
     }, [])
 
     // Open Bottom Sheet
-    const onOpen = (item) => {
-
+    const onOpen = async (item) => {
         if (item.total !== undefined || item.quantity !== undefined) {
             delete item.total;
             delete item.quantity

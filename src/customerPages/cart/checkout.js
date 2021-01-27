@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator, SectionList } from "react-native";
 import firebase from '../../firebase/Firebase'
 import { Entypo } from '@expo/vector-icons';
@@ -58,21 +58,15 @@ function Checkout(props) {
   const checkout = async () => {
     setDisable(true)
     const token = payment?.token?.id 
-    if (token === null, email === null, phone === null) {  setDisable(false); return }
+    if (token === null, email === null, phone === null) { setDisable(false); return }
 
-    console.log("TRESHOLD: ", chef.threshold)
-    if (total < chef.threshold) {
-        alert(`The minimum order amount is ${chef.threshold}`)
-       return 
-      }
-
-      await db.collection("payments").doc().set({
-        email: email, 
-        subtotal: subTotal,
-        total: total, 
-        currency: "USD", 
-        payment_method: token, 
-        destination: chef.account_id
+    await db.collection("payments").doc().set({
+      email: email, 
+      subtotal: subTotal,
+      total: total, 
+      currency: "USD", 
+      payment_method: token, 
+      destination: chef.account_id
     })
     .then(function() {
         setDisable(false)
@@ -102,7 +96,7 @@ function Checkout(props) {
   }
 
   if (done) {
-    return <OrderDone email={email}/>
+    return <OrderDone navigation={navigation} email={email}/>
   } else {
     return (
       <View style={styles.container}>
@@ -135,8 +129,8 @@ function Checkout(props) {
                 <Text style={styles.mainButtonText}>{disable ? "":"Checkout"}</Text>
               </View>
               <ActivityIndicator hidesWhenStopped={true} animating={disable} color="#0000ff" style={{ position: 'absolute', alignSelf: 'center' }} />
-            </TouchableOpacity>
-        </View>
+          </TouchableOpacity>
+      </View>
     )
   }
 }

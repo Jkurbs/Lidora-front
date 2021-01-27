@@ -91,7 +91,7 @@ function Card(props) {
     </View>
   );
 
-  const removeItem = () => {
+  const removeItem = async () => {
     if (selectedItem.group != null) {
       const group = items.filter(item => item.group == selectedItem.group) 
       group.forEach(async function(item) {
@@ -115,7 +115,7 @@ function Card(props) {
     </Animated.View>
   );
 
-  const onOpen = (item) => {
+  const onOpen = async (item) => {
     ref.current.snapTo(1);
     setIsOpen(true)
     setSelectedItem(item)
@@ -126,7 +126,7 @@ function Card(props) {
     }).start();
   };
 
-  const onClose = () => {
+  const onClose = async () => {
     ref.current.snapTo(0);
     setIsOpen(false)
     Animated.timing(opacity, {
@@ -153,7 +153,7 @@ function Card(props) {
 
   return (
     <View style={styles.container}>
-        <NavBar title={"Cart"} leftIcon={"md-close"} navigation={navigation}/>
+        <NavBar items={items} title={"Cart"} leftIcon={"md-close"} navigation={navigation}/>
        {
         items.length === 0 ?
         <EmptyBag/>
@@ -190,15 +190,14 @@ function Card(props) {
                 ItemSeparatorComponent={FlatListItemSeparator}
                 stickySectionHeadersEnabled={false}
             />
-          <View style={styles.listItemSeparatorStyle} />
-        <TouchableOpacity onPress={()=> navigation.navigate("Checkout", {chef: chef, subTotal: subTotal, total: calculatedAmount.total}) } style={[styles.mainButton, {bottom: 75}]}> 
-            <View style={[styles.mainButtonContainer]}>
-              <Text style={styles.mainButtonText}>Proceed to Checkout</Text>
-            </View>
-          </TouchableOpacity>
-          <View style={[styles.mainButtonContainer, {marginBottom: 20}]}>
-            <Entypo name="lock" size={12} color="#6A737D" />
-            <Text style={{color:"#6A737D", fontSize: 12}}>Payments are processed securely.</Text>
+              <TouchableOpacity onPress={()=> navigation.navigate("Checkout", {chef: chef, subTotal: subTotal, total: calculatedAmount.total}) } style={[styles.mainButton, {bottom: 75}]}> 
+                  <View style={[styles.mainButtonContainer]}>
+                    <Text style={styles.mainButtonText}>Proceed to Checkout</Text>
+                  </View>
+              </TouchableOpacity>
+            <View style={[styles.mainButtonContainer, {marginBottom: 20}]}>
+                <Entypo name="lock" size={12} color="#6A737D" />
+                <Text style={{color:"#6A737D", fontSize: 12}}>Payments are processed securely.</Text>
             </View>
         </View>
       }

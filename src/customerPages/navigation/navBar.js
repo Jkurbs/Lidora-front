@@ -9,15 +9,23 @@ import styles from './navBarStyle'
 function NavBar(props) {
 
     const navigation = props.navigation
+    const title = props.title
     const leftIcon = props.leftIcon
     const rightIcon = props.rightIcon
     const isDisabled = props.isDisabled
     const rightButtonPressed = props.rightButtonPressed
+    const items = props.items 
+
+    const goBack = () => {
+        if (title === "Cart"){
+            navigation.navigate("Store", {items: items})
+        } else { navigation.pop() }
+    }
 
     return (
         <View style={styles.container}>
              <View style={styles.leftIcon}>
-                <TouchableOpacity onPress={()=> { navigation.pop()} } style={{  }}>
+                <TouchableOpacity onPress={()=> { goBack()} } style={{  }}>
                     {
                         leftIcon ?
                         <Ionicons name={leftIcon} size={24} color="black" />
@@ -26,14 +34,14 @@ function NavBar(props) {
                     }
                 </TouchableOpacity>
             </View>
-            <Text style={{fontWeight: '500', fontSize: 18}}>{props.title}</Text>
+            <Text style={{fontWeight: '500', fontSize: 18}}>{title}</Text>
             {
                 rightIcon ? 
                     <View style={styles.rightIcon}>
                         <TouchableOpacity
                          disabled={isDisabled}
                          onPress={()=> { rightButtonPressed() }}>
-                            <Text style={{fontWeight: '600'}}>{rightIcon}</Text>
+                            <Text style={{ fontSize: 16, fontWeight: '600'}}>{rightIcon}</Text>
                         </TouchableOpacity>
                     </View>
                 :

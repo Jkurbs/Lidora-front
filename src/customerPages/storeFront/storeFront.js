@@ -7,7 +7,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import styles from "./storeFront.style";
 import firebase from "../../firebase/Firebase";
 
-import NavBar from "./mainNavBar";
+import NavBar from '../navigation/mainNavBar';
 import Menu from "../menu/menu";
 import Sheet from "./bottomSheet";
 import CardScreen from "../cart/cart";
@@ -29,31 +29,25 @@ function StoreFront(props) {
   const storeName = props.storeName;
   const navigation = props.navigation;
   const chef = props.chef;
+  const items = props.route.params?.items ?? []
+
 
   // States Bag
   const [selectedItem, setSelectedItem] = useState({ item: {}, data: [] });
-  const [bag, setBag] = useState([]);
+  const [bag, setBag] = useState(items);
 
   const addToBag = (item) => {
     if (bag.length != 0) {
       bag.forEach(async function (element) {
-        if (element.combo != null) {
-          alert("You can only order for one day at a time");
-          return;
-        }
         if (element.key === item.key) {
-          const currentQuantity = element.quantity;
-          const currentTotal = element.total;
-          const itemQuantity = item.quantity;
-          const itemTotal = item.total;
-
-          if (currentQuantity !== itemQuantity) {
-            return;
-          }
-        }
+            element.quantity += item.quantity
+            element.total += item.total
+        } 
       });
+    } else {
+      console.log("ITEM: ", item)
+      setBag((oldArray) => [...oldArray, item]);
     }
-    setBag((oldArray) => [...oldArray, item]);
   };
 
   return (
