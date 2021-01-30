@@ -1,7 +1,8 @@
 import React, {useState} from "react";
-import { View, TextInput, Text} from "react-native";
+import { View, SafeAreaView, TextInput, Text} from "react-native";
 import NavBar from '../navigation/navBar'
-import styles from '../storeFront/storeFront.style'
+import useGlobalStyles  from '../storeFront/globalStyle'
+import styles from '../storeFront/storeFront.lightStyle'
 
 function AddAdress(props) {
 
@@ -9,6 +10,8 @@ function AddAdress(props) {
     const addedAddress = props.route.params.addedAddress
     const [address] = useState({street: null, city: null, state: null, postalCode: null})
     const [isDisabled, setIsDisabled] = useState(true)
+    const globalStyles = useGlobalStyles()
+
 
     const checkIsDisabled = () => {
         const isEmpty = !Object.values(address).some(x => (x !== null && x !== ''));
@@ -21,13 +24,13 @@ function AddAdress(props) {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={globalStyles.backgroundPrimary}>
             <NavBar title={"Add Address"} rightButtonPressed={save} rightIcon={"Save"} navigation={navigation} isDisabled={isDisabled}/>
             <View style={styles.inputContainerWrapper}>
                 <View style={styles.inputContainer}>
-                <Text style={styles.inputTitle}>Street</Text>
+                <Text style={globalStyles.textPrimary}>Street</Text>
                 <TextInput
-                    style={styles.input}
+                    style={globalStyles.formInput}
                     placeholder="Required"
                     autoCorrect={false}
                     textContentType={"fullStreetAddress"}
@@ -35,9 +38,9 @@ function AddAdress(props) {
                     onChangeText={(text) => {address.street = text;checkIsDisabled()}}/>
                 </View>
                 <View style={styles.inputContainer}>
-                <Text style={styles.inputTitle}>City</Text>
+                <Text style={globalStyles.textPrimary}>City</Text>
                 <TextInput
-                    style={styles.input}
+                    style={globalStyles.formInput}
                     placeholder="Required"
                     autoCorrect={false}
                     textContentType={"addressCity"}
@@ -45,9 +48,9 @@ function AddAdress(props) {
                     onChangeText={(text) => {address.city = text;checkIsDisabled()}}/>
                 </View>
                 <View style={styles.inputContainer}>
-                <Text style={styles.inputTitle}>State</Text>
+                <Text style={globalStyles.textPrimary}>State</Text>
                 <TextInput
-                    style={styles.input}
+                    style={globalStyles.formInput}
                     placeholder="Required"
                     autoCorrect={false}
                     textContentType={"addressState"}
@@ -55,9 +58,9 @@ function AddAdress(props) {
                     onChangeText={(text) => {address.state = text;checkIsDisabled()}}/>
                 </View>
                 <View style={styles.inputContainer}>
-                <Text style={styles.inputTitle}>Zip</Text>
+                <Text style={globalStyles.textPrimary}>Zip</Text>
                 <TextInput
-                    style={styles.input}
+                    style={globalStyles.formInput}
                     placeholder="Required"
                     autoCorrect={false}
                     textContentType={"postalCode"}

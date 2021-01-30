@@ -44,7 +44,7 @@ class Apply extends React.Component {
         this.setState({ message: "Thank you, we'll get in touch with you soon" })
         return;
       } catch (error) {
-        console.log(error);
+        // There's an error
       }
     };
 

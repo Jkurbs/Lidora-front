@@ -4,7 +4,11 @@ import { Elements } from '@stripe/react-stripe-js';
 import { Entypo } from '@expo/vector-icons';
 import { loadStripe } from '@stripe/stripe-js';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import styles from '../../storeFront/storeFront.style'
+import useGlobalStyles from '../../storeFront/globalStyle'
+import styles from '../../storeFront/storeFront.lightStyle'
+import { useTheme } from '@react-navigation/native'
+import NavBar from '../../navigation/navBar'
+
 
 const stripePromise = loadStripe('pk_test_51HL8h8LjpR7kl7iGeWLOW7OGQw2qAix0ToeOkzAgOUceEiOUDsGDmuDI1tQyNWSkOiQvdwOxFBpQEw4rBoDuI3Dc00i6Fa8VWD');
 
@@ -20,22 +24,16 @@ function AddPayments(props) {
     const elements = useElements();
     const navigation = props.props.navigation
 
-    const addCart = async () => {
-        // Block native form submission.
-        // event.preventDefault();
-        if (!stripe || !elements) {
-            // Stripe.js has not loaded yet. Make sure to disable
-            // form submission until Stripe.js has loaded.
-            return;
-        }
-        // Get a reference to a mounted CardElement. Elements knows how
-        // to find your CardElement because there can only ever be one of
-        // each type of element.
+    const globalStyles = useGlobalStyles()
+    const { colors } = useTheme();
 
+    const addCart = async () => {
+
+        if (!stripe || !elements) { return }
+  
         const cardElement = elements.getElement(CardElement);
         
         if (user != null) { 
-          // Use your card Element with other Stripe.js APIs
           stripe.createPaymentMethod({
             type: 'card',
             card: cardElement,
@@ -48,48 +46,26 @@ function AddPayments(props) {
               props.route.params.back({type: "Payment", data: paymentMethod})
               navigation.navigate('Checkout');
           });
-
         } else {
-          // Use your card Element with other Stripe.js APIs
             stripe.createToken(cardElement).then(function(result) {
-            console.log("result: ", result)
               props.props.route.params.back({type: "Payment", data: result})
               navigation.navigate('Checkout');
             });
         }
-
     };
 
     return (
-      <View style={styles.container}>
+      <View style={globalStyles.backgroundPrimary}>
         {/* Header */}
-        <View style={{backgroundColor: 'white', height: 45, alignItems: 'center', justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: '#ecf0f1'}}>
-            <Text style={{fontWeight: '500', fontSize: 18}}>Add Payments</Text>
-               <View style={{ position: 'absolute', left: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
-                    <TouchableOpacity onPress={()=> {navigation.goBack()} } style={{  }}>
-                      <Entypo name="chevron-left" size={24} color="black" />
-                    </TouchableOpacity>
-               </View>
-               <View style={{ position: 'absolute', right: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
-                  <TouchableOpacity onPress={()=> {addCart()} }>
-                    <Text style={{fontWeight: '600'}}>Save</Text>
-                  </TouchableOpacity> 
-                </View>
-           </View>
-           <View style={{
-              height: 60, 
-              justifyContent: 'center', 
-              borderWidth: 2, 
-              borderColor: '#E1E4E8', 
-              borderRadius: 10, 
-              padding: 8,
-              margin: 20}}>
+           <NavBar title={"Add Payments"} rightButtonPressed={addCart} rightIcon={"Save"} navigation={navigation}/>
+           <View style={[globalStyles.formInput, {marginTop: 100, marginLeft: 20, marginRight: 20, justifyContent: 'center', padding: 8 }]}>
                 <CardElement
                   options={{
                     style: {
                       base: {
-                        fontSize: '18px',
-                        color: '#424770',
+                      
+                        fontSize: '14px',
+                        color: colors.inputTextColor,
                         '::placeholder': {
                           color: '#aab7c4',
                         },

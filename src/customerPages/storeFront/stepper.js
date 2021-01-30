@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import { View, Text, TouchableOpacity} from "react-native";
-import styles from './storeFront.style'
+import useGlobalStyles from '../storeFront/globalStyle'
+import styles from './storeFront.lightStyle'
+import { pure } from 'recompose';
 
-function Stepper(props) {
+
+const Stepper = forwardRef((props, ref) => {
     
     const itemTotal = props.total
 
     const [quantity, setQuantity] = useState(1)
     const [total, setTotal] = useState(itemTotal)
-
+    const globalStyles = useGlobalStyles()
     // Calculate total amount 
     const calculate = (add) => {
         if (add) {
@@ -25,29 +28,12 @@ function Stepper(props) {
     }
 
     return (
-        <View>
-            {
-                props.isCombo ? 
-                null
-                :
-                <View style={styles.stepperContainer}>
-                    <TouchableOpacity pointerEvents={() => { quantity < 2 ? 'none' : "auto" }} onPress={() => { calculate(false) }} style={styles.stepperButton}>
-                        <Text style={styles.stepperText}>-</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.stepperText}>{quantity}</Text>
-                    <TouchableOpacity onPress={() => calculate(true)} style={styles.stepperButton}>
-                        <Text style={styles.stepperText}>+</Text>
-                    </TouchableOpacity>
-                </View>
-            }
-            <TouchableOpacity onPress={()=> { props.addToBag(total, quantity) }} style={[styles.mainButton, {position: 'relative', bottom: 20}]}> 
-                <View style={styles.mainButtonContainer}>
-                    <Text style={styles.mainButtonText}>Add to bag</Text>
-                    <Text style={styles.mainButtonSecondaryText}>${total}</Text>
-                </View>
+        <View style={{marginTop: 40, width:'100%', height:80, justifyContent: 'center'}}>
+            <TouchableOpacity onPress={()=> { props.addToBag(total, quantity) }} style={[globalStyles.btnPrimary, {bottom: 0}]}> 
+                    <Text style={styles.textCentered} >Add to bag</Text>
             </TouchableOpacity>
         </View>
     )
-}
+})
 
-export default Stepper
+export default pure(Stepper)

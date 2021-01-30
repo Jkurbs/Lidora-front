@@ -3,7 +3,8 @@
 import React, { useState, useEffect, memo } from "react";
 import {  View, Text, TouchableOpacity} from "react-native";
 import { SimpleLineIcons } from '@expo/vector-icons'
-import styles from '../storeFront/storeFront.style'
+import useGlobalStyles from '../storeFront/globalStyle'
+import styles from '../storeFront/storeFront.lightStyle'
 import firebase from "../../firebase/Firebase"
 var unsubscribe;
 
@@ -12,6 +13,8 @@ function MainNavBar(props) {
 
     const [userLoggedIn, setUserLoggedIn] = useState(null)
     const [user, setUser] = useState({})
+
+    const globalStyles = useGlobalStyles();
 
     useEffect(() => {
         unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
@@ -26,13 +29,13 @@ function MainNavBar(props) {
 
     if (user.uid != props.chefId) {
         return (
-            <View style={styles.navBarContainer}>
+            <View style={[styles.navBarBackground, globalStyles.backgroundPrimary]}>
                 { 
                 userLoggedIn ?
                 <View style={styles.navBarRightButtonContainer}>
                     <View style={styles.navBarRightButtonInnerContainer}>
                         <TouchableOpacity onPress={()=> {props.navigation.navigate("Settings")} }>
-                            <SimpleLineIcons name="options" size={18} color="black" />
+                            <SimpleLineIcons name="options" size={18} color={globalStyles.textPrimary} />
                         </TouchableOpacity> 
                     </View>
                 </View>   
@@ -41,10 +44,11 @@ function MainNavBar(props) {
                     <Text onPress={() => {
                             props.navigation.navigate('Authenticate');
                         }}
-                    style={styles.navBarRightButton}>Login
+                    style={[styles.navBarRightButton, globalStyles.textPrimary]}>Login
                     </Text>
                 </TouchableOpacity>
                 }
+                <View style={globalStyles.border} />
             </View>
         )
     } else if (user.uid === props.chefId) {
@@ -53,7 +57,7 @@ function MainNavBar(props) {
                 <Text onPress={() => {
                             navigation.navigate('Authenticate');
                         }}
-                    style={styles.navBarRightButton}>Dashboard
+                        style={[styles.navBarRightButton, globalStyles.text]}>Dashboard
                 </Text>
             </TouchableOpacity>
         )

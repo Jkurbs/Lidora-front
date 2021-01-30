@@ -66,7 +66,6 @@ function AuthenticatePage(props) {
                 setRegInfo({})
                 setIndicatorAnimating(false)
                 setTab("confirmation")
-                console.log("INDICATOR: ", indicatorAnimating)
         })
     }
 
@@ -81,9 +80,7 @@ function AuthenticatePage(props) {
             navigation.navigate("Store") 
             } catch (error) {
             if (error.code == 'auth/invalid-verification-code') {
-                console.log('Invalid code.');
             } else {
-                console.log('Account linking error: ', error);
             }
         }
     }
@@ -102,7 +99,6 @@ function AuthenticatePage(props) {
             setRegisterText("Sign up")
             var errorCode = error.code;
             var errorMessage = error.message;
-            console.log("Error register: ",errorMessage)
             // ...
         });
     }
@@ -124,7 +120,6 @@ function AuthenticatePage(props) {
                 setIndicatorAnimating(false)
                 setLoginText("Login")
                 var errorMessage = error.message;
-                console.log(errorMessage)
                 // ...
               });
         } else {
@@ -155,10 +150,8 @@ function AuthenticatePage(props) {
             } catch (error) {
                 setIndicatorAnimating(false)
             if (error.code == 'auth/invalid-verification-code') {
-                console.log('Invalid code.');
             } else {
                 setIndicatorAnimating(false)
-                console.log('Account linking error: ', error);
             }
         }
     }

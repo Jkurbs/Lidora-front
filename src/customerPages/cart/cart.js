@@ -1,10 +1,12 @@
 import React, { useState, createRef} from "react";
 import { View, Text, TouchableOpacity, Image, SectionList, Animated } from "react-native";
+import { useTheme } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
-import firebase from '../../firebase/Firebase'
 import BottomSheet from 'reanimated-bottom-sheet'
 import EmptyBag from '../../components/emptyBagView'
-import styles from '../storeFront/storeFront.style'
+import useGlobalStyles  from '../storeFront/globalStyle'
+import styles from '../storeFront/storeFront.lightStyle'
 import NavBar from '../navigation/navBar'
 
 const snapPoints = ["0%", "40%"]
@@ -51,20 +53,23 @@ function Card(props) {
   const [opacity] = useState(new Animated.Value(0))
   const [selectedItem, setSelectedItem] = useState({})
 
+  const globalStyles = useGlobalStyles()
+  const { colors } = useTheme();
+
   const FlatListItemSeparator = () => {
-    return ( <View style={styles.listItemSeparatorStyle}/> )
+    return ( <View style={globalStyles.border}/> )
   }
 
   const ItemsCell = ({item}) => (
     <View style={styles.checkoutItemCellContainer}>
-        <View style={ styles.checkoutItemContainer}>
-            <Text style={styles.menuQuantity}>{ `${item?.quantity ?? 1}x`}</Text>
-            <Text style={styles.menuName}>{item?.name ?? ""}</Text>
+        <View style={styles.checkoutItemContainer}>
+            <Text style={[globalStyles.textSecondary, styles.menuQuantity]}>{ `${item?.quantity ?? 1}x`}</Text>
+            <Text style={[globalStyles.textPrimary, styles.menuName]}>{item?.name ?? ""}</Text>
         </View>
         <View style={styles.checkoutItemRightContainer}>
-          <Text style={styles.secondaryText}>${item?.total ?? item?.price ?? 0}</Text>
-          <TouchableOpacity onPress={()=> onOpen(item)}>
-            <Image style={styles.removeImage} defaultSource={ require('../../assets/icon/remove-100.png')} />
+          <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}} onPress={()=> onOpen(item)}>
+            <Text style={[globalStyles.textPrimary, {marginTop: 0, marginRight: 8}]}>${item?.total ?? item?.price ?? 0}</Text>
+            <Ionicons name="ios-remove-circle-outline" size={24} color={colors.textTertiary} />
           </TouchableOpacity>
         </View>
     </View>
@@ -73,39 +78,43 @@ function Card(props) {
   const TotalCell = () => (
     <View style={styles.totalContainer}>
         <View style={styles.totalInnerContainer}>
-            <Text style={styles.totalItemTitle}>Subtotal</Text>
-            <Text style={styles.totalItemValue}>${subTotal}</Text>
+            <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Subtotal</Text>
+            <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${subTotal}</Text>
         </View>
         <View style={styles.totalInnerContainer}>
-            <Text style={styles.totalItemTitle}>Delivery Fee</Text>
-            <Text style={styles.totalItemValue}>${calculatedAmount.deliveryFee}</Text>
+            <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Delivery Fee</Text>
+            <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${calculatedAmount.deliveryFee}</Text>
         </View>
         <View style={styles.totalInnerContainer}>
-            <Text style={styles.totalItemTitle}>Service Fee</Text>
-            <Text style={styles.totalItemValue}>${calculatedAmount.fee}</Text>
+            <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Service Fee</Text>
+            <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${calculatedAmount.fee}</Text>
         </View>
         <View style={styles.totalInnerContainer}>
-            <Text style={[styles.totalItemTitle, {fontWeight: '500'}]}>Amount due</Text>
-            <Text style={styles.totalItemValue}>${calculatedAmount.total}</Text>
+            <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Amount due</Text>
+            <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${calculatedAmount.total}</Text>
         </View>
     </View>
   );
 
   const removeItem = async () => {
-    if (selectedItem.group != null) {
-      const group = items.filter(item => item.group == selectedItem.group) 
+
+    const group = items.filter(item => item.comboName == selectedItem.comboName) 
       group.forEach(async function(item) {
         const index = items.indexOf(item);
         if (index > -1) {
           items.splice(index, 1);
         }
       })
-    } else {
-      const index = items.indexOf(selectedItem);
-      if (index > -1) {
-        items.splice(index, 1);
-      }
-    }
+
+
+    // if (selectedItem.group != null) {
+
+    // } else {
+    //   const index = items.indexOf(selectedItem);
+    //   if (index > -1) {
+    //     items.splice(index, 1);
+    //   }
+    // }
     onClose()
   }
 
@@ -151,16 +160,24 @@ function Card(props) {
      )
   }
 
+  const proceedToCheckout = () => {
+    if (calculatedAmount.total < chef.threshold) {
+      alert(`The minimum order amount is ${chef.threshold}$`)
+      return 
+    }
+    navigation.navigate("Checkout", {chef: chef, subTotal: subTotal, total: calculatedAmount.total}) 
+  }
+
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.backgroundPrimary}>
         <NavBar items={items} title={"Cart"} leftIcon={"md-close"} navigation={navigation}/>
        {
         items.length === 0 ?
         <EmptyBag/>
         :
-        <View style={[styles.bagContainer, {paddingBottom: 50}]}>
+        <View>
             <SectionList
-                style={styles.bagSectionList}
+                style={styles.sectionList}
                 keyExtractor={(item, index) => item + index}
                 sections={[
                   { title: "Items", data: items },
@@ -172,7 +189,7 @@ function Card(props) {
                   } else {
                     return (
                       <View style={styles.headerView}>
-                          <Text style={styles.sectionTitle}>{section.title}</Text>
+                            <Text style={[globalStyles.textPrimary, styles.sectionTitle]}>{section.title}</Text>
                       </View>
                     )
                   }
@@ -187,17 +204,20 @@ function Card(props) {
                             break
                     }
                 }}
+                ListHeaderComponent={<View style={{width: '100%', height: 50}}/>}
+                ListFooterComponent={<View style={{width: '100%', height: 150}}/>}
                 ItemSeparatorComponent={FlatListItemSeparator}
                 stickySectionHeadersEnabled={false}
             />
-              <TouchableOpacity onPress={()=> navigation.navigate("Checkout", {chef: chef, subTotal: subTotal, total: calculatedAmount.total}) } style={[styles.mainButton, {bottom: 75}]}> 
-                  <View style={[styles.mainButtonContainer]}>
-                    <Text style={styles.mainButtonText}>Proceed to Checkout</Text>
-                  </View>
+
+            <View style={{width: '100%',  position: "absolute", bottom: 30 , flexDirection: 'column', justifyContent: 'space-between'}}>
+              <TouchableOpacity onPress={()=> proceedToCheckout()} style={globalStyles.btnPrimary}> 
+                      <Text style={styles.textCentered}>Proceed to Checkout</Text>
               </TouchableOpacity>
-            <View style={[styles.mainButtonContainer, {marginBottom: 20}]}>
-                <Entypo name="lock" size={12} color="#6A737D" />
-                <Text style={{color:"#6A737D", fontSize: 12}}>Payments are processed securely.</Text>
+              <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 8, bottom: 0}}>
+                  <Entypo name="lock" size={12} color="#6A737D"/>
+                  <Text style={globalStyles.textTertiary}>Payments are processed securely.</Text>
+              </View>
             </View>
         </View>
       }

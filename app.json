@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./src/assets/icon/icon.png",
     "entryPoint": "./src/pages/home/home.js",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./src/assets/img/splash.png",
       "resizeMode": "contain",
@@ -18,11 +19,14 @@
       "**/*"
     ],
     "ios": {
+      "userInterfaceStyle": "automatic",
       "supportsTablet": true,
       "bundleIdentifier": "kurbs-lidora.com"
     },
     "android": {
-      "package": "io.expo.client"
+      "userInterfaceStyle": "automatic",
+      "package": "io.expo.client" 
+
     },
     "web": {
       "favicon": "./src/assets/icon/favicon.png"

@@ -1,15 +1,18 @@
 import React from "react";
+import { pure } from 'recompose';
 import { View, Image, Text, TouchableOpacity} from "react-native";
-import styles from '../storeFront/storeFront.style'
+import useGlobalStyles from '../storeFront/globalStyle'
+import styles from '../storeFront/storeFront.lightStyle'
 
 function ComboCell(props) {
     const item = props.item
+    const globalStyle = useGlobalStyles()
     return (
         <TouchableOpacity onPress={()=>  props.onOpen(item)} >
             <View style={{ alignItems: 'center', margin: 20, flexDirection: 'row', justifyContent: 'space-between'}}>
                 <View style={{ flexDirection: 'column', justifyContent: 'space-between', width: '70%' }}>
-                    <Text style={styles.menuName}>{item.name}</Text>
-                    <Text style={styles.menuDescription}>{item.description}</Text>
+                    <Text style={[globalStyle.textPrimary, styles.menuName]}>{item.name}</Text>
+                    <Text style={globalStyle.textSecondary}>{item.description}</Text>
                 </View>
                     <Image style={styles.menuImage} defaultSource={{
                         uri: item.imageURL,
@@ -18,4 +21,5 @@ function ComboCell(props) {
         </TouchableOpacity>
     )
 }
-export default ComboCell
+
+export default pure(ComboCell);

@@ -71,7 +71,8 @@
     "react-papaparse": "^3.11.0",
     "react-placeholder": "^4.0.3",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
-    "recompose": "^0.30.0"
+    "recompose": "^0.30.0",
+    "react-native-appearance": "~0.3.3"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

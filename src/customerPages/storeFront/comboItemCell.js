@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import { View, Image, Text, TouchableOpacity} from "react-native";
-import styles from './storeFront.style'
+import useGlobalStyles from '../storeFront/globalStyle'
+import styles from './storeFront.lightStyle'
+import { pure } from 'recompose';
 
-function ComboItemCell(props) {
-    
+const ComboItemCell = forwardRef((props, ref) => {
+
     const item = props.item
     const itemPrice = item.item.price
     const [quantity, setQuantity] = useState(1)
     const [total, setTotal] = useState(itemPrice)
+    const globalStyles = useGlobalStyles()
 
     // Calculate total amount 
     const calculate = (add) => {
@@ -27,24 +30,24 @@ function ComboItemCell(props) {
     }
 
     return (
-        <View style={styles.groupContainer}>
+        <View style={[globalStyles.backgroundSecondary, styles.groupContainer]}>
             <View style={{flexDirection: 'row', justifyContent: 'center'}}>
                 <Image style={styles.comboImage} defaultSource={{
                     uri: item.item.imageURL,
                 }} />
-            <Text style={{ textAlign: 'center', alignSelf: 'center', fontSize: 14}}>{item?.item.name ?? ""}</Text>
+            <Text style={[globalStyles.textPrimary, {alignSelf: 'center'}]}>{item?.item.name ?? ""}</Text>
             </View>
             
-           <View style={{ marginRight: 16, flexDirection: 'row', justifyContent: 'center', marginTop: 20, borderRadius: 10, width: 60, alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-around'}}>
+           <View style={{ marginRight: 16, flexDirection: 'row', justifyContent: 'center', width: 60, alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-around'}}>
                 <TouchableOpacity pointerEvents={() => { quantity < 2 ? 'none' : "auto" }} onPress={() => { calculate(false) }} style={[{ width: 60, height: 60, borderRadius: 30, justifyContent: 'center'}]}>
-                    <Text style={{ textAlign: 'center', alignSelf: 'center', color: 'gray' }}>-</Text>
+                    <Text style={[globalStyles.textPrimary, {textAlign: 'center', alignSelf: 'center', margin: 0}]}>-</Text>
                 </TouchableOpacity>
-                <Text style={{ alignSelf: 'center', margin: 8 }}>{quantity}</Text>
+                <Text style={[globalStyles.textSecondary,{ alignSelf: 'center', margin: 8 }]}>{quantity}</Text>
                 <TouchableOpacity onPress={() => calculate(true)} style={{ width: 60, height: 60, borderRadius: 30, justifyContent: 'center'}}>
                     <Text style={{ color: '#2EA44F', alignSelf: 'center', fontWeight: '500' }}>+</Text>
                 </TouchableOpacity>
             </View>
         </View>
     )
-}
-export default ComboItemCell
+})
+export default pure(ComboItemCell)

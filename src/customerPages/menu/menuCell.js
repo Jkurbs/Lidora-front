@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity} from "react-native";
-import styles from '../storeFront/storeFront.style'
+import styles from '../storeFront/storeFront.lightStyle'
 
 function MenuCell(props) {
     const item = props.item

@@ -1,19 +1,24 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { Text, View, Dimensions } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 const { height } = Dimensions.get("window")
+import useGlobalStyles from '../customerPages/storeFront/globalStyle'
 
 
-class EmptyBag extends Component {
-    render() {
-        return (
-            <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', height: height }} >
-                <SimpleLineIcons name="bag" size={100} color="#9A9A9A" />
-                <Text style={{ marginTop: 20 }}>{"Your bag is empty"}</Text>
-            </View>
-        );
-    }
+function EmptyBag() {
+
+    const globalStyles = useGlobalStyles()
+    const { colors } = useTheme();
+
+    return (
+        <View style={ [globalStyles.backgroundPrimary, {height: height, justifyContent: 'center', alignItems: 'center' }]} >
+            <SimpleLineIcons name="bag" size={100} color={colors.textTertiary} />
+            <Text style={globalStyles.textPrimary}>{"Your bag is empty"}</Text>
+        </View>
+    );
+    
 }
 
 export default EmptyBag;

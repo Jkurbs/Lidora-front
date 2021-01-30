@@ -1,7 +1,8 @@
 import React, {useState} from "react";
 import { View, TextInput, Text } from "react-native";
 import NavBar from '../navigation/navBar'
-import styles from '../storeFront/storeFront.style'
+import useGlobalStyles  from '../storeFront/globalStyle'
+import styles from '../storeFront/storeFront.lightStyle'
 
 function AddEmail(props) {
     const navigation = props.navigation
@@ -9,6 +10,7 @@ function AddEmail(props) {
 
     const [email, setEmail] = useState(null)
     const [isDisabled, setIsDisabled] = useState(true)
+    const globalStyles = useGlobalStyles()
 
     const checkIsDisabled = () => {
         const isEmpty = (email === null)
@@ -21,13 +23,13 @@ function AddEmail(props) {
     }
     
     return (
-        <View style={styles.container}>
+        <View style={globalStyles.backgroundPrimary}>
         <NavBar title={"Add Email Address"} rightButtonPressed={save} rightIcon={"Save"} navigation={navigation} isDisabled={isDisabled}/>
-        <View style={{ padding: 20, alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between'}}>
+        <View style={{ marginTop: 50, padding: 20, alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between'}}>
             <View style={{ width: '100%', flexDirection: 'column', justifyContent: 'space-between'}}>
-                <Text style={styles.inputTitle}>Email</Text>
+                <Text style={globalStyles.textPrimary}>Email</Text>
                 <TextInput
-                    style={styles.input}
+                    style={globalStyles.formInput}
                     placeholder="Required"
                     textContentType={"emailAddress"}
                     defaultValue={addedEmail ?? ""}

@@ -4,7 +4,10 @@ import React, {memo} from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import useGlobalStyles from '../storeFront/globalStyle'
 import styles from './navBarStyle'
+import { useTheme } from '@react-navigation/native'
+
 
 function NavBar(props) {
 
@@ -14,7 +17,10 @@ function NavBar(props) {
     const rightIcon = props.rightIcon
     const isDisabled = props.isDisabled
     const rightButtonPressed = props.rightButtonPressed
-    const items = props.items 
+    const items = props.items
+    
+    const { colors } = useTheme();
+    const globalStyles = useGlobalStyles()
 
     const goBack = () => {
         if (title === "Cart"){
@@ -23,30 +29,31 @@ function NavBar(props) {
     }
 
     return (
-        <View style={styles.container}>
-             <View style={styles.leftIcon}>
-                <TouchableOpacity onPress={()=> { goBack()} } style={{  }}>
+        <View style={[styles.container, {backgroundColor: colors.background}]}>
+        <View style={styles.leftIcon}>
+                <TouchableOpacity onPress={()=> {goBack() }}>
                     {
                         leftIcon ?
-                        <Ionicons name={leftIcon} size={24} color="black" />
+                        <Ionicons name={leftIcon} size={24} color={colors.textPrimary} />
                         :
-                        <Entypo name={"chevron-left"} size={24} color="black" />
+                        <Entypo name={"chevron-left"} size={24}  color={colors.textPrimary} />
                     }
                 </TouchableOpacity>
             </View>
-            <Text style={{fontWeight: '500', fontSize: 18}}>{title}</Text>
+            <Text style={globalStyles.textPrimary}>{title}</Text>
             {
                 rightIcon ? 
                     <View style={styles.rightIcon}>
                         <TouchableOpacity
                          disabled={isDisabled}
                          onPress={()=> { rightButtonPressed() }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600'}}>{rightIcon}</Text>
+                            <Text style={[styles.rightIconText,{color: colors.textPrimary}]}>{rightIcon}</Text>
                         </TouchableOpacity>
                     </View>
                 :
                 null
             }
+         <View style={[globalStyles.border, styles.separator]} />
         </View> 
     )     
 }

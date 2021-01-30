@@ -2,12 +2,14 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     container: {
-        backgroundColor: 'white', 
-        height: 45, 
+        zIndex: 1,
+        height: 50, 
         alignItems: 'center', 
         justifyContent: 'center', 
-        borderBottomWidth: 1, 
-        borderBottomColor: '#ecf0f1'
+        position: 'absolute',
+        top: 0, 
+        left: 0,
+        right: 0
     }, 
 
     leftIcon: { 
@@ -24,5 +26,17 @@ export default StyleSheet.create({
         alignItems: 'center', 
         flexDirection: 'row', 
         justifyContent: 'center'
+    },
+
+    rightIconText: { 
+        fontSize: 16, 
+        fontWeight: '600'
+    },
+
+    separator: {
+        position: 'absolute',
+        bottom: 0
     }
+
+
 })
