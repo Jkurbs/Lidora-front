@@ -20,16 +20,33 @@ function Schedule(props) {
         [_today]: {disabled: true, selectedColor: 'blue', marked: true, dotColor: 'gray'}
     }
 
+
     const [date, setDate] = useState({_markedDates: initialState})
     const [selectedDays, setSelectedDays] = useState([])
     const globalStyles = useGlobalStyles()
     const { colors } = useTheme();
 
+    const DISABLED_DAYS = ['Monday', 'Tuesday']
+
+    const getDaysInMonth = (month, year, days) => {
+        let pivot = moment().month(month).year(year).startOf('month')
+        const end = moment().month(month).year(year).endOf('month')
+    
+        let dates = {}
+        const disabled = { disabled: true }
+        while(pivot.isBefore(end)) {
+          days.forEach((day) => {
+            dates[pivot.day(day).format("YYYY-MM-DD")] = disabled
+          })
+          pivot.add(7, 'days')
+        }
+        return dates
+    }
+
     const save = () => {
         props.route.params.back({type: "Dates", data: selectedDays})
         navigation.navigate('Checkout');
     }  
-    
     
     const onDaySelect = (day) => {
         const _selectedDay = moment(day.dateString).format(_format);
@@ -55,6 +72,11 @@ function Schedule(props) {
             <NavBar title={"Select dates"} rightButtonPressed={save} rightIcon={"Save"} navigation={navigation}/>
             <View style={{height: '100%', width: '100%', marginTop: 50}}>
                 <Calendar
+
+                    onMonthChange={(date) => {
+                        setDate({_markedDates: getDaysInMonth(date.month - 1, date.year, DISABLED_DAYS)})
+                    }}
+
                     theme={{
                             calendarBackground: colors.background,
                             textMonthFontWeight: "bold",
@@ -71,7 +93,6 @@ function Schedule(props) {
                             <Entypo name="chevron-right" size={24} color={colors.textTertiary} />
                         )
                     }}
-
                     minDate={_today}
                     hideExtraDays={true}
                     enableSwipeMonths={true}

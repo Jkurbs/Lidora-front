@@ -4,6 +4,7 @@ import React from "react";
 import { View, Image, Text} from "react-native";
 import useGlobalStyles from './globalStyle'
 import styles from './storeFront.lightStyle'
+import { pure } from 'recompose';
 
 function ChefHighlight(props) {
 
@@ -28,4 +29,4 @@ function ChefHighlight(props) {
     )  
 }
 
-export default ChefHighlight
+export default pure(ChefHighlight)

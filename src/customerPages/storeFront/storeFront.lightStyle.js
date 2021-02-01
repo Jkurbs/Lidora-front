@@ -183,7 +183,6 @@ export default StyleSheet.create({
     sectionList: {
         height: height, 
         width: '100%',
-
         // paddingBottom: 120
     },
 
@@ -321,9 +320,8 @@ export default StyleSheet.create({
     groupContainer: {
         alignItems: 'center',
         justifyContent: 'space-between',
-        margin: 8, 
-        marginLeft: 20,
-        marginRight: 20,
+        padding: 20,
+        paddingRight: 40,
         flexDirection: 'row'
     },
 
@@ -431,7 +429,6 @@ export default StyleSheet.create({
     // Cart 
     removeAlertContainer: {
         padding: 20, 
-        backgroundColor: 'white', 
         paddingBottom: 20
     },
 
@@ -473,7 +470,6 @@ export default StyleSheet.create({
 
     removeAlertSecondaryButtonText: {
         alignSelf: 'center', 
-        fontWeight: '600', 
         fontSize: 17
     }, 
 

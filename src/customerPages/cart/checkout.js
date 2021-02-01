@@ -20,10 +20,10 @@ function Checkout(props) {
   const [address, setAddress] = useState(null)
   const [phone, setPhone] = useState(null)
   const [email, setEmail] = useState(null)
-  const [dates, setDates] = useState(null)
   const [payment, setPayment] = useState(null)
   const [disable, setDisable] = useState(false)
   const [done, setDone] = useState(false)
+
 
   const globalStyles = useGlobalStyles()
   const { colors } = useTheme();
@@ -46,8 +46,6 @@ function Checkout(props) {
       case "Email":
         setEmail(props.data)
         break; 
-      case "Dates":
-        setDates(props.data)
       case "Payment":
         setPayment(props.data)
       default:
@@ -64,12 +62,6 @@ function Checkout(props) {
       return phone ?? ""
     } else if (item === "Email Address") {
       return email ?? ""
-    } else if (item === "Schedule deliveries") {
-      if (dates != null) { 
-        return "Days Selected"  
-      } else {
-        return ""
-      }
     } else {
       return payment?.token?.card?.last4 ?? ""
     }
@@ -137,7 +129,7 @@ function Checkout(props) {
                 keyExtractor={(item, index) => item + index}
                 sections={[
                   {title: "Preparation Details", data:["Add Allergies"]},
-                  { title: "Delivery Details", data: ["Address", "Phone Number", "Email Address", "Schedule deliveries"] },
+                  { title: "Delivery Details", data: ["Address", "Phone Number", "Email Address"] },
                   { title: "Payment", data: ["Add Payment"] },
                 ]}
                 renderSectionHeader={({ section }) => {
@@ -157,9 +149,10 @@ function Checkout(props) {
             />
           </View>
 
-          <View style={{width: '100%',  position: "absolute", bottom: 30 , flexDirection: 'column', justifyContent: 'space-between'}}>
+          <View style={{width: '100%',  position: "absolute", bottom: 30, flexDirection: 'column', justifyContent: 'space-between'}}>
               <TouchableOpacity onPress={()=> checkout()} style={globalStyles.btnPrimary}> 
                 <Text style={styles.textCentered}>{disable ? "":"Checkout"}</Text>
+                <ActivityIndicator hidesWhenStopped={true} animating={disable} color={colors.textSecondary} style={{ position: 'absolute', alignSelf: 'center' }} />
               </TouchableOpacity>
               <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 8, bottom: 0}}>
                   <Entypo name="lock" size={12} color="#6A737D"/>

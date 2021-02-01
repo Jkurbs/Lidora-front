@@ -10,7 +10,7 @@ function OrderDone(props) {
     const globalStyle = useGlobalStyles()
 
     const goBack = () => {
-        navigation.navigate('Store', {items: []});
+        navigation.navigate('Store', {items: [0]});
     }
 
     return (

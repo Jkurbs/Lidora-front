@@ -1,14 +1,17 @@
 
 
-import React, { useState, useEffect, forwardRef, useCallback } from "react";
+import React, { useState, useEffect, forwardRef, useCallback, useRef } from "react";
 import {  View, SectionList, Text, Dimensions} from "react-native";
-
+import { MaterialIcons } from '@expo/vector-icons';
 import useGlobalStyles from '../storeFront/globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 import firebase from "../../firebase/Firebase"
 import ChefHighlight from '../storeFront/chefHighlight'
 import MenuCell from './menuCell'
 import ComboCell from './comboCell'
+import { useTheme } from '@react-navigation/native';
+import SegmentedControl from '@react-native-community/segmented-control';
+
 
 var db = firebase.firestore();
 
@@ -20,7 +23,11 @@ const Menu = forwardRef((props, ref) => {
 
     const chef = props.chef
     const [data, setData] = useState([])
+    const [categories, setCategories] = useState(["Wednesday, Thursday"])
+
     const globalStyle = useGlobalStyles()
+    const { colors } = useTheme();
+    const sectionRef = useRef()
 
     useEffect(() => {
 
@@ -34,6 +41,7 @@ const Menu = forwardRef((props, ref) => {
             await groupsRef.get().then(function (querySnapshot) {
                 querySnapshot.forEach(async function (element) {
                     const categoryData = element.data()
+                    setCategories(prevState => [...prevState, categoryData.name])
                     // Combo
                     const comboRef = element.ref.collection("combos")
                     await comboRef.get().then(function (querySnapshot) {
@@ -82,10 +90,32 @@ const Menu = forwardRef((props, ref) => {
         props.selectedItem(item, data)
         ref.current.snapTo(1);
     };
+
+    const scroll = () => {
+        sectionRef.current.scrollToLocation(
+            {
+              sectionIndex: 1,
+            //   itemIndex: itemIndex
+            }
+          );
+    }
     
      return (
+
         <View>
+            {/* {
+                categories.length > 0 ?
+                <SegmentedControl
+                    values={categories}
+                    selectedIndex={0}
+                    onChange={(event) => { scroll() }}
+                />
+                : 
+                null
+            } */}
+             
             <SectionList
+                ref={sectionRef}
                 style={styles.sectionList}
                 ListHeaderComponent={<ChefHighlight chef={props.chef}/>}
                 keyExtractor={(item, index) => item.name}
@@ -94,6 +124,10 @@ const Menu = forwardRef((props, ref) => {
                     return (
                         <View style={styles.headerView}>
                             <Text style={[globalStyle.textPrimary, styles.sectionTitle]}>{section.title}</Text>
+                            <View style={{paddingLeft: 20, alignItems:'center', flexDirection: 'row'}}>
+                                <MaterialIcons name="date-range" size={18} color={colors.textTertiary} />
+                                <Text style={{alignSelf: 'center', textAlign: 'center', marginBottom: 6, marginLeft: 8, color: colors.textTertiary, fontSize: 14, marginTop: 8, }}>Only delivers on {section.title}'s</Text>
+                            </View>
                         </View>
                     );
                 }}
@@ -107,8 +141,8 @@ const Menu = forwardRef((props, ref) => {
                 disableScrollViewPanResponder={false}
                 nestedScrollEnabled={false}
                 ListFooterComponent={<View style={{width: '100%', height: 100}}/>}
-            /> 
-        </View>
+            />  
+         </View> 
     ) 
 })
 

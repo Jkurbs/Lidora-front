@@ -60,6 +60,8 @@ const getGlobalStyles = (props) => StyleSheet.create({
     },
 
     btnPrimary: {
+        zIndex: 1,
+        flexDirection: 'row',
         position: 'absolute',
         bottom: 30,
         height: 60, 
@@ -84,6 +86,19 @@ const getGlobalStyles = (props) => StyleSheet.create({
         borderWidth: 1,
         backgroundColor: props.colors.btnPrimaryBg,
         borderColor: props.colors.btnPrimaryBorder, 
+    },
+
+    btnDelete: {
+        justifyContent: 'center', 
+        marginTop: 16, 
+        height: 60, 
+        width: '100%', 
+        alignSelf: 'center',
+        borderRadius: 5, 
+        borderWidth: 1,
+        color: props.colors.deletionText,
+        backgroundColor: props.colors.deletionBg,
+        borderColor: props.colors.deletionBorder
     },
 });
 

@@ -1,5 +1,5 @@
 import React, { useState, createRef} from "react";
-import { View, Text, TouchableOpacity, Image, SectionList, Animated } from "react-native";
+import { View, Text, TouchableOpacity, SectionList, Animated } from "react-native";
 import { useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
@@ -105,16 +105,6 @@ function Card(props) {
           items.splice(index, 1);
         }
       })
-
-
-    // if (selectedItem.group != null) {
-
-    // } else {
-    //   const index = items.indexOf(selectedItem);
-    //   if (index > -1) {
-    //     items.splice(index, 1);
-    //   }
-    // }
     onClose()
   }
 
@@ -147,14 +137,14 @@ function Card(props) {
 
   const renderContent = () => {
      return (
-       <View style={styles.removeAlertContainer}>
-         <Text style={styles.removeAlertTitle}>Remove Item?</Text>
-         <Text style={styles.removeAlertDescription}>Are you sure you want to remove this item from your cart?</Text>
+       <View style={[styles.removeAlertContainer, {backgroundColor: colors.background}]}>
+         <Text style={globalStyles.textPrimary}>Remove Item?</Text>
+         <Text style={globalStyles.textSecondary}>Are you sure you want to remove this item from your cart?</Text>
          <TouchableOpacity onPress={()=> removeItem()} style={styles.removeAlertButton}> 
               <Text style={styles.removeAlertButtonText}>Remove</Text>
            </TouchableOpacity>
            <TouchableOpacity onPress={()=> onClose()} style={styles.removeAlertSecondaryButton}> 
-              <Text style={styles.removeAlertSecondaryButtonText}>Go Back</Text>
+              <Text style={[globalStyles.textPrimary, styles.removeAlertSecondaryButtonText]}>Go Back</Text>
            </TouchableOpacity>
        </View>
      )

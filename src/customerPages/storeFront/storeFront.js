@@ -25,6 +25,8 @@ import PhoneScreen from "../cart/addPhoneNumber";
 import EmailScreen from "../cart/addEmail";
 import ScheduleScreen from '../cart/schedule'
 
+
+
 const CustomDefaultTheme = {
   colors: {
     ...DefaultTheme.colors,
@@ -79,6 +81,10 @@ const CustomDefaultTheme = {
     btnPrimaryBorder: 'rgba(27,31,35,0.15)',
     btnPrimaryShadow: '0 1px 0 rgba(27,31,35,0.1)',
     btnPrimarySnsetShadow: ' 0 1px 0 hsla(0,0%,100%,0.03)',
+    
+    deletionText: '#cb2431',
+    deletionBg: '#ffeef0',
+    deletionBorder: '#d73a49'
   },
 };
 
@@ -150,11 +156,10 @@ function StoreFront(props) {
     updatedItem.total += item.total
   }
 
-  
-
   return (
     <View style={globalStyles.backgroundPrimary}>
       {/* <NavBar chefId={chef.id} navigation={navigation} /> */}
+
       <Menu ref={ref} storeName={storeName} chef={chef} chefId={chef.id} selectedItem={(item, data) =>
           setSelectedItem({ item: item, data: data })
         }
