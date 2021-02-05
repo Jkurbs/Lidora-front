@@ -10,14 +10,8 @@ function ItemInfosCell (item) {
     const globalStyles = useGlobalStyles()
     return (
         <View style={styles.itemDescriptionContainer}>
-            <View style={ styles.itemDescriptionContentContainer}>
-                <Text style={globalStyles.textPrimary}>{item?.item?.name ?? ""}</Text>
-                <Text style={globalStyles.textSecondary}>{item?.item?.description ?? ""}</Text>
-                <Text style={globalStyles.textPrimary}>${item?.item?.price ?? ""}</Text>
-            </View>
-            <Image style={styles.menuImage} defaultSource={{
-                uri: item?.item?.imageURL ?? "",
-            }} />
+            <Text style={[globalStyles.textPrimary, {alignSelf: 'flex-start',fontSize: 20}]}>{item?.item?.name ?? ""}</Text>
+            <Text style={[globalStyles.textSecondary, {marginTop: 8, fontSize: 17}]}>{item?.item?.description ?? ""}</Text>
     </View>
     )
 }

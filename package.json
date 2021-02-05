@@ -9,6 +9,7 @@
     "deploy-hosting": "npm run predeploy && firebase deploy --only hosting"
   },
   "dependencies": {
+    "@react-native-community/checkbox": "^0.5.7",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-community/segmented-control": "^2.2.2",
     "@react-native-community/slider": "^3.0.3",
@@ -61,6 +62,7 @@
     "react-native-image-picker": "^2.3.4",
     "react-native-maps": "0.27.1",
     "react-native-multiple-select": "^0.5.6",
+    "react-native-number-please": "^1.0.5",
     "react-native-paper": "^4.7.0",
     "react-native-reanimated": "~1.13.0",
     "react-native-safe-area-context": "3.1.4",

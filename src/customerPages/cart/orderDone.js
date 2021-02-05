@@ -6,11 +6,13 @@ import useGlobalStyles from '../storeFront/globalStyle'
 
 function OrderDone(props) {
     const navigation = props.navigation
-    const email = props.email 
+    const email = props.route.params.email 
+    const items = props.route.params.items 
     const globalStyle = useGlobalStyles()
 
     const goBack = () => {
-        navigation.navigate('Store', {items: [0]});
+        items.length = 0
+        navigation.navigate('Store');
     }
 
     return (

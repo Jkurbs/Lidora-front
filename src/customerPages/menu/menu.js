@@ -55,7 +55,7 @@ const Menu = forwardRef((props, ref) => {
                                     const itemData = element.data()
                                     items.push(itemData)
                                     newObj.data.forEach(async function (element) { 
-                                        element["items"] = items.filter(a => a.comboName === element.name) 
+                                        element["items"] = items.filter(a => a.comboName === element.name && a.categoryName === newObj.title[0]) 
                                     })
                                 })
                             })
@@ -126,7 +126,7 @@ const Menu = forwardRef((props, ref) => {
                             <Text style={[globalStyle.textPrimary, styles.sectionTitle]}>{section.title}</Text>
                             <View style={{paddingLeft: 20, alignItems:'center', flexDirection: 'row'}}>
                                 <MaterialIcons name="date-range" size={18} color={colors.textTertiary} />
-                                <Text style={{alignSelf: 'center', textAlign: 'center', marginBottom: 6, marginLeft: 8, color: colors.textTertiary, fontSize: 14, marginTop: 8, }}>Only delivers on {section.title}'s</Text>
+                                <Text style={{alignSelf: 'center', textAlign: 'center', marginBottom: 6, marginLeft: 8, color: colors.textTertiary, fontSize: 14, marginTop: 8, }}>Delivers on {section.title}'s</Text>
                             </View>
                         </View>
                     );

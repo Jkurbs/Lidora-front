@@ -8,6 +8,8 @@ import EmptyBag from '../../components/emptyBagView'
 import useGlobalStyles  from '../storeFront/globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 import NavBar from '../navigation/navBar'
+import moment from 'moment'
+
 
 const snapPoints = ["0%", "40%"]
 const ref = createRef();
@@ -46,6 +48,8 @@ function Card(props) {
   const chef = props.route.params.chef
   const items = props.route.params.items
 
+  const quantity = items.map(a => a.quantity).reduce((a, b) => a + b, 0)
+
   const subTotal = items.map(a => a.total).reduce((a, b) => a + b, 0)
   const calculatedAmount = calcFee(subTotal, "USD")
   
@@ -60,20 +64,25 @@ function Card(props) {
     return ( <View style={globalStyles.border}/> )
   }
 
-  const ItemsCell = ({item}) => (
-    <View style={styles.checkoutItemCellContainer}>
-        <View style={styles.checkoutItemContainer}>
-            <Text style={[globalStyles.textSecondary, styles.menuQuantity]}>{ `${item?.quantity ?? 1}x`}</Text>
-            <Text style={[globalStyles.textPrimary, styles.menuName]}>{item?.name ?? ""}</Text>
+  const ItemsCell = ({item}) => {
+    return (
+      <View style={{flexDirection: 'column', padding: 20}}>
+        <View style={styles.checkoutItemCellContainer}>
+            <View style={styles.checkoutItemContainer}>
+                <Text style={[globalStyles.textSecondary, styles.menuQuantity]}>{ `${item?.quantity ?? 1}x`}</Text>
+                <Text style={[globalStyles.textPrimary, styles.menuName]}>{item?.name ?? ""}</Text>
+            </View>
+            <View style={styles.checkoutItemRightContainer}>
+              <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}} onPress={()=> onOpen(item)}>
+                <Text style={[globalStyles.textPrimary, {marginTop: 0, marginRight: 8}]}>${item?.total ?? item?.price ?? 0}</Text>
+                <Ionicons name="ios-remove-circle-outline" size={24} color={colors.textTertiary} />
+              </TouchableOpacity>
+            </View>
         </View>
-        <View style={styles.checkoutItemRightContainer}>
-          <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}} onPress={()=> onOpen(item)}>
-            <Text style={[globalStyles.textPrimary, {marginTop: 0, marginRight: 8}]}>${item?.total ?? item?.price ?? 0}</Text>
-            <Ionicons name="ios-remove-circle-outline" size={24} color={colors.textTertiary} />
-          </TouchableOpacity>
-        </View>
+       {/* <Text style={globalStyles.textTertiary}>{`Delivers on: ${item.deliveryDates.join(", ")}`}</Text> */}
     </View>
-  );
+    )
+  }
 
   const TotalCell = () => (
     <View style={styles.totalContainer}>
@@ -155,7 +164,13 @@ function Card(props) {
       alert(`The minimum order amount is ${chef.threshold}$`)
       return 
     }
-    navigation.navigate("Checkout", {chef: chef, subTotal: subTotal, total: calculatedAmount.total}) 
+    navigation.navigate("Checkout", {
+      chef: chef, quantity: quantity,
+      subTotal: subTotal, total: calculatedAmount.total, 
+      serviceFee: calculatedAmount.fee, 
+      deliveryFee: calculatedAmount.deliveryFee, 
+      items: items
+    }) 
   }
 
   return (

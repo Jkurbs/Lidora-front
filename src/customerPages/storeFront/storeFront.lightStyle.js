@@ -231,7 +231,7 @@ export default StyleSheet.create({
     comboImage: {
         width: 40,
         height: 40,
-        borderRadius: 20, 
+        borderRadius: 5, 
         marginRight: 16
     },
 
@@ -242,8 +242,10 @@ export default StyleSheet.create({
     },
 
     itemDescriptionContainer: {
+        marginTop: 30,
+        marginBottom: 30,
         padding: 20,
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
     }, 
@@ -321,14 +323,11 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: 20,
-        paddingRight: 40,
         flexDirection: 'row'
     },
 
-
     // Checkout 
     checkoutItemCellContainer: {
-        padding: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',

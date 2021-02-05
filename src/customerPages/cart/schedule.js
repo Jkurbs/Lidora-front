@@ -17,9 +17,8 @@ function Schedule(props) {
     const addedDates = props.route.params.addedDates
 
     const initialState = {
-        [_today]: {disabled: true, selectedColor: 'blue', marked: true, dotColor: 'gray'}
+        [_today]: {disabled: true, selectedColor: 'blue', marked: true, dotColor: 'gray', marked: true}
     }
-
 
     const [date, setDate] = useState({_markedDates: initialState})
     const [selectedDays, setSelectedDays] = useState([])

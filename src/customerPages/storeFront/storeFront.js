@@ -24,6 +24,7 @@ import AddressScreen from "../cart/addAdress";
 import PhoneScreen from "../cart/addPhoneNumber";
 import EmailScreen from "../cart/addEmail";
 import ScheduleScreen from '../cart/schedule'
+import OrderDoneScreen from '../cart/orderDone'
 
 
 
@@ -137,15 +138,18 @@ function StoreFront(props) {
   const storeName = props.storeName;
   const navigation = props.navigation;
   const chef = props.chef;
-  const items = props.route.params?.items ?? []
 
   // States Bag
   const [selectedItem, setSelectedItem] = useState({ item: {}, data: [] });
-  const [bag, setBag] = useState(items);
+  const [bag, setBag] = useState([]);
   const globalStyles = useGlobalStyles();
 
+  const clearBag = () => {
+    setBag(null)
+  }
+
+
   const addToBag = (item) => {
-    // Check if combo 
     var index = bag.findIndex(x => x.name == item.name); 
     index === -1 ? setBag((oldArray) => [...oldArray, item]) : updateItems(item)
   };
@@ -222,8 +226,7 @@ function App(props) {
       <NavigationContainer theme={scheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme}>
         <Stack.Navigator
           initialRouteName="Store"
-          screenOptions={{ headerShown: false }}
-        >
+          screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Store">
             {(props) => (
               <StoreFront
@@ -249,6 +252,7 @@ function App(props) {
           <Stack.Screen name="Phone Number" component={PhoneScreen} />
           <Stack.Screen name="Email Address" component={EmailScreen} />
           <Stack.Screen name="Schedule deliveries" component={ScheduleScreen} />
+          <Stack.Screen name="Order Done" component={OrderDoneScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </AppearanceProvider>
