@@ -79,7 +79,7 @@ function Card(props) {
               </TouchableOpacity>
             </View>
         </View>
-       {/* <Text style={globalStyles.textTertiary}>{`Delivers on: ${item.deliveryDates.join(", ")}`}</Text> */}
+       <Text style={globalStyles.textTertiary}>{`Delivers on: ${item.deliveryDates.join(", ")}`}</Text>
     </View>
     )
   }

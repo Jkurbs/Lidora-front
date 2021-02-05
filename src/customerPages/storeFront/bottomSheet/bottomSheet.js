@@ -113,8 +113,13 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     // Add to bag 
     const addToBag = async () => {
         if (selectedDays.length === 0) { alert("Please choose at least one delivery date."); return }
-        props.item(selectedItem)
-        console.log(selectedItem)
+        items.forEach(async function(item) {
+            let copiedItem = JSON.parse(JSON.stringify(item))
+            if (copiedItem.total === undefined) { copiedItem.total = copiedItem.price}
+            if (copiedItem.quantity === undefined) {copiedItem.quantity = 1}
+            if (copiedItem.deliveryDates === undefined) {copiedItem.deliveryDates = selectedDays}
+            props.item(copiedItem)
+        })
      onClose()
     }
 
@@ -135,7 +140,6 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     }
 
     const saveDates = async () => {
-        selectedItem["selectedDays"] = selectedDays
         setIsChoosingDate(!isChoosingDate)
     }
 
@@ -192,7 +196,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
        const addExtra = () => {
             extraSelected.selected = !extraSelected.selected
             console.log(item)
-            // items.push(item.item)
+            items.push(item.item)
             forceUpdate()
        }
 
