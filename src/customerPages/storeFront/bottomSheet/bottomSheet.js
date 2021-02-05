@@ -195,7 +195,6 @@ const Sheet = React.memo(forwardRef((props, ref) => {
 
        const addExtra = () => {
             extraSelected.selected = !extraSelected.selected
-            console.log(item)
             items.push(item.item)
             forceUpdate()
        }
@@ -288,7 +287,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
         const comboSection = [
             { title: "Infos", data: [selectedItem] },
             { title: "Menu", data: items },
-            { title: "Extras", data: selectedItem?.extras ?? [] },
+            // { title: "Extras", data: selectedItem?.extras ?? [] },
             { title: "Select delivery dates", data: [0] },
         ]
 
@@ -337,9 +336,9 @@ const Sheet = React.memo(forwardRef((props, ref) => {
                         keyExtractor={(item, index) => item + index}
                         sections={comboSection}
                         renderSectionHeader={({ section }) => {
-                            if (section.title === "Extras" && section.data.length === 0){
-                                return <Text></Text>
-                            }
+                            // if (section.title === "Extras" && section.data.length === 0){
+                            //     return <Text></Text>
+                            // }
                             if (section.title === "Infos" || 
                                 section.title === "Select delivery dates") {
                                 return <Text></Text>
@@ -357,8 +356,8 @@ const Sheet = React.memo(forwardRef((props, ref) => {
                                     return <ItemInfosCell item={item} />
                                 case "Menu":
                                     return <CombosCell item={item} />
-                                case "Extras":
-                                    return <ExtrasCell item={item} />
+                                // case "Extras":
+                                //     return <ExtrasCell item={item} />
                                 case "Select delivery dates": 
                                     return <SelectDayCell/>
                                 default:
