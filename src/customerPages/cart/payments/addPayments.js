@@ -27,7 +27,7 @@ function AddPayments(props) {
     const globalStyles = useGlobalStyles()
     const { colors } = useTheme();
 
-    const addCart = async () => {
+    const addCart = () => {
 
         if (!stripe || !elements) { return }
   

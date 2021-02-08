@@ -108,7 +108,6 @@ function Checkout(props) {
             deliveryDates:item.deliveryDates,
             description:item.description ,
             imageURL: item.imageURL,
-            isVisible: item.isVisible,
             key: item.key,
             name: item.name,
             price:item.price,

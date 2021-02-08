@@ -51,7 +51,7 @@ function Card(props) {
   const quantity = items.map(a => a.quantity).reduce((a, b) => a + b, 0)
 
   const subTotal = items.map(a => a.total).reduce((a, b) => a + b, 0)
-  const calculatedAmount = calcFee(subTotal, "USD")
+  const calculatedAmount = calcFee(subTotal * items[0]?.deliveryDates?.length ?? 0, "USD")
   
   const [isOpen, setIsOpen] = useState(false) 
   const [opacity] = useState(new Animated.Value(0))
@@ -88,7 +88,7 @@ function Card(props) {
     <View style={styles.totalContainer}>
         <View style={styles.totalInnerContainer}>
             <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Subtotal</Text>
-            <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${subTotal}</Text>
+            <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${calculatedAmount.amount}</Text>
         </View>
         <View style={styles.totalInnerContainer}>
             <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Delivery Fee</Text>
@@ -161,7 +161,7 @@ function Card(props) {
 
   const proceedToCheckout = () => {
     if (calculatedAmount.total < chef.threshold) {
-      alert(`The minimum order amount is ${chef.threshold}$`)
+      alert(`The minimum order amount is $${chef.threshold}`)
       return 
     }
     navigation.navigate("Checkout", {

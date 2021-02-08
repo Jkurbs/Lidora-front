@@ -1,7 +1,7 @@
 
 
 import React, { useState, useEffect, forwardRef, useCallback, useRef } from "react";
-import {  View, SectionList, Text, Dimensions} from "react-native";
+import {  View, FlatList, SectionList, Text, Dimensions, Animated, TouchableOpacity} from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
 import useGlobalStyles from '../storeFront/globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
@@ -10,12 +10,11 @@ import ChefHighlight from '../storeFront/chefHighlight'
 import MenuCell from './menuCell'
 import ComboCell from './comboCell'
 import { useTheme } from '@react-navigation/native';
-import SegmentedControl from '@react-native-community/segmented-control';
 
-
+const ITEM_HEIGHT = 50;
 var db = firebase.firestore();
 
-const { height } = Dimensions.get("window")
+const { width, height } = Dimensions.get("window")
 
 const Menu = forwardRef((props, ref) => {
 
@@ -23,11 +22,34 @@ const Menu = forwardRef((props, ref) => {
 
     const chef = props.chef
     const [data, setData] = useState([])
-    const [categories, setCategories] = useState(["Wednesday, Thursday"])
+    const [categories, setCategories] = useState(["Wednesday", "Friday", "Thursday"])
+    const [tabIndex, setTabIndex] = useState(1);
 
     const globalStyle = useGlobalStyles()
     const { colors } = useTheme();
     const sectionRef = useRef()
+
+    const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+    const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
+
+    var scrollRef = useRef()
+    const [opacity, setOpacity] = useState(new Animated.Value(0))
+    var [scrollY, setScrollY] = useState(new Animated.Value(0))
+
+
+    const handleTabsChange = index => {
+        setTabIndex(index);
+    };
+
+    var TabHeight = scrollY.interpolate({
+        inputRange: [0, 150],
+        outputRange: [0, 30]
+    });
+
+    var Opacity = scrollY.interpolate({
+        inputRange: [0, 150],
+        outputRange: [0, 1]
+    });
 
     useEffect(() => {
 
@@ -64,8 +86,10 @@ const Menu = forwardRef((props, ref) => {
 
                     let newObj = {}
                     newObj["title"] = [categoryData.name]
+                    newObj["ref"] = React.createRef()
                     newObj["data"] = combos.filter(a => a.categoryName === categoryData.name) 
                
+                    console.log("New object: ", newObj)
                     if (!isCancelled) {
                         setData(oldArray => [...oldArray, newObj]);
                     }  
@@ -91,31 +115,57 @@ const Menu = forwardRef((props, ref) => {
         ref.current.snapTo(1);
     };
 
-    const scroll = () => {
-        sectionRef.current.scrollToLocation(
-            {
-              sectionIndex: 1,
-            //   itemIndex: itemIndex
-            }
-          );
+    const onScroll = () => {
+        console.log(scrollRef)
+        
+        if (scrollRef.current) { 
+            console.log(scrollRef)
+            scrollRef.scrollToLocation({
+                sectionIndex: 1,
+                viewPosition: 0,
+                itemIndex: 1,
+            })
+        }
     }
+    
+
+    const getItemLayout = (data, index) => ({
+        length: ITEM_HEIGHT,
+        offset: ITEM_HEIGHT * index,
+        index,
+      });
+
+    const Item = ({ item, count }) => {
+        const { colors } = useTheme();
+          return (
+            <TouchableOpacity onPress={()=> onScroll()} style={[styles.item, {width: (width/count) + 10}]}>
+                <Text style={[styles.title, {color: colors.textPrimary}]}>{item}</Text>
+            </TouchableOpacity>
+          )
+      }
+    
     
      return (
 
         <View>
-            {/* {
+            {
                 categories.length > 0 ?
-                <SegmentedControl
-                    values={categories}
-                    selectedIndex={0}
-                    onChange={(event) => { scroll() }}
+                <AnimatedFlatList
+                style={{ height: 60, opacity: Opacity, zIndex:1, backgroundColor: colors.bgTertiary, position: 'absolute', left: 0, top: 0, right: 0, width: width}}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={categories}
+                    renderItem={({ item }) => {
+                        return <Item item={item} count={categories.length}/>
+                    }}
+                   
+                    keyExtractor={item => item}
                 />
                 : 
                 null
-            } */}
+            }
              
             <SectionList
-                ref={sectionRef}
                 style={styles.sectionList}
                 ListHeaderComponent={<ChefHighlight chef={props.chef}/>}
                 keyExtractor={(item, index) => item.name}
@@ -134,7 +184,13 @@ const Menu = forwardRef((props, ref) => {
                 renderItem={({ item }) => {
                     return <ComboCell item={item} onOpen={onOpen}/>
                 }}
+
+                onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset:  { y: scrollY }}}],
+                    // { useNativeDriver: true }
+                  )}
                 
+                ref ={ ref => scrollRef = ref }
                 scrollEventThrottle={16}
                 refreshing={false}
                 stickySectionHeadersEnabled={false}

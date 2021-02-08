@@ -1,6 +1,6 @@
 
 import { StyleSheet, Dimensions } from "react-native";
-const { height } = Dimensions.get("window")
+const { width, height } = Dimensions.get("window")
 
 export default StyleSheet.create({
 
@@ -68,7 +68,7 @@ export default StyleSheet.create({
     },
 
     title: {
-        fontSize: 20, 
+        fontSize: 17, 
         alignSelf: 'center'
     },
 
@@ -195,7 +195,7 @@ export default StyleSheet.create({
     sectionTitle: {
         paddingLeft: 20,
         marginTop: 20, 
-        fontSize: 17
+        fontSize: 20
     },
 
     sectionListHeader: {
@@ -269,10 +269,9 @@ export default StyleSheet.create({
 
     item: {
         padding: 20,
+        paddingRight: 8,
         justifyContent: 'center',
-        backgroundColor: 'white',
         alignItems: 'center',
-        marginVertical: 10,
     },
 
 
