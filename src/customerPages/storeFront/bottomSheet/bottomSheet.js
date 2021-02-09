@@ -78,6 +78,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     const items = selectedItem?.items ?? []
     const initialTotal = items.map(a => a.price).reduce((a, b) => a + b, 0)
 
+    const [finalItems, setFinalItem] = useState(items)
     const [isChoosingDate, setIsChoosingDate] = useState(false)
     const [markedDates, setMarkedDates] = useState(null)
 
@@ -113,7 +114,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     // Add to bag 
     const addToBag = async () => {
         if (selectedDays.length === 0) { alert("Please choose at least one delivery date."); return }
-        items.forEach(async function(item) {
+        finalItems.forEach(async function(item) {
             let copiedItem = JSON.parse(JSON.stringify(item))
             if (copiedItem.total === undefined) { copiedItem.total = copiedItem.price}
             if (copiedItem.quantity === undefined) {copiedItem.quantity = 1}
@@ -195,7 +196,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
 
        const addExtra = () => {
             extraSelected.selected = !extraSelected.selected
-            items.push(item.item)
+            setFinalItem(items => [...items, item])
             forceUpdate()
        }
 
@@ -287,7 +288,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
         const comboSection = [
             { title: "Infos", data: [selectedItem] },
             { title: "Menu", data: items },
-            // { title: "Extras", data: selectedItem?.extras ?? [] },
+            { title: "Extras", data: selectedItem?.extras ?? [] },
             { title: "Select delivery dates", data: [0] },
         ]
 
@@ -336,9 +337,9 @@ const Sheet = React.memo(forwardRef((props, ref) => {
                         keyExtractor={(item, index) => item + index}
                         sections={comboSection}
                         renderSectionHeader={({ section }) => {
-                            // if (section.title === "Extras" && section.data.length === 0){
-                            //     return <Text></Text>
-                            // }
+                            if (section.title === "Extras" && section.data.length === 0){
+                                return <Text></Text>
+                            }
                             if (section.title === "Infos" || 
                                 section.title === "Select delivery dates") {
                                 return <Text></Text>
@@ -356,8 +357,8 @@ const Sheet = React.memo(forwardRef((props, ref) => {
                                     return <ItemInfosCell item={item} />
                                 case "Menu":
                                     return <CombosCell item={item} />
-                                // case "Extras":
-                                //     return <ExtrasCell item={item} />
+                                case "Extras":
+                                    return <ExtrasCell item={item} />
                                 case "Select delivery dates": 
                                     return <SelectDayCell/>
                                 default:
