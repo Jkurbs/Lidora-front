@@ -76,6 +76,7 @@
     "react-navigation-side-tabs": "0.0.7",
     "react-papaparse": "^3.11.0",
     "react-placeholder": "^4.0.3",
+    "react-scroll": "^1.8.1",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "recompose": "^0.30.0"
   },
