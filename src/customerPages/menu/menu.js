@@ -32,7 +32,7 @@ const Menu = forwardRef((props, ref) => {
     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
     const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
 
-    var scrollRef = useRef()
+    var scrollRef = useRef(null)
     const [opacity, setOpacity] = useState(new Animated.Value(0))
     var [scrollY, setScrollY] = useState(new Animated.Value(0))
 
@@ -115,17 +115,20 @@ const Menu = forwardRef((props, ref) => {
         ref.current.snapTo(1);
     };
 
-    const onScroll = () => {
-        console.log(scrollRef)
-        
-        if (scrollRef.current) { 
-            console.log(scrollRef)
-            scrollRef.scrollToLocation({
-                sectionIndex: 1,
-                viewPosition: 0,
-                itemIndex: 1,
-            })
-        }
+    const onScroll = (e) => {
+        console.log("EE",e)
+
+        const anchor = document.querySelector(`#${e}`)
+        anchor.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
+        // if (scrollRef.current) { 
+        //     console.log(scrollRef)
+        //     scrollRef.scrollToLocation({
+        //         sectionIndex: 1,
+        //         viewPosition: 0,
+        //         itemIndex: 1,
+        //     })
+        // }
     }
     
 
@@ -138,7 +141,7 @@ const Menu = forwardRef((props, ref) => {
     const Item = ({ item, count }) => {
         const { colors } = useTheme();
           return (
-            <TouchableOpacity onPress={()=> onScroll()} style={[styles.item, {width: (width/count) + 10}]}>
+            <TouchableOpacity onPress={()=>{onScroll(item)}} style={[styles.item, {width: (width/count) + 10}]}>
                 <Text style={[styles.title, {color: colors.textPrimary}]}>{item}</Text>
             </TouchableOpacity>
           )
@@ -147,7 +150,7 @@ const Menu = forwardRef((props, ref) => {
     
      return (
 
-        <View>
+        <View style={{overflow:"hidden"}}>
             {
                 categories.length > 0 ?
                 <AnimatedFlatList
@@ -158,7 +161,6 @@ const Menu = forwardRef((props, ref) => {
                     renderItem={({ item }) => {
                         return <Item item={item} count={categories.length}/>
                     }}
-                   
                     keyExtractor={item => item}
                 />
                 : 
@@ -173,6 +175,7 @@ const Menu = forwardRef((props, ref) => {
                 renderSectionHeader={({ section }) => {
                     return (
                         <View style={styles.headerView}>
+                            <div id={section.title} style={{position: "absolute",top:"-60px",left:"0"}}/>
                             <Text style={[globalStyle.textPrimary, styles.sectionTitle]}>{section.title}</Text>
                             <View style={{paddingLeft: 20, alignItems:'center', flexDirection: 'row'}}>
                                 <MaterialIcons name="date-range" size={18} color={colors.textTertiary} />
