@@ -116,16 +116,9 @@ const Menu = forwardRef((props, ref) => {
     };
 
     const onScroll = () => {
-        console.log(scrollRef)
+        console.log(data)
         
-        if (scrollRef.current) { 
-            console.log(scrollRef)
-            scrollRef.scrollToLocation({
-                sectionIndex: 1,
-                viewPosition: 0,
-                itemIndex: 1,
-            })
-        }
+        data.filter(a => a.title === ["Monday"]) 
     }
     
 
@@ -166,6 +159,7 @@ const Menu = forwardRef((props, ref) => {
             }
              
             <SectionList
+             scr
                 style={styles.sectionList}
                 ListHeaderComponent={<ChefHighlight chef={props.chef}/>}
                 keyExtractor={(item, index) => item.name}
@@ -190,7 +184,8 @@ const Menu = forwardRef((props, ref) => {
                     // { useNativeDriver: true }
                   )}
                 
-                ref ={ ref => scrollRef = ref }
+                  onScrollToIndexFailed
+                ref ={ scrollRef }
                 scrollEventThrottle={16}
                 refreshing={false}
                 stickySectionHeadersEnabled={false}
