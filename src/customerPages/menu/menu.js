@@ -22,7 +22,7 @@ const Menu = forwardRef((props, ref) => {
 
     const chef = props.chef
     const [data, setData] = useState([])
-    const [categories, setCategories] = useState(["Wednesday", "Friday", "Thursday"])
+    const [categories, setCategories] = useState([])
     const [tabIndex, setTabIndex] = useState(1);
 
     const globalStyle = useGlobalStyles()
@@ -150,8 +150,8 @@ const Menu = forwardRef((props, ref) => {
     
      return (
 
-        <View style={{overflow:"hidden"}}>
-            {
+        <View>
+            {/* {
                 categories.length > 0 ?
                 <AnimatedFlatList
                 style={{ height: 60, opacity: Opacity, zIndex:1, backgroundColor: colors.bgTertiary, position: 'absolute', left: 0, top: 0, right: 0, width: width}}
@@ -165,7 +165,7 @@ const Menu = forwardRef((props, ref) => {
                 />
                 : 
                 null
-            }
+            } */}
              
             <SectionList
              scr
@@ -194,7 +194,6 @@ const Menu = forwardRef((props, ref) => {
                     // { useNativeDriver: true }
                   )}
                 
-                  onScrollToIndexFailed
                 ref ={ scrollRef }
                 scrollEventThrottle={16}
                 refreshing={false}

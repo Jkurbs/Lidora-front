@@ -114,7 +114,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     // Add to bag 
     const addToBag = async () => {
         if (selectedDays.length === 0) { alert("Please choose at least one delivery date."); return }
-        finalItems.forEach(async function(item) {
+        items.forEach(async function(item) {
             let copiedItem = JSON.parse(JSON.stringify(item))
             if (copiedItem.total === undefined) { copiedItem.total = copiedItem.price}
             if (copiedItem.quantity === undefined) {copiedItem.quantity = 1}
@@ -288,7 +288,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
         const comboSection = [
             { title: "Infos", data: [selectedItem] },
             { title: "Menu", data: items },
-            { title: "Extras", data: selectedItem?.extras ?? [] },
+            // { title: "Extras", data: selectedItem?.extras ?? [] },
             { title: "Select delivery dates", data: [0] },
         ]
 
@@ -357,8 +357,8 @@ const Sheet = React.memo(forwardRef((props, ref) => {
                                     return <ItemInfosCell item={item} />
                                 case "Menu":
                                     return <CombosCell item={item} />
-                                case "Extras":
-                                    return <ExtrasCell item={item} />
+                                // case "Extras":
+                                //     return <ExtrasCell item={item} />
                                 case "Select delivery dates": 
                                     return <SelectDayCell/>
                                 default:
