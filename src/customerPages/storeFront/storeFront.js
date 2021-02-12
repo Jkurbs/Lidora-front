@@ -150,6 +150,7 @@ function StoreFront(props) {
 
   const addToBag = (item) => {
     var index = bag.findIndex(x =>
+      x.comboName === item.comboName &&
       x.categoryName === item.categoryName
   )
 
@@ -159,22 +160,18 @@ function StoreFront(props) {
       categoryName: item.categoryName, 
       comboName: item.comboName, 
     }
-
     index === -1 ? setBag((oldArray) => [...oldArray, data]) : updateItems(item)
   };
 
   const updateItems = (data) => {
     const combo = bag.find(element => 
+      element.comboName === data.comboName &&
       element.categoryName === data.categoryName
       );
       data.items.forEach(async function(item) {
         const updatedItem = combo.item.items.find((element) => { return element.key === item?.key ?? "" })
-        if (updatedItem === undefined) {
-             combo.item.items.push(item)
-        } else {
           updatedItem.quantity += item.quantity
           updatedItem.total += item.total
-        }
      })
   }
 

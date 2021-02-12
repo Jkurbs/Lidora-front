@@ -50,12 +50,11 @@ function Card(props) {
   const chef = props.route.params.chef
   const items = props.route.params.items
 
-  console.log("ITEMS: ", items.map(a => console.log(a.item.items)))
+  const sortedItems = items.map(a => a.item.items.sort((a, b) => (a.title > b.title) ? 1 : -1))
+  console.log(items)
+
+  
   const quantity = items.map(a => a.item.items.map(a => a.quantity).reduce((a, b) => a + b, 0))[0]
-
-
-
-
   const subTotal = items.map(a => a.item.items.map(a => a.total).reduce((a, b) => a + b, 0))[0]
   const dates = items.map(a => a.title)
   const calculatedAmount = calcFee(subTotal * dates.length ?? 0, "USD")
