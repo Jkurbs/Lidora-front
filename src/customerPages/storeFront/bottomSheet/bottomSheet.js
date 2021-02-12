@@ -117,20 +117,19 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     // Add to bag 
     const addToBag = async () => {
         if (selectedDays.length === 0) { alert("Please choose at least one delivery date."); return }
-        const mappedSelectedDays = selectedDays.map(x => moment(x).format('dddd MMM, DD'));
-        items.forEach(async function(item) { 
-            item.dates === mappedSelectedDays
+        
+        items.forEach(async function(item) {
+            let copiedItem = JSON.parse(JSON.stringify(item))
+            if (copiedItem.total === undefined) { copiedItem.total = copiedItem.price}
+            if (copiedItem.quantity === undefined) {copiedItem.quantity = 1}
+            if (copiedItem.deliveryDates === undefined) {copiedItem.deliveryDates = selectedDays}
+            
+            props.item(copiedItem)
         })
-        const data = {
-            title: mappedSelectedDays, 
-            dates: selectedDays,
-            comboName: selectedItem.name, 
-            categoryName: selectedItem.categoryName, 
-            items: JSON.parse(JSON.stringify(items))
-        }
-        props.item(data)
-        onClose()
+     onClose()
     }
+
+
 
     const onDaySelect = (day) => {
         const _selectedDay = moment(day.dateString).format(_format);

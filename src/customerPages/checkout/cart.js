@@ -44,20 +44,30 @@ function calcFee(amount, currency) {
 	};
 }
 
+
 function Card(props) {
 
   const navigation = props.navigation
   const chef = props.route.params.chef
   const items = props.route.params.items
 
-  const sortedItems = items.map(a => a.item.items.sort((a, b) => (a.title > b.title) ? 1 : -1))
-  console.log(items)
+  console.log("Items: ", items)
 
-  
-  const quantity = items.map(a => a.item.items.map(a => a.quantity).reduce((a, b) => a + b, 0))[0]
-  const subTotal = items.map(a => a.item.items.map(a => a.total).reduce((a, b) => a + b, 0))[0]
-  const dates = items.map(a => a.title)
-  const calculatedAmount = calcFee(subTotal * dates.length ?? 0, "USD")
+  // const mappedSelectedDays = items.map(a => a.selectedDays.map(x => moment(x).format('dddd MMM, DD')))
+
+  // var data = [
+  //   {
+  //     title: mappedSelectedDays,  
+  //     data: items
+  //   }
+  // ]
+
+
+
+  const quantity = items.map(a => a.quantity).reduce((a, b) => a + b, 0)
+
+  const subTotal = items.map(a => a.total).reduce((a, b) => a + b, 0)
+  const calculatedAmount = calcFee(subTotal * items[0]?.deliveryDates?.length ?? 0, "USD")
   
   const [isOpen, setIsOpen] = useState(false) 
   const [opacity] = useState(new Animated.Value(0))
@@ -68,23 +78,6 @@ function Card(props) {
 
   const FlatListItemSeparator = () => {
     return ( <View style={globalStyles.border}/> )
-  }
-
-
-  const ComboCell = ({item}) => {
-    return (
-      <View style={{flexDirection: 'column', padding: 20, justifyContent: 'center'}}>
-      <Text style={[globalStyles.textPrimary, styles.sectionTitle, {paddingLeft: 0}]}>Delivery for: {item.title.join("\n")}</Text>
-      {/* <Text style={[globalStyles.textSecondary]}>{item.comboName}</Text> */}
-        {
-          item.item.items?.map((prop, key) => {
-              return (
-                <ItemsCell item={prop} />
-              );
-          })
-        }
-      </View>
-    )
   }
 
   const ItemsCell = ({item}) => {
@@ -212,12 +205,20 @@ function Card(props) {
                   { title: "Total", data: [0] },
               ]}
                 renderSectionHeader={({ section }) => {
+                  if (section.title === "Total") {
                     return null
+                  } else {
+                    return (
+                      <View style={styles.headerView}>
+                            <Text style={[globalStyles.textPrimary, styles.sectionTitle]}>{section.title}</Text>
+                      </View>
+                    )
+                  }
                 }}
                 renderItem={({ item, section }) => {
                     switch (section.title) {
                         case "Items":
-                          return <ComboCell item={item} />
+                          return <ItemsCell item={item} />
                         case "Total":
                           return <TotalCell item={item} />
                         default:
