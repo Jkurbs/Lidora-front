@@ -1,4 +1,4 @@
-import React, { useState, createRef} from "react";
+import React, { useEffect, useState, createRef} from "react";
 import { View, Text, TouchableOpacity,  SectionList, Animated } from "react-native";
 import { useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -50,19 +50,25 @@ function Card(props) {
   const navigation = props.navigation
   const chef = props.route.params.chef
   const items = props.route.params.items
+  const [newArray, setNewArray] = useState([]) 
 
-  console.log("Items: ", items)
+  useEffect(() => {
+    var grouped = _.mapValues(_.groupBy(items, 'deliveryDates'),
+    clist => clist.map(item => _.omit(item, 'deliveryDates')));
+    Object.keys(grouped).forEach(key => {
+      console.log(key, grouped[key])
+      let obj = {}
+      obj['title'] = key 
+      obj['data'] = grouped[key]
+      setNewArray(prevState => [...prevState, obj])
+    });
 
-  // const mappedSelectedDays = items.map(a => a.selectedDays.map(x => moment(x).format('dddd MMM, DD')))
-
-  // var data = [
-  //   {
-  //     title: mappedSelectedDays,  
-  //     data: items
-  //   }
-  // ]
+  }, []);
+ 
 
 
+
+    console.log(newArray)
 
   const quantity = items.map(a => a.quantity).reduce((a, b) => a + b, 0)
 
@@ -193,16 +199,14 @@ function Card(props) {
     <View style={globalStyles.backgroundPrimary}>
         <NavBar items={items} title={"Cart"} leftIcon={"md-close"} navigation={navigation}/>
        {
-        items.length === 0 ?
+        newArray?.length ?? 0 === 0 ?
         <EmptyBag/>
         :
         <View>
             <SectionList
                 style={styles.sectionList}
                 keyExtractor={(item, index) => item + index}
-                sections={[
-                  { title: "Items", data: items },
-                  { title: "Total", data: [0] },
+                sections={ newArray, [{ title: "Total", data: [0] },
               ]}
                 renderSectionHeader={({ section }) => {
                   if (section.title === "Total") {
