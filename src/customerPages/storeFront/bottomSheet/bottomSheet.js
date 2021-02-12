@@ -120,10 +120,9 @@ const Sheet = React.memo(forwardRef((props, ref) => {
         
         items.forEach(async function(item) {
             let copiedItem = JSON.parse(JSON.stringify(item))
-            if (copiedItem.total === undefined) { copiedItem.total = copiedItem.price}
-            if (copiedItem.quantity === undefined) {copiedItem.quantity = 1}
+            if (copiedItem.total === NaN) { copiedItem.total = copiedItem.price}
+            if (copiedItem.quantity === NaN) {copiedItem.quantity = 1}
             if (copiedItem.deliveryDates === undefined) {copiedItem.deliveryDates = selectedDays}
-            
             props.item(copiedItem)
         })
      onClose()

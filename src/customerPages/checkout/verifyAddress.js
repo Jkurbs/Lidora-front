@@ -1,8 +1,11 @@
 import React from "react";
+
 import { View, Image, TouchableOpacity, Text} from "react-native";
 import useGlobalStyles  from '../storeFront/globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 import { useTheme } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+
 
 import Geocoder from 'react-native-geocoding';
 Geocoder.init("AIzaSyBNaHVtCYg7DcmHfKNtiuTV2REcWwonbH4"); // use a valid API key

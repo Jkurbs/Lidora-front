@@ -16,6 +16,28 @@ import {FlatList} from 'react-native-gesture-handler'
 const snapPoints = ["0%", "40%"]
 const ref = createRef();
 
+
+const DATA = [
+  {
+    title: "Main dishes",
+    data: ["Pizza", "Burger", "Risotto"]
+  },
+  {
+    title: "Sides",
+    data: ["French Fries", "Onion Rings", "Fried Shrimps"]
+  },
+  {
+    title: "Drinks",
+    data: ["Water", "Coke", "Beer"]
+  },
+  {
+    title: "Desserts",
+    data: ["Cheese Cake", "Ice Cream"]
+  }
+];
+
+
+
 var fees = { 
 	USD: { Percent: 12.9, Fixed: 0.30 },
 	GBP: { Percent: 12.4, Fixed: 0.20 },
@@ -44,7 +66,6 @@ function calcFee(amount, currency) {
 	};
 }
 
-
 function Card(props) {
 
   const navigation = props.navigation
@@ -52,22 +73,25 @@ function Card(props) {
   const items = props.route.params.items
   const [newArray, setNewArray] = useState([]) 
 
+
   useEffect(() => {
+    let isCancelled = false;
+
     var grouped = _.mapValues(_.groupBy(items, 'deliveryDates'),
     clist => clist.map(item => _.omit(item, 'deliveryDates')));
     Object.keys(grouped).forEach(key => {
-      console.log(key, grouped[key])
       let obj = {}
-      obj['title'] = key 
+      obj['title'] = key
       obj['data'] = grouped[key]
-      setNewArray(prevState => [...prevState, obj])
+      if (!isCancelled) {
+        setNewArray(prevState => [...prevState, obj])
+      }  
     });
-
-  }, []);
+    return () => {
+      isCancelled = true;
+    };
+}, [])
  
-
-
-
     console.log(newArray)
 
   const quantity = items.map(a => a.quantity).reduce((a, b) => a + b, 0)
@@ -198,17 +222,14 @@ function Card(props) {
   return (
     <View style={globalStyles.backgroundPrimary}>
         <NavBar items={items} title={"Cart"} leftIcon={"md-close"} navigation={navigation}/>
-       {
-        newArray?.length ?? 0 === 0 ?
-        <EmptyBag/>
-        :
         <View>
             <SectionList
                 style={styles.sectionList}
                 keyExtractor={(item, index) => item + index}
-                sections={ newArray, [{ title: "Total", data: [0] },
-              ]}
+                sections={newArray}
                 renderSectionHeader={({ section }) => {
+                  console.log("DATA: ", section.data)
+
                   if (section.title === "Total") {
                     return null
                   } else {
@@ -221,12 +242,10 @@ function Card(props) {
                 }}
                 renderItem={({ item, section }) => {
                     switch (section.title) {
-                        case "Items":
-                          return <ItemsCell item={item} />
                         case "Total":
                           return <TotalCell item={item} />
                         default:
-                            break
+                          return <ItemsCell item={item} />
                     }
                 }}
                 ListHeaderComponent={<View style={{width: '100%', height: 50}}/>}
@@ -245,7 +264,6 @@ function Card(props) {
               </View>
             </View>
         </View>
-      }
 
       {isOpen && renderBackDrop()}
 
