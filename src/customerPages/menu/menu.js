@@ -23,7 +23,8 @@ const Menu = forwardRef((props, ref) => {
     const chef = props.chef
     const [data, setData] = useState([])
     const [categories, setCategories] = useState([])
-    const [tabIndex, setTabIndex] = useState(1);
+
+    const [selectedTab, setSelectedTab] = useState(null);
 
     const globalStyle = useGlobalStyles()
     const { colors } = useTheme();
@@ -36,18 +37,8 @@ const Menu = forwardRef((props, ref) => {
     const [opacity, setOpacity] = useState(new Animated.Value(0))
     var [scrollY, setScrollY] = useState(new Animated.Value(0))
 
-
-    const handleTabsChange = index => {
-        setTabIndex(index);
-    };
-
-    var TabHeight = scrollY.interpolate({
-        inputRange: [0, 150],
-        outputRange: [0, 30]
-    });
-
     var Opacity = scrollY.interpolate({
-        inputRange: [0, 150],
+        inputRange: [0, 40],
         outputRange: [0, 1]
     });
 
@@ -89,7 +80,6 @@ const Menu = forwardRef((props, ref) => {
                     newObj["ref"] = React.createRef()
                     newObj["data"] = combos.filter(a => a.categoryName === categoryData.name) 
                
-                    console.log("New object: ", newObj)
                     if (!isCancelled) {
                         setData(oldArray => [...oldArray, newObj]);
                     }  
@@ -115,34 +105,22 @@ const Menu = forwardRef((props, ref) => {
         ref.current.snapTo(1);
     };
 
-    const onScroll = (e) => {
-        console.log("EE",e)
+    const tabSelected = (id) => {
 
+        setSelectedTab(id)
+    }
+
+    const onScroll = (e) => {
         const anchor = document.querySelector(`#${e}`)
         anchor.scrollIntoView({ behavior: 'smooth', block: 'center' })
-
-        // if (scrollRef.current) { 
-        //     console.log(scrollRef)
-        //     scrollRef.scrollToLocation({
-        //         sectionIndex: 1,
-        //         viewPosition: 0,
-        //         itemIndex: 1,
-        //     })
-        // }
     }
-    
 
-    const getItemLayout = (data, index) => ({
-        length: ITEM_HEIGHT,
-        offset: ITEM_HEIGHT * index,
-        index,
-      });
 
-    const Item = ({ item, count }) => {
+    const TabItem = ({ item, count }) => {
         const { colors } = useTheme();
           return (
-            <TouchableOpacity onPress={()=>{onScroll(item)}} style={[styles.item, {width: (width/count) + 10}]}>
-                <Text style={[styles.title, {color: colors.textPrimary}]}>{item}</Text>
+            <TouchableOpacity onPress={()=>{onScroll(item); tabSelected(item)}} style={[styles.item, {width: (width/count) + 10}]}>
+                <Text style={ selectedTab === item ? [styles.title, {backgroundColor: colors.borderPrimary, color: colors.textPrimary, fontWeight: 'bold'}] : [styles.title, {color: colors.textPrimary}]}>{item}</Text>
             </TouchableOpacity>
           )
       }
@@ -151,7 +129,7 @@ const Menu = forwardRef((props, ref) => {
      return (
 
         <View>
-            {/* {
+            {
                 categories.length > 0 ?
                 <AnimatedFlatList
                 style={{ height: 60, opacity: Opacity, zIndex:1, backgroundColor: colors.bgTertiary, position: 'absolute', left: 0, top: 0, right: 0, width: width}}
@@ -159,13 +137,14 @@ const Menu = forwardRef((props, ref) => {
                     showsHorizontalScrollIndicator={false}
                     data={categories}
                     renderItem={({ item }) => {
-                        return <Item item={item} count={categories.length}/>
+                        return <TabItem item={item} count={categories.length}/>
                     }}
+                    extraData={selectedTab}
                     keyExtractor={item => item}
                 />
                 : 
                 null
-            } */}
+            }
              
             <SectionList
              scr

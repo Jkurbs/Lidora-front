@@ -13,19 +13,22 @@ import firebase from "../../firebase/Firebase";
 import NavBar from '../navigation/mainNavBar';
 import Menu from "../menu/menu";
 import Sheet from './bottomSheet/bottomSheet'
-import CardScreen from "../cart/cart";
-import CheckoutScreen from "../cart/checkout";
+import CardScreen from "../checkout/cart";
+import CheckoutScreen from "../checkout/checkout";
 import AuthenticateScreen from "../../components/customerComponents/authenticatePage";
 import CustomerSettingsScreen from "../settings/CustomerSettings";
-import PaymentScreen from "../cart/payments/payments";
-import AddAllergiesScreen from "../cart/allergies";
-import AddPaymentScreen from "../cart/payments/addPayments";
-import AddressScreen from "../cart/addAdress";
-import PhoneScreen from "../cart/addPhoneNumber";
-import EmailScreen from "../cart/addEmail";
-import ScheduleScreen from '../cart/schedule'
-import OrderDoneScreen from '../cart/orderDone'
+import PaymentScreen from "../checkout/payment";
+import AddAllergiesScreen from "../checkout/allergies";
+import AddPaymentScreen from "../checkout/payments/addPayments";
+import AddressScreen from "../checkout/addAdress";
+import PhoneScreen from "../checkout/addPhoneNumber";
+import EmailScreen from "../checkout/addEmail";
+import ScheduleScreen from '../checkout/schedule'
+import OrderDoneScreen from '../checkout/orderDone'
 
+
+import CheckoutDetailsScreen from '../checkout/checkoutDetails'
+import VerifyAddress from '../checkout/verifyAddress'
 
 
 const CustomDefaultTheme = {
@@ -133,6 +136,7 @@ const Stack = createStackNavigator();
 var db = firebase.firestore();
 const ref = createRef();
 
+
 function StoreFront(props) {
 
   const storeName = props.storeName;
@@ -144,20 +148,34 @@ function StoreFront(props) {
   const [bag, setBag] = useState([]);
   const globalStyles = useGlobalStyles();
 
-  const clearBag = () => {
-    setBag(null)
-  }
-
-
   const addToBag = (item) => {
-    var index = bag.findIndex(x => x.name == item.name); 
-    index === -1 ? setBag((oldArray) => [...oldArray, item]) : updateItems(item)
+    var index = bag.findIndex(x =>
+      x.categoryName === item.categoryName
+  )
+
+    var data = {
+      item, 
+      title: item.title, 
+      categoryName: item.categoryName, 
+      comboName: item.comboName, 
+    }
+
+    index === -1 ? setBag((oldArray) => [...oldArray, data]) : updateItems(item)
   };
 
-  const updateItems = (item) => {
-    const updatedItem = bag.find((element) => { return element.key === item.key })
-    updatedItem.quantity += item.quantity
-    updatedItem.total += item.total
+  const updateItems = (data) => {
+    const combo = bag.find(element => 
+      element.categoryName === data.categoryName
+      );
+      data.items.forEach(async function(item) {
+        const updatedItem = combo.item.items.find((element) => { return element.key === item?.key ?? "" })
+        if (updatedItem === undefined) {
+             combo.item.items.push(item)
+        } else {
+          updatedItem.quantity += item.quantity
+          updatedItem.total += item.total
+        }
+     })
   }
 
   return (
@@ -180,6 +198,7 @@ function StoreFront(props) {
           style={[styles.buttonPrimary, globalStyles.btnPrimary]}>
           <Text style={styles.textCentered}>View Cart</Text>
           <View style={styles.primaryButtonAccessory}>
+
             <Text style={styles.primaryButtonSecondaryText}>{bag.length}</Text>
           </View>
         </TouchableOpacity>
@@ -253,6 +272,8 @@ function App(props) {
           <Stack.Screen name="Email Address" component={EmailScreen} />
           <Stack.Screen name="Schedule deliveries" component={ScheduleScreen} />
           <Stack.Screen name="Order Done" component={OrderDoneScreen} />
+          <Stack.Screen name="CheckoutDetails" component={CheckoutDetailsScreen} />
+          <Stack.Screen name="VerifyAddress" component={VerifyAddress} />
         </Stack.Navigator>
       </NavigationContainer>
     </AppearanceProvider>

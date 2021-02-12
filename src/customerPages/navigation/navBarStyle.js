@@ -29,8 +29,7 @@ export default StyleSheet.create({
     },
 
     rightIconText: { 
-        fontSize: 16, 
-        fontWeight: '600'
+        fontSize: 14, 
     },
 
     separator: {

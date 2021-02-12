@@ -1,7 +1,7 @@
 
 
 import React, {memo} from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Animated } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import useGlobalStyles from '../storeFront/globalStyle'
@@ -23,13 +23,11 @@ function NavBar(props) {
     const globalStyles = useGlobalStyles()
 
     const goBack = () => {
-        if (title === "Cart"){
-            navigation.navigate("Store", {items: items})
-        } else { navigation.pop() }
+        navigation.pop() 
     }
 
     return (
-        <View style={[styles.container, {backgroundColor: colors.background}]}>
+        <Animated.View style={[styles.container, {backgroundColor: colors.background}]}>
         <View style={styles.leftIcon}>
                 <TouchableOpacity onPress={()=> {goBack() }}>
                     {
@@ -44,17 +42,13 @@ function NavBar(props) {
             {
                 rightIcon ? 
                     <View style={styles.rightIcon}>
-                        <TouchableOpacity
-                         disabled={isDisabled}
-                         onPress={()=> { rightButtonPressed() }}>
-                            <Text style={[styles.rightIconText,{color: colors.textPrimary}]}>{rightIcon}</Text>
-                        </TouchableOpacity>
+                         <Text style={[styles.rightIconText,{color: colors.btnPrimaryBg}]}>${rightIcon}</Text>
                     </View>
                 :
                 null
             }
-         <View style={[globalStyles.border, styles.separator]} />
-        </View> 
+         <View style={[globalStyles.border, styles.separator, {width: '90%'}]} />
+        </Animated.View> 
     )     
 }
 

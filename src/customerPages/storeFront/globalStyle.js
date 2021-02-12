@@ -24,6 +24,7 @@ const getGlobalStyles = (props) => StyleSheet.create({
     // Texts 
     textPrimary: {
         marginTop: 6,
+        marginBottom: 6,
         fontWeight: '600',
         fontSize: 15,
         color: props.colors.textPrimary, 
@@ -53,7 +54,6 @@ const getGlobalStyles = (props) => StyleSheet.create({
         borderWidth: 1,
         paddingLeft: 6,
         marginTop: 8,
-        marginBottom: 8,
         backgroundColor: props.colors.inputBg,
         borderColor: props.colors.inputBorder,
         color: props.colors.inputTextColor, 

@@ -69,7 +69,9 @@ export default StyleSheet.create({
 
     title: {
         fontSize: 17, 
-        alignSelf: 'center'
+        alignSelf: 'center',
+        padding: 8,
+        borderRadius: 10
     },
 
     description: {
@@ -195,7 +197,7 @@ export default StyleSheet.create({
     sectionTitle: {
         paddingLeft: 20,
         marginTop: 20, 
-        fontSize: 20
+        fontSize: 18, 
     },
 
     sectionListHeader: {
@@ -335,18 +337,20 @@ export default StyleSheet.create({
     checkoutItemContainer: {
         flexDirection: 'row',
         alignItems: 'center', 
+        justifyContent: 'center'
     },
 
     checkoutItemRightContainer: {
         alignSelf: 'center', 
         flexDirection: 'row', 
         justifyContent: 'center', 
-        alignItems: 'center'
+        alignItems: 'center', 
     },
 
     menuQuantity: {
         fontWeight: '600', 
         marginRight: 8, 
+        alignSelf: 'center'
     },
 
     totalContainer: {
@@ -374,8 +378,9 @@ export default StyleSheet.create({
 
     inputContainerWrapper: {
         width: '100%',
-        marginTop: 50, 
+        // marginTop: 50, 
         padding: 20, 
+        paddingTop: 0,
         alignItems: 'center', 
         flexDirection: 'column', 
         justifyContent: 'space-between'

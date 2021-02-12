@@ -98,6 +98,9 @@ const Sheet = React.memo(forwardRef((props, ref) => {
                 ref.current.value = props.total;
                 item["total"] = props.total
                 item["quantity"] = props.quantity
+            } else {
+                if (isNaN(item.total)) { item.total = item.price}
+                if (isNaN(item.quantity)) {item.quantity = 1}
             }
         })
     }
@@ -114,14 +117,19 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     // Add to bag 
     const addToBag = async () => {
         if (selectedDays.length === 0) { alert("Please choose at least one delivery date."); return }
-        items.forEach(async function(item) {
-            let copiedItem = JSON.parse(JSON.stringify(item))
-            if (copiedItem.total === undefined) { copiedItem.total = copiedItem.price}
-            if (copiedItem.quantity === undefined) {copiedItem.quantity = 1}
-            if (copiedItem.deliveryDates === undefined) {copiedItem.deliveryDates = selectedDays}
-            props.item(copiedItem)
+        const mappedSelectedDays = selectedDays.map(x => moment(x).format('dddd MMM, DD'));
+        items.forEach(async function(item) { 
+            item.dates === mappedSelectedDays
         })
-     onClose()
+        const data = {
+            title: mappedSelectedDays, 
+            dates: selectedDays,
+            comboName: selectedItem.name, 
+            categoryName: selectedItem.categoryName, 
+            items: JSON.parse(JSON.stringify(items))
+        }
+        props.item(data)
+        onClose()
     }
 
     const onDaySelect = (day) => {
