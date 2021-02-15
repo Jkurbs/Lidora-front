@@ -56,6 +56,7 @@ function Card(props) {
     let isCancelled = false;
     var grouped = _.mapValues(_.groupBy(items, 'deliveryDates'),
     clist => clist.map(item => _.omit(item, 'deliveryDates')));
+    console.log("GROUPED",grouped)
     Object.keys(grouped).forEach(key => {
       let obj = {}
       var dates = key.split(',')
