@@ -23,7 +23,9 @@ function NavBar(props) {
     const globalStyles = useGlobalStyles()
 
     const goBack = () => {
-        navigation.pop() 
+        if (title === "Cart"){
+            navigation.navigate("Store", {items: items})
+        } else { navigation.pop() }
     }
 
     return (

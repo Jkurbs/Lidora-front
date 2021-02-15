@@ -27,7 +27,7 @@ function AddPayments(props) {
         if (!stripe || !elements) { setDisable(false); return }
         const cardElement = elements.getElement(CardElement);
         stripe.createToken(cardElement).then(function(result) {
-            if (result.error != null) { setDisable(false); alert(error.message) }
+            if (result.error != null) { setDisable(false); alert(result.error.message); return }
             setDisable(false)
             const data = {
                 ...params, 

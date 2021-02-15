@@ -16,28 +16,6 @@ import {FlatList} from 'react-native-gesture-handler'
 const snapPoints = ["0%", "40%"]
 const ref = createRef();
 
-
-const DATA = [
-  {
-    title: "Main dishes",
-    data: ["Pizza", "Burger", "Risotto"]
-  },
-  {
-    title: "Sides",
-    data: ["French Fries", "Onion Rings", "Fried Shrimps"]
-  },
-  {
-    title: "Drinks",
-    data: ["Water", "Coke", "Beer"]
-  },
-  {
-    title: "Desserts",
-    data: ["Cheese Cake", "Ice Cream"]
-  }
-];
-
-
-
 var fees = { 
 	USD: { Percent: 12.9, Fixed: 0.30 },
 	GBP: { Percent: 12.4, Fixed: 0.20 },
@@ -57,7 +35,7 @@ function calcFee(amount, currency) {
   var _deliveryFee = 2.00;
   var amount = parseFloat(amount);
   var total = (amount + parseFloat(_fee.Fixed) + _deliveryFee) / (1 - parseFloat(_fee.Percent) / 100);
-  var fee = total - amount;
+  var fee = (total - amount) + _deliveryFee;
 	return {
 		amount: amount,
     fee: fee.toFixed(2),
@@ -76,24 +54,32 @@ function Card(props) {
 
   useEffect(() => {
     let isCancelled = false;
-
     var grouped = _.mapValues(_.groupBy(items, 'deliveryDates'),
     clist => clist.map(item => _.omit(item, 'deliveryDates')));
     Object.keys(grouped).forEach(key => {
       let obj = {}
-      obj['title'] = key
-      obj['data'] = grouped[key]
-      if (!isCancelled) {
-        setNewArray(prevState => [...prevState, obj])
-      }  
+      var dates = key.split(',')
+      if (key.length > 1) {
+        obj['title'] = dates.map(x => moment(x).format('dddd MMM, DD')).join("\n")
+        obj['data'] = grouped[key]
+        if (!isCancelled) {
+          setNewArray(prevState => [...prevState, obj])
+        }  
+      } else {
+        obj['title'] = key.moment(x).format('dddd MMM, DD')
+        obj['data'] = grouped[key]
+        if (!isCancelled) {
+          setNewArray(prevState => [...prevState, obj])
+        }  
+      }
     });
+
+    setNewArray(prevState => [...prevState, {title: "Total", data: [0]}])
     return () => {
       isCancelled = true;
     };
 }, [])
  
-    console.log(newArray)
-
   const quantity = items.map(a => a.quantity).reduce((a, b) => a + b, 0)
 
   const subTotal = items.map(a => a.total).reduce((a, b) => a + b, 0)
@@ -112,7 +98,7 @@ function Card(props) {
 
   const ItemsCell = ({item}) => {
     return (
-      <View style={{flexDirection: 'column', padding: 20, paddingLeft: 0, justifyContent: 'center'}}>
+      <View style={{flexDirection: 'column', padding: 20, justifyContent: 'center'}}>
         <View style={styles.checkoutItemCellContainer}>
             <View style={styles.checkoutItemContainer}>
                 <Text style={[globalStyles.textSecondary, styles.menuQuantity, {marginTop: 6,
@@ -137,10 +123,6 @@ function Card(props) {
             <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${calculatedAmount.amount}</Text>
         </View>
         <View style={styles.totalInnerContainer}>
-            <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Delivery Fee</Text>
-            <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${calculatedAmount.deliveryFee}</Text>
-        </View>
-        <View style={styles.totalInnerContainer}>
             <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Service Fee</Text>
             <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${calculatedAmount.fee}</Text>
         </View>
@@ -152,14 +134,23 @@ function Card(props) {
   );
 
   const removeItem = async () => {
+    const data = newArray.map(x => x.data)
+    const group = data.filter(item => item.comboName == selectedItem.comboName) 
+    const initialGroup = items.filter(item => item.comboName == selectedItem.comboName) 
 
-    const group = items.filter(item => item.comboName == selectedItem.comboName) 
+    initialGroup.forEach(async function(item) {
+      const index = items.indexOf(item);
+      if (index > -1) {
+        items.splice(index, 1);
+      }
+    })
       group.forEach(async function(item) {
-        const index = items.indexOf(item);
+        const index = data.indexOf(item);
         if (index > -1) {
-          items.splice(index, 1);
+          data.splice(index, 1);
         }
       })
+
     onClose()
   }
 
@@ -210,32 +201,50 @@ function Card(props) {
       alert(`The minimum order amount is $${chef.threshold}`)
       return 
     }
+
+    const shippingDetails = {
+      title: "Shipping Details",
+      data: [0]
+    }
+  
+    const paymentDetails = {
+      title: "Payment Details",
+      data: [0]
+    }
+  
+    newArray.splice(1, 0, shippingDetails) 
+    newArray.splice(2, 0, paymentDetails)
+
     navigation.navigate("CheckoutDetails", {
       chef: chef, quantity: quantity,
-      subTotal: subTotal, total: calculatedAmount.total, 
+      subTotal: calculatedAmount.amount,
+      total: calculatedAmount.total, 
       serviceFee: calculatedAmount.fee, 
       deliveryFee: calculatedAmount.deliveryFee, 
-      items: items
+      items: items, 
+      data: newArray
     }) 
   }
 
   return (
     <View style={globalStyles.backgroundPrimary}>
         <NavBar items={items} title={"Cart"} leftIcon={"md-close"} navigation={navigation}/>
+      {
+       items.length === 0 ?
+        <EmptyBag/>
+        :
         <View>
             <SectionList
                 style={styles.sectionList}
                 keyExtractor={(item, index) => item + index}
                 sections={newArray}
                 renderSectionHeader={({ section }) => {
-                  console.log("DATA: ", section.data)
-
                   if (section.title === "Total") {
                     return null
                   } else {
                     return (
                       <View style={styles.headerView}>
-                            <Text style={[globalStyles.textPrimary, styles.sectionTitle]}>{section.title}</Text>
+                            <Text style={[globalStyles.textPrimary, styles.sectionTitle]}>Delivery for: {section.title}</Text>
                       </View>
                     )
                   }
@@ -264,6 +273,8 @@ function Card(props) {
               </View>
             </View>
         </View>
+      }
+        
 
       {isOpen && renderBackDrop()}
 

@@ -29,7 +29,6 @@ function CheckoutDetails(props) {
     const [disable, setDisable] = useState(true)
     const [indicatorAnimating, setIndicatorAnimating] = useState(false)
 
-
     const globalStyles = useGlobalStyles()
 
     const {colors} = useTheme()
@@ -42,41 +41,65 @@ function CheckoutDetails(props) {
     });
 
     const checkIsDisabled = () => {
-        if(firstName && lastName && street && apt &&
-        zipCode && state && emailAddress && phoneNumber === "") {
+        if(!firstName || !lastName || !street ||
+        !zipCode || !state || !emailAddress || !phoneNumber.phoneNumber) {
             setDisable(true)
             } else {
             setDisable(false)
         }
     }
 
+    const validateEmail = (text) => {
+        console.log(text);
+        let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (reg.test(text) === false) {
+          console.log("Email is Not Correct");
+          setEmailAddress(text)
+          return false;
+        }
+        else {
+          setEmailAddress(text)
+          console.log("Email is Correct");
+        }
+      }
+
     const submit = () => {
         // Verify Address
         setIndicatorAnimating(true)
         const enteredAddress = [apt, street, zipCode, state].join(' ')
+        const name = [firstName, lastName].join(' ')
 
         try { 
             Geocoder.from(enteredAddress)
                 .then(json => {
-                    setIndicatorAnimating(false)
-                    let location = json.results[0].formatted_address
-                    const data = {
-                        ...params, 
-                        enteredAddress: enteredAddress,
-                        location: location
-                    }
-                    if (enteredAddress != location) {
-                        navigation.navigate("VerifyAddress", data)
-                    } else {
-                        navigation.navigate("Payment", data)
-                    }
-                })
-            } catch (error) {
-                alert(error);
-            }
+                setIndicatorAnimating(false)
+                let location = json.results[0].formatted_address
+                const data = {
+                    ...params, 
+                    name: name,
+                    personal: {
+                        emailAddress: emailAddress, 
+                        phoneNumber: phoneNumber,
+                    },
+                    address: {
+                        apt: apt, 
+                        street: street,
+                        state: state, 
+                        zipCode: zipCode,
+                    },
+                    location: location
+                }
+                if (enteredAddress != location) {
+                    navigation.navigate("VerifyAddress", data)
+                } else {
+                    navigation.navigate("AddAllergies", data)
+                }
+            })
+        } catch (error) {
+            alert(error);
+        }
     }
         
-    
 
     return (
         <View style={globalStyles.backgroundPrimary}>
@@ -88,11 +111,9 @@ function CheckoutDetails(props) {
                 scrollEventThrottle={30}
                 onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset:  { y: scrollY }}}],
-                    // { useNativeDriver: true }
-                )}
-                >
+                )}>
 
-                <View style={{ padding: 20, marginTop: 100, width: '100%'}}>
+                <View style={{ padding: 20, marginTop: 80, width: '100%'}}>
                     <Text style={[globalStyles.textPrimary, {fontSize: 26}]}>Where should we send your order?</Text>
                 </View>
                 
@@ -158,7 +179,9 @@ function CheckoutDetails(props) {
                         placeholder="Email Address"
                         autoCorrect={false}
                         textContentType={"fullStreetAddress"}
-                        onChangeText={(text) => {setEmailAddress(text);checkIsDisabled()}}/>
+                        onChangeText={(text) => {validateEmail(text); checkIsDisabled()}}
+                        value={emailAddress}
+                        />
                         <Text style={globalStyles.textSecondary}>
                             We’ll email you a receipt and send order updates.
                         </Text>
@@ -170,7 +193,8 @@ function CheckoutDetails(props) {
                         value={phoneNumber.phoneNumberFormat}
                         onChangeText={(phoneNumberFormat) => {
                             let phoneNumber = phoneNumberFormat.toString().replace(/\D+/g, '');
-                            setPhoneNumber({phoneNumber: phoneNumber, phoneNumberFormat: phoneNumberFormat})
+                            setPhoneNumber({phoneNumber: phoneNumber, phoneNumberFormat: phoneNumberFormat});
+                            checkIsDisabled()
                         }}
                         type={'cel-phone'}
                         maxLength={phoneNumber.phoneNumberFormat.toString().startsWith("1") ? 18 : 16}
@@ -190,15 +214,11 @@ function CheckoutDetails(props) {
                     </View>
                 </View>
 
-                <TouchableOpacity onPress={()=> submit()} style={ [disable ? globalStyles.btnPrimaryDisabled : globalStyles.btnPrimary, {marginTop: 60, marginBottom: 60, position: 'relative', flexDirection: 'row'}]}>
-                    <View>
-                        <ActivityIndicator hidesWhenStopped={true} animating={indicatorAnimating} color={colors.textSecondary} style={{ alignSelf: 'center'}} />
-                        <Text style={styles.textCentered}>{indicatorAnimating? "" : "Continue to Payment"}</Text>
-                    </View>
+                <TouchableOpacity disabled={disable} onPress={()=> submit()} style={ [disable ? globalStyles.btnPrimaryDisabled : globalStyles.btnPrimary, {marginTop: 60, marginBottom: 60, position: 'relative', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}]}>
+                    <Text style={styles.textCentered}>{indicatorAnimating? "" : "Continue to Payment"}</Text>
+                    <ActivityIndicator hidesWhenStopped={true} animating={indicatorAnimating} color={colors.textSecondary} style={{marginBottom: 16, alignSelf: 'center'}} />
                 </TouchableOpacity>
-
-                </ScrollView>
-            
+            </ScrollView>
         </View>
     )
 }

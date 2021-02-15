@@ -12,7 +12,7 @@ function OrderDone(props) {
 
     const goBack = () => {
         items.length = 0
-        navigation.navigate('Store');
+        navigation.navigate("Store", {items: []})
     }
 
     return (

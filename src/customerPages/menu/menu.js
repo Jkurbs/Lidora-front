@@ -92,7 +92,6 @@ const Menu = forwardRef((props, ref) => {
           };
     }, [])
 
-    console.log("Menu data: ", data)
     // Open Bottom Sheet
     const onOpen = async (item) => {
 

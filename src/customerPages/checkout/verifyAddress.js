@@ -15,26 +15,30 @@ function VerifyAddress(props) {
     const navigation = props.navigation
     const params = props.route.params
     const location = params.location 
-    const enteredAddress = params.enteredAddress 
+    const address = params.address
     const globalStyles = useGlobalStyles()
     const {colors} = useTheme()
 
+    const enteredAddress = [address.apt, address.street, address.zipCode, address.state].join(' ')
+
     const submit = (useRecommended) => {
-        if (useRecommended) { 
-            delete params.enteredAddress;
-        } else {
-            delete params.location;
+        const data = {
+            ...params, 
         }
-        navigation.navigate("Payment", params)
+        if (useRecommended) { 
+            data["location"] = location
+        } else {
+            data["location"] = enteredAddress
+        }
+        navigation.navigate("AddAllergies", params)
      };
     
-
     return (
-        <View style={globalStyles.backgroundPrimary}>
-            <TouchableOpacity onPress={()=> navigation.pop()}> 
+        <View style={globalStyles.backgroundPrimary, {marginBottom: 60}}>
+            <TouchableOpacity style={{padding: 20}} onPress={()=> navigation.pop()}> 
                 <Ionicons name={"md-close"} size={24} color={colors.textPrimary} />
             </TouchableOpacity>
-            <View style={{ padding: 20, marginTop: 70, width: '100%'}}>
+            <View style={{ padding: 20, marginTop: 40, width: '100%'}}>
                 <Text style={[globalStyles.textPrimary, {fontSize: 24, marginBottom: 20}]}>Use recommended
                     address instead?
                  </Text>

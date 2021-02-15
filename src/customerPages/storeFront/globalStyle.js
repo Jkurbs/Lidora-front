@@ -59,6 +59,17 @@ const getGlobalStyles = (props) => StyleSheet.create({
         color: props.colors.inputTextColor, 
     },
 
+    formInputInvalide: {
+        height: 50,
+        borderRadius: 6,
+        borderWidth: 1,
+        paddingLeft: 6,
+        marginTop: 8,
+        backgroundColor: props.colors.inputBg,
+        borderColor: props.colors.inputBorder,
+        color: props.colors.inputTextColor, 
+    },
+
     btnPrimary: {
         zIndex: 1,
         flexDirection: 'row',

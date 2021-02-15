@@ -117,11 +117,10 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     // Add to bag 
     const addToBag = async () => {
         if (selectedDays.length === 0) { alert("Please choose at least one delivery date."); return }
-        
         items.forEach(async function(item) {
             let copiedItem = JSON.parse(JSON.stringify(item))
-            if (copiedItem.total === NaN) { copiedItem.total = copiedItem.price}
-            if (copiedItem.quantity === NaN) {copiedItem.quantity = 1}
+            if (copiedItem.total === undefined) { copiedItem.total = copiedItem.price}
+            if (copiedItem.quantity === undefined) {copiedItem.quantity = 1}
             if (copiedItem.deliveryDates === undefined) {copiedItem.deliveryDates = selectedDays}
             props.item(copiedItem)
         })

@@ -185,7 +185,6 @@ export default StyleSheet.create({
     sectionList: {
         height: height, 
         width: '100%',
-        // paddingBottom: 120
     },
 
     listItemSeparatorStyle: {
@@ -197,7 +196,7 @@ export default StyleSheet.create({
     sectionTitle: {
         paddingLeft: 20,
         marginTop: 20, 
-        fontSize: 18, 
+        fontSize: 17, 
     },
 
     sectionListHeader: {
@@ -489,6 +488,14 @@ export default StyleSheet.create({
         justifyContent: 'space-between'
     },
 
+
+    cardImage: {
+        width: 30,
+        height: 30,
+        borderRadius: 2,
+        marginRight: 16,
+        alignSelf: 'center'
+    }
 
 })
 

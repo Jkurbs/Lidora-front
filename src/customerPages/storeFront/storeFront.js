@@ -248,7 +248,7 @@ function App(props) {
           <Stack.Screen name="Settings" component={CustomerSettingsScreen} />
           <Stack.Screen name="Authenticate" component={AuthenticateScreen} />
           <Stack.Screen name="Payment" component={PaymentScreen} />
-          <Stack.Screen name="Add Allergies" component={AddAllergiesScreen} />
+          <Stack.Screen name="AddAllergies" component={AddAllergiesScreen} />
           <Stack.Screen name="Add Payment" component={AddPaymentScreen} />
           <Stack.Screen name="Address" component={AddressScreen} />
           <Stack.Screen name="Phone Number" component={PhoneScreen} />

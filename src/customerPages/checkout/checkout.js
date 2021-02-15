@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, SectionList } from "react-native";
+import { View, Image, Text, TouchableOpacity, ActivityIndicator, SectionList } from "react-native";
 import { useTheme } from '@react-navigation/native';
 import firebase from '../../firebase/Firebase'
-import { Entypo } from '@expo/vector-icons';
 import NavBar from '../navigation/navBar'
 import useGlobalStyles  from '../storeFront/globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
-import OrderDone from '../checkout/orderDone'
 
 var db = firebase.firestore();
 
@@ -15,80 +13,41 @@ function Checkout(props) {
   const navigation = props.navigation
   const params = props.route.params
   const chef = params.chef
+  const personal = params.personal
+  const card = params.card.token.card
+  const address = params.address
   const subTotal = parseFloat((params.subTotal * 100).toFixed())
   const total = parseFloat((params.total * 100).toFixed())
 
+  const data = params.data 
   const items = params.items
   const quantity = params.quantity
   const serviceFee = params.serviceFee
   const deliveryFee = params.deliveryFee
 
-  const [allergies, setAllergies] = useState(null)
-  const [address, setAddress] = useState(null)
-  const [phone, setPhone] = useState(null)
-  const [email, setEmail] = useState(null)
-  const [payment, setPayment] = useState(null)
-  const [disable, setDisable] = useState(false)
-  const [done, setDone] = useState(false)
-
   const globalStyles = useGlobalStyles()
   const { colors } = useTheme();
+
+  const [disable, setDisable] = useState(false)
 
   const FlatListItemSeparator = () => {
     return ( <View style={globalStyles.border}/> )
   }
 
-  const getData = (props) => {
-    if (props === undefined) {return}
-    switch(props.type) {
-      case "Allergy": 
-        setAllergies(props.data)
-      case "Address":
-        setAddress(props.data) 
-        break;
-      case "Phone":
-        setPhone(props.data)
-        break;
-      case "Email":
-        setEmail(props.data)
-        break; 
-      case "Payment":
-        setPayment(props.data)
-      default:
-        break;
-    }
-  }
-
-  const readData = (item) => {
-    if (item === "Add Allergies") {
-      return allergies ?? ""
-    } else if (item === "Address") {
-      return address?.street ?? ""
-    } else if (item === "Phone Number") {
-      return phone ?? ""
-    } else if (item === "Email Address") {
-      return email ?? ""
-    } else {
-      return payment?.token?.card?.last4 ?? ""
-    }
-  }
 
   const checkout = async () => {
     setDisable(true)
-    const token = payment?.token?.id 
-    if (token === null, address === null || email === null,
-       phone === null || payment === null) 
-    { setDisable(false); return }
-
+    const token = params.card.token.id 
+    
     const ref = db.collection("payments").doc()
     await ref.set({
       chefId: chef.id,
-      email: email, 
-      phone: phone,
+      email: personal.emailAddress, 
+      phone: personal.phoneNumber,
+      apt: address.apt, 
       line1: address.street, 
-      city: address.city,
       state: address.state,
-      zip: address.postalCode,
+      zip: address.zipCode,
       subtotal: subTotal,
       total: total, 
       serviceFee: serviceFee,
@@ -96,7 +55,7 @@ function Checkout(props) {
       quantity: quantity,
       currency: "USD", 
       payment_method: token, 
-      allergies: allergies,
+      allergies: personal.allergies,
       destination: chef.account_id, 
  
       // items
@@ -120,7 +79,7 @@ function Checkout(props) {
         const status = doc.data().status
         if (status != undefined) {
           if (doc.data().status === "succeeded") {
-            navigation.navigate("Order Done", {items: items, email: email})
+            navigation.navigate("Order Done", {items: items, email: personal.emailAddress})
             setDisable(false)
             unsubcribe()
           } else {
@@ -139,22 +98,111 @@ function Checkout(props) {
 };
 
 
+const ItemsCell = ({item}) => {
+  return (
+    <View style={{flexDirection: 'column', padding: 20, justifyContent: 'center'}}>
+      <View style={styles.checkoutItemCellContainer}>
+          <View style={styles.checkoutItemContainer}>
+              <Text style={[globalStyles.textSecondary, styles.menuQuantity, {marginTop: 6,
+      marginBottom: 6,}]}>{ `${item?.quantity ?? 1}x`}</Text>
+              <Text style={[globalStyles.textPrimary, styles.menuName]}>{item?.name ?? ""}</Text>
+          </View>
+          <View style={styles.checkoutItemRightContainer}>
+            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}} onPress={()=> onOpen(item)}>
+              <Text style={[globalStyles.textPrimary, { marginRight: 8}]}>${item?.total ?? item?.price ?? 0}</Text>
+            </TouchableOpacity>
+          </View>
+      </View>
+  </View>
+  )
+}
 
+    const PaymentCell = () => (
+      <View style={[styles.totalContainer, {flexDirection: 'row'}]}> 
+        <Image style={styles.cardImage} source={require(`../../assets/icon/${card.brand.toLowerCase()}.png`)} />
+        <Text style={{color: colors.textPrimary}}>***{card.last4}</Text>
+      </View>
+    )
+
+    const TotalCell = () => (
+      <View style={styles.totalContainer}>
+          <View style={styles.totalInnerContainer}>
+              <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Subtotal</Text>
+              <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${params.subTotal}</Text>
+          </View>
+          <View style={styles.totalInnerContainer}>
+              <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Service Fee</Text>
+              <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${params.serviceFee}</Text>
+          </View>
+          <View style={styles.totalInnerContainer}>
+              <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Amount due</Text>
+              <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${params.total}</Text>
+          </View>
+      </View>
+    );
 
     return (
       <View style={globalStyles.backgroundPrimary}>
-        <NavBar title={"Checkout"} navigation={navigation}/>
-
-          <View style={{width: '100%',  position: "absolute", bottom: 30, flexDirection: 'column', justifyContent: 'space-between'}}>
-              <TouchableOpacity onPress={()=> checkout()} style={ disable ? globalStyles.btnPrimaryDisabled : globalStyles.btnPrimary}> 
-                <Text style={styles.textCentered}>{disable ? "":"Checkout"}</Text>
-                <ActivityIndicator hidesWhenStopped={true} animating={disable} color={colors.textSecondary} style={{ position: 'absolute', alignSelf: 'center' }} />
-              </TouchableOpacity>
-              <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 8, bottom: 0}}>
-                  <Entypo name="lock" size={12} color="#6A737D"/>
-                  <Text style={globalStyles.textTertiary}>Payments are processed securely.</Text>
-              </View>
-          </View>
+        <NavBar title={"Checkout"} rightIcon={params.total} navigation={navigation}/>
+        
+        <SectionList
+          ListHeaderComponent={
+            <View style={{padding: 20, marginTop: 70, width: '100%'}}>
+            <Text style={[globalStyles.textPrimary, {fontSize: 22}]}>
+            Ready to place your order? Let’s make sure everything’s right.</Text>
+        </View>
+          }
+          style={styles.sectionList}
+          keyExtractor={(item, index) => item + index}
+          sections={data}
+          renderSectionHeader={({ section }) => {
+            if (section.title === "Total") {
+              return null
+            } else if (section.title === "Shipping Details") {
+              return (
+                  <View style={[styles.headerView, {marginTop: 20}]}>
+                    <Text style={[globalStyles.textPrimary, styles.sectionTitle, {marginTop: 0}]}>{section.title}</Text>
+                  </View>
+              )
+            } else if (section.title === "Payment Details") {
+              return (
+                <View style={[styles.headerView, {marginTop: 20}]}>
+                  <Text style={[globalStyles.textPrimary, styles.sectionTitle, {marginTop: 0}]}>{section.title}</Text>
+                </View>
+              )
+            }
+            else {
+                return (
+                  <View style={styles.headerView}>
+                        <Text style={[globalStyles.textPrimary, styles.sectionTitle, {marginTop: 0}]}>Delivery for: {section.title}</Text>
+                  </View>
+                )
+              }
+            }}
+            renderItem={({ item, section }) => {
+                switch (section.title) {
+                    case "Total":
+                      return <TotalCell item={item} />
+                    case "Shipping Details":
+                      return (
+                        <Text style={{padding: 20, maxWidth: '50%', color: colors.textPrimary}}>{params.name}{"\n"}{params.location}</Text>
+                      )
+                    case "Payment Details":
+                      return <PaymentCell/>
+                    default:
+                      return <ItemsCell item={item} />
+                }
+            }}
+            ListFooterComponent={<View style={{width: '100%', height: 150}}/>}
+            ItemSeparatorComponent={FlatListItemSeparator}
+            stickySectionHeadersEnabled={false}
+            />
+        <TouchableOpacity
+          onPress={() => checkout()}
+          style={[styles.buttonPrimary, globalStyles.btnPrimary]}>
+          <Text style={styles.textCentered}>{disable ? "":"Checkout"}</Text>
+          <ActivityIndicator hidesWhenStopped={true} animating={disable} color={colors.textSecondary} style={{ position: 'absolute', alignSelf: 'center' }} />
+        </TouchableOpacity>
       </View>
     )
 }
