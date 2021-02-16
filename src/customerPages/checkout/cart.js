@@ -138,21 +138,30 @@ function Card(props) {
     const data = newArray.map(x => x.data)
     const group = data.filter(item => item.comboName == selectedItem.comboName) 
     const initialGroup = items.filter(item => item.comboName == selectedItem.comboName) 
+    console.log("DATA",data)
+    console.log("SELECTEDITEM",selectedItem)
+    console.log("GROUP",group)
+    console.log("initialgroup",initialGroup)
 
-    initialGroup.forEach(async function(item) {
-      const index = items.indexOf(item);
-      if (index > -1) {
-        items.splice(index, 1);
-      }
-    })
-      group.forEach(async function(item) {
-        const index = data.indexOf(item);
-        if (index > -1) {
-          data.splice(index, 1);
-        }
-      })
+    if(selectedItem.quantity > 1){
+      selectedItem.quantity = selectedItem.quantity - 1
+      console.log("deducted item",selectedItem.quantity)
+    }
 
-    onClose()
+    // initialGroup.forEach(async function(item) {
+    //   const index = items.indexOf(item);
+    //   if (index > -1) {
+    //     items.splice(index, 1);
+    //   }
+    // })
+    //   group.forEach(async function(item) {
+    //     const index = data.indexOf(item);
+    //     if (index > -1) {
+    //       data.splice(index, 1);
+    //     }
+    //   })
+
+    // onClose()
   }
 
   const renderBackDrop = () => (
