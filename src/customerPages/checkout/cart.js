@@ -10,6 +10,7 @@ import styles from '../storeFront/storeFront.lightStyle'
 import NavBar from '../navigation/navBar'
 import moment from 'moment'
 import comboCell from "../menu/comboCell";
+import NumberPlease from "react-native-number-please";
 
 import {FlatList} from 'react-native-gesture-handler'
 
@@ -98,12 +99,18 @@ function Card(props) {
   }
 
   const ItemsCell = ({item}) => {
+    const initialValues = [{ id: "quantity", value: item.quantity ?? 1 }];
     return (
       <View style={{flexDirection: 'column', padding: 20, justifyContent: 'center'}}>
         <View style={styles.checkoutItemCellContainer}>
             <View style={styles.checkoutItemContainer}>
                 <Text style={[globalStyles.textSecondary, styles.menuQuantity, {marginTop: 6,
         marginBottom: 6,}]}>{ `${item?.quantity ?? 1}x`}</Text>
+                    <NumberPlease
+                digits={[{ id: "quantity", label: "", min: 0, max: item.quantity }]}
+                values={initialValues}
+                onChange={(values) => calculate(values)}
+            />
                 <Text style={[globalStyles.textPrimary, styles.menuName]}>{item?.name ?? ""}</Text>
             </View>
             <View style={styles.checkoutItemRightContainer}>
