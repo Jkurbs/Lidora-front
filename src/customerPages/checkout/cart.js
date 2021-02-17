@@ -142,14 +142,15 @@ function Card(props) {
   );
 
   const changeQty = async (values,item) => {
-    console.log("VALUE AND ITEM",values,item)
+    console.log("VALUE",values)
+    console.log("ITEM",item)
 
   }
 
   const removeItem = async () => {
     const data = newArray.map(x => x.data)
     const group = data.filter(item => item.comboName == selectedItem.comboName) 
-    const initialGroup = items.filter(item => item.comboName == selectedItem.comboName) 
+    const initialGroup = items.filter(item => item.key != selectedItem.key) 
     console.log("DATA",data)
     console.log("SELECTEDITEM",selectedItem)
     console.log("GROUP",group)
