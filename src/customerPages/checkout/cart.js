@@ -107,9 +107,9 @@ function Card(props) {
                 <Text style={[globalStyles.textSecondary, styles.menuQuantity, {marginTop: 6,
         marginBottom: 6,}]}>{ `${item?.quantity ?? 1}x`}</Text>
                     <NumberPlease
-                digits={[{ id: "quantity", label: "", min: 0, max: item.quantity }]}
+                digits={[{ id: "quantity", label: "", min: 0, max: 99 }]}
                 values={initialValues}
-                onChange={(values) => calculate(values)}
+                onChange={(values) => changeQty(values,item)}
             />
                 <Text style={[globalStyles.textPrimary, styles.menuName]}>{item?.name ?? ""}</Text>
             </View>
@@ -140,6 +140,11 @@ function Card(props) {
         </View>
     </View>
   );
+
+  const changeQty = async (values,item) => {
+    console.log("VALUE AND ITEM",values,item)
+
+  }
 
   const removeItem = async () => {
     const data = newArray.map(x => x.data)
