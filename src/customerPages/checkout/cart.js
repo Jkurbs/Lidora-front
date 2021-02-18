@@ -119,10 +119,7 @@ function Card(props) {
                 <Text style={[globalStyles.textPrimary, styles.menuName]}>{item?.name ?? ""}</Text>
             </View>
             <View style={styles.checkoutItemRightContainer}>
-              <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}} onPress={()=> onOpen(item)}>
-                <Text style={[globalStyles.textPrimary, { marginRight: 8}]}>${item?.total ?? item?.price ?? 0}</Text>
-                <Ionicons name="ios-remove-circle-outline" size={24} color={colors.textTertiary} />
-              </TouchableOpacity>
+              <Text style={[globalStyles.textPrimary, { marginRight: 8}]}>${item?.total ?? item?.price ?? 0}</Text>
             </View>
         </View>
     </View>
@@ -148,11 +145,14 @@ function Card(props) {
 
   const changeQty = async (values,item) => {
     const itemsData = newArray[0].data
+    if(values[0].value == 0){
+      onOpen(item)
+    }
 
     item.quantity = values[0].value
     item.total = item.price * values[0].value
     setSelectedItem(item)
-    
+
     const newSubtotal = itemsData.map(a => a.total).reduce((a, b) => a + b, 0)
     console.log("SUBTOT",newSubtotal)
     setCalcAmount(calcFee(newSubtotal * items[0]?.deliveryDates?.length ?? 0, "USD"))
@@ -160,13 +160,18 @@ function Card(props) {
   }
 
   const removeItem = async () => {
-    const data = newArray.map(x => x.data)
-    const group = data.filter(item => item.comboName == selectedItem.comboName) 
-    const initialGroup = items.filter(item => item.key != selectedItem.key) 
-
+    const itemsData = newArray[0].data
+    console.log("REMOVEITEM",selectedItem)
+    const filteredITEMS = itemsData.filter(item => item !== selectedItem);
+    console.log("FILTEREDITEM",filteredITEMS)
+    newArray[0].data = filteredITEMS
     if(selectedItem.quantity > 1){
       console.log("test")
     }
+
+        // const data = newArray.map(x => x.data)
+    // const group = data.filter(item => item.comboName == selectedItem.comboName) 
+    // const initialGroup = items.filter(item => item.key != selectedItem.key) 
 
     // initialGroup.forEach(async function(item) {
     //   const index = items.indexOf(item);
@@ -181,7 +186,7 @@ function Card(props) {
     //     }
     //   })
 
-    // onClose()
+    onClose()
   }
 
   const renderBackDrop = () => (
