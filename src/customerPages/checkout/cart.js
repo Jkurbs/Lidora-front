@@ -150,8 +150,7 @@ function Card(props) {
          itemsData.push(item)
       }
     })})
-    console.log("itemsData",itemsData)
-    console.log("DATA",data)
+
     if(values[0].value == 0){
       onOpen(item)
     }
@@ -161,7 +160,7 @@ function Card(props) {
     setSelectedItem(item)
 
     const newSubtotal = itemsData.map(a => a.total).reduce((a, b) => a + b, 0)
-    console.log("SUBTOT",newSubtotal)
+
     setCalcAmount(calcFee(newSubtotal * items[0]?.deliveryDates?.length ?? 0, "USD"))
 
   }
@@ -173,30 +172,27 @@ function Card(props) {
          itemsData.push(item)
       }
     })})
-    console.log("REMOVEITEM",selectedItem)
+
     const filteredITEMS = itemsData.filter(item => item !== selectedItem);
-    console.log("FILTEREDITEM",filteredITEMS)
-    newArray[0].data = filteredITEMS
-    if(selectedItem.quantity > 1){
-      console.log("test")
-    }
 
-        // const data = newArray.map(x => x.data)
-    // const group = data.filter(item => item.comboName == selectedItem.comboName) 
-    // const initialGroup = items.filter(item => item.key != selectedItem.key) 
+    //Remove item from newArray
+    newArray.forEach(x => {
+      var removeIndex = "none"
 
-    // initialGroup.forEach(async function(item) {
-    //   const index = items.indexOf(item);
-    //   if (index > -1) {
-    //     items.splice(index, 1);
-    //   }
-    // })
-    //   group.forEach(async function(item) {
-    //     const index = data.indexOf(item);
-    //     if (index > -1) {
-    //       data.splice(index, 1);
-    //     }
-    //   })
+      if(x.data[0] != 0){
+        x.data.forEach(item => {
+          if(item.quantity == 0){
+            const id = x.data.indexOf(item)
+            x.data.splice(id,1)
+          }
+        })
+      }
+      if(x.data.length == 0){
+        const id = newArray.indexOf(x)
+        newArray.splice(id,1)
+      }
+    })
+
 
     onClose()
   }
