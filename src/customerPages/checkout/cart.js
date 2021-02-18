@@ -144,7 +144,14 @@ function Card(props) {
   );
 
   const changeQty = async (values,item) => {
-    const itemsData = newArray[0].data
+    const itemsData = []
+    const data = newArray.map(x => {x.data.forEach(item => {
+      if(item !== 0){
+         itemsData.push(item)
+      }
+    })})
+    console.log("itemsData",itemsData)
+    console.log("DATA",data)
     if(values[0].value == 0){
       onOpen(item)
     }
@@ -160,7 +167,12 @@ function Card(props) {
   }
 
   const removeItem = async () => {
-    const itemsData = newArray[0].data
+    const itemsData = []
+    const data = newArray.map(x => {x.data.forEach(item => {
+      if(item !== 0){
+         itemsData.push(item)
+      }
+    })})
     console.log("REMOVEITEM",selectedItem)
     const filteredITEMS = itemsData.filter(item => item !== selectedItem);
     console.log("FILTEREDITEM",filteredITEMS)
