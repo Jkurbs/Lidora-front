@@ -51,6 +51,11 @@ function Card(props) {
   const chef = props.route.params.chef
   const items = props.route.params.items
   const [newArray, setNewArray] = useState([]) 
+  //useState version
+  const [quantity,setQuantity] = useState(items.map(a => a.quantity).reduce((a, b) => a + b, 0))
+  const [subTotal,setSubTotal] = useState(items.map(a => a.total).reduce((a, b) => a + b, 0))
+  const [calculatedAmount,setCalcAmount] = useState(calcFee(subTotal * items[0]?.deliveryDates?.length ?? 0, "USD"))
+  
 
 
   useEffect(() => {
@@ -82,10 +87,10 @@ function Card(props) {
     };
 }, [])
  
-  const quantity = items.map(a => a.quantity).reduce((a, b) => a + b, 0)
+  // const quantity = items.map(a => a.quantity).reduce((a, b) => a + b, 0)
 
-  const subTotal = items.map(a => a.total).reduce((a, b) => a + b, 0)
-  const calculatedAmount = calcFee(subTotal * items[0]?.deliveryDates?.length ?? 0, "USD")
+  // const subTotal = items.map(a => a.total).reduce((a, b) => a + b, 0)
+  // const calculatedAmount = calcFee(subTotal * items[0]?.deliveryDates?.length ?? 0, "USD")
   
   const [isOpen, setIsOpen] = useState(false) 
   const [opacity] = useState(new Animated.Value(0))
@@ -142,8 +147,15 @@ function Card(props) {
   );
 
   const changeQty = async (values,item) => {
-    console.log("VALUE",values)
-    console.log("ITEM",item)
+    const itemsData = newArray[0].data
+
+    item.quantity = values[0].value
+    item.total = item.price * values[0].value
+    setSelectedItem(item)
+    
+    const newSubtotal = itemsData.map(a => a.total).reduce((a, b) => a + b, 0)
+    console.log("SUBTOT",newSubtotal)
+    setCalcAmount(calcFee(newSubtotal * items[0]?.deliveryDates?.length ?? 0, "USD"))
 
   }
 
@@ -151,14 +163,9 @@ function Card(props) {
     const data = newArray.map(x => x.data)
     const group = data.filter(item => item.comboName == selectedItem.comboName) 
     const initialGroup = items.filter(item => item.key != selectedItem.key) 
-    console.log("DATA",data)
-    console.log("SELECTEDITEM",selectedItem)
-    console.log("GROUP",group)
-    console.log("initialgroup",initialGroup)
 
     if(selectedItem.quantity > 1){
-      selectedItem.quantity = selectedItem.quantity - 1
-      console.log("deducted item",selectedItem.quantity)
+      console.log("test")
     }
 
     // initialGroup.forEach(async function(item) {
