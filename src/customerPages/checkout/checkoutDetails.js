@@ -9,13 +9,32 @@ const { height } = Dimensions.get("window")
 
 import Geocoder from 'react-native-geocoding';
 import { ScrollView } from "react-native-gesture-handler";
-Geocoder.init("AIzaSyBNaHVtCYg7DcmHfKNtiuTV2REcWwonbH4"); // use a valid API key
+Geocoder.init("AIzaSyBNaHVtCYg7DcmHfKNtiuTV2REcWwonbH4");
+
+
+function degrees_to_radians(degrees) {
+  var pi = Math.PI;
+  return degrees * (pi/180);
+}
+ 
+function getDistance(latitude1, longitude1, latitude2, longitude2) {  
+  const earth_radius = 6371;
+
+  const dLat = degrees_to_radians(latitude2 - latitude1);  
+  const dLon = degrees_to_radians(longitude2 - longitude1);  
+
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(degrees_to_radians(latitude1)) * Math.cos(degrees_to_radians(latitude2)) * Math.sin(dLon/2) * Math.sin(dLon/2);  
+  const c = 2 * Math.asin(Math.sqrt(a));  
+  const d = earth_radius * c;  
+  return d;  
+}
 
 function CheckoutDetails(props) {
 
     const navigation = props.navigation
     const params = props.route.params
 
+    const chef = params.chef
     const [firstName, setFirstname] = useState("")
     const [lastName, setLastname] = useState("")
 
@@ -74,6 +93,18 @@ function CheckoutDetails(props) {
                 .then(json => {
                 setIndicatorAnimating(false)
                 let location = json.results[0].formatted_address
+                console.log("LOCATION: ", json.results)
+                let coordinates = json.results[0].geometry.location
+
+
+                Geocoder.from(41.89, 12.49)
+                    .then(json => {
+                    var addressComponent = json.results[0].address_components[0];
+                    console.log(json.results[0]);
+                }).catch(error => console.warn(error));
+
+                // See if distance is in Radius
+                // const distance = getDistance(coordinates.latitude, coordinates.longitude, chef.latitude, chef.longitude);
                 const data = {
                     ...params, 
                     name: name,
@@ -94,6 +125,32 @@ function CheckoutDetails(props) {
                 } else {
                     navigation.navigate("AddAllergies", data)
                 }
+
+
+                // if (distance > 100) {
+                //   const data = {
+                //     ...params, 
+                //     name: name,
+                //     personal: {
+                //         emailAddress: emailAddress, 
+                //         phoneNumber: phoneNumber,
+                //     },
+                //     address: {
+                //         apt: apt, 
+                //         street: street,
+                //         state: state, 
+                //         zipCode: zipCode,
+                //     },
+                //     location: location
+                // }
+                // if (enteredAddress != location) {
+                //     navigation.navigate("VerifyAddress", data)
+                // } else {
+                //     navigation.navigate("AddAllergies", data)
+                // }
+                // } else {
+                //   alert(`Oops...it seems that you're located too far from ${chef.title}`)
+                // }
             })
         } catch (error) {
             alert(error);

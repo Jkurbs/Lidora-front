@@ -270,7 +270,8 @@ export default StyleSheet.create({
 
     item: {
         padding: 20,
-        paddingRight: 8,
+        paddingRight: 16,
+        margin: 10,
         justifyContent: 'center',
         alignItems: 'center',
     },

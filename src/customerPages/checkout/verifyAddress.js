@@ -1,11 +1,10 @@
 import React from "react";
 
-import { View, Image, TouchableOpacity, Text} from "react-native";
+import { View, TouchableOpacity, Text} from "react-native";
 import useGlobalStyles  from '../storeFront/globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 import { useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-
 
 import Geocoder from 'react-native-geocoding';
 Geocoder.init("AIzaSyBNaHVtCYg7DcmHfKNtiuTV2REcWwonbH4"); // use a valid API key
@@ -31,14 +30,14 @@ function VerifyAddress(props) {
             data["location"] = enteredAddress
         }
         navigation.navigate("AddAllergies", params)
-     };
+    };
     
     return (
         <View style={globalStyles.backgroundPrimary, {marginBottom: 60}}>
             <TouchableOpacity style={{padding: 20}} onPress={()=> navigation.pop()}> 
                 <Ionicons name={"md-close"} size={24} color={colors.textPrimary} />
             </TouchableOpacity>
-            <View style={{ padding: 20, marginTop: 40, width: '100%'}}>
+            <View style={{ padding: 20, marginTop: 25, width: '100%'}}>
                 <Text style={[globalStyles.textPrimary, {fontSize: 24, marginBottom: 20}]}>Use recommended
                     address instead?
                  </Text>
@@ -55,7 +54,6 @@ function VerifyAddress(props) {
                 <Text style={globalStyles.textSecondary}>{location}</Text>
             </View> 
              </View>
-
             <TouchableOpacity onPress={()=> submit(true)} style={ [globalStyles.btnPrimary, {marginTop: 60 , position: 'relative'}]}> 
                 <Text style={styles.textCentered}>{"Use Recommended"}</Text>
             </TouchableOpacity>

@@ -36,14 +36,21 @@ function Checkout(props) {
 
 
   const checkout = async () => {
+    
     setDisable(true)
     const token = params.card.token.id 
     
     const ref = db.collection("payments").doc()
     await ref.set({
+
       chefId: chef.id,
+      chefEmailAddress: chef.email_address,
+      storeName: chef.title,
+      destination: chef.account_id, 
+      customerName: params.name,
       email: personal.emailAddress, 
       phone: personal.phoneNumber,
+      location: params.location,
       apt: address.apt, 
       line1: address.street, 
       state: address.state,
@@ -56,8 +63,7 @@ function Checkout(props) {
       currency: "USD", 
       payment_method: token, 
       allergies: personal.allergies,
-      destination: chef.account_id, 
- 
+      data: data,
       // items
     }).then(function() {
         items.forEach(async (item) => { 
@@ -66,7 +72,7 @@ function Checkout(props) {
             comboName:item.comboName,
             deliveryDates:item.deliveryDates,
             description:item.description ,
-            imageURL: item.imageURL,
+            imageURL: item.imageURL ?? "",
             key: item.key,
             name: item.name,
             price:item.price,

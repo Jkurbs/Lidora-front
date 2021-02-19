@@ -20,16 +20,31 @@ import CustomerSettingsScreen from "../settings/CustomerSettings";
 import PaymentScreen from "../checkout/payment";
 import AddAllergiesScreen from "../checkout/allergies";
 import AddPaymentScreen from "../checkout/payments/addPayments";
-import AddressScreen from "../checkout/addAdress";
-import PhoneScreen from "../checkout/addPhoneNumber";
-import EmailScreen from "../checkout/addEmail";
 import ScheduleScreen from '../checkout/schedule'
 import OrderDoneScreen from '../checkout/orderDone'
-
 
 import CheckoutDetailsScreen from '../checkout/checkoutDetails'
 import VerifyAddress from '../checkout/verifyAddress'
 
+function degrees_to_radians(degrees)
+{
+  var pi = Math.PI;
+  return degrees * (pi/180);
+}
+
+
+
+function getDistance(latitude1, longitude1, latitude2, longitude2) {  
+  const earth_radius = 6371;
+
+  const dLat = degrees_to_radians(latitude2 - latitude1);  
+  const dLon = degrees_to_radians(longitude2 - longitude1);  
+
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(degrees_to_radians(latitude1)) * Math.cos(degrees_to_radians(latitude2)) * Math.sin(dLon/2) * Math.sin(dLon/2);  
+  const c = 2 * Math.asin(Math.sqrt(a));  
+  const d = earth_radius * c;  
+  return d;  
+}
 
 const CustomDefaultTheme = {
   colors: {
@@ -193,8 +208,8 @@ function StoreFront(props) {
 function App(props) {
 
   const storeName = props.storeName.toLowerCase();
+  const location = props.location 
   const [chef, setChef] = useState({});
-
   const scheme = useColorScheme();
 
   useEffect(() => {
@@ -208,6 +223,15 @@ function App(props) {
           querySnapshot.forEach(function (doc) {
             if (doc.exists) {
               const chef = doc.data();
+              // Check location
+              navigator.geolocation.getCurrentPosition(function(position) {
+                const distance = getDistance(position.coords.latitude, position.coords.longitude, chef.latitude, chef.longitude);
+                if (distance < 100) {
+                  console.log("Within 20 kilometer radius");
+                } else {
+                  alert(`Oops...it seems that you're located too far from ${chef.title}`)
+                }
+              })
               if (!isCancelled) {
                 setChef(chef);
               }
@@ -222,6 +246,11 @@ function App(props) {
       isCancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+  
+}, []);
+
 
   return (
     <AppearanceProvider>
@@ -250,9 +279,6 @@ function App(props) {
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="AddAllergies" component={AddAllergiesScreen} />
           <Stack.Screen name="Add Payment" component={AddPaymentScreen} />
-          <Stack.Screen name="Address" component={AddressScreen} />
-          <Stack.Screen name="Phone Number" component={PhoneScreen} />
-          <Stack.Screen name="Email Address" component={EmailScreen} />
           <Stack.Screen name="Schedule deliveries" component={ScheduleScreen} />
           <Stack.Screen name="Order Done" component={OrderDoneScreen} />
           <Stack.Screen name="CheckoutDetails" component={CheckoutDetailsScreen} />

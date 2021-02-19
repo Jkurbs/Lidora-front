@@ -119,7 +119,7 @@ const Menu = forwardRef((props, ref) => {
     const TabItem = ({ item, count }) => {
         const { colors } = useTheme();
           return (
-            <TouchableOpacity onPress={()=>{onScroll(item); tabSelected(item)}} style={[styles.item, {width: (width/count) + 10}]}>
+            <TouchableOpacity onPress={()=>{onScroll(item); tabSelected(item)}} style={[styles.item, {width: (width/count) + 20}]}>
                 <Text style={ selectedTab === item ? [styles.title, {backgroundColor: colors.borderPrimary, color: colors.textPrimary, fontWeight: 'bold'}] : [styles.title, {color: colors.textPrimary}]}>{item}</Text>
             </TouchableOpacity>
           )

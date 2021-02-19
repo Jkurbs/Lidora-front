@@ -11,12 +11,12 @@ function AddAllergies(props) {
     const params = props.route.params;
     const globalStyles = useGlobalStyles()
     const { colors } = useTheme();
-    const [allergies, setAllergies] = useState(false)
+    const [allergies, setAllergies] = useState("")
     const [disable, setDisable] = useState(false)
 
     const addAllergies = () => {
         setDisable(true)
-        params.personal["allergies"] = allergies ?? ""
+        params.personal["allergies"] = allergies ?? " "
         navigation.navigate('Payment', params);
     };
 

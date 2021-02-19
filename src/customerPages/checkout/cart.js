@@ -74,7 +74,11 @@ function Card(props) {
       }
     });
 
-    setNewArray(prevState => [...prevState, {title: "Total", data: [0]}])
+     setNewArray(prevState => [...prevState, 
+      {title: "Total", data: [0]}, 
+      {title: "Shipping Details",data: [0]},
+      {title: "Payment Details",data: [0]}
+    ])
     return () => {
       isCancelled = true;
     };
@@ -202,19 +206,6 @@ function Card(props) {
       return 
     }
 
-    const shippingDetails = {
-      title: "Shipping Details",
-      data: [0]
-    }
-  
-    const paymentDetails = {
-      title: "Payment Details",
-      data: [0]
-    }
-  
-    newArray.splice(1, 0, shippingDetails) 
-    newArray.splice(2, 0, paymentDetails)
-
     navigation.navigate("CheckoutDetails", {
       chef: chef, quantity: quantity,
       subTotal: calculatedAmount.amount,
@@ -222,7 +213,7 @@ function Card(props) {
       serviceFee: calculatedAmount.fee, 
       deliveryFee: calculatedAmount.deliveryFee, 
       items: items, 
-      data: newArray
+      data: newArray,
     }) 
   }
 
@@ -239,7 +230,7 @@ function Card(props) {
                 keyExtractor={(item, index) => item + index}
                 sections={newArray}
                 renderSectionHeader={({ section }) => {
-                  if (section.title === "Total") {
+                  if (section.title === "Total" || section.title ===  "Shipping Details" || section.title ===  "Payment Details") {
                     return null
                   } else {
                     return (
@@ -253,6 +244,10 @@ function Card(props) {
                     switch (section.title) {
                         case "Total":
                           return <TotalCell item={item} />
+                        case "Shipping Details": 
+                        return null
+                        case "Payment Details": 
+                          return null
                         default:
                           return <ItemsCell item={item} />
                     }

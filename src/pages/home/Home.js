@@ -213,8 +213,9 @@ class App extends React.Component {
       userLoggedIn: null,
       userData: {
         user: [],
-        userID: ""
-      }
+        userID: "", 
+      }, 
+      location: {}
     }
   }
 
@@ -257,8 +258,9 @@ class App extends React.Component {
     let getChefandID = currentURL.split("?");
     let storeName = currentURL.split("=")[1]
 
+
     if (typeof getChefandID[1] != 'undefined') {
-      return <StoreFront storeName={storeName} />
+      return <StoreFront storeName={storeName}/>
 
     } else {
       return (

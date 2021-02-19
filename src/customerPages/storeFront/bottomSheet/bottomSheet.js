@@ -79,7 +79,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     const initialTotal = items.map(a => a.price).reduce((a, b) => a + b, 0)
 
     const [finalItems, setFinalItem] = useState(items)
-    const [isChoosingDate, setIsChoosingDate] = useState(false)
+    const [isInDetailMode, setIsInDetailMode] = useState(false)
     const [markedDates, setMarkedDates] = useState(null)
 
     const [selectedDays, setSelectedDays] = useState([])
@@ -107,11 +107,12 @@ const Sheet = React.memo(forwardRef((props, ref) => {
 
     const onHandleClick = useCallback(() => {
         setMarkedDates(getDaysInMonth(moment().month(), moment().year(), DISABLED_DAYS))
-        setIsChoosingDate(!isChoosingDate)
+        setIsInDetailMode(!isInDetailMode)
     });
 
     const showItemDetails = (item) => {
         setSelectedMenuItem(item)
+        setIsInDetailMode(true)
     }
 
     // Add to bag 
@@ -146,7 +147,8 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     }
 
     const saveDates = async () => {
-        setIsChoosingDate(!isChoosingDate)
+        setIsInDetailMode(!isInDetailMode)
+        
     }
 
     // Cell to show Combos
@@ -172,27 +174,42 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     }
 
         return (
-            <View onPress={()=> {showItemDetails(item)}} style={styles.groupContainer}>
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                <Image style={styles.comboImage} defaultSource={{
-                    uri: item.item.imageURL,
-                }} />
-            <View style={{flexDirection: 'column', justifyContent: 'center'}}>
-                <Text style={[globalStyles.textPrimary, {alignSelf: 'center'}]}>{item?.item?.name ?? ""}</Text>
-                <Text style={[globalStyles.textSecondary]}>${item?.item?.total ?? item?.item?.price}</Text>
-            </View>
-            </View>
-            
-            <View style={{flexDirection: 'row', justifyContent: 'center', width: 60, alignSelf: 'center', justifyContent: 'space-around'}}>
+            <View style={styles.groupContainer}>
+                <TouchableOpacity onPress={()=> {showItemDetails(item)}} style={{width: '100%'}} >
+                    <View style={{flexDirection: 'row'}}>
+                {
+                    item?.item?.imageURL ?
+                    <Image style={styles.comboImage} defaultSource={{
+                        uri: item.item.imageURL,
+                    }} />
+                     : 
+                     null
+                }
+                    <View style={{flexDirection: 'column'}}>
+                        <Text style={[globalStyles.textPrimary, {alignSelf: 'center'}]}>{item?.item?.name ?? ""}</Text>
+                        <Text style={[globalStyles.textSecondary]}>${item?.item?.total ?? item?.item?.price}</Text>
+                    </View>
+                    </View>
+                    
+                    <View style={{flexDirection: 'row', justifyContent: 'center', width: 60, alignSelf: 'center', justifyContent: 'space-around'}}>
+                        {/* <Entypo name="chevron-right" size={24} color={colors.textTertiary} /> */}
+                    </View>
+                    <View style={{marginVertical: 12, position: 'absolute', justifyContent: 'flex-end', right: 0}}>
+                        <Entypo name="chevron-right" size={24} color={colors.textTertiary} />
+                    </View>
+                </TouchableOpacity>
+
+            <View style={{flexDirection: 'row', position: 'absolute', justifyContent: 'flex-end', right: 50}}>
+
             <NumberPlease
-                pickerStyle={{backgroundColor: colors.background, borderColor: colors.background, color: colors.textPrimary}}
+                pickerStyle={{ backgroundColor: colors.background, borderColor: colors.background, color: colors.textPrimary}}
                 digits={quantities}
                 values={initialValues}
                 onChange={(values) => calculate(values)}
             />
-                {/* <Entypo name="chevron-right" size={24} color={colors.textTertiary} /> */}
+
             </View>
-        </View>
+            </View>
         )
     }
 
@@ -234,8 +251,8 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     const renderHeader = () => {
         return (
             <View style={[globalStyles.backgroundTertiary, styles.sectionListHeader]}>
-                <TouchableOpacity onPress={()=> isChoosingDate ? saveDates() : onClose() } style={styles.sectionListHeaderButton}>
-                    <Text style={globalStyles.textPrimary}>{ isChoosingDate ? "Back" : "Dismiss"}</Text>
+                <TouchableOpacity onPress={()=> {isInDetailMode ? saveDates() : onClose(); setSelectedMenuItem(null)} } style={styles.sectionListHeaderButton}>
+                    <Text style={globalStyles.textPrimary}>{ isInDetailMode ? "Back" : "Dismiss"}</Text>
                 </TouchableOpacity>
                 <View style={[globalStyles.border, styles.sectionListHeaderSeparator]} />
             </View>
@@ -257,16 +274,21 @@ const Sheet = React.memo(forwardRef((props, ref) => {
 
     const RenderItemInfos = (item) => (
         <View>
-            <View style={{ padding: 20, flexDirection: 'column', alignItems: 'center' }}>
+            <View style={{ padding: 20, flexDirection: 'column'}}>
                 <Image style={styles.menuImage} source={{
                     uri: item.item?.imageURL ?? "",
                 }} />
                 <Text style={globalStyles.textPrimary}>{item.item?.name ?? ""}</Text>
                 <Text style={globalStyles.textSecondary}>{item.item?.description ?? ""}</Text>
-                <Text style={globalStyles.textPrimary}>${item.item?.price ?? ""}</Text>
+                <Text style={[globalStyles.textPrimary,{marginTop: 8}]}>${item.item?.price ?? ""}</Text>
             </View>
             <View>
-                <Text style={globalStyles.textPrimary}>Ingredients</Text>
+                {
+                  item.item?.ingredients?
+                  <Text style={globalStyles.textPrimary}>Ingredients</Text>
+                  : null  
+                }
+                
                 {/* {
                 item.item?.ingredients.map((prop, key) => {
                     return (
@@ -275,7 +297,6 @@ const Sheet = React.memo(forwardRef((props, ref) => {
                 })
                 } */}
             </View>
-            <Text onPress={()=> setSelectedMenuItem(null)} style={{color: colors.btnPrimaryBg}}>Go back</Text>
         </View>
         
     );
@@ -292,9 +313,9 @@ const Sheet = React.memo(forwardRef((props, ref) => {
 
         const comboSection = [
             { title: "Infos", data: [selectedItem] },
+            { title: "Select delivery dates", data: [0] },
             { title: "Menu", data: items },
             // { title: "Extras", data: selectedItem?.extras ?? [] },
-            { title: "Select delivery dates", data: [0] },
         ]
 
         if (selectedMenuItem!= null) {
@@ -303,7 +324,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
                     <RenderItemInfos item={selectedMenuItem.item} />
                 </View>
             )
-        } else if (isChoosingDate) {
+        } else if (isInDetailMode) {
             return (
                 <View style={[styles.bagContainer, globalStyles.backgroundSecondary]}>
                     <Calendar
@@ -360,12 +381,10 @@ const Sheet = React.memo(forwardRef((props, ref) => {
                             switch (section.title) {
                                 case "Infos":
                                     return <ItemInfosCell item={item} />
-                                case "Menu":
-                                    return <CombosCell item={item} />
-                                // case "Extras":
-                                //     return <ExtrasCell item={item} />
                                 case "Select delivery dates": 
                                     return <SelectDayCell/>
+                                case "Menu":
+                                    return <CombosCell item={item} />
                                 default:
                                     break
                             }
@@ -387,7 +406,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
 
     const onClose = async () => {
         setSelectedDays([])
-        setIsChoosingDate(false)
+        setIsInDetailMode(false)
         ref.current.snapTo(0);
     };
 
