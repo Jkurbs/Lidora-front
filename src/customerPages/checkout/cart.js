@@ -160,6 +160,8 @@ function Card(props) {
     setSelectedItem(item)
 
     const newSubtotal = itemsData.map(a => a.total).reduce((a, b) => a + b, 0)
+    console.log("newARRAY",newArray)
+    console.log(itemsData,"itemsData")
 
     setCalcAmount(calcFee(newSubtotal * items[0]?.deliveryDates?.length ?? 0, "USD"))
 
