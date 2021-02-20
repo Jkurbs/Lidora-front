@@ -245,7 +245,7 @@ function Card(props) {
                         case "Total":
                           return <TotalCell item={item} />
                         case "Shipping Details": 
-                        return null
+                          return null
                         case "Payment Details": 
                           return null
                         default:
