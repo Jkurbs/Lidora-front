@@ -133,20 +133,24 @@ const Sheet = React.memo(forwardRef((props, ref) => {
         const _selectedDay = moment(day.dateString).format(_format);
         let selected = true;
         if (_selectedDay === _today) { alert("You can't order for the same day, please pick another day."); return }
+        if (selectedDays.includes(_selectedDay)){alert("This date is already selected"); return}
         if (markedDates[_selectedDay]?.disabled ?? false  === true) { return }
         if (markedDates[_selectedDay]) {
           // Already in marked dates, so reverse current marked state
           selected = !markedDates[_selectedDay].selected;
-          setSelectedDays(selectedDays.filter(item => item !== day.dateString))
+          setSelectedDays(selectedDays.filter(item => item != day.dateString))
+
         } else {
           setSelectedDays(oldArray => [...oldArray, day.dateString]);
+          const updatedMarkedDates = {...markedDates, ...{ [_selectedDay]: { selected } } }
+          setMarkedDates(updatedMarkedDates)
         }
-        const updatedMarkedDates = {...markedDates, ...{ [_selectedDay]: { selected } } }
-        setMarkedDates(updatedMarkedDates)
+      
     }
 
     const saveDates = async () => {
         setIsChoosingDate(!isChoosingDate)
+        console.log(selectedDays,"SelectedDays")
     }
 
     // Cell to show Combos
