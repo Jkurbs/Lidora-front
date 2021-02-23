@@ -30,7 +30,7 @@ var fees = {
 	MXN: { Percent: 13.6, Fixed: 3 }
 };
 
-// Calculate 
+// Calculate Fee
 function calcFee(amount, currency) {
   var _fee = fees[currency];
   var _deliveryFee = 2.00;
@@ -45,6 +45,17 @@ function calcFee(amount, currency) {
 	};
 }
 
+// Calculate Subtotal
+function calcSubtotal(items) {
+
+  items.forEach(item =>{
+    item["total"] = item.quantity * item.price * item.deliveryDates.length
+  })
+	
+  return items.map(a => a.total).reduce((a, b) => a + b, 0)
+
+}
+
 function Card(props) {
 
   const navigation = props.navigation
@@ -53,8 +64,8 @@ function Card(props) {
   const [newArray, setNewArray] = useState([]) 
   //useState version
   const [quantity,setQuantity] = useState(items.map(a => a.quantity).reduce((a, b) => a + b, 0))
-  const [subTotal,setSubTotal] = useState(items.map(a => a.total).reduce((a, b) => a + b, 0))
-  const [calculatedAmount,setCalcAmount] = useState(calcFee(subTotal * items[0]?.deliveryDates?.length ?? 0, "USD"))
+  const [subTotal,setSubTotal] = useState(calcSubtotal(items))
+  const [calculatedAmount,setCalcAmount] = useState(calcFee(subTotal, "USD"))
   
 
 
@@ -69,12 +80,14 @@ function Card(props) {
       if (key.length > 1) {
         obj['title'] = dates.map(x => moment(x).format('dddd MMM, DD')).join("\n")
         obj['data'] = grouped[key]
+        obj['data']['deliveryDates'] = dates
         if (!isCancelled) {
           setNewArray(prevState => [...prevState, obj])
         }  
       } else {
         obj['title'] = key.moment(x).format('dddd MMM, DD')
-        obj['data'] = grouped[key]
+        obj['deliveryDates'] = dates
+        obj['data']['deliveryDates'] = dates
         if (!isCancelled) {
           setNewArray(prevState => [...prevState, obj])
         }  
@@ -143,12 +156,13 @@ function Card(props) {
     </View>
   );
 
-  
+
 
   const changeQty = async (values,item) => {
     const itemsData = []
     const data = newArray.map(x => {x.data.forEach(item => {
       if(item !== 0){
+         item['deliveryDates'] = x.data.deliveryDates
          itemsData.push(item)
       }
     })})
@@ -161,11 +175,11 @@ function Card(props) {
     item.total = item.price * values[0].value
     setSelectedItem(item)
 
-    const newSubtotal = itemsData.map(a => a.total).reduce((a, b) => a + b, 0)
+    const newSubtotal = calcSubtotal(itemsData)
     console.log("newARRAY",newArray)
     console.log(itemsData,"itemsData")
 
-    setCalcAmount(calcFee(newSubtotal * items[0]?.deliveryDates?.length ?? 0, "USD"))
+    setCalcAmount(calcFee(newSubtotal, "USD"))
 
   }
 
