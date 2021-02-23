@@ -143,6 +143,8 @@ function Card(props) {
     </View>
   );
 
+  
+
   const changeQty = async (values,item) => {
     const itemsData = []
     const data = newArray.map(x => {x.data.forEach(item => {
