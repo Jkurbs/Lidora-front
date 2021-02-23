@@ -142,13 +142,12 @@ const Sheet = React.memo(forwardRef((props, ref) => {
         } else {
           setSelectedDays(oldArray => [...oldArray, day.dateString]);
         }
-        const updatedMarkedDates = {...markedDates, ...{ [_selectedDay]: { selected } } }
+        const updatedMarkedDates = {...markedDates, ...{ [selectedDays]: { selected } } }
         setMarkedDates(updatedMarkedDates)
     }
 
     const saveDates = async () => {
         setIsInDetailMode(!isInDetailMode)
-        
     }
 
     // Cell to show Combos
