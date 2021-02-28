@@ -337,7 +337,7 @@ export default StyleSheet.create({
     checkoutItemContainer: {
         flexDirection: 'row',
         alignItems: 'center', 
-        justifyContent: 'center'
+        justifyContent: 'center', 
     },
 
     checkoutItemRightContainer: {

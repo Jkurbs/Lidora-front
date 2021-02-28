@@ -205,10 +205,14 @@ const ItemsCell = ({item}) => {
             />
         <TouchableOpacity
           onPress={() => checkout()}
-          style={[styles.buttonPrimary, globalStyles.btnPrimary]}>
+          style={[styles.buttonPrimary, globalStyles.btnPrimary, {marginTop: 0, position: 'relative'}]}>
           <Text style={styles.textCentered}>{disable ? "":"Checkout"}</Text>
           <ActivityIndicator hidesWhenStopped={true} animating={disable} color={colors.textSecondary} style={{ position: 'absolute', alignSelf: 'center' }} />
         </TouchableOpacity>
+        <View style={{ margin: 20, marginTop: 8, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+          <Image resizeMode={'cover'} style={{ marginRight: 16, width: 25, height: 25}} source={require("../../assets/img/Stripe Climate Badge.svg")}/>
+          <Text style={globalStyles.textTertiary}>Lidora will contribute 1% of your purchase to remove CO₂ from the atmosphere.</Text>
+        </View>
       </View>
     )
 }

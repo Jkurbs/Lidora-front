@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/static/js/app.d3df09ca.chunk.js",
-    "app.js.map": "/static/js/app.d3df09ca.chunk.js.map",
+    "app.js": "/static/js/app.134fa302.chunk.js",
+    "app.js.map": "/static/js/app.134fa302.chunk.js.map",
     "runtime~app.js": "/static/js/runtime~app.2e9f1821.js",
     "runtime~app.js.map": "/static/js/runtime~app.2e9f1821.js.map",
-    "static/js/2.63cb7a5b.chunk.js": "/static/js/2.63cb7a5b.chunk.js",
-    "static/js/2.63cb7a5b.chunk.js.map": "/static/js/2.63cb7a5b.chunk.js.map",
+    "static/js/2.e41d8bc3.chunk.js": "/static/js/2.e41d8bc3.chunk.js",
+    "static/js/2.e41d8bc3.chunk.js.map": "/static/js/2.e41d8bc3.chunk.js.map",
     "fonts/AntDesign.ttf": "/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/./fonts/Feather.ttf",
@@ -24,7 +24,8 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
-    "static/js/2.63cb7a5b.chunk.js.LICENSE.txt": "/static/js/2.63cb7a5b.chunk.js.LICENSE.txt",
+    "static/js/2.e41d8bc3.chunk.js.LICENSE.txt": "/static/js/2.e41d8bc3.chunk.js.LICENSE.txt",
+    "static/media/Stripe Climate Badge.svg": "/static/media/Stripe Climate Badge.26ee17ca.svg",
     "static/media/americanExpress.png": "/static/media/americanExpress.d0a7c369.png",
     "static/media/bag.png": "/static/media/bag.ef4accb6.png",
     "static/media/cancel.png": "/static/media/cancel.2eb524b7.png",
@@ -46,7 +47,7 @@
   },
   "entrypoints": [
     "static/js/runtime~app.2e9f1821.js",
-    "static/js/2.63cb7a5b.chunk.js",
-    "static/js/app.d3df09ca.chunk.js"
+    "static/js/2.e41d8bc3.chunk.js",
+    "static/js/app.134fa302.chunk.js"
   ]
 }

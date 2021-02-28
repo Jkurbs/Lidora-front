@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, Image } from "react-native";
 import { Elements } from '@stripe/react-stripe-js';
 import { Entypo } from '@expo/vector-icons';
 import { loadStripe } from '@stripe/stripe-js';
@@ -9,7 +9,7 @@ import NavBar from '../navigation/navBar'
 import useGlobalStyles  from '../storeFront/globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 
-const stripePromise = loadStripe('pk_test_51HL8h8LjpR7kl7iGeWLOW7OGQw2qAix0ToeOkzAgOUceEiOUDsGDmuDI1tQyNWSkOiQvdwOxFBpQEw4rBoDuI3Dc00i6Fa8VWD');
+const stripePromise = loadStripe('pk_live_51HL8h8LjpR7kl7iGMg89FdezKE0JY7zv5WCTEadr412FNtAfKm696c6AGzSZ6ZJ78VHagOO8h9JTG5ZbqMP55ssi00IGoIL2jT');
 
 function AddPayments(props) {
 

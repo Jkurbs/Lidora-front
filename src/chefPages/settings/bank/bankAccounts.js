@@ -11,7 +11,7 @@ import ReactPlaceholder from 'react-placeholder';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
-const stripePromise = loadStripe('pk_test_51HL8h8LjpR7kl7iGeWLOW7OGQw2qAix0ToeOkzAgOUceEiOUDsGDmuDI1tQyNWSkOiQvdwOxFBpQEw4rBoDuI3Dc00i6Fa8VWD');
+const stripePromise = loadStripe('pk_live_51HL8h8LjpR7kl7iGMg89FdezKE0JY7zv5WCTEadr412FNtAfKm696c6AGzSZ6ZJ78VHagOO8h9JTG5ZbqMP55ssi00IGoIL2jT');
 
 import "firebase/firestore";
 

@@ -14,7 +14,6 @@ import NumberPlease from "react-native-number-please";
 function RadioButton(props) {
     return (
         <View style={{
-        marginRight: 8,
           height: 15,
           width: 15,
           borderRadius: 7.5,
@@ -22,10 +21,10 @@ function RadioButton(props) {
           borderColor:  props.selected ? '#2EA44F' : 'gray',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: 5}}>{
+          padding: 5}}>
+          {
             props.selected ?
               <View style={{
-                marginRight: 8,
                 height: 11,
                 width: 11,
                 margin: 3,
@@ -78,6 +77,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     const items = selectedItem?.items ?? []
     const initialTotal = items.map(a => a.price).reduce((a, b) => a + b, 0)
 
+    // const [option, setOption] = useState("")
     const [finalItems, setFinalItem] = useState(items)
     const [isInDetailMode, setIsInDetailMode] = useState(false)
     const [markedDates, setMarkedDates] = useState(null)
@@ -129,25 +129,28 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     }
 
 
-
     const onDaySelect = (day) => {
         const _selectedDay = moment(day.dateString).format(_format);
         let selected = true;
         if (_selectedDay === _today) { alert("You can't order for the same day, please pick another day."); return }
+        if (selectedDays.includes(_selectedDay)){alert("This date is already selected"); return}
         if (markedDates[_selectedDay]?.disabled ?? false  === true) { return }
         if (markedDates[_selectedDay]) {
           // Already in marked dates, so reverse current marked state
           selected = !markedDates[_selectedDay].selected;
-          setSelectedDays(selectedDays.filter(item => item !== day.dateString))
+          setSelectedDays(selectedDays.filter(item => item != day.dateString))
+
         } else {
           setSelectedDays(oldArray => [...oldArray, day.dateString]);
+          const updatedMarkedDates = {...markedDates, ...{ [_selectedDay]: { selected } } }
+          setMarkedDates(updatedMarkedDates)
         }
-        const updatedMarkedDates = {...markedDates, ...{ [selectedDays]: { selected } } }
-        setMarkedDates(updatedMarkedDates)
+      
     }
 
     const saveDates = async () => {
         setIsInDetailMode(!isInDetailMode)
+        
     }
 
     // Cell to show Combos
@@ -201,16 +204,39 @@ const Sheet = React.memo(forwardRef((props, ref) => {
             <View style={{flexDirection: 'row', position: 'absolute', justifyContent: 'flex-end', right: 50}}>
 
             <NumberPlease
-                pickerStyle={{ backgroundColor: colors.background, borderColor: colors.background, color: colors.textPrimary}}
+                pickerStyle={{ zIndex: 0, backgroundColor: colors.background, borderColor: colors.background, color: colors.textPrimary}}
                 digits={quantities}
                 values={initialValues}
-                onChange={(values) => calculate(values)}
-            />
-
+                onChange={(values) => calculate(values)}/>
             </View>
             </View>
         )
     }
+
+    const OptionsCell = (item) => {
+
+        const forceUpdate = useForceUpdate();
+        const [optionSelected] = useState({selected: false}) 
+ 
+        const addOption = (option) => {
+            optionSelected.selected = !optionSelected.selected
+            items.forEach(async function(element) { 
+                element["option"] = item.item
+            })
+
+            console.log(items)
+            forceUpdate()
+        }
+ 
+        return (
+             <TouchableOpacity onPress={()=> addOption()} style={styles.groupContainer}>
+                 <View style={{flexDirection: 'row', alignSelf: 'center', justifyContent: 'center', alignItems: 'center'}}>
+                 <RadioButton selected={optionSelected.selected}/>
+                 <Text style={[globalStyles.textPrimary, {alignSelf: 'center'}, {marginLeft: 8}]}>{item?.item}</Text>
+                 </View>
+             </TouchableOpacity>
+         )
+     }
 
     const ExtrasCell = (item) => {
        const forceUpdate = useForceUpdate();
@@ -282,18 +308,10 @@ const Sheet = React.memo(forwardRef((props, ref) => {
                 <Text style={[globalStyles.textPrimary,{marginTop: 8}]}>${item.item?.price ?? ""}</Text>
             </View>
             <View>
-                {
-                  item.item?.ingredients?
-                  <Text style={globalStyles.textPrimary}>Ingredients</Text>
-                  : null  
-                }
-                
                 {/* {
-                item.item?.ingredients.map((prop, key) => {
-                    return (
-                        <Text key={key} style={globalStyles.textSecondary}>{prop.name}</Text>
-                    );
-                })
+                  item.item?.ingredients?
+                    // <Text style={globalStyles.textPrimary}>Ingredients</Text>
+                  : null  
                 } */}
             </View>
         </View>
@@ -314,6 +332,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
             { title: "Infos", data: [selectedItem] },
             { title: "Select delivery dates", data: [0] },
             { title: "Menu", data: items },
+            { title: "Options", data: ["Vegan", "Vegetarian"] },
             // { title: "Extras", data: selectedItem?.extras ?? [] },
         ]
 
@@ -384,6 +403,8 @@ const Sheet = React.memo(forwardRef((props, ref) => {
                                     return <SelectDayCell/>
                                 case "Menu":
                                     return <CombosCell item={item} />
+                                case "Options":
+                                    return <OptionsCell item={item} />
                                 default:
                                     break
                             }
@@ -395,7 +416,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
 
                     <TouchableOpacity
                         onPress={() => addToBag()}
-                        style={[styles.buttonPrimary, globalStyles.btnPrimary, {bottom: 80}]}>
+                        style={[styles.buttonPrimary, globalStyles.btnPrimary, {zIndex: 1, bottom: 80}]}>
                         <Text style={styles.textCentered}>Add to bag</Text>
                     </TouchableOpacity>
                 </View>
