@@ -45,7 +45,7 @@ function calcFee(amount, currency) {
 function calcSubtotal(items) {
 
   items.forEach(item =>{
-    item["total"] = item.quantity * item.price * item.deliveryDates.length
+    item["total"] = item.total * item.deliveryDates.length
   })
 	
   return items.map(a => a.total).reduce((a, b) => a + b, 0)

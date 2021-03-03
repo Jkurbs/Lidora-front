@@ -11,6 +11,28 @@ import moment from 'moment'
 import NumberPlease from "react-native-number-please";
 
 
+Number.prototype.toFixedNumber = function(digits, base){
+    var pow = Math.pow(base||10, digits);
+    return Math.round(this*pow) / pow;
+}
+
+
+var fees = { 
+    Vegan: { Percent: 20 },
+    Pescatarian: { Percent: 15 },
+    Vegetarian: { Percent: -10 },
+};
+    // Calculate Fee
+    function calcFee(amount, option) {
+        var _fee = fees[option];
+        var total = amount / (1 - parseFloat(_fee.Percent) / 100);
+        var fee = total - amount
+       return {
+        fee: fee,
+      };
+    }
+
+
 function RadioButton(props) {
     return (
         <View style={{
@@ -86,6 +108,8 @@ const Sheet = React.memo(forwardRef((props, ref) => {
     const quantities = [{ id: "quantity", label: "", min: 1, max: 99 }];
     const [selectedMenuItem, setSelectedMenuItem] = useState()
     const [extraSelected] = useState({selected: false}) 
+    const [optionSelected, setOptionSelected] = useState("") 
+
 
 
     const FlatListItemSeparator = () => {
@@ -96,9 +120,11 @@ const Sheet = React.memo(forwardRef((props, ref) => {
         items.forEach(async function(item) { 
             if (item.key === props.itemId) {
                 ref.current.value = props.total;
+                item["originalTotal"] = props.total
                 item["total"] = props.total
                 item["quantity"] = props.quantity
             } else {
+                if (isNaN(item.originalTotal)) { item.originalTotal = item.total}
                 if (isNaN(item.total)) { item.total = item.price}
                 if (isNaN(item.quantity)) {item.quantity = 1}
             }
@@ -168,9 +194,17 @@ const Sheet = React.memo(forwardRef((props, ref) => {
             item.item.total = item.item.price;  item.item.quantity = 1
         }
 
+        var total; 
+
+        if (optionSelected != "") {
+            total = (itemPrice * value) + (item.item.fee * value).toFixedNumber(2)
+        } else {
+            total = (itemPrice * value).toFixedNumber(2)
+        }
+
         changeSingleMenuItem({itemId: item.item.key, 
             quantity: item.item["quantity"] = value, 
-            total: item.item["total"] = itemPrice * value, 
+            total: total,
         }) 
         forceUpdate()
     }
@@ -189,7 +223,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
                 }
                     <View style={{flexDirection: 'column'}}>
                         <Text style={[globalStyles.textPrimary, {alignSelf: 'center'}]}>{item?.item?.name ?? ""}</Text>
-                        <Text style={[globalStyles.textSecondary]}>${item?.item?.total ?? item?.item?.price}</Text>
+                        <Text style={[globalStyles.textSecondary]}>${ item?.item?.total ?? item?.item?.price}</Text>
                     </View>
                     </View>
                     
@@ -213,28 +247,48 @@ const Sheet = React.memo(forwardRef((props, ref) => {
         )
     }
 
-    const OptionsCell = (item) => {
-
-        const forceUpdate = useForceUpdate();
-        const [optionSelected] = useState({selected: false}) 
- 
+    const OptionsCell = () => {
         const addOption = (option) => {
-            optionSelected.selected = !optionSelected.selected
+            setOptionSelected(option)
             items.forEach(async function(element) { 
-                element["option"] = item.item
+                const total = element.price  * element.quantity
+                if (element.total === undefined) { element.total = element.price}
+                element["fee"] = calcFee(total, option).fee
+                if (element.originalTotal === undefined) { element.originalTotal = element.price}
+                if (element.quantity === undefined) { element.quantity = 1}
+                if (element.option  === undefined) {
+                    element["option"] = option
+                    element["total"] = (total + (element.fee * element.quantity)).toFixedNumber(2)
+                    return 
+                } else {
+                    element["option"] = option
+                    element["total"] = (total + (element.fee * element.quantity)).toFixedNumber(2)
+                }
             })
-
-            console.log(items)
-            forceUpdate()
         }
  
         return (
-             <TouchableOpacity onPress={()=> addOption()} style={styles.groupContainer}>
+            <View>
+            <TouchableOpacity disabled={optionSelected === "Vegan"} onPress={()=> addOption("Vegan")} style={styles.groupContainer}>
                  <View style={{flexDirection: 'row', alignSelf: 'center', justifyContent: 'center', alignItems: 'center'}}>
-                 <RadioButton selected={optionSelected.selected}/>
-                 <Text style={[globalStyles.textPrimary, {alignSelf: 'center'}, {marginLeft: 8}]}>{item?.item}</Text>
+                 <RadioButton selected={optionSelected === "Vegan"}/>
+                 <Text style={[globalStyles.textPrimary, {alignSelf: 'center'}, {marginLeft: 8}]}>{"Vegan"}</Text>
                  </View>
              </TouchableOpacity>
+             <TouchableOpacity disabled={optionSelected === "Vegetarian"} onPress={()=> addOption("Vegetarian")} style={styles.groupContainer}>
+                 <View style={{flexDirection: 'row', alignSelf: 'center', justifyContent: 'center', alignItems: 'center'}}>
+                 <RadioButton selected={optionSelected === "Vegetarian"}/>
+                 <Text style={[globalStyles.textPrimary, {alignSelf: 'center'}, {marginLeft: 8}]}>{"Vegetarian"}</Text>
+                 </View>
+             </TouchableOpacity>
+             <TouchableOpacity disabled={optionSelected === "Pescatarian"} onPress={()=> addOption("Pescatarian")} style={styles.groupContainer}>
+                 <View style={{flexDirection: 'row', alignSelf: 'center', justifyContent: 'center', alignItems: 'center'}}>
+                 <RadioButton selected={optionSelected === "Pescatarian"}/>
+                 <Text style={[globalStyles.textPrimary, {alignSelf: 'center'}, {marginLeft: 8}]}>{"Pescatarian"}</Text>
+                 </View>
+             </TouchableOpacity>
+            </View>
+           
          )
      }
 
@@ -332,7 +386,7 @@ const Sheet = React.memo(forwardRef((props, ref) => {
             { title: "Infos", data: [selectedItem] },
             { title: "Select delivery dates", data: [0] },
             { title: "Menu", data: items },
-            { title: "Options", data: ["Vegan", "Vegetarian"] },
+            { title: "Options", data: [0] },
             // { title: "Extras", data: selectedItem?.extras ?? [] },
         ]
 
