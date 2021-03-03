@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity} from "react-native";
 import styles from '../storeFront/storeFront.lightStyle'
-import useGlobalStyles from '../storeFront/globalStyle'
+import useGlobalStyles from '../../globalStyle'
 
 
 function OrderDone(props) {

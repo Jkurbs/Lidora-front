@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { View, TouchableOpacity, TextInput, ActivityIndicator, Text, Animated, Dimensions} from "react-native";
 import NavBar from '../navigation/navBar'
-import useGlobalStyles  from '../storeFront/globalStyle'
+import useGlobalStyles  from '../../globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 import { useTheme } from '@react-navigation/native';
 import { TextInputMask } from 'react-native-masked-text'

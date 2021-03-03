@@ -3,7 +3,7 @@
 import React, { useState, useEffect, forwardRef, useCallback, useRef } from "react";
 import {  View, FlatList, SectionList, Text, Dimensions, Animated, TouchableOpacity} from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
-import useGlobalStyles from '../storeFront/globalStyle'
+import useGlobalStyles from '../../globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 import firebase from "../../firebase/Firebase"
 import ChefHighlight from '../storeFront/chefHighlight'

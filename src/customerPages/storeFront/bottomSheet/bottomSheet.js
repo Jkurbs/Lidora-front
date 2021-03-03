@@ -1,7 +1,7 @@
 import React, { forwardRef, useState, useCallback} from "react";
 import { View, SectionList, Text, TouchableOpacity, Image } from "react-native";
 import { useTheme } from '@react-navigation/native';
-import useGlobalStyles from '../globalStyle'
+import useGlobalStyles from '../../../globalStyle'
 import styles from '../storeFront.lightStyle'
 import BottomSheet from 'reanimated-bottom-sheet'
 import { Entypo } from '@expo/vector-icons';

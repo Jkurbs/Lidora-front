@@ -1,7 +1,7 @@
 import React from "react";
 
 import { View, TouchableOpacity, Text} from "react-native";
-import useGlobalStyles  from '../storeFront/globalStyle'
+import useGlobalStyles  from '../../globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 import { useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';

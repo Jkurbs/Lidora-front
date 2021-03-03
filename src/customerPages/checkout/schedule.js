@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { View } from "react-native";
 import { useTheme } from '@react-navigation/native';
 import NavBar from '../navigation/navBar'
-import useGlobalStyles  from '../storeFront/globalStyle'
+import useGlobalStyles  from '../../globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 import {Calendar} from 'react-native-calendars'
 import { Entypo } from '@expo/vector-icons';

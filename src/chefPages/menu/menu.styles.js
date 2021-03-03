@@ -5,7 +5,7 @@ const { height: windowHeight } = Dimensions.get("screen");
 export default StyleSheet.create({
     container: {
         fontFamily: "System",
-        backgroundColor: '#F5F5F7',
+        backgroundColor: 'white',
         flex: 1,
         color: '#111', 
     },

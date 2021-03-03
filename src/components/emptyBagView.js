@@ -4,7 +4,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { Text, View, Dimensions } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 const { height } = Dimensions.get("window")
-import useGlobalStyles from '../customerPages/storeFront/globalStyle'
+import useGlobalStyles from '../globalStyle'
 
 
 function EmptyBag() {

@@ -4,7 +4,7 @@ import { useTheme } from '@react-navigation/native';
 import { Entypo } from '@expo/vector-icons';
 import BottomSheet from 'reanimated-bottom-sheet'
 import EmptyBag from '../../components/emptyBagView'
-import useGlobalStyles  from '../storeFront/globalStyle'
+import useGlobalStyles  from '../../globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 import NavBar from '../navigation/navBar'
 import moment from 'moment'

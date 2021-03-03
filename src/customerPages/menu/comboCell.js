@@ -2,7 +2,7 @@ import React from "react";
 import { pure } from 'recompose';
 import { View, Image, Text, TouchableOpacity} from "react-native";
 import { useTheme } from '@react-navigation/native';
-import useGlobalStyles from '../storeFront/globalStyle'
+import useGlobalStyles from '../../globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 
 function ComboCell(props) {

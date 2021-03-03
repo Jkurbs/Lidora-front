@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { View, TextInput, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useTheme } from '@react-navigation/native'
 import NavBar from '../navigation/navBar'
-import useGlobalStyles  from '../storeFront/globalStyle'
+import useGlobalStyles  from '../../globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 
 function AddAllergies(props) {

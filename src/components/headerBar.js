@@ -5,35 +5,37 @@ import { Text, View, StyleSheet } from 'react-native';
 import SearchTextField from '../components/searchTextField'
 import MainButton from './buttons/mainButton';
 import DropDown from '../components/dropDown'
+import { useTheme } from '@react-navigation/native';
 
-class HeaderBar extends React.Component {
 
-    showModal = () => {
-        this.props.showCalendar(true)
+function HeaderBar(props) {
+    const { colors } = useTheme();
+
+    const showModal = () => {
+        props.showCalendar(true)
     }
 
-    hideModal = () => {
-        this.setState({ showCalendar: false });
+    const hideModal = () => {
+        setState({ showCalendar: false });
     }
 
-    buttonPressed = () => {
-        this.props.handleMode('Add')
-        if (this.props.isModalActive === false) {
-            this.props.showInv()
+    const buttonPressed = () => {
+        props.handleMode('Add')
+        if (props.isModalActive === false) {
+            props.showInv()
         }
     }
 
     //INPUT SWITCH - SWITCHES BETWEEN REGULAR SEARCH INPUT AND CUSTOMER INPUT
-    InputSwitch = () => {
-        if (this.props.isSearchEnabled) {
+   const  InputSwitch = () => {
+        if (props.isSearchEnabled) {
             return (
                 <View style={styles.rightSide}>
                     <View style={styles.rightInput}>
                         <SearchTextField
                             placeholder={'Search for an Item here'}
-                            onChangeText={(text) => this.props.search(text)}
-                        />
-                        <MainButton action={() => { this.buttonPressed() }} text={'Add'} indicatorAnimating={false}></MainButton>
+                            onChangeText={(text) => props.search(text)}/>
+                        <MainButton action={() => { buttonPressed() }} text={'Add'} indicatorAnimating={false}></MainButton>
                     </View>
                 </View>
             )
@@ -43,18 +45,15 @@ class HeaderBar extends React.Component {
             )
         }
     }
-
-    render() {
-        return (
-            <View style={styles.headerBar}>
-                <View style={styles.titleView}>
-                    <Text style={styles.title}>{this.props.title}</Text>
-                    <Text style={styles.subtitle}>{this.props.subtitle} Items</Text>
-                </View>
-                <this.InputSwitch />
+    return (
+        <View style={[styles.headerBar, {backgroundColor: colors.inputBg}]}>
+            <View style={styles.titleView}>
+                <Text style={[styles.title, {color: colors.textPrimary}]}>{props.title}</Text>
+                <Text style={[styles.subtitle, {color: colors.textSecondary}]}>{props.subtitle} Items</Text>
             </View>
-        )
-    }
+            <InputSwitch />
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
 
     title: { textAlign: 'left', fontSize: 25, fontWeight: '500' },
 
-    subtitle: { textAlign: 'left', fontSize: 14, fontWeight: '400', color: '#8E8E93' },
+    subtitle: { textAlign: 'left', fontSize: 14, fontWeight: '400'},
 
     rightInput: {
         flexDirection: 'row',

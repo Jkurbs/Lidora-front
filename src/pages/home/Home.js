@@ -16,14 +16,16 @@ import {
   SafeAreaView,
 } from "react-native";
 
-import { NavigationContainer } from "@react-navigation/native";
+import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
+import { NavigationContainer, DefaultTheme, DarkTheme} from '@react-navigation/native';
+
 import { createStackNavigator } from "@react-navigation/stack";
 import { FEATURESDATA } from "./home.data.js";
 
 import ApplyScreen from "../apply/Apply.js";
 import LegalScreen from "../legal/Legal.js";
 import LoginScreen from "../login/Login.js";
-import DashboardScreen from "../../chefPages/dashboard/Sidebar";
+import DashboardScreen from "../../chefPages/Sidebar";
 import Footer from "../../components/Footer"
 
 import SettingScreen from '../../chefPages/settings/settingsSideBar';
@@ -51,6 +53,106 @@ export function normalize(size) {
 const phoneMaxWidth = 575.98
 
 var unsubscribe;
+
+const CustomDefaultTheme = {
+  colors: {
+    ...DefaultTheme.colors,
+    background: "#f6f8fa",
+    bgSecondary: 'white',
+    bgTertiary: '#FAFBFC',
+    bgCanvas: 'white',
+
+    // Inputs 
+    inputBg: 'white',
+    inputBorder: '#e1e4e8',
+    inputTextColor: 'black',
+
+    // Texts 
+    textPrimary: '#24292e',
+    textSecondary: '#586069',
+    textTertiary: '#6a737d',
+    textPlaceholder: '#6a737d',
+    textDisabled: '#6a737d',
+    textInverse: 'white',
+    textLink: '#0366d6',
+    textDanger: '#cb2431',
+    textSuccess: '#22863a',
+    textWarning: '#b08800',
+    textWhite: '#fff',
+
+    // Borders 
+    borderPrimary: '#e1e4e8',
+    borderSecondary: '#eaecef',
+    borderTertiary: '#d1d5da',
+    borderOverlay: '#e1e4e8',
+    borderInverse: '#fff',
+    borderInfo: '#0366d6',
+    borderDanger: '#d73a49',
+    borderSuccess: '#34d058',
+    borderWarning: '#f9c513',
+
+    // Btn 
+    btnText: '#24292e',
+    btnBg: '#fafbfc',
+    btnBorder: 'rgba(27,31,35,0.15)',
+    btnShadow: '0 1px 0 rgba(27,31,35,0.04)',
+    btnInsetShadow: '0 1px 0 hsla(0,0%,100%,0.25)',
+    btnHoverBg: '#f3f4f6',
+    btnHoverBorder: 'rgba(27,31,35,0.15)',
+    btnSelectedBg: '#edeff2',
+    btnFocusBg: '#fafbfc',
+    btnFocusBorder: 'rgba(27,31,35,0.15)',
+    btnFocusShadow: '0 0 0 3px rgba(3,102,214,0.3)',
+    btnPrimaryText: 'white',
+    btnPrimaryBg: '#2ea44f',
+    btnPrimaryBorder: 'rgba(27,31,35,0.15)',
+    btnPrimaryShadow: '0 1px 0 rgba(27,31,35,0.1)',
+    btnPrimarySnsetShadow: ' 0 1px 0 hsla(0,0%,100%,0.03)',
+    
+    deletionText: '#cb2431',
+    deletionBg: '#ffeef0',
+    deletionBorder: '#d73a49'
+  },
+};
+
+const CustomDarkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+
+    background: "#0d1117",
+    bgSecondary: '#0d1117',
+    bgTertiary: '#21262d',
+    bgCanvas: '#0d1117',
+    card: "rgb(255, 255, 255)",
+    notification: "rgb(255, 69, 58)",
+
+
+    // Texts 
+    textPrimary: '#C9D1D9',
+    textSecondary: '#8b949e',
+    textTertiary: '#8b949e',
+
+    textLink: '#58a6ff',
+    textDanger: '#f85149',
+    textSuccess: '#56d364',
+    colorTextWarning: '#e3b341',
+    textWhite: '#f0f6fc',
+
+    // Inputs 
+    inputBg: '#0d1117',
+    inputBorder: '#21262d',
+    inputTextColor: 'white',
+
+    // Primary btn
+    btnPrimaryBg: '#238636',
+    btnPrimaryBorder: '#2ea043',
+    btnBg: '#21262d',
+
+    // Border 
+    borderPrimary: '#30363d',
+  },
+};
 
 const FeaturesItem = ({ image, title, description }) => (
   <View
@@ -85,19 +187,16 @@ const Item = ({ title, image }) => (
 );
 
 
-class HomeScreen extends React.Component {
+function HomeScreen() {
 
-  constructor() {
-    super()
-    this.state = {
-      titleText: "Looking for your favorite food?",
-      secondaryText: "Join our waiting list And follow us on Instagram to stay updated.",
-      customerEmail: ""
-    }
-  }
+  const [titleText, setTitleText] = React.useState("Looking for your favorite food?",)
+  const [secondaryText, setSecondaryText] = React.useState("Join our waiting list And follow us on Instagram to stay updated")
+  const [customerEmail, setCustomerEmail] = React.useState("")
+
+
 
   // Function to Add potential user to email list
-  addUser = async () => {
+  const addUser = async () => {
     var db = firebase.firestore();
     try {
       const potentialUserDoc = await db.collection("potential_users").add({
@@ -109,7 +208,7 @@ class HomeScreen extends React.Component {
     }
   };
 
-  sendToEmailList = () => {
+  const sendToEmailList = () => {
     const newCustomerTitle = "Thank you!";
     const newMessage = "We'll keep you updated.";
     setValue(newCustomerTitle);
@@ -117,19 +216,13 @@ class HomeScreen extends React.Component {
     addUser();
   };
 
-  renderFeaturesItem = ({ item }) => (
+  const renderFeaturesItem = ({ item }) => (
     <FeaturesItem
       image={item.image}
       title={item.title}
       description={item.description}
     />
   );
-
-  renderItem = ({ item }) => (
-    <Item title={item.title} image={item.image} />
-  );
-
-  render() {
 
     return (
 
@@ -178,7 +271,7 @@ class HomeScreen extends React.Component {
           <FlatList
             style={{ marginTop: 20 }}
             data={FEATURESDATA}
-            renderItem={this.renderFeaturesItem}
+            renderItem={renderFeaturesItem}
             keyExtractor={(item) => item.id}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
@@ -187,7 +280,6 @@ class HomeScreen extends React.Component {
         <Footer />
       </SafeAreaView >
     );
-  }
 }
 
 const Stack = createStackNavigator();
@@ -204,36 +296,25 @@ const MyTheme = {
   },
 };
 
-class App extends React.Component {
+function App(props) {
 
-
-  constructor() {
-    super()
-    this.state = {
-      userLoggedIn: null,
-      userData: {
-        user: [],
-        userID: "", 
-      }, 
-      location: {}
-    }
-  }
-
+  const scheme = useColorScheme();
+  const [userLoggedIn, setUserLoggedIn] = React.useState(null)
+  const [userData, setUserData] = React.useState({user: [], userID: ""})
+  const [location, setLocation] = React.useState({})
+  
   // Verify if user is logged in
 
-  componentDidMount() {
+  React.useEffect(() => {
+    // Fetch Current chef 
     const currentComponent = this
     unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
         db.collection('chefs').doc(user.uid).get().then(function (doc) {
           if (doc.exists) {
-            currentComponent.setState({
-              userLoggedIn: true,
-              userData: {
-                user: doc.data(),
-                userID: user.uid
-              }
-            })
+
+            setUserLoggedIn(true)
+            setUserData({user: doc.data(), userID: user.uid})            
           } else {
             console.log("No such document!");
           }
@@ -243,16 +324,11 @@ class App extends React.Component {
         return
       } else {
         // No user is signed in.
-        currentComponent.setState({ userLoggedIn: false })
+        setUserLoggedIn(false)
       }
     })
-  }
+}, [])
 
-  componentWillUnmount() {
-    unsubscribe()
-  }
-
-  render() {
 
     let currentURL = window.location.href
     let getChefandID = currentURL.split("?");
@@ -261,10 +337,9 @@ class App extends React.Component {
 
     if (typeof getChefandID[1] != 'undefined') {
       return <StoreFront storeName={storeName}/>
-
     } else {
       return (
-        <NavigationContainer fallback={<Text>Loading...</Text>} theme={MyTheme}>
+        <NavigationContainer theme={scheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme}>
           <Stack.Navigator
             initialRouteName="Lidora"
             screenOptions={{
@@ -281,11 +356,11 @@ class App extends React.Component {
                   <TouchableOpacity
                     onPress={() => {
                       /* 1. Navigate to the Details route with params */
-                      navigation.navigate(this.state.userLoggedIn ? 'Dashboard' : 'Login',
+                      navigation.navigate(userLoggedIn ? 'Dashboard' : 'Login',
                         {
                           navigation: navigation,
-                          userData: this.state.userData,
-                          userID: this.state.userData.userID
+                          userData: userData,
+                          userID: userData.userID
                         });
                     }}
                     style={{
@@ -301,7 +376,7 @@ class App extends React.Component {
                     }}
                   >
 
-                    {this.state.userLoggedIn ? (
+                    {userLoggedIn ? (
                       <Text style={{ alignSelf: 'center', fontSize: 12 }}>{'Dashboard'}
                         <Entypo name="chevron-small-right" size={12} color="black" />
                       </Text>
@@ -317,8 +392,6 @@ class App extends React.Component {
           </Stack.Navigator>
         </NavigationContainer>
       );
-    }
-
   }
 }
 

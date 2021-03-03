@@ -6,7 +6,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useTheme } from '@react-navigation/native'
 import NavBar from '../navigation/navBar'
-import useGlobalStyles  from '../storeFront/globalStyle'
+import useGlobalStyles  from '../../globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 
 const stripePromise = loadStripe('pk_live_51HL8h8LjpR7kl7iGMg89FdezKE0JY7zv5WCTEadr412FNtAfKm696c6AGzSZ6ZJ78VHagOO8h9JTG5ZbqMP55ssi00IGoIL2jT');

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, memo } from "react";
 import {  View, Text, TouchableOpacity} from "react-native";
 import { SimpleLineIcons } from '@expo/vector-icons'
-import useGlobalStyles from '../storeFront/globalStyle'
+import useGlobalStyles from '../../globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 import firebase from "../../firebase/Firebase"
 var unsubscribe;

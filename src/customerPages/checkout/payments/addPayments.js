@@ -4,7 +4,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { Entypo } from '@expo/vector-icons';
 import { loadStripe } from '@stripe/stripe-js';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import useGlobalStyles from '../../storeFront/globalStyle'
+import useGlobalStyles from '../../../globalStyle'
 import styles from '../../storeFront/storeFront.lightStyle'
 import { useTheme } from '@react-navigation/native'
 import NavBar from '../../navigation/navBar'

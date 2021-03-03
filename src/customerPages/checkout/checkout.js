@@ -3,7 +3,7 @@ import { View, Image, Text, TouchableOpacity, ActivityIndicator, SectionList } f
 import { useTheme } from '@react-navigation/native';
 import firebase from '../../firebase/Firebase'
 import NavBar from '../navigation/navBar'
-import useGlobalStyles  from '../storeFront/globalStyle'
+import useGlobalStyles  from '../../globalStyle'
 import styles from '../storeFront/storeFront.lightStyle'
 
 var db = firebase.firestore();

@@ -1,150 +1,112 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import ActivityIndicator from '../components/activityIndicator'
 import MainButton from './buttons/mainButton'
+import globalStyle from '../globalStyle'
+import { useTheme } from '@react-navigation/native';
+import { SimpleLineIcons } from '@expo/vector-icons';
 
-class TableView extends React.Component {
+function TableView(props) {
 
-    constructor(props) {
-        super(props);
+    const { colors } = useTheme();
 
-        console.log("table props: ", props)
-    }
-
-    imageElement = (data, index) => (
+    const imageElement = (data, index) => (
         <Image
             style={styles.image}
-            source={data}
-        />
+            source={data}/>
     );
 
-    actionElement = (data, index) => {
+    const actionElement = (data, index) => {
+        return (
+            <TouchableOpacity style={styles.button} onPress={props.rightAction.bind(this, index)}>
+                <SimpleLineIcons name="options" size={24} color={colors} />
+            </TouchableOpacity>
+        )
+    }
 
-        var buttons = []
-
-        if (this.props.leftImage != null) {
-            buttons.push(
-                <TouchableOpacity
-                    onPress={this.props.leftAction.bind(this, index)}>
-                    <Image style={{ width: 20, height: 20 }} source={this.props.leftImage} />
-                </TouchableOpacity>
-            )
-        }
-        if (this.props.middleImage != null) {
-            buttons.push(
-                <TouchableOpacity style={styles.button}
-                    onPress={this.props.middleAction.bind(this, data, index)}>
-                    <Image style={{ width: 20, height: 20 }} source={this.props.middleImage} />
-                </TouchableOpacity>
-            )
-        }
-
-        if (this.props.rightImage != null) {
-            buttons.push(
-                <TouchableOpacity style={styles.button}
-                    onPress={this.props.rightAction.bind(this, index)}>
-                    <Image style={{ width: 20, height: 20 }} source={this.props.rightImage} />
-                </TouchableOpacity>
-            )
-        }
-
-        return <View style={{ backgroundColor: '#EEEEEE', borderRadius: 5, height: 40, width: 110, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', padding: 8 }}>
-            {buttons}
-        </View>
-    };
-
-    returnedData(cellIndex, selectedIndex, cellData, rowData) {
-
-       // alert(rowData.length)
-
+    const returnedData = (cellIndex, selectedIndex, cellData, rowData) => {
         if (cellIndex === 0) {
-            return this.imageElement(rowData[0], selectedIndex)
+            return imageElement(rowData[0], selectedIndex)
         } else if (cellIndex === rowData.length-1) {
-            return this.actionElement(rowData, selectedIndex)
+            return actionElement(rowData, selectedIndex)
         } else {
             return cellData
         }
     }
 
-
-    render() {
-        if (this.props.hasData === null) {
-            return <ActivityIndicator size={"small"} animating={!this.props.hasData} color={"gray"} />
-
-        } else if (this.props.hasData === false) {
+    if (props.hasData === null) {
+        return <ActivityIndicator size={"small"} animating={!props.hasData} color={"gray"} />
+    } else if (props.hasData === false) {
+        return (
+            <View style={{position: 'relative', justifyContent: 'center', height: 400}}>
+                <View style={{ alignSelf: 'center', width: '30%', alignItems: 'flex-start'}}>
+                    <Text style={{ color: colors.textPrimary, fontSize: 30 }}>Add your first item</Text>
+                    <Text style={{ color: colors.textSecondary, fontSize: 15, marginBottom: 20 }}>Items are what you sell to customers. </Text>
+                    <MainButton text={"Add Item"} action={props.action} indicatorAnimating={false} />
+                </View>
+            </View>
+        )
+    } else {
+        if (props.hasImage === true) {
             return (
-                <View style={styles.container}>
-                    <Text style={{ alignSelf: 'center', marginBottom: 20 }}>There's no data at the moment</Text>
-                    <MainButton text={"Add your first"} action={this.props.action} indicatorAnimating={false} />
+                <View style={[styles.container]}>
+                    <Table style={[styles.table, {backgroundColor: colors.bgSecondary} ]} borderStyle={{  }}>
+                        <Row data={props.tableHead} style={[styles.head]} textStyle={styles.headText} />
+                        {
+                            props.tableData.map((rowData, index) => (
+                                <TouchableOpacity onPress={props.didSelectCell.bind(this, rowData, index)}  >
+                                    <TableWrapper key={index} style={
+                                        index === 0 ? [styles.rowWithCorner, {borderColor: colors.borderPrimary}] :  [styles.row, {borderColor: colors.borderPrimary}]
+                                    }>
+                                        {
+                                            rowData.map((cellData, cellIndex) => (
+                                                <Cell key={cellIndex} data={returnedData(cellIndex, index, cellData, rowData)} textStyle={styles.text} />
+                                            ))
+                                        }
+                                    </TableWrapper>
+                                </TouchableOpacity>
+                            ))
+                        }                        
+                    </Table>
                 </View>
             )
         } else {
-            if (this.props.hasImage === true) {
-                return (
-                    <View style={styles.container}>
-                        <Table style={styles.table} borderStyle={{ borderColor: 'transparent' }}>
-                            <Row data={this.props.tableHead} style={styles.head} textStyle={styles.headText} />
-                            {
-                                this.props.tableData.map((rowData, index) => (
-                                    <TouchableOpacity onPress={this.props.didSelectCell.bind(this, rowData, index)}  >
-                                        <TableWrapper key={index} style={styles.row}>
-                                            {
-                                                rowData.map((cellData, cellIndex) => (
-                                                    <Cell key={cellIndex} data={this.returnedData(cellIndex, index, cellData, rowData)} textStyle={styles.text} />
-                                                ))
-                                            }
-                                        </TableWrapper>
-                                    </TouchableOpacity>
-                                ))
-                            }
-                        </Table>
-                    </View>
-                )
-            } else {
-                return (
-                    <View style={styles.container}>
-                        <Table style={styles.table} borderStyle={{ borderColor: 'transparent' }}>
-                            <Row onPress={this.leftAction} data={this.props.tableHead} style={styles.head} textStyle={styles.headText} />
-                            {
-                                this.props.tableData.map((rowData, index) => (
-                                    <TouchableOpacity onPress={this.props.didSelectCell.bind(this, index)}  >
-                                        <TableWrapper key={index} style={styles.row}>
-                                            {
-                                                rowData.map((cellData, cellIndex) => (
-                                                    <Cell key={cellIndex} data={[cellIndex === rowData.length - 1 ? this.actionElement(rowData, index) : cellData]} textStyle={styles.text} />
-                                                ))
-                                            }
-                                        </TableWrapper>
+            return (
+                <View style={styles.container}>
+                    <Table style={styles.table} borderStyle={{ borderColor: 'transparent' }}>
+                        <Row onPress={leftAction} data={props.tableHead} style={styles.head} textStyle={styles.headText} />
+                        {
+                            props.tableData.map((rowData, index) => (
+                                <TouchableOpacity onPress={props.didSelectCell.bind(this, index)}  >
+                                    <TableWrapper key={index} style={styles.row}>
+                                        {
+                                            rowData.map((cellData, cellIndex) => (
+                                                <Cell key={cellIndex} data={[cellIndex === rowData.length - 1 ? actionElement(rowData, index) : cellData]} textStyle={styles.text} />
+                                            ))
+                                        }
+                                    </TableWrapper>
 
-                                    </TouchableOpacity>
-                                ))
-                            }
-                        </Table>
-                    </View>
-                )
-            }
+                                </TouchableOpacity>
+                            ))
+                        }
+                    </Table>
+                </View>
+            )
         }
+        
     }
 }
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 16, paddingTop: 30 },
-    table: {
-        width: '100%',
-        position: 'relative', backgroundColor: 'white', borderRadius: 5,
-        shadowColor: "#000",
-        shadowColor: "#000",
-        shadowOpacity: 0.13,
-        shadowRadius: 10.68,
-        minWidth: '400px',
-    },
-    head: { height: 74, paddingLeft: 20, paddingRight: 20, borderBottomColor: '#CECECE', borderBottomWidth: 1 },
-    body: { height: 100, paddingLeft: 20, paddingRight: 20, borderBottomColor: '#CECECE', borderBottomWidth: 1 },
+    table: { width: '100%', position: 'relative'},
+    head: { height: 74, paddingLeft: 20, paddingRight: 20},
+    body: { height: 100, paddingLeft: 20, paddingRight: 20,  },
     headText: { margin: 6, fontWeight: '600' },
     text: { margin: 6, marginTop: 16 },
-    row: { height: 100, padding: 20, flexDirection: 'row', borderBottomColor: '#CECECE', borderBottomWidth: 1 },
+    row: { height: 100, padding: 20, flexDirection: 'row', borderWidth: 1},
+    rowWithCorner: { height: 100, padding: 20, flexDirection: 'row', borderWidth: 1, borderBottomWidth: 0.5, borderTopLeftRadius: 5,  borderTopRightRadius: 5},
     image: { borderRadius: 10, width: 60, height: 60, backgroundColor: '#E1E1E1' },
 });
 

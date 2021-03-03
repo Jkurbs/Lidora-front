@@ -6,7 +6,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { NavigationContainer, DefaultTheme, DarkTheme} from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 
-import useGlobalStyles from './globalStyle'
+import useGlobalStyles from '../../globalStyle'
 import styles from "./storeFront.lightStyle";
 import firebase from "../../firebase/Firebase";
 

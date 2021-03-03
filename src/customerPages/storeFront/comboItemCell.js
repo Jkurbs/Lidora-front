@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, forwardRef, useState, memo } from "react";
 import { View, Image, Text, TouchableOpacity} from "react-native";
-import useGlobalStyles from '../storeFront/globalStyle'
+import useGlobalStyles from '../../globalStyle'
 import styles from './storeFront.lightStyle'
 import { pure } from 'recompose';
 

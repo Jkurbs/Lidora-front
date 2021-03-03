@@ -4,7 +4,7 @@ import React, {memo} from "react";
 import { View, Text, TouchableOpacity, Animated } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
-import useGlobalStyles from '../storeFront/globalStyle'
+import useGlobalStyles from '../../globalStyle'
 import styles from './navBarStyle'
 import { useTheme } from '@react-navigation/native'
 
