@@ -11,6 +11,18 @@ var db = firebase.firestore();
 const ref = db.collection("chefs");
 const menuDetailsName = "MenuDetails";
 
+const SearchComponent = ({ buttonAction, subtitle, search }) => (
+  <HeaderBar
+    title={"Menu"}
+    buttonAction={() => buttonAction()}
+    subtitle={subtitle}
+    search={(term) => {
+      search(term);
+    }}
+    isSearchEnabled={true}
+  />
+);
+
 function Menu(props) {
   const navigation = props.navigation;
   const userID = firebase.auth().currentUser.uid;
@@ -92,6 +104,20 @@ function Menu(props) {
 
   // MARK: - Item actions
 
+  // const search = (searchTerm) => {
+  //   alert(searchTerm);
+
+  //   let filteredData = tableData.filter((dataRow) =>
+  //     dataRow[1].toLowerCase().includes(searchTerm)
+  //   );
+  //   let filteredReal = fullData.filter((dataRow) =>
+  //     dataRow.name.toLowerCase().includes(searchTerm)
+  //   );
+  //   setIsSearching(true);
+  //   // setFilteredTableData(filteredData);
+  //   // setFilteredFullData(filteredReal);
+  // };
+
   const search = (searchTerm) => {
     let filteredData = tableData.filter((dataRow) =>
       dataRow[1].toLowerCase().includes(searchTerm)
@@ -107,20 +133,16 @@ function Menu(props) {
   if (tableData != []) {
     return (
       <View style={[styles.container]}>
-        <HeaderBar
-          title={"Menu"}
-          buttonAction={() => goToItemDetails()}
-          subtitle={tableData.length}
-          search={(term) => {
-            search(term);
-          }}
-          isSearchEnabled={true}
-          showCalendar={() => {
-            showCalendarModal();
-          }}
-          isModalActive={isInvModalActive}
-        />
         <ScrollView>
+          <SearchComponent
+            title={"Menu"}
+            buttonAction={() => buttonAction()}
+            subtitle={tableData.length}
+            search={(term) => {
+              search(term);
+            }}
+            isSearchEnabled={true}
+          />
           <TableView
             tableHead={tableHead}
             tableData={isSearching ? filteredTableData : tableData}
