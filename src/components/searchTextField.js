@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top',
         borderWidth: 1,
         borderRadius: 5,
-        height: 34,
+        height: 30,
         width: 192,
         backgroundColor: 'white',
         textIndent: '25px',
