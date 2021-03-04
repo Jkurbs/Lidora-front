@@ -7,8 +7,41 @@ import globalStyle from "../globalStyle";
 import { useTheme } from "@react-navigation/native";
 import { SimpleLineIcons } from "@expo/vector-icons";
 
+import styled from "styled-components";
+import Tooltip from "@material-ui/core/Tooltip";
+
+import { makeStyles } from "@material-ui/core/styles";
+
+const StyledTooltip = styled((props) => (
+  <Tooltip
+    classes={{ popper: props.className, tooltip: "tooltip" }}
+    {...props}
+  />
+))`
+  & .tooltip {
+    background-color: white;
+    color: #000;
+    border: "1px solid #red";
+  }
+`;
+
+const useStyles = makeStyles((theme) => ({
+  arrow: {
+    "&:before": {
+      border: "1px solid #E6E8ED",
+      borderRadius: "2px",
+    },
+    color: theme.palette.common.white,
+  },
+  tooltip: {
+    border: "1px solid #E6E8ED",
+    color: "#E6E8ED",
+  },
+}));
+
 function TableView(props) {
   const { colors } = useTheme();
+  let classes = useStyles();
 
   const imageElement = (data, index) => (
     <Image style={styles.image} source={data} />
@@ -17,10 +50,47 @@ function TableView(props) {
   const actionElement = (data, index) => {
     return (
       <TouchableOpacity
-        style={styles.button}
-        onPress={props.buttonAction(index)}
+        style={[
+          { alignSelf: "center", alignItems: "center", marginRight: 120 },
+        ]}
       >
-        <SimpleLineIcons name="options" size={18} color={colors.textPrimary} />
+        <Tooltip
+          style={{ backgroundColor: "red" }}
+          arrow={true}
+          classes={{ arrow: classes.arrow, tooltip: classes.tooltip }}
+          placement="bottom"
+          title={
+            <View
+              style={{
+                flexDirection: "column",
+                justifyContent: "space-around",
+                height: 120,
+                width: 120,
+              }}
+            >
+              <Text>Actions</Text>
+
+              <TouchableOpacity onPress={() => props.editAndDetailsAction()}>
+                <Text>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => props.editAndDetailsAction()}>
+                <Text>View item details</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => props.deleteAction()}>
+                <Text>Delete item</Text>
+              </TouchableOpacity>
+            </View>
+          }
+          aria-label="add"
+        >
+          <View style={{ width: "auto" }}>
+            <SimpleLineIcons
+              name="options"
+              size={18}
+              color={colors.textTertiary}
+            />
+          </View>
+        </Tooltip>
       </TouchableOpacity>
     );
   };
@@ -161,7 +231,13 @@ const styles = StyleSheet.create({
   body: { height: 100, paddingLeft: 20, paddingRight: 20 },
   headText: { margin: 6, fontWeight: "600" },
   text: { margin: 6, marginTop: 16 },
-  row: { height: 100, padding: 20, flexDirection: "row", borderWidth: 1 },
+  row: {
+    height: 100,
+    padding: 20,
+    flexDirection: "row",
+    borderWidth: 1,
+    borderBottomWidth: 0.5,
+  },
   rowWithCorner: {
     height: 100,
     padding: 20,

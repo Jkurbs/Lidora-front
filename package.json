@@ -86,7 +86,8 @@
     "react-placeholder": "^4.0.3",
     "react-scroll": "^1.8.1",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
-    "recompose": "^0.30.0"
+    "recompose": "^0.30.0",
+    "styled-components": "^5.2.1"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

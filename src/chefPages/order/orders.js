@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./menu.styles";
+// import styles from "./menu.styles";
 import { View, ScrollView } from "react-native";
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
@@ -11,7 +11,7 @@ var db = firebase.firestore();
 const ref = db.collection("chefs");
 const menuDetailsName = "MenuDetails";
 
-function Menu(props) {
+function Orders(props) {
   const navigation = props.navigation;
   const userID = firebase.auth().currentUser.uid;
 
@@ -139,4 +139,4 @@ function Menu(props) {
   }
 }
 
-export default Menu;
+export default Orders;
