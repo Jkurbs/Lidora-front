@@ -1,29 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { Table, TableWrapper, Row, Cell } from "react-native-table-component";
 import ActivityIndicator from "../components/activityIndicator";
 import MainButton from "./buttons/mainButton";
-import globalStyle from "../globalStyle";
 import { useTheme } from "@react-navigation/native";
 import { SimpleLineIcons } from "@expo/vector-icons";
-
-import styled from "styled-components";
 import Tooltip from "@material-ui/core/Tooltip";
-
 import { makeStyles } from "@material-ui/core/styles";
-
-const StyledTooltip = styled((props) => (
-  <Tooltip
-    classes={{ popper: props.className, tooltip: "tooltip" }}
-    {...props}
-  />
-))`
-  & .tooltip {
-    background-color: white;
-    color: #000;
-    border: "1px solid #red";
-  }
-`;
 
 const useStyles = makeStyles((theme) => ({
   arrow: {
@@ -43,6 +26,8 @@ function TableView(props) {
   const { colors } = useTheme();
   let classes = useStyles();
 
+  const [openToolTip, setOpenToolTip] = useState({ show: false, index: 0 });
+
   const imageElement = (data, index) => (
     <Image style={styles.image} source={data} />
   );
@@ -50,11 +35,15 @@ function TableView(props) {
   const actionElement = (data, index) => {
     return (
       <TouchableOpacity
+        onPress={() => setOpenToolTip({ show: true, index: index })}
         style={[
           { alignSelf: "center", alignItems: "center", marginRight: 120 },
         ]}
       >
         <Tooltip
+          id={`${index}`}
+          disableTriggerFocus={true}
+          // open={openToolTip.show}
           style={{ backgroundColor: "red" }}
           arrow={true}
           classes={{ arrow: classes.arrow, tooltip: classes.tooltip }}
@@ -70,13 +59,17 @@ function TableView(props) {
             >
               <Text>Actions</Text>
 
-              <TouchableOpacity onPress={() => props.editAndDetailsAction()}>
+              <TouchableOpacity
+                onPress={() => props.editAndDetailsAction(index)}
+              >
                 <Text>Edit</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.editAndDetailsAction()}>
+              <TouchableOpacity
+                onPress={() => props.editAndDetailsAction(index)}
+              >
                 <Text>View item details</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.deleteAction()}>
+              <TouchableOpacity onPress={() => props.deleteAction(data)}>
                 <Text>Delete item</Text>
               </TouchableOpacity>
             </View>

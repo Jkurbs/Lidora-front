@@ -120,6 +120,18 @@ const CustomDefaultTheme = {
     deletionText: "#cb2431",
     deletionBg: "#ffeef0",
     deletionBorder: "#d73a49",
+
+    // Borders
+    colorAutoGray0: "#fafbfc",
+    colorAutoGray1: "#f6f8fa",
+    colorAutoGray2: "#e1e4e8",
+    colorAutoGray3: "#d1d5da",
+    colorAutoGray4: "#959da5",
+    colorAutoGray5: "#6a737d",
+    colorAutoGray6: "#586069",
+    colorAutoGray7: "#444d56",
+    colorAutoGray8: "#2f363d",
+    colorAutoGray9: "#24292e",
   },
 };
 
@@ -158,6 +170,18 @@ const CustomDarkTheme = {
 
     // Border
     borderPrimary: "#30363d",
+
+    // Grays
+    colorAutoGray0: "#fafbfc",
+    colorAutoGray1: "#f6f8fa",
+    colorAutoGray2: "#e1e4e8",
+    colorAutoGray3: "#d1d5da",
+    colorAutoGray4: "#959da5",
+    colorAutoGray5: "#6a737d",
+    colorAutoGray6: "#586069",
+    colorAutoGray7: "#444d56",
+    colorAutoGray8: "#2f363d",
+    colorAutoGray9: "#24292e",
   },
 };
 
@@ -464,7 +488,11 @@ function App(props) {
           />
           <Stack.Screen name="Apply" component={ApplyScreen} />
           <Stack.Screen name="Legal" component={LegalScreen} />
-          <Stack.Screen name="MenuDetails" component={MenuDetailsScreen} />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="MenuDetails"
+            component={MenuDetailsScreen}
+          />
           <Stack.Screen
             name="ProductSettings"
             component={ProductSettingsScreen}

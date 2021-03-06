@@ -6,6 +6,7 @@ import "firebase/firestore";
 import TableView from "../../components/tableView";
 import HeaderBar from "../../components/headerBar";
 import Tooltip from "@material-ui/core/Tooltip";
+import Modal from "modal-enhanced-react-native-web";
 
 var db = firebase.firestore();
 const ref = db.collection("chefs");
@@ -41,7 +42,7 @@ function Menu(props) {
   const [item, setItem] = React.useState({});
   const [hasData, setHasData] = React.useState(null);
   const [isSearching, setIsSearching] = React.useState(false);
-  const [isInvModalActive, setIsInvModalActive] = React.useState(false);
+  const [visibleModal, setVisibleModal] = React.useState(null);
 
   const menuRef = ref.doc(userID).collection("menu");
 
@@ -56,9 +57,9 @@ function Menu(props) {
           const propertyValues = [
             data.imageURL,
             data.name,
-            data.price,
+            `$${data.price}`,
             data.group,
-            "",
+            null,
           ];
           setTableData((prevState) => [...prevState, propertyValues]);
           setFullData((prevState) => [...prevState, data]);
@@ -71,20 +72,33 @@ function Menu(props) {
   // MARK: - Functions
 
   const deleteAction = () => {
-    alert("Delete item");
+    setVisibleModal(true);
+    // if (isSearching === true) {
+    //   fullData = tfilteredFullData;
+    // }
+    // let newItem = {
+    //   ...fullData[selectedIndex],
+    //   key: fullData[selectedIndex].key,
+    //   image: fullData[selectedIndex].imageURL,
+    // };
+    // handleDetails(newItem);
+    // setItem(newItem);
+    // setIsAlertVisible(true);
   };
 
-  const editAndDetailsAction = () => {
-    navigation.navigate(menuDetailsName);
+  const editAndDetailsAction = (index) => {
+    navigation.navigate(menuDetailsName, { createMode: false, item: item });
   };
 
-  const goToItemDetails = (index) => {
-    navigation.navigate(menuDetailsName, { createMode: true });
+  const goToItemDetails = (item) => {
+    navigation.navigate(menuDetailsName, { createMode: true, item: item });
   };
 
   // Show Iventory item details
   const handleDetails = (item) => {
+    console.log("ITEM: ", item);
     setItem(item);
+    goToItemDetails(item);
   };
 
   // Called when cell is selected
@@ -97,26 +111,9 @@ function Menu(props) {
       image: fullData[selectedIndex].imageURL,
     };
     handleDetails(item);
-    if (isInvModalActive === false) {
-      showRightModal();
-    }
   };
 
   // MARK: - Item actions
-
-  // const search = (searchTerm) => {
-  //   alert(searchTerm);
-
-  //   let filteredData = tableData.filter((dataRow) =>
-  //     dataRow[1].toLowerCase().includes(searchTerm)
-  //   );
-  //   let filteredReal = fullData.filter((dataRow) =>
-  //     dataRow.name.toLowerCase().includes(searchTerm)
-  //   );
-  //   setIsSearching(true);
-  //   // setFilteredTableData(filteredData);
-  //   // setFilteredFullData(filteredReal);
-  // };
 
   const search = (searchTerm) => {
     let filteredData = tableData.filter((dataRow) =>
@@ -136,7 +133,7 @@ function Menu(props) {
         <ScrollView>
           <SearchComponent
             title={"Menu"}
-            buttonAction={() => buttonAction()}
+            buttonAction={() => goToItemDetails()}
             subtitle={tableData.length}
             search={(term) => {
               search(term);
@@ -152,9 +149,19 @@ function Menu(props) {
               didSelectCell(item, selectedIndex);
             }}
             buttonAction={(index) => goToItemDetails(index)}
-            deleteAction={() => deleteAction()}
-            editAndDetailsAction={() => editAndDetailsAction()}
+            deleteAction={(item) => deleteAction(item)}
+            editAndDetailsAction={(index) => editAndDetailsAction(index)}
           />
+          {/* <Modal
+            isVisible={visibleModal}
+            onBackdropPress={() => setVisibleModal(false)}
+          >
+            {
+              <View>
+                <Text>TEst</Text>
+              </View>
+            }
+          </Modal> */}
         </ScrollView>
       </View>
     );
