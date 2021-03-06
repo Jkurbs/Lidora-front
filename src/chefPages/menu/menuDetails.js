@@ -19,9 +19,7 @@ function MenuDetails(props) {
   const [indicatorAnimating, setIndicatorAnimating] = useState(false);
 
   var PickerItem = Picker.Item;
-
   const saveNewCategory = () => {};
-
   const saveAndAddMoreTapped = () => {
     navigation.goBack();
   };
@@ -38,11 +36,23 @@ function MenuDetails(props) {
     }
   };
 
+  function title() {
+    switch (params.mode) {
+      case "add":
+        return "Add menu item";
+      case "edit":
+        return "Edit menu item";
+      case "details":
+        return item?.name ?? "";
+      default:
+    }
+  }
+
   return (
     <View style={globalStyle.backgroundPrimary}>
       <DashboardNavBar
         navigation={navigation}
-        title={params.createMode ? "Add menu item" : "Edit menu item"}
+        title={title()}
         hasOptions={true}
         hasComplimentary={true}
         mainButtonTapped={() => saveButtonTapped()}

@@ -59,13 +59,11 @@ function TableView(props) {
             >
               <Text>Actions</Text>
 
-              <TouchableOpacity
-                onPress={() => props.editAndDetailsAction(index)}
-              >
+              <TouchableOpacity onPress={() => props.editAction(index, data)}>
                 <Text>Edit</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => props.editAndDetailsAction(index)}
+                onPress={() => props.detailsAction(index, data)}
               >
                 <Text>View item details</Text>
               </TouchableOpacity>

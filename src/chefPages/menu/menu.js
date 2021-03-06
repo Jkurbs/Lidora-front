@@ -86,19 +86,24 @@ function Menu(props) {
     // setIsAlertVisible(true);
   };
 
-  const editAndDetailsAction = (index) => {
-    navigation.navigate(menuDetailsName, { createMode: false, item: item });
+  const addItem = () => {
+    navigation.navigate(menuDetailsName, { mode: "add" });
   };
 
-  const goToItemDetails = (item) => {
-    navigation.navigate(menuDetailsName, { createMode: true, item: item });
+  const editAction = (data) => {
+    const item = fullData.filter((item) => item.name === data[1])[0];
+    console.log("Item: ", item);
+    navigation.navigate(menuDetailsName, { mode: "edit", item: item });
+  };
+
+  const detailsAction = (data) => {
+    const item = fullData.filter((item) => item.name === data[1])[0];
+    navigation.navigate(menuDetailsName, { mode: "details", item: item });
   };
 
   // Show Iventory item details
   const handleDetails = (item) => {
-    console.log("ITEM: ", item);
     setItem(item);
-    goToItemDetails(item);
   };
 
   // Called when cell is selected
@@ -111,6 +116,7 @@ function Menu(props) {
       image: fullData[selectedIndex].imageURL,
     };
     handleDetails(item);
+    detailsAction(item);
   };
 
   // MARK: - Item actions
@@ -133,7 +139,7 @@ function Menu(props) {
         <ScrollView>
           <SearchComponent
             title={"Menu"}
-            buttonAction={() => goToItemDetails()}
+            buttonAction={() => addItem()}
             subtitle={tableData.length}
             search={(term) => {
               search(term);
@@ -148,9 +154,10 @@ function Menu(props) {
             didSelectCell={(item, selectedIndex) => {
               didSelectCell(item, selectedIndex);
             }}
-            buttonAction={(index) => goToItemDetails(index)}
+            buttonAction={(index) => detailsAction()}
             deleteAction={(item) => deleteAction(item)}
-            editAndDetailsAction={(index) => editAndDetailsAction(index)}
+            editAction={(index, data) => editAction(data)}
+            detailsAction={(index, data) => detailsAction(data)}
           />
           {/* <Modal
             isVisible={visibleModal}
