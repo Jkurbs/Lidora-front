@@ -101,7 +101,7 @@ function TableView(props) {
       <ActivityIndicator
         size={"small"}
         animating={!props.hasData}
-        color={"gray"}
+        color={colors.borderPrimary}
       />
     );
   } else if (props.hasData === false) {
@@ -143,11 +143,10 @@ function TableView(props) {
         <View style={[styles.container]}>
           <Table
             style={[styles.table, { backgroundColor: colors.bgSecondary }]}
-            borderStyle={{}}
           >
             <Row
               data={props.tableHead}
-              style={[styles.head]}
+              style={styles.head}
               textStyle={styles.headText}
             />
             {props.tableData.map((rowData, index) => (
@@ -179,21 +178,31 @@ function TableView(props) {
         </View>
       );
     } else {
+      // Here
       return (
         <View style={styles.container}>
           <Table
-            style={styles.table}
-            borderStyle={{ borderColor: "transparent" }}
+            style={[styles.table, { backgroundColor: colors.bgSecondary }]}
           >
             <Row
-              onPress={leftAction}
+              // onPress={leftAction}
               data={props.tableHead}
               style={styles.head}
               textStyle={styles.headText}
             />
             {props.tableData.map((rowData, index) => (
               <TouchableOpacity onPress={props.didSelectCell.bind(this, index)}>
-                <TableWrapper key={index} style={styles.row}>
+                <TableWrapper
+                  key={index}
+                  style={
+                    index === 0
+                      ? [
+                          styles.rowWithCorner,
+                          { borderColor: colors.borderPrimary },
+                        ]
+                      : [styles.row, { borderColor: colors.borderPrimary }]
+                  }
+                >
                   {rowData.map((cellData, cellIndex) => (
                     <Cell
                       key={cellIndex}
@@ -223,14 +232,14 @@ const styles = StyleSheet.create({
   headText: { margin: 6, fontWeight: "600" },
   text: { margin: 6, marginTop: 16 },
   row: {
-    height: 100,
+    height: 60,
     padding: 20,
     flexDirection: "row",
     borderWidth: 1,
     borderBottomWidth: 0.5,
   },
   rowWithCorner: {
-    height: 100,
+    height: 60,
     padding: 20,
     flexDirection: "row",
     borderWidth: 1,
@@ -240,8 +249,8 @@ const styles = StyleSheet.create({
   },
   image: {
     borderRadius: 10,
-    width: 60,
-    height: 60,
+    width: 35,
+    height: 35,
     backgroundColor: "#E1E1E1",
   },
 });

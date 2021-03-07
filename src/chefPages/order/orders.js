@@ -1,52 +1,62 @@
 import React from "react";
-// import styles from "./menu.styles";
+import styles from "./orders.styles";
 import { View, ScrollView } from "react-native";
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import TableView from "../../components/tableView";
 import HeaderBar from "../../components/headerBar";
-import Tooltip from "@material-ui/core/Tooltip";
 
 var db = firebase.firestore();
 const ref = db.collection("chefs");
 const menuDetailsName = "MenuDetails";
 
-function Orders(props) {
+const SearchComponent = ({ buttonAction, subtitle, search }) => (
+  <HeaderBar
+    title={"Orders"}
+    buttonAction={() => buttonAction()}
+    subtitle={subtitle}
+    search={(term) => {
+      search(term);
+    }}
+    isSearchEnabled={true}
+  />
+);
+
+function Menu(props) {
   const navigation = props.navigation;
   const userID = firebase.auth().currentUser.uid;
 
   const [tableHead] = React.useState([
-    "Image",
-    "Name",
-    "Price",
-    "Category",
+    "Amount",
+    "Status",
+    "Quantity",
+    "Date",
     "Actions",
   ]);
   const [tableData, setTableData] = React.useState([]);
   const [fullData, setFullData] = React.useState([]);
   const [filteredTableData, setFilteredTableData] = React.useState([]);
   const [filteredFullData, setFilteredFullData] = React.useState([]);
-  const [item, setItem] = React.useState({});
   const [hasData, setHasData] = React.useState(null);
   const [isSearching, setIsSearching] = React.useState(false);
-  const [isInvModalActive, setIsInvModalActive] = React.useState(false);
+  const [visibleModal, setVisibleModal] = React.useState(null);
 
-  const menuRef = ref.doc(userID).collection("menu");
+  const ordersRef = ref.doc(userID).collection("orders");
 
   // Fetch Menu
   React.useEffect(() => {
-    menuRef.onSnapshot(function (querySnapshot) {
+    ordersRef.onSnapshot(function (querySnapshot) {
       if (querySnapshot.empty) {
         setHasData(false);
       } else {
         querySnapshot.forEach(function (doc) {
           const data = doc.data();
           const propertyValues = [
-            data.imageURL,
-            data.name,
-            data.price,
-            data.group,
-            "",
+            `$${data.total / 100}`,
+            data.total,
+            data.total,
+            data.total,
+            null,
           ];
           setTableData((prevState) => [...prevState, propertyValues]);
           setFullData((prevState) => [...prevState, data]);
@@ -59,20 +69,32 @@ function Orders(props) {
   // MARK: - Functions
 
   const deleteAction = () => {
-    alert("Delete item");
+    setVisibleModal(true);
+    // if (isSearching === true) {
+    //   fullData = tfilteredFullData;
+    // }
+    // let newItem = {
+    //   ...fullData[selectedIndex],
+    //   key: fullData[selectedIndex].key,
+    //   image: fullData[selectedIndex].imageURL,
+    // };
+    // handleDetails(newItem);
+    // setItem(newItem);
+    // setIsAlertVisible(true);
   };
 
-  const editAndDetailsAction = () => {
-    navigation.navigate(menuDetailsName);
+  const addItem = () => {
+    navigation.navigate(menuDetailsName, { mode: "add" });
   };
 
-  const goToItemDetails = (index) => {
-    navigation.navigate(menuDetailsName, { createMode: true });
+  const editAction = (data) => {
+    const item = fullData.filter((item) => item.name === data[1])[0];
+    navigation.navigate(menuDetailsName, { mode: "edit", item: item });
   };
 
-  // Show Iventory item details
-  const handleDetails = (item) => {
-    setItem(item);
+  const detailsAction = (data) => {
+    const item = fullData.filter((item) => item.name === data[1])[0];
+    navigation.navigate(menuDetailsName, { mode: "details", item: item });
   };
 
   // Called when cell is selected
@@ -84,10 +106,7 @@ function Orders(props) {
       ...fullData[selectedIndex],
       image: fullData[selectedIndex].imageURL,
     };
-    handleDetails(item);
-    if (isInvModalActive === false) {
-      showRightModal();
-    }
+    detailsAction(item);
   };
 
   // MARK: - Item actions
@@ -107,36 +126,43 @@ function Orders(props) {
   if (tableData != []) {
     return (
       <View style={[styles.container]}>
-        <HeaderBar
-          title={"Menu"}
-          buttonAction={() => goToItemDetails()}
-          subtitle={tableData.length}
-          search={(term) => {
-            search(term);
-          }}
-          isSearchEnabled={true}
-          showCalendar={() => {
-            showCalendarModal();
-          }}
-          isModalActive={isInvModalActive}
-        />
         <ScrollView>
+          <SearchComponent
+            title={"Orders"}
+            buttonAction={() => addItem()}
+            subtitle={tableData.length}
+            search={(term) => {
+              search(term);
+            }}
+            isSearchEnabled={true}
+          />
           <TableView
             tableHead={tableHead}
             tableData={isSearching ? filteredTableData : tableData}
             hasData={hasData}
-            hasImage={true}
+            hasImage={false}
             didSelectCell={(item, selectedIndex) => {
               didSelectCell(item, selectedIndex);
             }}
-            buttonAction={(index) => goToItemDetails(index)}
-            deleteAction={() => deleteAction()}
-            editAndDetailsAction={() => editAndDetailsAction()}
+            buttonAction={(index) => detailsAction()}
+            deleteAction={(item) => deleteAction(item)}
+            editAction={(index, data) => editAction(data)}
+            detailsAction={(index, data) => detailsAction(data)}
           />
+          {/* <Modal
+            isVisible={visibleModal}
+            onBackdropPress={() => setVisibleModal(false)}
+          >
+            {
+              <View>
+                <Text>TEst</Text>
+              </View>
+            }
+          </Modal> */}
         </ScrollView>
       </View>
     );
   }
 }
 
-export default Orders;
+export default Menu;
