@@ -5,24 +5,13 @@ import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import TableView from "../../components/tableView";
 import HeaderBar from "../../components/headerBar";
+import moment from "moment";
 
 var db = firebase.firestore();
 const ref = db.collection("chefs");
 const menuDetailsName = "MenuDetails";
 
-const SearchComponent = ({ buttonAction, subtitle, search }) => (
-  <HeaderBar
-    title={"Orders"}
-    buttonAction={() => buttonAction()}
-    subtitle={subtitle}
-    search={(term) => {
-      search(term);
-    }}
-    isSearchEnabled={true}
-  />
-);
-
-function Menu(props) {
+function Order(props) {
   const navigation = props.navigation;
   const userID = firebase.auth().currentUser.uid;
 
@@ -39,8 +28,6 @@ function Menu(props) {
   const [filteredFullData, setFilteredFullData] = React.useState([]);
   const [hasData, setHasData] = React.useState(null);
   const [isSearching, setIsSearching] = React.useState(false);
-  const [visibleModal, setVisibleModal] = React.useState(null);
-
   const ordersRef = ref.doc(userID).collection("orders");
 
   // Fetch Menu
@@ -53,9 +40,9 @@ function Menu(props) {
           const data = doc.data();
           const propertyValues = [
             `$${data.total / 100}`,
-            data.total,
-            data.total,
-            data.total,
+            data.status,
+            data.quantity,
+            moment(data.timestamp).format("MMM, DD"),
             null,
           ];
           setTableData((prevState) => [...prevState, propertyValues]);
@@ -68,28 +55,8 @@ function Menu(props) {
 
   // MARK: - Functions
 
-  const deleteAction = () => {
-    setVisibleModal(true);
-    // if (isSearching === true) {
-    //   fullData = tfilteredFullData;
-    // }
-    // let newItem = {
-    //   ...fullData[selectedIndex],
-    //   key: fullData[selectedIndex].key,
-    //   image: fullData[selectedIndex].imageURL,
-    // };
-    // handleDetails(newItem);
-    // setItem(newItem);
-    // setIsAlertVisible(true);
-  };
-
   const addItem = () => {
     navigation.navigate(menuDetailsName, { mode: "add" });
-  };
-
-  const editAction = (data) => {
-    const item = fullData.filter((item) => item.name === data[1])[0];
-    navigation.navigate(menuDetailsName, { mode: "edit", item: item });
   };
 
   const detailsAction = (data) => {
@@ -127,16 +94,18 @@ function Menu(props) {
     return (
       <View style={[styles.container]}>
         <ScrollView>
-          <SearchComponent
+          <HeaderBar
             title={"Orders"}
             buttonAction={() => addItem()}
             subtitle={tableData.length}
             search={(term) => {
               search(term);
             }}
-            isSearchEnabled={true}
+            isSearchEnabled={false}
+            hasButton={false}
           />
           <TableView
+            tableType={"Orders"}
             tableHead={tableHead}
             tableData={isSearching ? filteredTableData : tableData}
             hasData={hasData}
@@ -145,24 +114,12 @@ function Menu(props) {
               didSelectCell(item, selectedIndex);
             }}
             buttonAction={(index) => detailsAction()}
-            deleteAction={(item) => deleteAction(item)}
-            editAction={(index, data) => editAction(data)}
             detailsAction={(index, data) => detailsAction(data)}
           />
-          {/* <Modal
-            isVisible={visibleModal}
-            onBackdropPress={() => setVisibleModal(false)}
-          >
-            {
-              <View>
-                <Text>TEst</Text>
-              </View>
-            }
-          </Modal> */}
         </ScrollView>
       </View>
     );
   }
 }
 
-export default Menu;
+export default Order;

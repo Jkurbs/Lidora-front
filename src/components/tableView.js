@@ -28,6 +28,89 @@ function TableView(props) {
 
   const [openToolTip, setOpenToolTip] = useState({ show: false, index: 0 });
 
+  // Tooltips content
+
+  const menuTooltipContent = () => {
+    return (
+      <View
+        style={{
+          flexDirection: "column",
+          justifyContent: "space-around",
+          height: 120,
+          width: 120,
+        }}
+      >
+        <Text>Actions</Text>
+
+        <TouchableOpacity onPress={() => props.editAction(index, data)}>
+          <Text>Edit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => props.detailsAction(index, data)}>
+          <Text>View item details</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => props.deleteAction(data)}>
+          <Text>Delete item</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const orderTooltipContent = () => {
+    return (
+      <View
+        style={{
+          flexDirection: "column",
+          justifyContent: "space-around",
+          height: 120,
+          width: 120,
+        }}
+      >
+        <Text>Actions</Text>
+        <TouchableOpacity onPress={() => props.editAction(index, data)}>
+          <Text>Refund</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const statusBackgroundColor = (status) => {
+    switch (status) {
+      case "Fufilled":
+        return "#AFF5B4";
+      case "Unfufilled":
+        return "#FFDFB6";
+      case "Cancelled":
+        return "#F0F6FC";
+    }
+  };
+
+  const statusCell = (status) => {
+    return (
+      <View
+        style={{
+          width: 100,
+          height: 25,
+          borderRadius: 25,
+          backgroundColor: statusBackgroundColor(status),
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text>{status}</Text>
+      </View>
+    );
+  };
+
+  function statusData(index, rowData, cellData) {
+    if (index === rowData.length - 1) {
+      return actionElement(rowData, index);
+    } else if (index === 1) {
+      return statusCell(rowData[1]);
+    } else {
+      return cellData;
+    }
+  }
+
   const imageElement = (data, index) => (
     <Image style={styles.image} source={data} />
   );
@@ -49,28 +132,9 @@ function TableView(props) {
           classes={{ arrow: classes.arrow, tooltip: classes.tooltip }}
           placement="bottom"
           title={
-            <View
-              style={{
-                flexDirection: "column",
-                justifyContent: "space-around",
-                height: 120,
-                width: 120,
-              }}
-            >
-              <Text>Actions</Text>
-
-              <TouchableOpacity onPress={() => props.editAction(index, data)}>
-                <Text>Edit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => props.detailsAction(index, data)}
-              >
-                <Text>View item details</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.deleteAction(data)}>
-                <Text>Delete item</Text>
-              </TouchableOpacity>
-            </View>
+            props.tableType === "Menu"
+              ? menuTooltipContent()
+              : orderTooltipContent()
           }
           aria-label="add"
         >
@@ -206,12 +270,10 @@ function TableView(props) {
                   {rowData.map((cellData, cellIndex) => (
                     <Cell
                       key={cellIndex}
-                      data={[
-                        cellIndex === rowData.length - 1
-                          ? actionElement(rowData, index)
-                          : cellData,
-                      ]}
-                      textStyle={styles.text}
+                      data={[statusData(cellIndex, rowData, cellData)]}
+                      textStyle={
+                        cellIndex === 0 ? styles.boldText : styles.text
+                      }
                     />
                   ))}
                 </TableWrapper>
@@ -231,15 +293,16 @@ const styles = StyleSheet.create({
   body: { height: 100, paddingLeft: 20, paddingRight: 20 },
   headText: { margin: 6, fontWeight: "600" },
   text: { margin: 6, marginTop: 16 },
+  boldText: { fontWeight: "600" },
   row: {
-    height: 60,
+    height: 65,
     padding: 20,
     flexDirection: "row",
     borderWidth: 1,
     borderBottomWidth: 0.5,
   },
   rowWithCorner: {
-    height: 60,
+    height: 65,
     padding: 20,
     flexDirection: "row",
     borderWidth: 1,
@@ -248,10 +311,22 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 5,
   },
   image: {
-    borderRadius: 10,
-    width: 35,
-    height: 35,
+    borderRadius: 5,
+    width: 40,
+    height: 40,
     backgroundColor: "#E1E1E1",
+  },
+
+  status: {
+    margin: 6,
+    marginTop: 16,
+    borderWidth: 1,
+    width: 50,
+    alignSelf: "flex-start",
+    borderRadius: 20,
+    height: 40,
+    textAlign: "center",
+    background: "red",
   },
 });
 

@@ -94,9 +94,16 @@ function Menu(props) {
     navigation.navigate(menuDetailsName, { mode: "edit", item: item });
   };
 
-  const detailsAction = (data) => {
-    const item = fullData.filter((item) => item.name === data[1])[0];
-    navigation.navigate(menuDetailsName, { mode: "details", item: item });
+  const detailsAction = (data, selectedItem) => {
+    var item;
+    if (data) {
+      item = fullData.filter((item) => item.name === data[1])[0];
+    }
+
+    navigation.navigate(menuDetailsName, {
+      mode: "details",
+      item: selectedItem ?? item,
+    });
   };
 
   // Called when cell is selected
@@ -108,7 +115,7 @@ function Menu(props) {
       ...fullData[selectedIndex],
       image: fullData[selectedIndex].imageURL,
     };
-    detailsAction(item);
+    detailsAction(null, item);
   };
 
   // MARK: - Item actions
@@ -137,8 +144,10 @@ function Menu(props) {
               search(term);
             }}
             isSearchEnabled={true}
+            hasButton={true}
           />
           <TableView
+            tableType={"Menu"}
             tableHead={tableHead}
             tableData={isSearching ? filteredTableData : tableData}
             hasData={hasData}
