@@ -1,52 +1,49 @@
 import React from "react";
-// import styles from "./menu.styles";
+import styles from "./orders.styles";
 import { View, ScrollView } from "react-native";
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import TableView from "../../components/tableView";
 import HeaderBar from "../../components/headerBar";
-import Tooltip from "@material-ui/core/Tooltip";
+import moment from "moment";
 
 var db = firebase.firestore();
 const ref = db.collection("chefs");
 const menuDetailsName = "MenuDetails";
 
-function Orders(props) {
+function Order(props) {
   const navigation = props.navigation;
   const userID = firebase.auth().currentUser.uid;
 
   const [tableHead] = React.useState([
-    "Image",
-    "Name",
-    "Price",
-    "Category",
+    "Amount",
+    "Status",
+    "Quantity",
+    "Date",
     "Actions",
   ]);
   const [tableData, setTableData] = React.useState([]);
   const [fullData, setFullData] = React.useState([]);
   const [filteredTableData, setFilteredTableData] = React.useState([]);
   const [filteredFullData, setFilteredFullData] = React.useState([]);
-  const [item, setItem] = React.useState({});
   const [hasData, setHasData] = React.useState(null);
   const [isSearching, setIsSearching] = React.useState(false);
-  const [isInvModalActive, setIsInvModalActive] = React.useState(false);
-
-  const menuRef = ref.doc(userID).collection("menu");
+  const ordersRef = ref.doc(userID).collection("orders");
 
   // Fetch Menu
   React.useEffect(() => {
-    menuRef.onSnapshot(function (querySnapshot) {
+    ordersRef.onSnapshot(function (querySnapshot) {
       if (querySnapshot.empty) {
         setHasData(false);
       } else {
         querySnapshot.forEach(function (doc) {
           const data = doc.data();
           const propertyValues = [
-            data.imageURL,
-            data.name,
-            data.price,
-            data.group,
-            "",
+            `$${data.total / 100}`,
+            data.status,
+            data.quantity,
+            moment(data.timestamp).format("MMM, DD"),
+            null,
           ];
           setTableData((prevState) => [...prevState, propertyValues]);
           setFullData((prevState) => [...prevState, data]);
@@ -58,21 +55,13 @@ function Orders(props) {
 
   // MARK: - Functions
 
-  const deleteAction = () => {
-    alert("Delete item");
+  const addItem = () => {
+    navigation.navigate(menuDetailsName, { mode: "add" });
   };
 
-  const editAndDetailsAction = () => {
-    navigation.navigate(menuDetailsName);
-  };
-
-  const goToItemDetails = (index) => {
-    navigation.navigate(menuDetailsName, { createMode: true });
-  };
-
-  // Show Iventory item details
-  const handleDetails = (item) => {
-    setItem(item);
+  const detailsAction = (data) => {
+    const item = fullData.filter((item) => item.name === data[1])[0];
+    navigation.navigate(menuDetailsName, { mode: "details", item: item });
   };
 
   // Called when cell is selected
@@ -84,10 +73,7 @@ function Orders(props) {
       ...fullData[selectedIndex],
       image: fullData[selectedIndex].imageURL,
     };
-    handleDetails(item);
-    if (isInvModalActive === false) {
-      showRightModal();
-    }
+    detailsAction(item);
   };
 
   // MARK: - Item actions
@@ -107,31 +93,28 @@ function Orders(props) {
   if (tableData != []) {
     return (
       <View style={[styles.container]}>
-        <HeaderBar
-          title={"Menu"}
-          buttonAction={() => goToItemDetails()}
-          subtitle={tableData.length}
-          search={(term) => {
-            search(term);
-          }}
-          isSearchEnabled={true}
-          showCalendar={() => {
-            showCalendarModal();
-          }}
-          isModalActive={isInvModalActive}
-        />
         <ScrollView>
+          <HeaderBar
+            title={"Orders"}
+            buttonAction={() => addItem()}
+            subtitle={tableData.length}
+            search={(term) => {
+              search(term);
+            }}
+            isSearchEnabled={false}
+            hasButton={false}
+          />
           <TableView
+            tableType={"Orders"}
             tableHead={tableHead}
             tableData={isSearching ? filteredTableData : tableData}
             hasData={hasData}
-            hasImage={true}
+            hasImage={false}
             didSelectCell={(item, selectedIndex) => {
               didSelectCell(item, selectedIndex);
             }}
-            buttonAction={(index) => goToItemDetails(index)}
-            deleteAction={() => deleteAction()}
-            editAndDetailsAction={() => editAndDetailsAction()}
+            buttonAction={(index) => detailsAction()}
+            detailsAction={(index, data) => detailsAction(data)}
           />
         </ScrollView>
       </View>
@@ -139,4 +122,4 @@ function Orders(props) {
   }
 }
 
-export default Orders;
+export default Order;

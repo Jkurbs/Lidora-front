@@ -9,7 +9,7 @@ function HeaderBar(props) {
   const { colors } = useTheme();
 
   const InputSwitch = () => {
-    if (props.isSearchEnabled) {
+    if (props.isSearchEnabled === true) {
       return (
         <View style={styles.rightSide}>
           <View style={styles.rightInput}>
@@ -29,7 +29,7 @@ function HeaderBar(props) {
         </View>
       );
     } else {
-      return <DropDown />;
+      return null;
     }
   };
   return (

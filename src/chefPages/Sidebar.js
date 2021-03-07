@@ -240,9 +240,7 @@ function MobileDashboard(userID, userData) {
 function SideBarItems({ userData, navigation }) {
   const globalStyle = useGlobalStyles();
   const { colors } = useTheme();
-
   const [selected, setSelected] = React.useState({ name: "Dash" });
-  const [isAlertVisible, setIsAlertVisible] = React.useState(false);
 
   const optionSelected = (name) => {
     setSelected({ name: name });
@@ -337,6 +335,7 @@ function SideBarItems({ userData, navigation }) {
               }}
               onPress={() => {
                 navigation.navigate("Orders");
+                optionSelected("Orders");
               }}
             >
               <Image
@@ -354,13 +353,14 @@ function SideBarItems({ userData, navigation }) {
               }}
               onPress={() => {
                 navigation.navigate("Store design");
+                optionSelected("Store design");
               }}
             >
               <Image
                 style={[{ width: 18, height: 18 }, iconStyle("Store design")]}
                 source={require("../assets/icon/store-64.png")}
               />
-              <Text style={textStyle("Orders")}>Store design</Text>
+              <Text style={textStyle("Store design")}>Store design</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{

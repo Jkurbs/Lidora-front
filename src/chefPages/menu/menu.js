@@ -144,8 +144,10 @@ function Menu(props) {
               search(term);
             }}
             isSearchEnabled={true}
+            hasButton={true}
           />
           <TableView
+            tableType={"Menu"}
             tableHead={tableHead}
             tableData={isSearching ? filteredTableData : tableData}
             hasData={hasData}
