@@ -5,7 +5,6 @@ import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import TableView from "../../components/tableView";
 import HeaderBar from "../../components/headerBar";
-import Tooltip from "@material-ui/core/Tooltip";
 import Modal from "modal-enhanced-react-native-web";
 
 var db = firebase.firestore();
@@ -92,18 +91,12 @@ function Menu(props) {
 
   const editAction = (data) => {
     const item = fullData.filter((item) => item.name === data[1])[0];
-    console.log("Item: ", item);
     navigation.navigate(menuDetailsName, { mode: "edit", item: item });
   };
 
   const detailsAction = (data) => {
     const item = fullData.filter((item) => item.name === data[1])[0];
     navigation.navigate(menuDetailsName, { mode: "details", item: item });
-  };
-
-  // Show Iventory item details
-  const handleDetails = (item) => {
-    setItem(item);
   };
 
   // Called when cell is selected
@@ -115,7 +108,6 @@ function Menu(props) {
       ...fullData[selectedIndex],
       image: fullData[selectedIndex].imageURL,
     };
-    handleDetails(item);
     detailsAction(item);
   };
 
