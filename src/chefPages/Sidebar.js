@@ -27,74 +27,18 @@ const navOptionHandler = () => ({
   header: null,
 });
 
-function TabNavigator({ navigation, userData }) {
-  var options = { weekday: "long", month: "long", day: "numeric" };
-  var today = new Date();
-  const todayDate = today.toLocaleDateString("en-US", options);
-
+function TabNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}
     >
-      <Stack.Screen
-        options={{
-          title: todayDate,
-          tabBarLabel: "Menu",
-          backgroundColor: "#f4511e",
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-          selected: {
-            color: "red",
-          },
-        }}
-        name="Menu"
-        component={MenuStack}
-      />
+      <Stack.Screen name="Menu" component={MenuStack} />
 
-      <Stack.Screen
-        options={{
-          title: todayDate,
-          tabBarLabel: "Inventory",
-          backgroundColor: "#f4511e",
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "regular",
-          },
-          color: "green",
-        }}
-        name="Inventory"
-        component={InventoryStack}
-      />
-      <Stack.Screen
-        options={{
-          title: todayDate,
-          tabBarLabel: "Customer orders",
-          backgroundColor: "#f4511e",
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-        }}
-        name="Orders"
-        component={OrdersStack}
-      />
-      <Stack.Screen
-        options={{
-          title: todayDate,
-          tabBarLabel: "",
-          backgroundColor: "#f4511e",
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-        }}
-        name="Support"
-        component={SupportStack}
-      />
+      <Stack.Screen name="Inventory" component={InventoryStack} />
+      <Stack.Screen name="Orders" component={OrdersStack} />
+      <Stack.Screen name="Support" component={SupportStack} />
     </Stack.Navigator>
   );
 }
@@ -240,7 +184,7 @@ function MobileDashboard(userID, userData) {
 function SideBarItems({ userData, navigation }) {
   const globalStyle = useGlobalStyles();
   const { colors } = useTheme();
-  const [selected, setSelected] = React.useState({ name: "Dash" });
+  const [selected, setSelected] = React.useState({ name: "Menu" });
 
   const optionSelected = (name) => {
     setSelected({ name: name });
@@ -342,7 +286,6 @@ function SideBarItems({ userData, navigation }) {
                 style={[{ width: 20, height: 20 }, iconStyle("Orders")]}
                 source={require("../assets/icon/orders-48.png")}
               />
-
               <Text style={textStyle("Orders")}>Orders</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -382,7 +325,7 @@ function SideBarItems({ userData, navigation }) {
         </View>
 
         {/* Outside buttons */}
-        <View
+        {/* <View
           style={{
             flexDirection: "column",
             justifyContent: "space-around",
@@ -403,7 +346,7 @@ function SideBarItems({ userData, navigation }) {
               Support
             </Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
       <View
         style={{

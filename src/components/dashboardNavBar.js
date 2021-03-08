@@ -11,7 +11,11 @@ function DashboardNavBar(props) {
   const indicatorAnimating = props.indicatorAnimating;
 
   const goBack = () => {
-    navigation.goBack();
+    if (navigation) {
+      navigation.goBack();
+    } else {
+      props.backButtonTapped();
+    }
   };
 
   return (

@@ -1,226 +1,272 @@
 import React, { useEffect, useState, createRef } from "react";
-import { View, Text, TouchableOpacity,  SectionList, Animated } from "react-native";
-import { useTheme } from '@react-navigation/native';
-import { Entypo } from '@expo/vector-icons';
-import BottomSheet from 'reanimated-bottom-sheet'
-import EmptyBag from '../../components/emptyBagView'
-import useGlobalStyles  from '../../globalStyle'
-import styles from '../storeFront/storeFront.lightStyle'
-import NavBar from '../navigation/navBar'
-import moment from 'moment'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SectionList,
+  Animated,
+} from "react-native";
+import { useTheme } from "@react-navigation/native";
+import { Entypo } from "@expo/vector-icons";
+import BottomSheet from "reanimated-bottom-sheet";
+import EmptyBag from "../../components/emptyBagView";
+import useGlobalStyles from "../../globalStyle";
+import styles from "../storeFront/storeFront.lightStyle";
+import NavBar from "../navigation/navBar";
+import moment from "moment";
 import NumberPlease from "react-native-number-please";
 
-const snapPoints = ["0%", "40%"]
+const snapPoints = ["0%", "40%"];
 const ref = createRef();
 
-var fees = { 
-	USD: { Percent: 12.9, Fixed: 0.30 },
-	GBP: { Percent: 12.4, Fixed: 0.20 },
-	EUR: { Percent: 12.4, Fixed: 0.24 },
-	CAD: { Percent: 12.9, Fixed: 0.30 },
-	AUD: { Percent: 12.9, Fixed: 0.30 },
-	NOK: { Percent: 12.9, Fixed: 2 },
-	DKK: { Percent: 12.9, Fixed: 1.8 },
-	SEK: { Percent: 12.9, Fixed: 1.8 },
-	JPY: { Percent: 13.6, Fixed: 0 },
-	MXN: { Percent: 13.6, Fixed: 3 }
+var fees = {
+  USD: { Percent: 12.9, Fixed: 0.3 },
+  GBP: { Percent: 12.4, Fixed: 0.2 },
+  EUR: { Percent: 12.4, Fixed: 0.24 },
+  CAD: { Percent: 12.9, Fixed: 0.3 },
+  AUD: { Percent: 12.9, Fixed: 0.3 },
+  NOK: { Percent: 12.9, Fixed: 2 },
+  DKK: { Percent: 12.9, Fixed: 1.8 },
+  SEK: { Percent: 12.9, Fixed: 1.8 },
+  JPY: { Percent: 13.6, Fixed: 0 },
+  MXN: { Percent: 13.6, Fixed: 3 },
 };
 
 // Calculate Fee
 function calcFee(amount, currency) {
   var _fee = fees[currency];
-  var _deliveryFee = 2.00;
+  var _deliveryFee = 2.0;
   var amount = parseFloat(amount);
-  var total = (amount + parseFloat(_fee.Fixed) + _deliveryFee) / (1 - parseFloat(_fee.Percent) / 100);
-  var fee = (total - amount) + _deliveryFee;
-	return {
-		amount: amount.toFixed(2),
+  var total =
+    (amount + parseFloat(_fee.Fixed) + _deliveryFee) /
+    (1 - parseFloat(_fee.Percent) / 100);
+  var fee = total - amount + _deliveryFee;
+  return {
+    amount: amount.toFixed(2),
     fee: fee.toFixed(2),
     deliveryFee: _deliveryFee,
-    total: Number(total.toFixed(2)) 
-	};
+    total: Number(total.toFixed(2)),
+  };
 }
 
 // Calculate Subtotal
 function calcSubtotal(items) {
+  items.forEach((item) => {
+    item["total"] = item.quantity * item.price * item.deliveryDates.length;
+  });
 
-  items.forEach(item =>{
-    item["total"] = item.quantity * item.price * item.deliveryDates.length
-  })
-	
-  return items.map(a => a.total).reduce((a, b) => a + b, 0)
-
+  return items.map((a) => a.total).reduce((a, b) => a + b, 0);
 }
 
 function Card(props) {
-
-  const navigation = props.navigation
-  const chef = props.route.params.chef
-  const items = props.route.params.items
-  const [newArray, setNewArray] = useState([]) 
+  const navigation = props.navigation;
+  const chef = props.route.params.chef;
+  const items = props.route.params.items;
+  const [newArray, setNewArray] = useState([]);
   //useState version
-  const [quantity,setQuantity] = useState(items.map(a => a.quantity).reduce((a, b) => a + b, 0))
-  const [subTotal,setSubTotal] = useState(calcSubtotal(items))
-  const [calculatedAmount,setCalcAmount] = useState(calcFee(subTotal, "USD"))
-  
-
+  const [quantity, setQuantity] = useState(
+    items.map((a) => a.quantity).reduce((a, b) => a + b, 0)
+  );
+  const [subTotal, setSubTotal] = useState(calcSubtotal(items));
+  const [calculatedAmount, setCalcAmount] = useState(calcFee(subTotal, "USD"));
 
   useEffect(() => {
     let isCancelled = false;
-    var grouped = _.mapValues(_.groupBy(items, 'deliveryDates'),
-    clist => clist.map(item => _.omit(item, 'deliveryDates')));
-    console.log("GROUPED",grouped)
-    Object.keys(grouped).forEach(key => {
-      let obj = {}
-      var dates = key.split(',')
+    var grouped = _.mapValues(_.groupBy(items, "deliveryDates"), (clist) =>
+      clist.map((item) => _.omit(item, "deliveryDates"))
+    );
+    Object.keys(grouped).forEach((key) => {
+      let obj = {};
+      var dates = key.split(",");
       if (key.length > 1) {
-        obj['title'] = dates.map(x => moment(x).format('dddd MMM, DD')).join("\n")
-        obj['data'] = grouped[key]
-        obj['data']['deliveryDates'] = dates
+        obj["title"] = dates
+          .map((x) => moment(x).format("dddd MMM, DD"))
+          .join("\n");
+        obj["data"] = grouped[key];
+        obj["data"]["deliveryDates"] = dates;
         if (!isCancelled) {
-          setNewArray(prevState => [...prevState, obj])
-        }  
+          setNewArray((prevState) => [...prevState, obj]);
+        }
       } else {
-        obj['title'] = key.moment(x).format('dddd MMM, DD')
-        obj['deliveryDates'] = dates
-        obj['data']['deliveryDates'] = dates
+        obj["title"] = key.moment(x).format("dddd MMM, DD");
+        obj["deliveryDates"] = dates;
+        obj["data"]["deliveryDates"] = dates;
         if (!isCancelled) {
-          setNewArray(prevState => [...prevState, obj])
-        }  
+          setNewArray((prevState) => [...prevState, obj]);
+        }
       }
     });
 
-    setNewArray(prevState => [...prevState, {title: "Total", data: [0]}])
+    setNewArray((prevState) => [...prevState, { title: "Total", data: [0] }]);
     return () => {
       isCancelled = true;
     };
-}, [])
- 
+  }, []);
+
   // const quantity = items.map(a => a.quantity).reduce((a, b) => a + b, 0)
 
   // const subTotal = items.map(a => a.total).reduce((a, b) => a + b, 0)
   // const calculatedAmount = calcFee(subTotal * items[0]?.deliveryDates?.length ?? 0, "USD")
-  
-  const [isOpen, setIsOpen] = useState(false) 
-  const [opacity] = useState(new Animated.Value(0))
-  const [selectedItem, setSelectedItem] = useState({})
 
-  const globalStyles = useGlobalStyles()
+  const [isOpen, setIsOpen] = useState(false);
+  const [opacity] = useState(new Animated.Value(0));
+  const [selectedItem, setSelectedItem] = useState({});
+
+  const globalStyles = useGlobalStyles();
   const { colors } = useTheme();
 
   const FlatListItemSeparator = () => {
-    return ( <View style={globalStyles.border}/> )
-  }
+    return <View style={globalStyles.border} />;
+  };
 
-  const ItemsCell = ({item}) => {
+  const ItemsCell = ({ item }) => {
     const initialValues = [{ id: "quantity", value: item.quantity ?? 1 }];
     return (
-      <View style={{flexDirection: 'column', padding: 8, justifyContent: 'center'}}>
+      <View
+        style={{
+          flexDirection: "column",
+          padding: 8,
+          justifyContent: "center",
+        }}
+      >
         <View style={styles.checkoutItemCellContainer}>
-            <View style={styles.checkoutItemContainer}>
-              <View style={{marginLeft: 16, marginRight: 8}}>
-                <NumberPlease
-                  pickerStyle={{ backgroundColor: colors.background, borderColor: colors.background, color: colors.textPrimary}}
-                  digits={[{ id: "quantity", label: "", min: 0, max: 99 }]}
-                  values={initialValues}
-                  onChange={(values) => changeQty(values,item)}/>
-              </View>
-              <View>
-                <Text style={[globalStyles.textPrimary, {marginBottom: 0}]}>{item?.name ?? ""}</Text>
-                <Text style={[globalStyles.textSecondary, {marginTop: 0, fontSize: 12, marginLeft: 8}]}>{item?.option ?? ""}</Text>
-              </View>
+          <View style={styles.checkoutItemContainer}>
+            <View style={{ marginLeft: 16, marginRight: 8 }}>
+              <NumberPlease
+                pickerStyle={{
+                  backgroundColor: colors.background,
+                  borderColor: colors.background,
+                  color: colors.textPrimary,
+                }}
+                digits={[{ id: "quantity", label: "", min: 0, max: 99 }]}
+                values={initialValues}
+                onChange={(values) => changeQty(values, item)}
+              />
             </View>
-            <View style={styles.checkoutItemRightContainer}>
-              <Text style={[globalStyles.textPrimary, { marginRight: 8}]}>${item?.total ?? item?.price ?? 0}</Text>
+            <View>
+              <Text style={[globalStyles.textPrimary, { marginBottom: 0 }]}>
+                {item?.name ?? ""}
+              </Text>
+              <Text
+                style={[
+                  globalStyles.textSecondary,
+                  { marginTop: 0, fontSize: 12, marginLeft: 8 },
+                ]}
+              >
+                {item?.option ?? ""}
+              </Text>
             </View>
+          </View>
+          <View style={styles.checkoutItemRightContainer}>
+            <Text style={[globalStyles.textPrimary, { marginRight: 8 }]}>
+              ${item?.total ?? item?.price ?? 0}
+            </Text>
+          </View>
         </View>
-    </View>
-    )
-  }
+      </View>
+    );
+  };
 
   const TotalCell = () => (
     <View style={styles.totalContainer}>
-        <View style={styles.totalInnerContainer}>
-            <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Subtotal</Text>
-            <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${calculatedAmount.amount}</Text>
-        </View>
-        <View style={styles.totalInnerContainer}>
-            <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Service Fee</Text>
-            <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${calculatedAmount.fee}</Text>
-        </View>
-        <View style={styles.totalInnerContainer}>
-            <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>Amount due</Text>
-            <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>${calculatedAmount.total}</Text>
-        </View>
+      <View style={styles.totalInnerContainer}>
+        <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>
+          Subtotal
+        </Text>
+        <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>
+          ${calculatedAmount.amount}
+        </Text>
+      </View>
+      <View style={styles.totalInnerContainer}>
+        <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>
+          Service Fee
+        </Text>
+        <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>
+          ${calculatedAmount.fee}
+        </Text>
+      </View>
+      <View style={styles.totalInnerContainer}>
+        <Text style={[globalStyles.textPrimary, styles.totalItemTitle]}>
+          Amount due
+        </Text>
+        <Text style={[globalStyles.textPrimary, styles.totalItemValue]}>
+          ${calculatedAmount.total}
+        </Text>
+      </View>
     </View>
   );
 
+  const changeQty = async (values, item) => {
+    const itemsData = [];
+    const data = newArray.map((x) => {
+      x.data.forEach((item) => {
+        if (item !== 0) {
+          item["deliveryDates"] = x.data.deliveryDates;
+          itemsData.push(item);
+        }
+      });
+    });
 
-
-  const changeQty = async (values,item) => {
-    const itemsData = []
-    const data = newArray.map(x => {x.data.forEach(item => {
-      if(item !== 0){
-         item['deliveryDates'] = x.data.deliveryDates
-         itemsData.push(item)
-      }
-    })})
-
-    if(values[0].value == 0){
-      onOpen(item)
+    if (values[0].value == 0) {
+      onOpen(item);
     }
 
-    item.quantity = values[0].value
-    item.total = item.price * values[0].value
-    setSelectedItem(item)
+    item.quantity = values[0].value;
+    item.total = item.price * values[0].value;
+    setSelectedItem(item);
 
-    const newSubtotal = calcSubtotal(itemsData)
-    console.log(itemsData,"itemsData")
+    const newSubtotal = calcSubtotal(itemsData);
+    console.log(itemsData, "itemsData");
 
-    setCalcAmount(calcFee(newSubtotal, "USD"))
-
-  }
+    setCalcAmount(calcFee(newSubtotal, "USD"));
+  };
 
   const removeItem = async () => {
-    const itemsData = []
-    const data = newArray.map(x => {x.data.forEach(item => {
-      if(item !== 0){
-         itemsData.push(item)
-      }
-    })})
+    const itemsData = [];
+    const data = newArray.map((x) => {
+      x.data.forEach((item) => {
+        if (item !== 0) {
+          itemsData.push(item);
+        }
+      });
+    });
 
-    const filteredITEMS = itemsData.filter(item => item !== selectedItem);
+    const filteredITEMS = itemsData.filter((item) => item !== selectedItem);
 
     //Remove item from newArray
-    newArray.forEach(x => {
-      var removeIndex = "none"
+    newArray.forEach((x) => {
+      var removeIndex = "none";
 
-      if(x.data[0] != 0){
-        x.data.forEach(item => {
-          if(item.quantity == 0){
-            const id = x.data.indexOf(item)
-            x.data.splice(id,1)
+      if (x.data[0] != 0) {
+        x.data.forEach((item) => {
+          if (item.quantity == 0) {
+            const id = x.data.indexOf(item);
+            x.data.splice(id, 1);
           }
-        })
+        });
       }
-      if(x.data.length == 0){
-        const id = newArray.indexOf(x)
-        newArray.splice(id,1)
+      if (x.data.length == 0) {
+        const id = newArray.indexOf(x);
+        newArray.splice(id, 1);
       }
-    })
-    onClose()
-  }
+    });
+    onClose();
+  };
 
   const renderBackDrop = () => (
-    <Animated.View style={[styles.backdrop, {opacity: opacity}]}>
-      <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={()=> onClose()}/>
+    <Animated.View style={[styles.backdrop, { opacity: opacity }]}>
+      <TouchableOpacity
+        style={styles.backdrop}
+        activeOpacity={1}
+        onPress={() => onClose()}
+      />
     </Animated.View>
   );
 
   const onOpen = async (item) => {
     ref.current.snapTo(1);
-    setIsOpen(true)
-    setSelectedItem(item)
+    setIsOpen(true);
+    setSelectedItem(item);
     Animated.timing(opacity, {
       toValue: 0.7,
       duration: 300,
@@ -230,7 +276,7 @@ function Card(props) {
 
   const onClose = async () => {
     ref.current.snapTo(0);
-    setIsOpen(false)
+    setIsOpen(false);
     Animated.timing(opacity, {
       toValue: 0,
       duration: 300,
@@ -239,109 +285,163 @@ function Card(props) {
   };
 
   const renderContent = () => {
-     return (
-       <View style={[styles.removeAlertContainer, {backgroundColor: colors.background}]}>
-         <Text style={globalStyles.textPrimary}>Remove Item?</Text>
-         <Text style={globalStyles.textSecondary}>Are you sure you want to remove this item from your cart?</Text>
-         <TouchableOpacity onPress={()=> removeItem()} style={styles.removeAlertButton}> 
-              <Text style={styles.removeAlertButtonText}>Remove</Text>
-           </TouchableOpacity>
-           <TouchableOpacity onPress={()=> onClose()} style={styles.removeAlertSecondaryButton}> 
-              <Text style={[globalStyles.textPrimary, styles.removeAlertSecondaryButtonText]}>Go Back</Text>
-           </TouchableOpacity>
-       </View>
-     )
-  }
+    return (
+      <View
+        style={[
+          styles.removeAlertContainer,
+          { backgroundColor: colors.background },
+        ]}
+      >
+        <Text style={globalStyles.textPrimary}>Remove Item?</Text>
+        <Text style={globalStyles.textSecondary}>
+          Are you sure you want to remove this item from your cart?
+        </Text>
+        <TouchableOpacity
+          onPress={() => removeItem()}
+          style={styles.removeAlertButton}
+        >
+          <Text style={styles.removeAlertButtonText}>Remove</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => onClose()}
+          style={styles.removeAlertSecondaryButton}
+        >
+          <Text
+            style={[
+              globalStyles.textPrimary,
+              styles.removeAlertSecondaryButtonText,
+            ]}
+          >
+            Go Back
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   const proceedToCheckout = () => {
     if (calculatedAmount.total < chef.threshold) {
-      alert(`The minimum order amount is $${chef.threshold}`)
-      return 
+      alert(`The minimum order amount is $${chef.threshold}`);
+      return;
     }
 
     const shippingDetails = {
       title: "Shipping Details",
-      data: [0]
-    }
-  
+      data: [0],
+    };
+
     const paymentDetails = {
       title: "Payment Details",
-      data: [0]
-    }
-  
-    newArray.splice(1, 0, shippingDetails) 
-    newArray.splice(2, 0, paymentDetails)
+      data: [0],
+    };
+
+    newArray.splice(1, 0, shippingDetails);
+    newArray.splice(2, 0, paymentDetails);
 
     navigation.navigate("CheckoutDetails", {
-      chef: chef, quantity: quantity,
+      chef: chef,
+      quantity: quantity,
       subTotal: calculatedAmount.amount,
-      total: calculatedAmount.total, 
-      serviceFee: calculatedAmount.fee, 
-      deliveryFee: calculatedAmount.deliveryFee, 
-      items: items, 
-      data: newArray
-    }) 
-  }
+      total: calculatedAmount.total,
+      serviceFee: calculatedAmount.fee,
+      deliveryFee: calculatedAmount.deliveryFee,
+      items: items,
+      data: newArray,
+    });
+  };
 
   return (
     <View style={globalStyles.backgroundPrimary}>
-        <NavBar items={items} title={"Cart"} leftIcon={"md-close"} navigation={navigation}/>
-      {
-       items.length === 0 ?
-        <EmptyBag/>
-        :
+      <NavBar
+        items={items}
+        title={"Cart"}
+        leftIcon={"md-close"}
+        navigation={navigation}
+      />
+      {items.length === 0 ? (
+        <EmptyBag />
+      ) : (
         <View>
-            <SectionList
-                style={styles.sectionList}
-                keyExtractor={(item, index) => item + index}
-                sections={newArray}
-                renderSectionHeader={({ section }) => {
-                  if (section.title === "Total") {
-                    return null
-                  } else {
-                    return (
-                      <View style={styles.headerView}>
-                            <Text style={[globalStyles.textPrimary, styles.sectionTitle]}>Delivery for: {section.title}</Text>
-                      </View>
-                    )
-                  }
-                }}
-                renderItem={({ item, section }) => {
-                    switch (section.title) {
-                        case "Total":
-                          return <TotalCell item={item} />
-                        default:
-                          return <ItemsCell item={item} />
-                    }
-                }}
-                ListHeaderComponent={<View style={{width: '100%', height: 50}}/>}
-                ListFooterComponent={<View style={{width: '100%', height: 150}}/>}
-                ItemSeparatorComponent={FlatListItemSeparator}
-                stickySectionHeadersEnabled={false}
-            />
+          <SectionList
+            style={styles.sectionList}
+            keyExtractor={(item, index) => item + index}
+            sections={newArray}
+            renderSectionHeader={({ section }) => {
+              if (section.title === "Total") {
+                return null;
+              } else {
+                return (
+                  <View style={styles.headerView}>
+                    <Text
+                      style={[globalStyles.textPrimary, styles.sectionTitle]}
+                    >
+                      Delivery for: {section.title}
+                    </Text>
+                  </View>
+                );
+              }
+            }}
+            renderItem={({ item, section }) => {
+              switch (section.title) {
+                case "Total":
+                  return <TotalCell item={item} />;
+                default:
+                  return <ItemsCell item={item} />;
+              }
+            }}
+            ListHeaderComponent={<View style={{ width: "100%", height: 50 }} />}
+            ListFooterComponent={
+              <View style={{ width: "100%", height: 150 }} />
+            }
+            ItemSeparatorComponent={FlatListItemSeparator}
+            stickySectionHeadersEnabled={false}
+          />
 
-            <View style={{zIndex: 1, width: '100%',  position: "absolute", bottom: 30 , flexDirection: 'column', justifyContent: 'space-between'}}>
-              <TouchableOpacity onPress={()=> proceedToCheckout()} style={globalStyles.btnPrimary}> 
-                      <Text style={styles.textCentered}>Proceed to Checkout</Text>
-              </TouchableOpacity>
-              <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 8, bottom: 0}}>
-                  <Entypo name="lock" size={12} color="#6A737D"/>
-                  <Text style={globalStyles.textTertiary}>Payments are processed securely.</Text>
-              </View>
+          <View
+            style={{
+              zIndex: 1,
+              width: "100%",
+              position: "absolute",
+              bottom: 30,
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => proceedToCheckout()}
+              style={globalStyles.btnPrimary}
+            >
+              <Text style={styles.textCentered}>Proceed to Checkout</Text>
+            </TouchableOpacity>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 8,
+                bottom: 0,
+              }}
+            >
+              <Entypo name="lock" size={12} color="#6A737D" />
+              <Text style={globalStyles.textTertiary}>
+                Payments are processed securely.
+              </Text>
             </View>
+          </View>
         </View>
-      }
-        
+      )}
 
       {isOpen && renderBackDrop()}
 
       <BottomSheet
         borderRadius={10}
         ref={ref}
-        snapPoints={snapPoints} initialSnap={0}
-        renderContent={renderContent}/> 
+        snapPoints={snapPoints}
+        initialSnap={0}
+        renderContent={renderContent}
+      />
     </View>
-  )
+  );
 }
-  
-export default Card
+
+export default Card;

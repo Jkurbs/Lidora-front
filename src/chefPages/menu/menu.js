@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./menu.styles";
 import { View, ScrollView } from "react-native";
 import firebase from "../../firebase/Firebase";
@@ -27,45 +27,47 @@ function Menu(props) {
   const navigation = props.navigation;
   const userID = firebase.auth().currentUser.uid;
 
-  const [tableHead] = React.useState([
+  const [tableHead] = useState([
     "Image",
     "Name",
     "Price",
     "Category",
     "Actions",
   ]);
-  const [tableData, setTableData] = React.useState([]);
-  const [fullData, setFullData] = React.useState([]);
-  const [filteredTableData, setFilteredTableData] = React.useState([]);
-  const [filteredFullData, setFilteredFullData] = React.useState([]);
-  const [item, setItem] = React.useState({});
-  const [hasData, setHasData] = React.useState(null);
-  const [isSearching, setIsSearching] = React.useState(false);
-  const [visibleModal, setVisibleModal] = React.useState(null);
-
+  const [tableData, setTableData] = useState([]);
+  const [fullData, setFullData] = useState([]);
+  const [filteredTableData, setFilteredTableData] = useState([]);
+  const [filteredFullData, setFilteredFullData] = useState([]);
+  const [item, setItem] = useState({});
+  const [hasData, setHasData] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const [visibleModal, setVisibleModal] = useState(null);
   const menuRef = ref.doc(userID).collection("menu");
 
   // Fetch Menu
-  React.useEffect(() => {
-    menuRef.onSnapshot(function (querySnapshot) {
-      if (querySnapshot.empty) {
-        setHasData(false);
-      } else {
-        querySnapshot.forEach(function (doc) {
-          const data = doc.data();
-          const propertyValues = [
-            data.imageURL,
-            data.name,
-            `$${data.price}`,
-            data.group,
-            null,
-          ];
-          setTableData((prevState) => [...prevState, propertyValues]);
-          setFullData((prevState) => [...prevState, data]);
-          setHasData(true);
-        });
-      }
-    });
+  useEffect(() => {
+    async function fetchData() {
+      menuRef.onSnapshot(function (querySnapshot) {
+        if (querySnapshot.empty) {
+          setHasData(false);
+        } else {
+          querySnapshot.forEach(function (doc) {
+            const data = doc.data();
+            const propertyValues = [
+              data.imageURL,
+              data.name,
+              `$${data.price}`,
+              data.group,
+              null,
+            ];
+            setTableData((prevState) => [...prevState, propertyValues]);
+            setFullData((prevState) => [...prevState, data]);
+            setHasData(true);
+          });
+        }
+      });
+    }
+    fetchData();
   }, []);
 
   // MARK: - Functions

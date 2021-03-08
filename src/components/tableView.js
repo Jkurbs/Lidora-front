@@ -255,7 +255,9 @@ function TableView(props) {
               textStyle={styles.headText}
             />
             {props.tableData.map((rowData, index) => (
-              <TouchableOpacity onPress={props.didSelectCell.bind(this, index)}>
+              <TouchableOpacity
+                onPress={props.didSelectCell.bind(this, rowData, index)}
+              >
                 <TableWrapper
                   key={index}
                   style={

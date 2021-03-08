@@ -16,7 +16,7 @@ import {
   SafeAreaView,
 } from "react-native";
 
-import { AppearanceProvider, useColorScheme } from "react-native-appearance";
+import { useColorScheme } from "react-native-appearance";
 import {
   NavigationContainer,
   DefaultTheme,
@@ -34,7 +34,7 @@ import Footer from "../../components/Footer";
 
 import ProductSettingsScreen from "../../chefPages/productSettings/productSettings";
 import StoreDesignScreen from "../../chefPages/storeDesign/storeDesign";
-// import SettingScreen from "../../chefPages/settings/settingsSideBar";
+import OrderDetailsScreen from "../../chefPages/order/orderDetails";
 import StoreFront from "../../customerPages/storeFront/storeFront";
 import * as Linking from "expo-linking";
 import firebase from "../../firebase/Firebase";
@@ -48,6 +48,10 @@ const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 const scale = windowWidth / 400;
 
 var db = firebase.firestore();
+
+const stackOption = () => ({
+  headerShown: false,
+});
 
 export function normalize(size) {
   const newSize = size * scale;
@@ -482,20 +486,25 @@ function App(props) {
             })}
           />
           <Stack.Screen
-            options={{ headerShown: false }}
+            options={stackOption}
             name="Dashboard"
             component={DashboardScreen}
           />
           <Stack.Screen name="Apply" component={ApplyScreen} />
           <Stack.Screen name="Legal" component={LegalScreen} />
           <Stack.Screen
-            options={{ headerShown: false }}
+            options={stackOption}
             name="MenuDetails"
             component={MenuDetailsScreen}
           />
           <Stack.Screen
             name="ProductSettings"
             component={ProductSettingsScreen}
+          />
+          <Stack.Screen
+            options={stackOption}
+            name="OrderDetails"
+            component={OrderDetailsScreen}
           />
           <Stack.Screen name="StoreDesign" component={StoreDesignScreen} />
         </Stack.Navigator>
