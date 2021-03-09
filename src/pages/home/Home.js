@@ -497,10 +497,10 @@ function App(props) {
             name="MenuDetails"
             component={MenuDetailsScreen}
           />
-          <Stack.Screen
+          {/* <Stack.Screen
             name="ProductSettings"
             component={ProductSettingsScreen}
-          />
+          /> */}
           <Stack.Screen
             options={stackOption}
             name="OrderDetails"

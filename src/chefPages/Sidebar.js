@@ -2,6 +2,8 @@ import * as React from "react";
 import { Image, Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import MenuScreen from "./menu/menu";
+import ProductSettingsScreen from "./productSettings/productSettings";
+
 import InventoryScreen from "./inventory/inventory";
 import OrdersScreen from "./order/orders";
 import SupportScreen from "./support/support";
@@ -16,9 +18,11 @@ import { Entypo } from "@expo/vector-icons";
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
 const Stack = createStackNavigator();
-const StackInventory = createStackNavigator();
 const StackOrders = createStackNavigator();
 const StackMenu = createStackNavigator();
+const StackProductSettings = createStackNavigator();
+
+const StackInventory = createStackNavigator();
 const StackDashboard = createStackNavigator();
 const StackSupport = createStackNavigator();
 
@@ -35,11 +39,25 @@ function TabNavigator() {
       }}
     >
       <Stack.Screen name="Menu" component={MenuStack} />
+      <Stack.Screen name="Orders" component={OrdersStack} />
+      <Stack.Screen name="ProductSettings" component={ProductSettingsStack} />
 
       <Stack.Screen name="Inventory" component={InventoryStack} />
-      <Stack.Screen name="Orders" component={OrdersStack} />
       <Stack.Screen name="Support" component={SupportStack} />
     </Stack.Navigator>
+  );
+}
+
+// Stack to show the Menu
+function MenuStack() {
+  return (
+    <StackMenu.Navigator initialRouteName="Menu">
+      <StackMenu.Screen
+        name="Menu"
+        component={MenuScreen}
+        options={navOptionHandler}
+      />
+    </StackMenu.Navigator>
   );
 }
 
@@ -53,6 +71,19 @@ function OrdersStack() {
         options={navOptionHandler}
       />
     </StackOrders.Navigator>
+  );
+}
+
+// Stack to show the Orders
+function ProductSettingsStack() {
+  return (
+    <StackProductSettings.Navigator initialRouteName="ProductSettings">
+      <StackOrders.Screen
+        name="ProductSettings"
+        component={ProductSettingsScreen}
+        options={navOptionHandler}
+      />
+    </StackProductSettings.Navigator>
   );
 }
 
@@ -79,19 +110,6 @@ function InventoryStack() {
         options={navOptionHandler}
       />
     </StackInventory.Navigator>
-  );
-}
-
-// Stack to show the Menu
-function MenuStack() {
-  return (
-    <StackMenu.Navigator initialRouteName="Menu">
-      <StackMenu.Screen
-        name="Menu"
-        component={MenuScreen}
-        options={navOptionHandler}
-      />
-    </StackMenu.Navigator>
   );
 }
 
@@ -255,7 +273,7 @@ function SideBarItems({ userData, navigation }) {
           <View style={{ marginTop: 40 }}>
             <TouchableOpacity
               style={{
-                marginBottom: 24,
+                marginBottom: 35,
                 flexDirection: "row",
                 alignItems: "center",
               }}
@@ -271,9 +289,10 @@ function SideBarItems({ userData, navigation }) {
               <Text style={textStyle("Menu")}>Menu</Text>
             </TouchableOpacity>
 
+            {/* Orders */}
             <TouchableOpacity
               style={{
-                marginBottom: 24,
+                marginBottom: 35,
                 flexDirection: "row",
                 alignItems: "center",
               }}
@@ -288,9 +307,11 @@ function SideBarItems({ userData, navigation }) {
               />
               <Text style={textStyle("Orders")}>Orders</Text>
             </TouchableOpacity>
+
+            {/* Store design */}
             <TouchableOpacity
               style={{
-                marginBottom: 24,
+                marginBottom: 35,
                 flexDirection: "row",
                 alignItems: "center",
               }}
@@ -305,21 +326,26 @@ function SideBarItems({ userData, navigation }) {
               />
               <Text style={textStyle("Store design")}>Store design</Text>
             </TouchableOpacity>
+            {/* Product Settings */}
             <TouchableOpacity
               style={{
-                marginBottom: 24,
+                marginBottom: 35,
                 flexDirection: "row",
                 alignItems: "center",
               }}
               onPress={() => {
-                navigation.navigate("StoreDesign");
+                navigation.navigate("ProductSettings");
+                optionSelected("Product Settings");
               }}
             >
               <Image
-                style={[{ width: 18, height: 18 }, iconStyle("Settings")]}
+                style={[
+                  { width: 18, height: 18 },
+                  iconStyle("ProductSettings"),
+                ]}
                 source={require("../assets/icon/settings-48.png")}
               />
-              <Text style={textStyle("Settings")}>Settings</Text>
+              <Text style={textStyle("Product Settings")}>Settings</Text>
             </TouchableOpacity>
           </View>
         </View>
