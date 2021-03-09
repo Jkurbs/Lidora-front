@@ -40,7 +40,7 @@ function TabNavigator() {
     >
       <Stack.Screen name="Menu" component={MenuStack} />
       <Stack.Screen name="Orders" component={OrdersStack} />
-      <Stack.Screen name="ProductSettings" component={ProductSettingsStack} />
+      <Stack.Screen name="Product Settings" component={ProductSettingsStack} />
 
       <Stack.Screen name="Inventory" component={InventoryStack} />
       <Stack.Screen name="Support" component={SupportStack} />
@@ -77,9 +77,9 @@ function OrdersStack() {
 // Stack to show the Orders
 function ProductSettingsStack() {
   return (
-    <StackProductSettings.Navigator initialRouteName="ProductSettings">
+    <StackProductSettings.Navigator initialRouteName="Product Settings">
       <StackOrders.Screen
-        name="ProductSettings"
+        name="Product Settings"
         component={ProductSettingsScreen}
         options={navOptionHandler}
       />
@@ -334,14 +334,14 @@ function SideBarItems({ userData, navigation }) {
                 alignItems: "center",
               }}
               onPress={() => {
-                navigation.navigate("ProductSettings");
+                navigation.navigate("Product Settings");
                 optionSelected("Product Settings");
               }}
             >
               <Image
                 style={[
                   { width: 18, height: 18 },
-                  iconStyle("ProductSettings"),
+                  iconStyle("Product Settings"),
                 ]}
                 source={require("../assets/icon/settings-48.png")}
               />

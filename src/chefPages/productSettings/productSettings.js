@@ -6,11 +6,14 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import { useTheme } from "@react-navigation/native";
 import globalStyle from "../../globalStyle";
+import { FlatGrid } from "react-native-super-grid";
+const { width: windowWidth } = Dimensions.get("screen");
 
 var db = firebase.firestore();
 const ref = db.collection("chefs");
@@ -39,6 +42,19 @@ function ProductSettings() {
         <Text styles={{ color: colors.textSecondary }}>
           Manage Lidora products for your Store.
         </Text>
+        <FlatGrid
+          itemDimension={(windowWidth / 3, windowWidth / 3)}
+          data={[1, 2, 3, 4, 5, 6]}
+          renderItem={({ item }) => (
+            <Text
+              style={{
+                backgroundColor: "red",
+              }}
+            >
+              {item}
+            </Text>
+          )}
+        />
       </View>
     </View>
   );
