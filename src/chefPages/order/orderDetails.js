@@ -153,7 +153,9 @@ function OrderDetails(props) {
   //   }
   // });
 
-  const refund = () => {};
+  const refund = () => {
+    alert("Time for a refund");
+  };
 
   if (newArray != []) {
     return (
@@ -169,7 +171,7 @@ function OrderDetails(props) {
             <TouchableOpacity onPress={() => deselectedItem()}>
               <Entypo name="chevron-small-left" size={24} color="black" />
             </TouchableOpacity>
-            <View>
+            <View style={{ marginLeft: 16 }}>
               <Text style={{ color: colors.textSecondary }}>Order</Text>
               <Text style={[styles.titleText, { color: colors.textPrimary }]}>
                 ${item.total / 100}
@@ -240,7 +242,12 @@ function OrderDetails(props) {
                 height: "40%",
                 borderColor: colors.borderPrimary,
               }}
-            ></View>
+            >
+              <View>
+                <Text>Address: 14212 NE 3rd CT</Text>
+                <Text>Distance between you and customer: 10 kl</Text>
+              </View>
+            </View>
           </View>
         </View>
       </View>

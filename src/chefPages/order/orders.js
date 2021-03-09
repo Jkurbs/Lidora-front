@@ -82,6 +82,10 @@ function Order(props) {
     setFilteredFullData(filteredReal);
   };
 
+  const refund = () => {
+    alert("Time for a refund");
+  };
+
   if (tableData != []) {
     if (itemSelected.selected === true) {
       return (
@@ -113,7 +117,7 @@ function Order(props) {
               didSelectCell={(item, selectedIndex) => {
                 didSelectCell(item, selectedIndex);
               }}
-              buttonAction={() => detailsAction()}
+              buttonAction={() => refund()}
               detailsAction={(index, data) => detailsAction(data)}
             />
           </ScrollView>
