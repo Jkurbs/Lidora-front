@@ -32,7 +32,7 @@ import LoginScreen from "../login/Login.js";
 import DashboardScreen from "../../chefPages/Sidebar";
 import Footer from "../../components/Footer";
 
-import ProductSettingsScreen from "../../chefPages/productSettings/productSettings";
+import DeliveryApplicationScreen from "../../chefPages/productSettings/deliveryApplication";
 import StoreDesignScreen from "../../chefPages/storeDesign/storeDesign";
 import OrderDetailsScreen from "../../chefPages/order/orderDetails";
 import StoreFront from "../../customerPages/storeFront/storeFront";
@@ -494,17 +494,13 @@ function App(props) {
           <Stack.Screen name="Legal" component={LegalScreen} />
           <Stack.Screen
             options={stackOption}
-            name="MenuDetails"
+            name="Menu Details"
             component={MenuDetailsScreen}
           />
-          {/* <Stack.Screen
-            name="ProductSettings"
-            component={ProductSettingsScreen}
-          /> */}
           <Stack.Screen
             options={stackOption}
-            name="OrderDetails"
-            component={OrderDetailsScreen}
+            name="Delivery Application"
+            component={DeliveryApplicationScreen}
           />
           <Stack.Screen name="StoreDesign" component={StoreDesignScreen} />
         </Stack.Navigator>

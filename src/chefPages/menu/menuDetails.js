@@ -57,6 +57,7 @@ function MenuDetails(props) {
         hasComplimentary={true}
         mainButtonTapped={() => saveButtonTapped()}
         complemantaryButtonTapped={() => saveAndAddMoreTapped()}
+        mainButtonTitle={"Save Item"}
         indicatorAnimating={indicatorAnimating}
       />
       <View style={styles.container}>

@@ -46,7 +46,7 @@ function DashboardNavBar(props) {
             />
           ) : null}
           <MainButton
-            text={"Save Item"}
+            text={props.mainButtonTitle}
             hasLeftIcon={false}
             indicatorAnimating={indicatorAnimating}
             action={() => props.mainButtonTapped()}

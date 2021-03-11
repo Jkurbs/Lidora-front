@@ -46,7 +46,8 @@ export default MainButton;
 const styles = StyleSheet.create({
   button: {
     borderRadius: 5,
-    width: 90,
+    width: "auto",
+    padding: 5,
     height: 30,
     justifyContent: "space-around",
     flexDirection: "row",

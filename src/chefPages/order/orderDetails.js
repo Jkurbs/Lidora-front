@@ -159,7 +159,12 @@ function OrderDetails(props) {
 
   if (newArray != []) {
     return (
-      <View style={useGlobalStyles.backgroundPrimary}>
+      <View
+        style={[
+          useGlobalStyles.backgroundPrimary,
+          { backgroundColor: "white" },
+        ]}
+      >
         <View
           style={[
             styles.navBarContainer,

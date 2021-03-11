@@ -10,7 +10,6 @@ import {
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import { useTheme } from "@react-navigation/native";
-import globalStyle from "../../globalStyle";
 import { FlatGrid } from "react-native-super-grid";
 import { Ionicons } from "@expo/vector-icons";
 const { width: windowWidth } = Dimensions.get("screen");
@@ -41,15 +40,19 @@ const moreProducts = [
   },
 ];
 
-function ProductSettings() {
-  const useGlobalStyles = globalStyle();
+function ProductSettings(props) {
+  const navigation = props.navigation;
   const { colors } = useTheme();
 
   const optionAction = (option) => {
     alert(option);
   };
+
   const addProductAction = (productName) => {
-    alert(productName);
+    switch (productName) {
+      case "Delivery":
+        navigation.navigate("Delivery Application");
+    }
   };
 
   return (

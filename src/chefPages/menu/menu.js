@@ -9,7 +9,7 @@ import Modal from "modal-enhanced-react-native-web";
 
 var db = firebase.firestore();
 const ref = db.collection("chefs");
-const menuDetailsName = "MenuDetails";
+const menuDetailsName = "Menu Details";
 
 const SearchComponent = ({ buttonAction, subtitle, search }) => (
   <HeaderBar
