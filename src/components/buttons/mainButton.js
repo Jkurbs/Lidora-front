@@ -30,7 +30,7 @@ function MainButton(props) {
         style={{ position: "absolute", alignSelf: "center" }}
       />
       {props.hasLeftIcon ? (
-        <View style={{ alignSelf: "center" }}>
+        <View style={{ alignSelf: "center", marginRight: 4 }}>
           <Ionicons name="ios-add" size={24} color="white" />
         </View>
       ) : null}
