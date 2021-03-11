@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styles from "./menu.styles";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Text, TouchableHighlight } from "react-native";
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import TableView from "../../components/tableView";
 import HeaderBar from "../../components/headerBar";
-import Modal from "modal-enhanced-react-native-web";
+import Modal from "modal-react-native-web";
 
 var db = firebase.firestore();
 const ref = db.collection("chefs");

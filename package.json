@@ -41,6 +41,7 @@
     "font-picker-react": "^3.5.2",
     "google-map-react": "^2.1.9",
     "modal-enhanced-react-native-web": "^0.2.0",
+    "modal-react-native-web": "^0.2.0",
     "moment": "^2.29.1",
     "react": "16.13.1",
     "react-color": "^2.19.3",

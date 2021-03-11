@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Image,
   Text,
   TouchableOpacity,
   StyleSheet,
+  TouchableHighlight,
   Dimensions,
 } from "react-native";
 import firebase from "../../firebase/Firebase";
@@ -12,6 +13,8 @@ import "firebase/firestore";
 import { useTheme } from "@react-navigation/native";
 import { FlatGrid } from "react-native-super-grid";
 import { Ionicons } from "@expo/vector-icons";
+import Modal from "modal-react-native-web";
+
 const { width: windowWidth } = Dimensions.get("screen");
 
 var db = firebase.firestore();
@@ -42,6 +45,8 @@ const moreProducts = [
 
 function ProductSettings(props) {
   const navigation = props.navigation;
+
+  const [visibleModal, setVisibleModal] = useState(null);
   const { colors } = useTheme();
 
   const optionAction = (option) => {
@@ -51,7 +56,8 @@ function ProductSettings(props) {
   const addProductAction = (productName) => {
     switch (productName) {
       case "Delivery":
-        navigation.navigate("Delivery Application");
+        setVisibleModal(true);
+      // navigation.navigate("Delivery Application");
     }
   };
 
@@ -162,6 +168,53 @@ function ProductSettings(props) {
           )}
         />
       </View>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={visibleModal}
+        backdrop={true}
+        onDismiss={() => {
+          //alert("Modal has been closed.");
+        }}
+      >
+        <View
+          style={{
+            height: "100%",
+            // backgroundColor: "black",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <View
+            style={{
+              marginTop: 22,
+              width: 500,
+              height: 200,
+              borderRadius: 5,
+              opacity: 1.0,
+              backgroundColor: "red",
+              alignSelf: "center",
+              padding: 16,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "600" }}>
+              Get your food delivered.
+            </Text>
+            <Text>
+              Delivery people using the Lidora platform pick up the order from
+              you, then deliver it to the customer.
+            </Text>
+            <TouchableHighlight
+              onPress={() => {
+                setVisibleModal(!visibleModal);
+              }}
+            >
+              <Text>Hide Modal</Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
