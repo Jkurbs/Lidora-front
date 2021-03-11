@@ -51,13 +51,7 @@
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "recompose": "^0.30.0"
   },
-  "devDependencies": {
-    "@babel/core": "~7.9.0",
-    "@expo/webpack-config": "^0.12.60",
-    "babel-jest": "~25.2.6",
-    "jest": "~25.2.6",
-    "react-test-renderer": "~16.13.1"
-  },
+  "devDependencies": {},
   "private": true,
   "name": "Lidora",
   "version": "1.0.0"
