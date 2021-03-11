@@ -24,7 +24,7 @@ function HeaderBar(props) {
               text={"Add Item"}
               indicatorAnimating={false}
               hasLeftIcon={true}
-            ></MainButton>
+            />
           </View>
         </View>
       );
