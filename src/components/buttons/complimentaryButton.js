@@ -26,7 +26,8 @@ export default ComplimentaryButton;
 
 const styles = StyleSheet.create({
   button: {
-    width: 140,
+    width: "auto",
+    padding: 5,
     height: 30,
     borderRadius: 5,
     borderWidth: 1,

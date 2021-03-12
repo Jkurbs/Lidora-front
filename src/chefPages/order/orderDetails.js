@@ -5,17 +5,24 @@ import {
   View,
   SectionList,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Image,
 } from "react-native";
 import globalStyle from "../../globalStyle";
 import { useTheme } from "@react-navigation/native";
-import DashboardNavBar from "../../components/dashboardNavBar";
+import Input from "../../components/inputs/input";
+import MainButton from "../../components/buttons/mainButton";
+import ComplimentaryButton from "../../components/buttons/complimentaryButton";
+
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import Geocoder from "react-native-geocoding";
 import GoogleMapReact from "google-map-react";
 import moment from "moment";
 import { Entypo } from "@expo/vector-icons";
+import { Overlay } from "react-native-elements";
+import Modal from "modal-react-native-web";
+import { Picker } from "@react-native-picker/picker";
 
 Geocoder.init("AIzaSyBNaHVtCYg7DcmHfKNtiuTV2REcWwonbH4");
 
@@ -32,6 +39,14 @@ const customer = {
     },
   ],
 };
+
+const refundReasons = [
+  "Select a reason",
+  "Duplicate",
+  "Fraudulent",
+  "Requested by customer",
+  "Other",
+];
 
 const CustomerCell = ({ item }) => (
   <View
@@ -96,6 +111,7 @@ function OrderDetails(props) {
   const { colors } = useTheme();
   const deselectedItem = props.deselectedItem;
   const item = props.item;
+  const total = item.total / 100;
 
   const useGlobalStyles = globalStyle();
   const userID = firebase.auth().currentUser.uid;
@@ -103,6 +119,9 @@ function OrderDetails(props) {
   const [items, setItems] = useState([]);
   const [location, setLocation] = useState({});
   const [newArray, setNewArray] = useState([]);
+  const [reason, setReason] = useState("");
+
+  const [visibleModal, setVisibleModal] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -154,7 +173,7 @@ function OrderDetails(props) {
   // });
 
   const refund = () => {
-    alert("Time for a refund");
+    setVisibleModal(!visibleModal);
   };
 
   if (newArray != []) {
@@ -179,7 +198,7 @@ function OrderDetails(props) {
             <View style={{ marginLeft: 16 }}>
               <Text style={{ color: colors.textSecondary }}>Order</Text>
               <Text style={[styles.titleText, { color: colors.textPrimary }]}>
-                ${item.total / 100}
+                ${total}
               </Text>
             </View>
           </View>
@@ -255,6 +274,112 @@ function OrderDetails(props) {
             </View>
           </View>
         </View>
+
+        <Overlay
+          onBackdropPress={() => setVisibleModal(!visibleModal)}
+          fullscreen={false}
+          isVisible={visibleModal}
+          ModalComponent={Modal}
+        />
+
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={visibleModal}
+          onDismiss={() => {
+            //alert("Modal has been closed.");
+          }}
+        >
+          <View
+            opacity={0.5}
+            style={{
+              // flex: 1,
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <View
+              style={{
+                marginTop: 22,
+                width: 400,
+                height: 400,
+                borderRadius: 5,
+                backgroundColor: "white",
+                padding: 16,
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <View>
+                <Text style={{ fontSize: 20, fontWeight: "600" }}>
+                  Refund order
+                </Text>
+                <Text
+                  style={[
+                    styles.alertDescription,
+                    { color: colors.textSecondary },
+                  ]}
+                >
+                  Refunds take 5-10 days to appear on a customer's statement.
+                </Text>
+
+                {/* Input here */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                  }}
+                >
+                  <View style={{ width: "100%" }}>
+                    <Input
+                      placeholder={"Enter amount"}
+                      defaultValue={`${total}`}
+                      onChangeText={() => console.log("")}
+                    />
+                    <Picker
+                      title={"Select a reason"}
+                      style={[styles.input]}
+                      dropdownIconColor={colors.textTertiary}
+                      onValueChange={(itemValue, itemIndex) =>
+                        setReason(itemValue)
+                      }
+                    >
+                      {refundReasons.map((s, i) => {
+                        return <Picker.Item key={i} value={s} label={s} />;
+                      })}
+                    </Picker>
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    width: 100,
+                    marginTop: 16,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <ComplimentaryButton
+                    text={"Cancel"}
+                    hasLeftIcon={false}
+                    indicatorAnimating={false}
+                    action={() => setVisibleModal(false)}
+                  />
+                  <MainButton
+                    action={() => {
+                      refund();
+                    }}
+                    text={"Refund"}
+                    indicatorAnimating={false}
+                    hasLeftIcon={false}
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
