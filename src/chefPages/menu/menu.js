@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styles from "./menu.styles";
 import { View, ScrollView, Text, TouchableHighlight } from "react-native";
+import { useTheme } from "@react-navigation/native";
+
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import TableView from "../../components/tableView";
 import HeaderBar from "../../components/headerBar";
+import { Overlay } from "react-native-elements";
 import Modal from "modal-react-native-web";
+import DeleteButton from "../../components/buttons/destructiveButton";
+import ComplimentaryButton from "../../components/buttons/complimentaryButton";
 
 var db = firebase.firestore();
 const ref = db.collection("chefs");
@@ -24,6 +29,7 @@ const SearchComponent = ({ buttonAction, subtitle, search }) => (
 );
 
 function Menu(props) {
+  const { colors } = useTheme();
   const navigation = props.navigation;
   const userID = firebase.auth().currentUser.uid;
 
@@ -74,17 +80,6 @@ function Menu(props) {
 
   const deleteAction = () => {
     setVisibleModal(true);
-    // if (isSearching === true) {
-    //   fullData = tfilteredFullData;
-    // }
-    // let newItem = {
-    //   ...fullData[selectedIndex],
-    //   key: fullData[selectedIndex].key,
-    //   image: fullData[selectedIndex].imageURL,
-    // };
-    // handleDetails(newItem);
-    // setItem(newItem);
-    // setIsAlertVisible(true);
   };
 
   const addItem = () => {
@@ -162,16 +157,85 @@ function Menu(props) {
             editAction={(index, data) => editAction(data)}
             detailsAction={(index, data) => detailsAction(data)}
           />
-          {/* <Modal
+
+          <Overlay
+            onBackdropPress={() => setVisibleModal(!visibleModal)}
+            fullscreen={false}
             isVisible={visibleModal}
-            onBackdropPress={() => setVisibleModal(false)}
+            ModalComponent={Modal}
+          />
+
+          {/* Modal */}
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={visibleModal}
+            onDismiss={() => {
+              //alert("Modal has been closed.");
+            }}
           >
-            {
-              <View>
-                <Text>TEst</Text>
+            <View
+              opacity={0.5}
+              style={{
+                // flex: 1,
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <View
+                style={{
+                  marginTop: 22,
+                  width: 400,
+                  height: 150,
+                  borderRadius: 5,
+                  backgroundColor: "white",
+                  padding: 16,
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View>
+                  <Text style={{ fontSize: 20, fontWeight: "600" }}>
+                    Delete Item
+                  </Text>
+                  <Text
+                    style={[
+                      styles.alertDescription,
+                      { color: colors.textSecondary },
+                    ]}
+                  >
+                    Are you sure you want to delete this product? This can't be
+                    undone.
+                  </Text>
+
+                  <View
+                    style={{
+                      width: 100,
+                      marginTop: 16,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <ComplimentaryButton
+                      text={"Cancel"}
+                      hasLeftIcon={false}
+                      indicatorAnimating={false}
+                      action={() => setVisibleModal(false)}
+                    />
+                    <DeleteButton
+                      action={() => {
+                        deleteAction();
+                      }}
+                      text={"Delete"}
+                      indicatorAnimating={false}
+                      hasLeftIcon={false}
+                    />
+                  </View>
+                </View>
               </View>
-            }
-          </Modal> */}
+            </View>
+          </Modal>
         </ScrollView>
       </View>
     );

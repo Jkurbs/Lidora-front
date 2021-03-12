@@ -27,13 +27,12 @@ export default ComplimentaryButton;
 const styles = StyleSheet.create({
   button: {
     width: "auto",
-    padding: 5,
+    padding: 16,
     height: 30,
     borderRadius: 5,
     borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
-    margin: 8,
   },
   text: {
     fontSize: 12,

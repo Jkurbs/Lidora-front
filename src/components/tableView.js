@@ -30,7 +30,7 @@ function TableView(props) {
 
   // Tooltips content
 
-  const menuTooltipContent = () => {
+  const menuTooltipContent = (data, index) => {
     return (
       <View
         style={{
@@ -133,7 +133,7 @@ function TableView(props) {
           placement="bottom"
           title={
             props.tableType === "Menu"
-              ? menuTooltipContent()
+              ? menuTooltipContent(data, index)
               : orderTooltipContent()
           }
           aria-label="add"

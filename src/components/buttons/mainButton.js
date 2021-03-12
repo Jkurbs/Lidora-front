@@ -47,10 +47,11 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 5,
     width: "auto",
-    padding: 5,
+    padding: 16,
     height: 30,
     justifyContent: "space-around",
     flexDirection: "row",
+    marginLeft: 8,
   },
   text: {
     color: "white",
