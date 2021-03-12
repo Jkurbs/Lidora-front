@@ -233,7 +233,7 @@ function ProductSettings(props) {
                       setVisibleModal(!visibleModal);
                       navigation.navigate("Delivery Application");
                     }}
-                    text={"Get started"}
+                    text={"Start"}
                     indicatorAnimating={false}
                     hasLeftIcon={false}
                   />
