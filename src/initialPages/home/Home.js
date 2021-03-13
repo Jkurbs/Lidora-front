@@ -2,6 +2,7 @@ import React from "react";
 import { registerRootComponent } from "expo";
 import { StatusBar } from "expo-status-bar";
 import styles from "./home.style";
+import { useTheme } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
 import {
   Platform,
@@ -24,7 +25,6 @@ import {
 } from "@react-navigation/native";
 
 import { createStackNavigator } from "@react-navigation/stack";
-import { FEATURESDATA } from "./home.data.js";
 
 import ApplyScreen from "../apply/Apply.js";
 import LegalScreen from "../legal/Legal.js";
@@ -34,18 +34,18 @@ import Footer from "../../components/Footer";
 
 import DeliveryApplicationScreen from "../../chefPages/productSettings/deliveryApplication";
 import StoreDesignScreen from "../../chefPages/storeDesign/storeDesign";
-import OrderDetailsScreen from "../../chefPages/order/orderDetails";
 import StoreFront from "../../customerPages/storeFront/storeFront";
-import * as Linking from "expo-linking";
 import firebase from "../../firebase/Firebase";
+import Input from "../../components/inputs/input";
 import "firebase/firestore";
+
 import "firebase/auth";
 
 import MenuDetailsScreen from "../../chefPages/menu/menuDetails";
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
-const scale = windowWidth / 400;
+const scale = windowWidth / 600;
 
 var db = firebase.firestore();
 
@@ -224,29 +224,17 @@ const FeaturesItem = ({ image, title, description }) => (
   </View>
 );
 
-const Item = ({ title, image }) => (
-  <View style={{ margin: 16, width: windowWidth / 4, height: windowWidth / 4 }}>
-    <Image
-      style={{
-        marginBottom: 10,
-        borderRadius: 5,
-        width: "100%",
-        height: "100%",
-      }}
-      source={image}
-    />
-    <Text style={styles.title}>{title}</Text>
-  </View>
-);
-
 function HomeScreen() {
   const [titleText, setTitleText] = React.useState(
     "Looking for your favorite food?"
   );
+
   const [secondaryText, setSecondaryText] = React.useState(
     "Join our waiting list And follow us on Instagram to stay updated"
   );
+
   const [customerEmail, setCustomerEmail] = React.useState("");
+  const { colors } = useTheme();
 
   // Function to Add potential user to email list
   const addUser = async () => {
@@ -278,77 +266,118 @@ function HomeScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
-      {/* Provider section */}
+    <View style={styles.container}>
       <ImageBackground
         resizeMode={"cover"}
         style={styles.backgroundImage}
         source={
           windowWidth < phoneMaxWidth
-            ? require("../../assets/img/cook.svg")
-            : require("../../assets/img/test.svg")
+            ? require("../../assets/img/kitchen.jpg")
+            : require("../../assets/img/kitchen.jpg")
         }
       >
+        <View
+          style={{
+            zIndex: 100,
+            backgroundColor: "white",
+            position: "absolute",
+            right: 0,
+            width: "30%",
+            height: "100%",
+            padding: 16,
+          }}
+        >
+          <Text
+            style={{
+              marginTop: 50,
+              fontWeight: "600",
+              fontSize: 20,
+            }}
+          >
+            Get started
+          </Text>
+
+          <Input
+            width={"100%"}
+            hasTitle={false}
+            placeholder={"Home address"}
+            onChangeText={() => console.log("")}
+          />
+
+          <Input
+            width={"100%"}
+            hasTitle={false}
+            placeholder={"Email address"}
+            onChangeText={() => console.log("")}
+          />
+          <Input
+            width={"100%"}
+            hasTitle={false}
+            placeholder={"First name"}
+            onChangeText={() => console.log("")}
+          />
+          <Input
+            width={"100%"}
+            hasTitle={false}
+            placeholder={"Last name"}
+            onChangeText={() => console.log("")}
+          />
+
+          <TouchableOpacity
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 24,
+              width: "100%",
+              height: 40,
+              backgroundColor: colors.btnPrimaryBg,
+              borderRadius: 5,
+            }}
+          >
+            <Text style={{ color: "white", fontWeight: 16, fontWeight: "600" }}>
+              Submit
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.secondaryView}>
           <View
             style={{
-              marginTop: 50,
-              marginBottom: 50,
-              alignItems: "center",
-              width: "auto",
+              padding: 16,
+              marginTop: 20,
+              width: "40%",
               height: "50%",
             }}
           >
             <Text
               style={{
-                width: windowWidth,
-                textAlign: "center",
-                color: "black",
-                fontSize: normalize(30),
+                textAlign: "left",
+                color: "white",
+                fontSize: normalize(16),
                 fontWeight: "500",
               }}
             >
-              Ready to start cooking {"\n"} and selling?
+              Start your own home based food{"\n"}service in the comfort of your
+              kitchen.
             </Text>
+
             <Text
               style={{
                 marginTop: 20,
-                textAlign: "center",
-                color: "black",
-                fontSize: windowWidth < phoneMaxWidth ? 14 : 20,
+                color: "white",
+                fontSize: 18,
               }}
             >
-              Apply now to join the team
+              Many home cooks and chefs of all sizes, use Lidora software to
+              deliver food to customers, accept payments and manage their
+              kitchen online.
             </Text>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("Apply")}
-              style={{
-                alignItems: "center",
-                marginTop: 20,
-                width: 150,
-                height: 45,
-                borderRadius: 25,
-                backgroundColor: "black",
-              }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  margin: 12.5,
-                  textAlign: "center",
-                  fontWeight: "500",
-                }}
-              >
-                Apply now
-              </Text>
-            </TouchableOpacity>
           </View>
         </View>
       </ImageBackground>
 
       {/* Provide section */}
-      <View style={{ marginTop: 60 }}>
+      {/* <View style={{ marginTop: 60 }}>
         <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
           What we provide
         </Text>
@@ -360,9 +389,9 @@ function HomeScreen() {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
         />
-      </View>
-      <Footer />
-    </SafeAreaView>
+      </View> */}
+      {/* <Footer /> */}
+    </View>
   );
 }
 
@@ -439,6 +468,7 @@ function App(props) {
             name="Lidora"
             component={HomeScreen}
             options={({ navigation, route }) => ({
+              headerTintColor: "#fff",
               headerRight: () => (
                 <TouchableOpacity
                   onPress={() => {
