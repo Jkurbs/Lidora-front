@@ -16,9 +16,7 @@ const SearchComponent = ({ buttonAction, subtitle, search }) => (
     title={"Menu"}
     buttonAction={() => buttonAction()}
     subtitle={subtitle}
-    search={(term) => {
-      search(term);
-    }}
+    search={search}
     isSearchEnabled={true}
   />
 );
@@ -137,6 +135,8 @@ function Menu(props) {
     console.log("FULLDATA",fullData)
     console.log("filteredData",filteredData)
     console.log("filteredReal",filteredReal)
+    console.log("filteredTableData",filteredTableData)
+    console.log("filteredfulldata",filteredFullData)
   };
 
   if (tableData != []) {

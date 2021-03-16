@@ -8,10 +8,41 @@ import { useTheme } from "@react-navigation/native";
 function HeaderBar(props) {
   const { colors } = useTheme();
 
-  const InputSwitch = () => {
-    if (props.isSearchEnabled === true) {
-      return (
-        <View style={styles.rightSide}>
+  // const InputSwitch = () => {
+  //   if (props.isSearchEnabled === true) {
+  //     return (
+  //       <View style={styles.rightSide}>
+  //         <View style={styles.rightInput}>
+  //           <SearchTextField
+  //             placeholder={"Search for an Item here"}
+  //             onChangeText={(text) => props.search(text)}
+  //           />
+  //           <MainButton
+  //             action={() => {
+  //               props.buttonAction();
+  //             }}
+  //             text={"Add Item"}
+  //             indicatorAnimating={false}
+  //             hasLeftIcon={true}
+  //           ></MainButton>
+  //         </View>
+  //       </View>
+  //     );
+  //   } else {
+  //     return null;
+  //   }
+  // };
+  return (
+    <View style={[styles.headerBar, { backgroundColor: colors.inputBg }]}>
+      <View style={styles.titleView}>
+        <Text style={[styles.title, { color: colors.textPrimary }]}>
+          {props.title}
+        </Text>
+        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+          {props.subtitle} Items
+        </Text>
+      </View>
+      <View style={styles.rightSide}>
           <View style={styles.rightInput}>
             <SearchTextField
               placeholder={"Search for an Item here"}
@@ -27,22 +58,6 @@ function HeaderBar(props) {
             ></MainButton>
           </View>
         </View>
-      );
-    } else {
-      return null;
-    }
-  };
-  return (
-    <View style={[styles.headerBar, { backgroundColor: colors.inputBg }]}>
-      <View style={styles.titleView}>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>
-          {props.title}
-        </Text>
-        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-          {props.subtitle} Items
-        </Text>
-      </View>
-      <InputSwitch />
     </View>
   );
 }
