@@ -132,6 +132,11 @@ function Menu(props) {
     setIsSearching(true);
     setFilteredTableData(filteredData);
     setFilteredFullData(filteredReal);
+    console.log(searchTerm)
+    console.log("TABLEDATA",tableData)
+    console.log("FULLDATA",fullData)
+    console.log("filteredData",filteredData)
+    console.log("filteredReal",filteredReal)
   };
 
   if (tableData != []) {
@@ -142,9 +147,7 @@ function Menu(props) {
             title={"Menu"}
             buttonAction={() => addItem()}
             subtitle={tableData.length}
-            search={(term) => {
-              search(term);
-            }}
+            search={(term)=> {search(term)}}
             isSearchEnabled={true}
             hasButton={true}
           />
