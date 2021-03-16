@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+
 import { registerRootComponent } from "expo";
-import { StatusBar } from "expo-status-bar";
 import styles from "./home.style";
 import { useTheme } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
@@ -38,14 +38,26 @@ import StoreFront from "../../customerPages/storeFront/storeFront";
 import firebase from "../../firebase/Firebase";
 import Input from "../../components/inputs/input";
 import "firebase/firestore";
-
 import "firebase/auth";
-
 import MenuDetailsScreen from "../../chefPages/menu/menuDetails";
-
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
-const scale = windowWidth / 600;
+var FONT_BACK_LABEL = 18;
+
+if (PixelRatio.get() <= 2) {
+  FONT_BACK_LABEL = 14;
+}
+
+function getPixelRatio() {
+  return PixelRatio.get() <= 2;
+}
+
+const scale = windowWidth / 450;
+
+function getRandomInt() {
+  const max = windowWidth / 10;
+  return Math.floor(Math.random() * (max - 50 + 1) + 50);
+}
 
 var db = firebase.firestore();
 
@@ -65,6 +77,29 @@ export function normalize(size) {
 const phoneMaxWidth = 575.98;
 
 var unsubscribe;
+
+const chefImages = [
+  {
+    image: require("../../assets/img/chef.jpg"),
+    size: getRandomInt(),
+    top: Math.random() * 150,
+  },
+  {
+    image: require("../../assets/img/chef1.jpg"),
+    size: getRandomInt(),
+    top: Math.random() * 150,
+  },
+  {
+    image: require("../../assets/img/chef3.jpg"),
+    size: getRandomInt(),
+    top: Math.random() * 150,
+  },
+  {
+    image: require("../../assets/img/chef4.jpg"),
+    size: getRandomInt(),
+    top: Math.random() * 150,
+  },
+];
 
 const CustomDefaultTheme = {
   colors: {
@@ -225,16 +260,16 @@ const FeaturesItem = ({ image, title, description }) => (
 );
 
 function HomeScreen() {
-  const [titleText, setTitleText] = React.useState(
-    "Looking for your favorite food?"
-  );
+  const [titleText, setTitleText] = useState("Looking for your favorite food?");
 
-  const [secondaryText, setSecondaryText] = React.useState(
+  const [secondaryText, setSecondaryText] = useState(
     "Join our waiting list And follow us on Instagram to stay updated"
   );
 
-  const [customerEmail, setCustomerEmail] = React.useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   const { colors } = useTheme();
+  const [disable, setDisable] = useState(true);
+  const [indicatorAnimating, setIndicatorAnimating] = useState(false);
 
   // Function to Add potential user to email list
   const addUser = async () => {
@@ -269,83 +304,21 @@ function HomeScreen() {
     <View style={styles.container}>
       <ImageBackground
         resizeMode={"cover"}
-        style={styles.backgroundImage}
-        source={
-          windowWidth < phoneMaxWidth
-            ? require("../../assets/img/kitchen.jpg")
-            : require("../../assets/img/kitchen.jpg")
+        style={
+          (styles.backgroundImage,
+          {
+            height: getPixelRatio() ? windowHeight - 200 : "100%",
+          })
         }
+        source={require("../../assets/img/Kyoto.jpg")}
       >
-        <View
-          style={{
-            zIndex: 100,
-            backgroundColor: "white",
-            position: "absolute",
-            right: 0,
-            width: "30%",
-            height: "100%",
-            padding: 16,
-          }}
-        >
-          <Text
-            style={{
-              marginTop: 50,
-              fontWeight: "600",
-              fontSize: 20,
-            }}
-          >
-            Get started
-          </Text>
-
-          <Input
-            width={"100%"}
-            hasTitle={false}
-            placeholder={"Home address"}
-            onChangeText={() => console.log("")}
-          />
-
-          <Input
-            width={"100%"}
-            hasTitle={false}
-            placeholder={"Email address"}
-            onChangeText={() => console.log("")}
-          />
-          <Input
-            width={"100%"}
-            hasTitle={false}
-            placeholder={"First name"}
-            onChangeText={() => console.log("")}
-          />
-          <Input
-            width={"100%"}
-            hasTitle={false}
-            placeholder={"Last name"}
-            onChangeText={() => console.log("")}
-          />
-
-          <TouchableOpacity
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: 24,
-              width: "100%",
-              height: 40,
-              backgroundColor: colors.btnPrimaryBg,
-              borderRadius: 5,
-            }}
-          >
-            <Text style={{ color: "white", fontWeight: 16, fontWeight: "600" }}>
-              Submit
-            </Text>
-          </TouchableOpacity>
-        </View>
-
         <View style={styles.secondaryView}>
           <View
             style={{
               padding: 16,
+              paddingBottom: 40,
               marginTop: 20,
-              width: "40%",
+              width: "100%",
               height: "50%",
             }}
           >
@@ -353,44 +326,182 @@ function HomeScreen() {
               style={{
                 textAlign: "left",
                 color: "white",
-                fontSize: normalize(16),
-                fontWeight: "500",
+                width: "75%",
+                fontSize: getPixelRatio() ? 40 : 25,
+                fontWeight: "600",
               }}
             >
-              Start your own home based food{"\n"}service in the comfort of your
-              kitchen.
+              Start your own home based food service, in seconds.
             </Text>
 
             <Text
               style={{
                 marginTop: 20,
+                width: "75%",
                 color: "white",
-                fontSize: 18,
+                fontSize: getPixelRatio() ? 18 : 16,
               }}
             >
               Many home cooks and chefs of all sizes, use Lidora software to
               deliver food to customers, accept payments and manage their
               kitchen online.
             </Text>
+            <TouchableOpacity
+              disabled={disable}
+              onPress={() => submit()}
+              style={{
+                marginTop: 20,
+                justifyContent: "center",
+                alignContent: "center",
+                backgroundColor: "white",
+                width: 90,
+                height: 40,
+                borderRadius: 20,
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 3,
+                },
+                shadowOpacity: 0.29,
+                shadowRadius: 4.65,
+                elevation: 7,
+              }}
+            >
+              <Text
+                style={{ alignSelf: "center", fontSize: 12, fontWeight: "600" }}
+              >
+                Start Now
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ImageBackground>
 
-      {/* Provide section */}
-      {/* <View style={{ marginTop: 60 }}>
-        <Text style={{ fontSize: 30, fontWeight: "500", marginLeft: 16 }}>
-          What we provide
+      {/* Users section */}
+      <View
+        style={{
+          marginTop: 20,
+          height: 200,
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "space-around",
+          padding: 20,
+        }}
+      >
+        {chefImages.map((image) => (
+          <Image
+            style={{
+              width: image.size,
+              height: image.size,
+              top: image.top,
+              borderRadius: image.size / 2,
+            }}
+            source={image.image}
+          />
+        ))}
+      </View>
+
+      {/* Storefront section */}
+      <View style={{ padding: 20, marginTop: getPixelRatio() ? 180 : 40 }}>
+        <Text
+          style={{
+            marginBottom: 16,
+            fontWeight: "600",
+            fontSize: 17,
+            color: colors.btnPrimaryBg,
+          }}
+        >
+          A unified platform
         </Text>
-        <FlatList
-          style={{ marginTop: 20 }}
-          data={FEATURESDATA}
-          renderItem={renderFeaturesItem}
-          keyExtractor={(item) => item.id}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        />
-      </View> */}
-      {/* <Footer /> */}
+        <View
+          style={{
+            width: "100%",
+            flexDirection: getPixelRatio() ? "row" : "column",
+            height: 400,
+            justifyContent: "space-between",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "column",
+              width: getPixelRatio() ? "50%" : "100%",
+            }}
+          >
+            <Text
+              style={{
+                fontWeight: "600",
+                fontSize: getPixelRatio() ? 40 : 20,
+                width: "100%",
+              }}
+            >
+              A fully integrated Store front for your customers
+            </Text>
+            <Text
+              style={{
+                marginTop: 16,
+                fontSize: getPixelRatio() ? 18 : 18,
+              }}
+            >
+              We bring together everything that’s required to build a great
+              custom Store Front for your customer, to accept payments and sell
+              your food and everything in between.
+            </Text>
+          </View>
+          <Image
+            style={{
+              width: getPixelRatio() ? "50%" : "100%",
+              height: getPixelRatio() ? "100%" : "50%",
+            }}
+            source={require("../../assets/img/Kyoto.jpg")}
+          />
+        </View>
+      </View>
+
+      {/* Delivery section */}
+      <View style={{ padding: 20, marginTop: 40 }}>
+        <View
+          style={{
+            width: "100%",
+            flexDirection: getPixelRatio() ? "row" : "column",
+            height: 400,
+            justifyContent: "space-between",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "column",
+              width: getPixelRatio() ? "50%" : "100%",
+            }}
+          >
+            <Text
+              style={{
+                fontWeight: "600",
+                fontSize: getPixelRatio() ? 40 : 20,
+                width: "100%",
+              }}
+            >
+              Lidora can also take care of delivery for you.
+            </Text>
+            <Text
+              style={{
+                marginTop: 16,
+                fontSize: getPixelRatio() ? 18 : 18,
+              }}
+            >
+              We bring together everything that’s required to build a great
+              custom Store Front for your customer, to accept payments and sell
+              your food and everything in between.
+            </Text>
+          </View>
+          <Image
+            style={{
+              width: getPixelRatio() ? "50%" : "100%",
+              height: getPixelRatio() ? "100%" : "50%",
+            }}
+            source={require("../../assets/img/Kyoto.jpg")}
+          />
+        </View>
+      </View>
     </View>
   );
 }
@@ -540,3 +651,88 @@ function App(props) {
 }
 
 export default registerRootComponent(App);
+
+// {windowWidth < phoneMaxWidth ? null : (
+//   <View
+//     style={{
+//       zIndex: 100,
+//       backgroundColor: "white",
+//       position: "absolute",
+//       right: 0,
+//       width: "30%",
+//       height: "100%",
+//       padding: 16,
+//     }}
+//   >
+//     <Text
+//       style={{
+//         marginTop: 80,
+//         fontWeight: "600",
+//         fontSize: 20,
+//       }}
+//     >
+//       Join now and be surprised
+//     </Text>
+
+//     <Input
+//       width={"100%"}
+//       hasTitle={false}
+//       placeholder={"Home address"}
+//       onChangeText={() => console.log("")}
+//     />
+
+//     <Input
+//       width={"100%"}
+//       hasTitle={false}
+//       placeholder={"Email address"}
+//       onChangeText={() => console.log("")}
+//     />
+//     <Input
+//       width={"100%"}
+//       hasTitle={false}
+//       placeholder={"First name"}
+//       onChangeText={() => console.log("")}
+//     />
+//     <Input
+//       width={"100%"}
+//       hasTitle={false}
+//       placeholder={"Last name"}
+//       onChangeText={() => console.log("")}
+//     />
+
+//     <TouchableOpacity
+//       disabled={disable}
+//       onPress={() => submit()}
+//       style={[
+//         disable
+//           ? {
+//               alignItems: "center",
+//               justifyContent: "center",
+//               marginTop: 24,
+//               width: "100%",
+//               height: 40,
+//               backgroundColor: colors.btnPrimaryBg,
+//               borderRadius: 5,
+//               opacity: 0.5,
+//             }
+//           : {
+//               alignItems: "center",
+//               justifyContent: "center",
+//               marginTop: 24,
+//               width: "100%",
+//               height: 40,
+//               backgroundColor: colors.btnPrimaryBg,
+//               borderRadius: 5,
+//             },
+//       ]}
+//     >
+//       <Text
+//         style={{ color: "white", fontWeight: 16, fontWeight: "600" }}
+//       >
+//         {indicatorAnimating ? "" : "Submit"}
+//       </Text>
+
+//       {/* <ActivityIndicator hidesWhenStopped={true} animating={indicatorAnimating} color={colors.textSecondary} style={{marginBottom: 16, alignSelf: 'center'}} /> */}
+//     </TouchableOpacity>
+//   </View>
+// )}

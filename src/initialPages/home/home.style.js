@@ -18,8 +18,6 @@ export default StyleSheet.create({
   backgroundImage: {
     // flex: 1,
     width: windowWidth < phoneMaxWidth ? null : windowWidth,
-    height: windowHeight,
-    marginBottom: 0,
   },
 
   secondaryView: {
@@ -28,5 +26,11 @@ export default StyleSheet.create({
     height: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+
+  chefImage: {
+    top: 50,
+    width: 70,
+    height: 70,
   },
 });
