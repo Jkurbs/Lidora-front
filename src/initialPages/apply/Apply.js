@@ -1,176 +1,198 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
-  TextInput,
   TouchableOpacity,
   Text,
-  StyleSheet
+  TextInput,
+  StyleSheet,
+  Dimensions,
 } from "react-native";
 import firebase from "../../firebase/Firebase";
+import styles from "../login/login.styles";
+import Input from "../../components/inputs/input";
+import { useTheme } from "@react-navigation/native";
+const { width: windowWidth } = Dimensions.get("screen");
+
 import "firebase/firestore";
 import "firebase/auth";
 
+const phoneMaxWidth = 575.98;
 
-class Apply extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      email: "",
-      firstName: "",
-      lastName: "",
-      message: "Let's get you started",
+function Apply() {
+  const [disable, setDisable] = useState(true);
+  const [indicatorAnimating, setIndicatorAnimating] = useState(false);
+  const { colors } = useTheme();
 
-    };
-  }
+  return (
+    <View style={styles.container}>
+      <View style={styles.formContainer}>
+        <View style={{ width: "80%" }}>
+          <Text style={styles.headerText}>Apply</Text>
+          <Input
+            width={"100%"}
+            hasTitle={false}
+            placeholder={"Home address"}
+            onChangeText={() => console.log("")}
+          />
 
-
-
-  render() {
-    const user = firebase.auth().currentUser;
-
-    const apply = async () => {
-      if (this.state.description === null) {
-        alert("Please add a description.")
-        return
-      }
-      var db = firebase.firestore();
-      try {
-        const potentialChefDoc = await db.collection("potential_chef").add({
-          first_name: this.state.firstName,
-          last_name: this.state.lastName,
-          email_address: this.state.email,
-
-        });
-        this.setState({ message: "Thank you, we'll get in touch with you soon" })
-        return;
-      } catch (error) {
-        // There's an error
-      }
-    };
-
-
-    return (
-      <View style={styles.container}>
-        <View style={styles.itemContainer}>
-          <Text style={{ marginTop: 50, fontSize: 32, fontWeight: '500' }}>{this.state.message}</Text>
-          <View style={{ marginTop: 20 }} >
-            <View style={styles.inputContainer}>
-              <Text style={styles.formTitle}>First name</Text>
-              <TextInput
-                style={styles.formInput}
-                placeholder={"First name"}
-                onChangeText={(text) => (this.state.firstName = text)}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.formTitle}>Last name</Text>
-              <TextInput
-                style={styles.formInput}
-                placeholder={"Last name"}
-                onChangeText={(text) => (this.state.lastName = text)}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.formTitle}>Email address</Text>
-              <TextInput
-                style={styles.formInput}
-                placeholder={"Email address"}
-                onChangeText={(text) => (this.state.email = text)}
-              />
-            </View>
-
-            <TouchableOpacity
-              onPress={apply}
-              style={styles.editButton}>
-              <Text style={styles.buttonText}>Apply</Text>
-            </TouchableOpacity>
-          </View>
+          <Input
+            width={"100%"}
+            hasTitle={false}
+            placeholder={"Email address"}
+            onChangeText={() => console.log("")}
+          />
+          <Input
+            width={"100%"}
+            hasTitle={false}
+            placeholder={"First name"}
+            onChangeText={() => console.log("")}
+          />
+          <Input
+            width={"100%"}
+            hasTitle={false}
+            placeholder={"Last name"}
+            onChangeText={() => console.log("")}
+          />
+          <TouchableOpacity
+            disabled={disable}
+            onPress={() => submit()}
+            style={[
+              disable
+                ? {
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: 24,
+                    width: "100%",
+                    height: 40,
+                    backgroundColor: colors.btnPrimaryBg,
+                    borderRadius: 5,
+                    opacity: 0.5,
+                  }
+                : {
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: 24,
+                    width: "100%",
+                    height: 40,
+                    backgroundColor: colors.btnPrimaryBg,
+                    borderRadius: 5,
+                  },
+            ]}
+          >
+            <Text style={{ color: "white", fontWeight: 16, fontWeight: "600" }}>
+              {indicatorAnimating ? "" : "Submit"}
+            </Text>
+            {/* <ActivityIndicator hidesWhenStopped={true} animating={indicatorAnimating} color={colors.textSecondary} style={{marginBottom: 16, alignSelf: 'center'}} /> */}
+          </TouchableOpacity>
         </View>
       </View>
-    );
-  }
+      {/* <Footer /> */}
+    </View>
+  );
+
+  // return (
+  //   <View style={styles.container}>
+  //     <View style={styles.formContainer}>
+  //       <View style={{ width: "80%" }}>
+  //         <Text
+  //           style={{
+  //             marginTop: 80,
+  //             fontWeight: "600",
+  //             fontSize: 20,
+  //           }}
+  //         >
+  //           Join
+  //         </Text>
+
+  //         <Input
+  //           width={"100%"}
+  //           hasTitle={false}
+  //           placeholder={"Home address"}
+  //           onChangeText={() => console.log("")}
+  //         />
+
+  //         <Input
+  //           width={"100%"}
+  //           hasTitle={false}
+  //           placeholder={"Email address"}
+  //           onChangeText={() => console.log("")}
+  //         />
+  //         <Input
+  //           width={"100%"}
+  //           hasTitle={false}
+  //           placeholder={"First name"}
+  //           onChangeText={() => console.log("")}
+  //         />
+  //         <Input
+  //           width={"100%"}
+  //           hasTitle={false}
+  //           placeholder={"Last name"}
+  //           onChangeText={() => console.log("")}
+  //         />
+
+  //         <TouchableOpacity
+  //           disabled={disable}
+  //           onPress={() => submit()}
+  //           style={[
+  //             disable
+  //               ? {
+  //                   alignItems: "center",
+  //                   justifyContent: "center",
+  //                   marginTop: 24,
+  //                   width: "100%",
+  //                   height: 40,
+  //                   backgroundColor: colors.btnPrimaryBg,
+  //                   borderRadius: 5,
+  //                   opacity: 0.5,
+  //                 }
+  //               : {
+  //                   alignItems: "center",
+  //                   justifyContent: "center",
+  //                   marginTop: 24,
+  //                   width: "100%",
+  //                   height: 40,
+  //                   backgroundColor: colors.btnPrimaryBg,
+  //                   borderRadius: 5,
+  //                 },
+  //           ]}
+  //         >
+  //           <Text style={{ color: "white", fontWeight: 16, fontWeight: "600" }}>
+  //             {indicatorAnimating ? "" : "Submit"}
+  //           </Text>
+  //           {/* <ActivityIndicator hidesWhenStopped={true} animating={indicatorAnimating} color={colors.textSecondary} style={{marginBottom: 16, alignSelf: 'center'}} /> */}
+  //         </TouchableOpacity>
+  //       </View>
+  //     </View>
+  //   </View>
+  // );
 }
 
 export default Apply;
 
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     flexDirection: "column",
+//     alignItems: "center",
+//     justifyContent: "center",
+//     backgroundColor: "white",
+//   },
 
-const styles = StyleSheet.create({
-  container: {
-    fontFamily: "System",
-    backgroundColor: 'white',
-    flex: 1,
-    height: '100%',
+//   formContainer: {
+//     marginTop: 50,
+//     width: "40%",
+//     height: 500,
+//     padding: 0,
+//     borderRadius: 8.0,
+//     justifyContent: "center",
+//     alignItems: "center",
+//     borderColor: "rgba(219,219,219, 1)",
+//     borderWidth: windowWidth < phoneMaxWidth ? 0 : 1,
+//   },
 
-  },
-
-  itemContainer: {
-    width: '40%'
-  },
-
-  inputContainer: {
-    flexDirection: 'column',
-    width: '95%',
-    marginTop: 8,
-  },
-
-  formTitle: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-
-  menuForm: {
-    flexDirection: "column",
-    height: '100%',
-    backgroundColor: '#F5F5F7',
-    flex: 1,
-    width: '40%',
-  },
-
-  formInput: {
-    marginTop: 8,
-    paddingLeft: 8,
-    fontSize: 14,
-    textAlignVertical: 'top',
-    borderColor: '#d6d6d6',
-    borderWidth: 1,
-    borderRadius: 5,
-    height: 40,
-    backgroundColor: 'white'
-  },
-
-  formInputDescription: {
-    marginTop: 8,
-    padding: 8,
-    padding: 8,
-    fontSize: 14,
-    borderColor: '#d6d6d6',
-    borderWidth: 1,
-    borderRadius: 5,
-    height: 100,
-    backgroundColor: 'white'
-  },
-
-  itemContainer: {
-    marginTop: 20,
-    flexDirection: 'column',
-    padding: 20,
-    justifyContent: 'center',
-  },
-
-  editButton: {
-    backgroundColor: "rgb(174,174,178)",
-    borderRadius: 10,
-    height: 50,
-    width: 120,
-    justifyContent: "center",
-    margin: 20,
-  },
-
-  buttonText: {
-    textAlign: "center",
-    color: 'white',
-    fontWeight: '500'
-  }
-})
+//   buttonText: {
+//     textAlign: "center",
+//     color: "white",
+//     fontWeight: "500",
+//   },
+// });

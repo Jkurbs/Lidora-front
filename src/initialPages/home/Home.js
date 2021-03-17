@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { registerRootComponent } from "expo";
 import styles from "./home.style";
 import { useTheme } from "@react-navigation/native";
@@ -14,7 +13,6 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  SafeAreaView,
 } from "react-native";
 
 import { useColorScheme } from "react-native-appearance";
@@ -36,17 +34,31 @@ import DeliveryApplicationScreen from "../../chefPages/productSettings/deliveryA
 import StoreDesignScreen from "../../chefPages/storeDesign/storeDesign";
 import StoreFront from "../../customerPages/storeFront/storeFront";
 import firebase from "../../firebase/Firebase";
-import Input from "../../components/inputs/input";
 import "firebase/firestore";
 import "firebase/auth";
 import MenuDetailsScreen from "../../chefPages/menu/menuDetails";
+import { LinearGradient } from "expo-linear-gradient";
+
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
-var FONT_BACK_LABEL = 18;
-
-if (PixelRatio.get() <= 2) {
-  FONT_BACK_LABEL = 14;
-}
+const DATA = [
+  {
+    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+    title: "Escape your 9-5 desk job.",
+  },
+  {
+    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
+    title: "End your commute.",
+  },
+  {
+    id: "58694a0f-3da1-471f-bd96-145571e29d72",
+    title: "Get paid for cooking.",
+  },
+  {
+    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
+    title: "Do what you love.",
+  },
+];
 
 function getPixelRatio() {
   return PixelRatio.get() <= 2;
@@ -227,70 +239,31 @@ const CustomDarkTheme = {
 const FeaturesItem = ({ image, title, description }) => (
   <View
     style={{
-      borderRadius: 5,
       alignItems: "center",
       justifyContent: "center",
       margin: 8,
-      padding: 20,
-      width: windowWidth < phoneMaxWidth ? 200 : windowWidth / 3,
-      height: 250,
+      width: getPixelRatio() ? windowWidth / 4 : windowWidth / 3,
+      height: getPixelRatio() ? windowWidth / 4 : windowWidth / 3,
       backgroundColor: "#F5F5F7",
     }}
   >
-    <Image
-      style={{
-        resizeMode: "contain",
-        marginBottom: 10,
-        width: windowWidth < phoneMaxWidth ? 60 : 120,
-        height: windowWidth < phoneMaxWidth ? 60 : 120,
-      }}
-      source={image}
-    />
     <Text
       style={{
+        textAlignVertical: "center",
         textAlign: "center",
+        alignSelf: "center",
         fontWeight: "500",
         fontSize: windowWidth < phoneMaxWidth ? 17 : 24,
       }}
     >
       {title}
     </Text>
-    <Text style={{ textAlign: "center", margin: 8 }}>{description}</Text>
   </View>
 );
 
-function HomeScreen() {
-  const [titleText, setTitleText] = useState("Looking for your favorite food?");
-
-  const [secondaryText, setSecondaryText] = useState(
-    "Join our waiting list And follow us on Instagram to stay updated"
-  );
-
-  const [customerEmail, setCustomerEmail] = useState("");
+function HomeScreen(props) {
   const { colors } = useTheme();
-  const [disable, setDisable] = useState(true);
-  const [indicatorAnimating, setIndicatorAnimating] = useState(false);
-
-  // Function to Add potential user to email list
-  const addUser = async () => {
-    var db = firebase.firestore();
-    try {
-      const potentialUserDoc = await db.collection("potential_users").add({
-        email_address: customerEmail,
-      });
-      return;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const sendToEmailList = () => {
-    const newCustomerTitle = "Thank you!";
-    const newMessage = "We'll keep you updated.";
-    setValue(newCustomerTitle);
-    setMessageValue(newMessage);
-    addUser();
-  };
+  const navigation = props.navigation;
 
   const renderFeaturesItem = ({ item }) => (
     <FeaturesItem
@@ -302,15 +275,15 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <ImageBackground
-        resizeMode={"cover"}
+      <LinearGradient
+        // Background Linear Gradient
+        colors={["#144620", "#165c26", "#176f2c"]}
         style={
           (styles.backgroundImage,
           {
             height: getPixelRatio() ? windowHeight - 200 : "100%",
           })
         }
-        source={require("../../assets/img/Kyoto.jpg")}
       >
         <View style={styles.secondaryView}>
           <View
@@ -331,7 +304,8 @@ function HomeScreen() {
                 fontWeight: "600",
               }}
             >
-              Start your own home based food service, in seconds.
+              Home cooks deserve to get paid doing what they love. Lidora makes
+              it easy.
             </Text>
 
             <Text
@@ -347,8 +321,7 @@ function HomeScreen() {
               kitchen online.
             </Text>
             <TouchableOpacity
-              disabled={disable}
-              onPress={() => submit()}
+              onPress={() => navigation.navigate("Apply")}
               style={{
                 marginTop: 20,
                 justifyContent: "center",
@@ -375,7 +348,7 @@ function HomeScreen() {
             </TouchableOpacity>
           </View>
         </View>
-      </ImageBackground>
+      </LinearGradient>
 
       {/* Users section */}
       <View
@@ -443,7 +416,7 @@ function HomeScreen() {
               }}
             >
               We bring together everything that’s required to build a great
-              custom Store Front for your customer, to accept payments and sell
+              custom Store Front for your customer, to accept payments, sell
               your food and everything in between.
             </Text>
           </View>
@@ -502,32 +475,38 @@ function HomeScreen() {
           />
         </View>
       </View>
+
+      <View style={{ marginTop: 40 }}>
+        <Text
+          style={{
+            fontWeight: "600",
+            fontSize: getPixelRatio() ? 40 : 30,
+            padding: 40,
+          }}
+        >
+          Lidora makes it possible for you to
+        </Text>
+        <FlatList
+          style={{ marginTop: 20, marginBottom: 100 }}
+          showsHorizontalScrollIndicator={false}
+          data={DATA}
+          renderItem={renderFeaturesItem}
+          keyExtractor={(item) => item.id}
+          horizontal={true}
+        />
+      </View>
     </View>
   );
 }
 
 const Stack = createStackNavigator();
 
-const MyTheme = {
-  dark: true,
-  colors: {
-    primary: "rgb(46, 204, 113)",
-    background: "rgb(242, 242, 242)",
-    card: "rgb(255, 255, 255)",
-    text: "black",
-    border: "rgb(199, 199, 204)",
-    notification: "rgb(255, 69, 58)",
-  },
-};
-
 function App(props) {
   const scheme = useColorScheme();
   const [userLoggedIn, setUserLoggedIn] = React.useState(null);
   const [userData, setUserData] = React.useState({ user: [], userID: "" });
-  const [location, setLocation] = React.useState({});
 
   // Verify if user is logged in
-
   React.useEffect(() => {
     // Fetch Current chef
     const currentComponent = this;
@@ -651,88 +630,3 @@ function App(props) {
 }
 
 export default registerRootComponent(App);
-
-// {windowWidth < phoneMaxWidth ? null : (
-//   <View
-//     style={{
-//       zIndex: 100,
-//       backgroundColor: "white",
-//       position: "absolute",
-//       right: 0,
-//       width: "30%",
-//       height: "100%",
-//       padding: 16,
-//     }}
-//   >
-//     <Text
-//       style={{
-//         marginTop: 80,
-//         fontWeight: "600",
-//         fontSize: 20,
-//       }}
-//     >
-//       Join now and be surprised
-//     </Text>
-
-//     <Input
-//       width={"100%"}
-//       hasTitle={false}
-//       placeholder={"Home address"}
-//       onChangeText={() => console.log("")}
-//     />
-
-//     <Input
-//       width={"100%"}
-//       hasTitle={false}
-//       placeholder={"Email address"}
-//       onChangeText={() => console.log("")}
-//     />
-//     <Input
-//       width={"100%"}
-//       hasTitle={false}
-//       placeholder={"First name"}
-//       onChangeText={() => console.log("")}
-//     />
-//     <Input
-//       width={"100%"}
-//       hasTitle={false}
-//       placeholder={"Last name"}
-//       onChangeText={() => console.log("")}
-//     />
-
-//     <TouchableOpacity
-//       disabled={disable}
-//       onPress={() => submit()}
-//       style={[
-//         disable
-//           ? {
-//               alignItems: "center",
-//               justifyContent: "center",
-//               marginTop: 24,
-//               width: "100%",
-//               height: 40,
-//               backgroundColor: colors.btnPrimaryBg,
-//               borderRadius: 5,
-//               opacity: 0.5,
-//             }
-//           : {
-//               alignItems: "center",
-//               justifyContent: "center",
-//               marginTop: 24,
-//               width: "100%",
-//               height: 40,
-//               backgroundColor: colors.btnPrimaryBg,
-//               borderRadius: 5,
-//             },
-//       ]}
-//     >
-//       <Text
-//         style={{ color: "white", fontWeight: 16, fontWeight: "600" }}
-//       >
-//         {indicatorAnimating ? "" : "Submit"}
-//       </Text>
-
-//       {/* <ActivityIndicator hidesWhenStopped={true} animating={indicatorAnimating} color={colors.textSecondary} style={{marginBottom: 16, alignSelf: 'center'}} /> */}
-//     </TouchableOpacity>
-//   </View>
-// )}
