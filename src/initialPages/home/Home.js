@@ -3,6 +3,8 @@ import { registerRootComponent } from "expo";
 import styles from "./home.style";
 import { useTheme } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
+import { GLView } from "expo-gl";
+
 import {
   Platform,
   PixelRatio,
