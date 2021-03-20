@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/static/js/app.f310d26a.chunk.js",
-    "app.js.map": "/static/js/app.f310d26a.chunk.js.map",
+    "app.js": "/static/js/app.45bf48b7.chunk.js",
+    "app.js.map": "/static/js/app.45bf48b7.chunk.js.map",
     "runtime~app.js": "/static/js/runtime~app.2e9f1821.js",
     "runtime~app.js.map": "/static/js/runtime~app.2e9f1821.js.map",
-    "static/js/2.b60e4ab4.chunk.js": "/static/js/2.b60e4ab4.chunk.js",
-    "static/js/2.b60e4ab4.chunk.js.map": "/static/js/2.b60e4ab4.chunk.js.map",
+    "static/js/2.8f64027a.chunk.js": "/static/js/2.8f64027a.chunk.js",
+    "static/js/2.8f64027a.chunk.js.map": "/static/js/2.8f64027a.chunk.js.map",
     "fonts/AntDesign.ttf": "/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/./fonts/Feather.ttf",
@@ -24,8 +24,7 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
-    "static/js/2.b60e4ab4.chunk.js.LICENSE.txt": "/static/js/2.b60e4ab4.chunk.js.LICENSE.txt",
-    "static/media/Kyoto.jpg": "/static/media/Kyoto.e57244c6.jpg",
+    "static/js/2.8f64027a.chunk.js.LICENSE.txt": "/static/js/2.8f64027a.chunk.js.LICENSE.txt",
     "static/media/Stripe Climate Badge.svg": "/static/media/Stripe Climate Badge.26ee17ca.svg",
     "static/media/americanExpress.png": "/static/media/americanExpress.d0a7c369.png",
     "static/media/bag.png": "/static/media/bag.ef4accb6.png",
@@ -57,7 +56,7 @@
   },
   "entrypoints": [
     "static/js/runtime~app.2e9f1821.js",
-    "static/js/2.b60e4ab4.chunk.js",
-    "static/js/app.f310d26a.chunk.js"
+    "static/js/2.8f64027a.chunk.js",
+    "static/js/app.45bf48b7.chunk.js"
   ]
 }

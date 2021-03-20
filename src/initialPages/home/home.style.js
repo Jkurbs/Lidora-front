@@ -21,6 +21,7 @@ export default StyleSheet.create({
   },
 
   secondaryView: {
+    position: "absolute",
     marginTop: 70,
     width: windowWidth,
     height: "100%",
