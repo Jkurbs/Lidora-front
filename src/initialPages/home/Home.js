@@ -1211,9 +1211,8 @@ function HomeScreen(props) {
               fontSize: getPixelRatio() ? 20 : 18,
             }}
           >
-            Many home cooks and chefs of all sizes, use Lidora software to
-            deliver food to customers, accept payments and manage their kitchen
-            online.
+            Many chefs of all sizes, use Lidora software to deliver food to
+            customers, accept payments and manage their kitchen online.
           </Text>
           <TouchableOpacity
             onPress={() => navigation.navigate("Apply")}
