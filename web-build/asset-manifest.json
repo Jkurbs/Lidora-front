@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/static/js/app.c6dfee59.chunk.js",
-    "app.js.map": "/static/js/app.c6dfee59.chunk.js.map",
+    "app.js": "/static/js/app.7e41a12c.chunk.js",
+    "app.js.map": "/static/js/app.7e41a12c.chunk.js.map",
     "runtime~app.js": "/static/js/runtime~app.2e9f1821.js",
     "runtime~app.js.map": "/static/js/runtime~app.2e9f1821.js.map",
-    "static/js/2.8f64027a.chunk.js": "/static/js/2.8f64027a.chunk.js",
-    "static/js/2.8f64027a.chunk.js.map": "/static/js/2.8f64027a.chunk.js.map",
+    "static/js/2.9c23c5b4.chunk.js": "/static/js/2.9c23c5b4.chunk.js",
+    "static/js/2.9c23c5b4.chunk.js.map": "/static/js/2.9c23c5b4.chunk.js.map",
     "fonts/AntDesign.ttf": "/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/./fonts/Feather.ttf",
@@ -24,14 +24,14 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
-    "static/js/2.8f64027a.chunk.js.LICENSE.txt": "/static/js/2.8f64027a.chunk.js.LICENSE.txt",
+    "static/js/2.9c23c5b4.chunk.js.LICENSE.txt": "/static/js/2.9c23c5b4.chunk.js.LICENSE.txt",
     "static/media/Stripe Climate Badge.svg": "/static/media/Stripe Climate Badge.26ee17ca.svg",
     "static/media/americanExpress.png": "/static/media/americanExpress.d0a7c369.png",
     "static/media/bag.png": "/static/media/bag.ef4accb6.png",
     "static/media/bell.png": "/static/media/bell.cf04af27.png",
     "static/media/cancel.png": "/static/media/cancel.2eb524b7.png",
     "static/media/chef.jpg": "/static/media/chef.999721dd.jpg",
-    "static/media/chef1.jpg": "/static/media/chef1.b9643129.jpg",
+    "static/media/chef1.jpg": "/static/media/chef1.a55e2e65.jpg",
     "static/media/chef3.jpg": "/static/media/chef3.388309ac.jpg",
     "static/media/chef4.jpg": "/static/media/chef4.5020c337.jpg",
     "static/media/delivery-64.png": "/static/media/delivery-64.50c7f980.png",
@@ -56,7 +56,7 @@
   },
   "entrypoints": [
     "static/js/runtime~app.2e9f1821.js",
-    "static/js/2.8f64027a.chunk.js",
-    "static/js/app.c6dfee59.chunk.js"
+    "static/js/2.9c23c5b4.chunk.js",
+    "static/js/app.7e41a12c.chunk.js"
   ]
 }

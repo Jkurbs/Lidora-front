@@ -10,7 +10,6 @@ import {
   PixelRatio,
   Dimensions,
   Image,
-  ImageBackground,
   Text,
   View,
   TouchableOpacity,
@@ -30,7 +29,6 @@ import ApplyScreen from "../apply/Apply.js";
 import LegalScreen from "../legal/Legal.js";
 import LoginScreen from "../login/Login.js";
 import DashboardScreen from "../../chefPages/Sidebar";
-import Footer from "../../components/Footer";
 
 import DeliveryApplicationScreen from "../../chefPages/productSettings/deliveryApplication";
 import StoreDesignScreen from "../../chefPages/storeDesign/storeDesign";
@@ -39,7 +37,7 @@ import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import "firebase/auth";
 import MenuDetailsScreen from "../../chefPages/menu/menuDetails";
-import { LinearGradient } from "expo-linear-gradient";
+import PhoneGraphic from "./phoneGraphic";
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("screen");
 
@@ -926,15 +924,6 @@ function HomeScreen(props) {
                   ((this.computedCanvasStyle = getComputedStyle(this.el)),
                   this.waitForCssVars());
               }));
-        /*
-      this.scrollObserver = await s.create(.1, !1),
-      this.scrollObserver.observe(this.el),
-      this.scrollObserver.onSeparate(() => {
-          window.removeEventListener("scroll", this.handleScroll), window.removeEventListener("mousedown", this.handleMouseDown), window.removeEventListener("mouseup", this.handleMouseUp), window.removeEventListener("keydown", this.handleKeyDown), this.isIntersecting = !1, this.conf.playing && this.pause()
-      }), 
-      this.scrollObserver.onIntersect(() => {
-          window.addEventListener("scroll", this.handleScroll), window.addEventListener("mousedown", this.handleMouseDown), window.addEventListener("mouseup", this.handleMouseUp), window.addEventListener("keydown", this.handleKeyDown), this.isIntersecting = !0, this.addIsLoadedClass(), this.play()
-      })*/
       }
       disconnect() {
         this.scrollObserver &&
@@ -1202,7 +1191,6 @@ function HomeScreen(props) {
             Home cooks deserve to get paid doing what they love. Lidora makes it
             easy.
           </Text>
-
           <Text
             style={{
               marginTop: 20,
@@ -1298,7 +1286,7 @@ function HomeScreen(props) {
                 width: "100%",
               }}
             >
-              A fully integrated Store front for your customers
+              A fully integrated StoreFront for your customers
             </Text>
             <Text
               style={{
@@ -1306,35 +1294,14 @@ function HomeScreen(props) {
                 fontSize: getPixelRatio() ? 18 : 18,
               }}
             >
-              We bring together everything that’s required to build a great
-              custom Store Front for your customer, to accept payments, sell
-              your food and everything in between.
+              We bring together everything required to help you build a great
+              StoreFront, accept payments, sell your food, and everything in
+              between.
             </Text>
           </View>
 
           {/* Phone Graphic */}
-          <View
-            style={{
-              width: getPixelRatio() ? 264 : 164.94,
-              height: getPixelRatio() ? 533 : 333,
-              padding: 8,
-              borderRadius: 20,
-              backgroundColor: "#f6f9fc",
-              boxShadow:
-                "0 50px 100px -20px rgb(50 50 93 / 25%), 0 30px 60px -30px rgb(0 0 0 / 30%), inset 0 -2px 6px 0 rgb(10 37 64 / 35%)",
-            }}
-          >
-            <View></View>
-            {/* End Phone Graphic */}
-          </View>
-          {/* <Image
-            style={{
-              backgroundColor: "gray",
-              width: getPixelRatio() ? "50%" : "100%",
-              height: getPixelRatio() ? "100%" : "50%",
-            }}
-            // source={require("../../assets/img/Kyoto.jpg")}
-          /> */}
+          <PhoneGraphic />
         </View>
       </View>
       {/* Delivery section */}
@@ -1372,22 +1339,6 @@ function HomeScreen(props) {
               custom Store Front for your customer, to accept payments and sell
               your food and everything in between.
             </Text>
-          </View>
-
-          {/* Phone Graphic */}
-          <View
-            style={{
-              width: 164.94,
-              height: 333,
-              padding: 8,
-              borderRadius: 20,
-              backgroundColor: "#f6f9fc",
-              boxShadow:
-                "0 50px 100px -20px rgb(50 50 93 / 25%), 0 30px 60px -30px rgb(0 0 0 / 30%), inset 0 -2px 6px 0 rgb(10 37 64 / 35%)",
-            }}
-          >
-            <View></View>
-            {/* End Phone Graphic */}
           </View>
         </View>
       </View>
