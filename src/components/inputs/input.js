@@ -7,22 +7,25 @@ function Input(props) {
 
   return (
     <View>
-      <View style={styles.container}>
-        <Text
-          style={[
-            styles.inputTitle,
-            {
-              color: colors.textPrimary,
-            },
-          ]}
-        >
-          {props.title ?? props.placeholder}
-        </Text>
+      <View style={[styles.container, { width: props.width ?? 350 }]}>
+        {props.hasTitle ?? true ? (
+          <Text
+            style={[
+              styles.inputTitle,
+              {
+                color: colors.textPrimary,
+              },
+            ]}
+          >
+            {props.title ?? props.placeholder}
+          </Text>
+        ) : null}
       </View>
       <TextInput
         style={[
           styles.input,
           {
+            width: props.width ?? 350,
             backgroundColor: colors.inputBg,
             borderColor: colors.borderPrimary,
           },
@@ -42,6 +45,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   input: {
+    // zIndex: 1000,
     marginTop: 8,
     padding: 8,
     padding: 8,
@@ -50,7 +54,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     height: 50,
-    width: 350,
   },
 
   inputTitle: {

@@ -17,6 +17,8 @@ target 'Lidora' do
   use_flipper!
   pod 'react-native-geocoder', :path => '../node_modules/react-native-geocoder'
 
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+
   post_install do |installer|
     flipper_post_install(installer)
   end

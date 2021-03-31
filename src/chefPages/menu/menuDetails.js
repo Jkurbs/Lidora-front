@@ -7,33 +7,78 @@ import Input from "../../components/inputs/input";
 import { TextInputMask } from "react-native-masked-text";
 import { Picker } from "@react-native-picker/picker";
 
+import firebase from "../../firebase/Firebase";
+import "firebase/firestore";
+
+var db = firebase.firestore();
+const ref = db.collection("chefs");
+
 function MenuDetails(props) {
+  const userID = firebase.auth().currentUser.uid;
   const { colors } = useTheme();
+
   const navigation = props.navigation;
   const params = props.route.params;
   const item = params.item;
   const [price, setPrice] = useState("");
-  const categories = ["a", "b", "c", "d", "e"];
+  const [newItem] = useState({ name: "", description: "", price: 0 });
+  const categories = [""];
   const [newCategory, setNewCategory] = useState("");
   const [addCategory, setAddCategory] = useState(false);
   const [indicatorAnimating, setIndicatorAnimating] = useState(false);
 
   var PickerItem = Picker.Item;
   const saveNewCategory = () => {};
+
   const saveAndAddMoreTapped = () => {
     navigation.goBack();
   };
 
   const saveButtonTapped = () => {
-    if (params.createMode) {
-      setIndicatorAnimating(true);
-      // Add Menu item
-      //navigation.goBack();
+    if (params.mode == "add") {
+      console.log("Add item");
+      add();
     } else {
-      setIndicatorAnimating(true);
+      console.log("Edit item");
+      //setIndicatorAnimating(true);
       // Edit Menu item
       //navigation.goBack();
     }
+  };
+
+  const add = () => {
+    ref.doc(userID).collection("menu").add({
+      name: newItem.name,
+      description: newItem.description,
+      price: price,
+      category: category,
+      isVisible: true,
+    });
+    //check and Add Image to Firebase Storage
+    // if (item.image != null) {
+    //   var storage = firebase.storage().ref(item.image.name);
+    //   let currentComponent = this;
+    //   storage.put(item.image.file).then((snapshot) => {
+    //     snapshot.ref.getDownloadURL().then(function (downloadURL) {
+    //       ref
+    //         .doc(currentComponent.state.userID)
+    //         .collection("menu")
+    //         .where("key", "==", item.key)
+    //         .get()
+    //         .then(function (snapshot) {
+    //           snapshot.forEach(function (doc) {
+    //             ref
+    //               .doc(currentComponent.state.userID)
+    //               .collection("menu")
+    //               .doc(doc.id)
+    //               .update({
+    //                 imageURL: downloadURL,
+    //               });
+    //           });
+    //         });
+    //     });
+    //   });
+    // }
   };
 
   function title() {
@@ -71,12 +116,12 @@ function MenuDetails(props) {
               <Input
                 placeholder={"Name"}
                 defaultValue={item?.name ?? ""}
-                onChangeText={() => console.log("")}
+                onChangeText={(text) => (newItem.name = text)}
               />
               <Input
                 placeholder={"Description"}
                 defaultValue={item?.description ?? ""}
-                onChangeText={() => console.log("")}
+                onChangeText={(text) => (newItem.description = text)}
               />
             </View>
             <View
@@ -165,7 +210,7 @@ function MenuDetails(props) {
               value={price}
               defaultValue={`$${item?.price ?? 0.0}`}
               onChangeText={(text) => {
-                setPrice(text);
+                newItem.price = text;
               }}
             />
           </View>
@@ -189,7 +234,9 @@ function MenuDetails(props) {
               <Picker
                 style={[styles.input]}
                 dropdownIconColor={colors.textTertiary}
-                onValueChange={(itemValue, itemIndex) => console.log("")}
+                onValueChange={(itemValue, itemIndex) =>
+                  setNewCategory(itemValue)
+                }
               >
                 {categories.map((s, i) => {
                   return <Picker.Item key={i} value={s} label={s} />;

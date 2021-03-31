@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styles from "./menu.styles";
 import { View, ScrollView, Text, TouchableHighlight } from "react-native";
 import { useTheme } from "@react-navigation/native";
-
 import firebase from "../../firebase/Firebase";
 import "firebase/firestore";
 import TableView from "../../components/tableView";
