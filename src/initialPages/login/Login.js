@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, ActivityIndicator, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import styles from "./login.styles.js";
 import firebase from "../../firebase/Firebase";
-import activityIndicator from '../../components/activityIndicator'
-import Footer from '../../components/Footer'
+import activityIndicator from "../../components/activityIndicator";
+import Footer from "../../components/Footer";
 
 function Login({ route }) {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginText, setLoginText] = useState("Login");
@@ -15,24 +20,26 @@ function Login({ route }) {
   const { navigation } = route.params;
 
   const onSubmit = () => {
-    setLoginText("")
-    setIndicatorAnimating(true)
+    setLoginText("");
+    setIndicatorAnimating(true);
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then(data => {
-
-        navigation.navigate('Dashboard', { navigation: navigation, userID: data.user.uid })
-        setIndicatorAnimating(false)
-        setLoginText("Login")
+      .then((data) => {
+        navigation.navigate("Dashboard", {
+          navigation: navigation,
+          userID: data.user.uid,
+        });
+        setIndicatorAnimating(false);
+        setLoginText("Login");
       })
       .catch(function (error) {
         // Handle Errors here.
-        setIndicatorAnimating(false)
-        setLoginText("Login")
+        setIndicatorAnimating(false);
+        setLoginText("Login");
         var errorCode = error.code;
         var errorMessage = error.message;
-        console.log(errorMessage)
+        console.log(errorMessage);
         // ...
       });
   };
@@ -40,7 +47,7 @@ function Login({ route }) {
   return (
     <View style={styles.container}>
       <View style={styles.formContainer}>
-        <View style={{ width: '80%' }}>
+        <View style={{ width: "80%" }}>
           <Text style={styles.headerText}>Sign in to your account</Text>
           <View style={{ marginBottom: 16 }}>
             <Text style={styles.inputTitle}>Email</Text>
@@ -50,12 +57,12 @@ function Login({ route }) {
               placeholder="Email"
               onChangeText={(text) => setEmail(text)}
             />
-
           </View>
 
           <View>
-
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
               <Text style={styles.inputTitle}>Password</Text>
               {/* <TouchableOpacity
                 onPress={onSubmit}>
@@ -70,10 +77,13 @@ function Login({ route }) {
               onChangeText={(text) => setPassword(text)}
             />
           </View>
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={onSubmit}>
-            <ActivityIndicator hidesWhenStopped={true} animating={indicatorAnimating} color="#0000ff" style={{ position: 'absolute', alignSelf: 'center' }} />
+          <TouchableOpacity style={styles.loginButton} onPress={onSubmit}>
+            <ActivityIndicator
+              hidesWhenStopped={true}
+              animating={indicatorAnimating}
+              color="#0000ff"
+              style={{ position: "absolute", alignSelf: "center" }}
+            />
             <Text style={styles.loginText}>{loginText}</Text>
           </TouchableOpacity>
         </View>
@@ -81,11 +91,8 @@ function Login({ route }) {
       <Footer />
     </View>
   );
-};
-
-function forgotPassword() {
-
-
 }
+
+function forgotPassword() {}
 
 export default Login;

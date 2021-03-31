@@ -14,6 +14,7 @@ import {
   View,
   TouchableOpacity,
   FlatList,
+  Linking,
 } from "react-native";
 
 import { useColorScheme } from "react-native-appearance";
@@ -53,10 +54,6 @@ const DATA = [
   {
     id: "58694a0f-3da1-471f-bd96-145571e29d72",
     title: "Get paid for cooking.",
-  },
-  {
-    id: "3ac68afc-c605-483-a4f8-fbd91aa97f63",
-    title: "Do what you love.",
   },
 ];
 
@@ -239,11 +236,12 @@ const CustomDarkTheme = {
 const FeaturesItem = ({ image, title, description }) => (
   <View
     style={{
+      alignSelf: "center",
       alignItems: "center",
       justifyContent: "center",
       margin: 8,
-      width: getPixelRatio() ? windowWidth / 4 : windowWidth / 3,
-      height: getPixelRatio() ? windowWidth / 4 : windowWidth / 3,
+      width: getPixelRatio() ? windowWidth / 4 : windowWidth,
+      height: getPixelRatio() ? windowWidth / 4 : windowWidth,
       backgroundColor: "#F5F5F7",
     }}
   >
@@ -260,6 +258,17 @@ const FeaturesItem = ({ image, title, description }) => (
     </Text>
   </View>
 );
+
+const url = "https://s4lnqpx6qg2.typeform.com/to/tPRmF6u3";
+
+function openApplyLink() {
+  const supported = Linking.canOpenURL(url);
+  if (supported) {
+    Linking.openURL(url);
+  } else {
+    Alert.alert(`Don't know how to open this URL: ${url}`);
+  }
+}
 
 function HomeScreen(props) {
   const { colors } = useTheme();
@@ -1203,7 +1212,7 @@ function HomeScreen(props) {
             customers, accept payments and manage their kitchen online.
           </Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate("Apply")}
+            onPress={() => openApplyLink()}
             style={{
               marginTop: 20,
               justifyContent: "center",
@@ -1269,7 +1278,7 @@ function HomeScreen(props) {
           style={{
             width: "100%",
             flexDirection: getPixelRatio() ? "row" : "column",
-            height: 400,
+            height: "auto",
             justifyContent: "space-between",
           }}
         >
@@ -1305,7 +1314,7 @@ function HomeScreen(props) {
         </View>
       </View>
       {/* Delivery section */}
-      <View style={{ padding: 20, marginTop: 40 }}>
+      {/* <View style={{ padding: 20, marginTop: 40 }}>
         <View
           style={{
             width: "100%",
@@ -1341,7 +1350,7 @@ function HomeScreen(props) {
             </Text>
           </View>
         </View>
-      </View>
+      </View> */}
       <View style={{ marginTop: 40 }}>
         <Text
           style={{
@@ -1358,7 +1367,7 @@ function HomeScreen(props) {
           data={DATA}
           renderItem={renderFeaturesItem}
           keyExtractor={(item) => item.id}
-          horizontal={true}
+          horizontal={getPixelRatio() ? true : false}
         />
       </View>
     </View>

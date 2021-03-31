@@ -29,7 +29,7 @@ export default StyleSheet.create({
   },
 
   formContainer: {
-    width: windowWidth < phoneMaxWidth ? "50%" : "40%",
+    // width: windowWidth < phoneMaxWidth ? '50%' : '40%',
     marginTop: 50,
     height: 500,
     padding: 0,
@@ -59,7 +59,7 @@ export default StyleSheet.create({
     height: 50,
     justifyContent: "center",
     borderColor: "rgba(27, 31, 35, 0.15)",
-    backgroundColor: "rgb(48, 209, 88)",
+    backgroundColor: "#2EA44F",
   },
 
   loginText: {
