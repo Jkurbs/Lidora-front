@@ -21,14 +21,18 @@ function MenuDetails(props) {
   const params = props.route.params;
   const item = params.item;
   const [price, setPrice] = useState("");
-  const [newItem] = useState({ name: "", description: "", price: 0 });
-  const categories = [""];
-  const [newCategory, setNewCategory] = useState("");
+  const [newItem] = useState({
+    name: "",
+    description: "",
+    category: "",
+  });
+  const [categories, setCategories] = useState([]);
   const [addCategory, setAddCategory] = useState(false);
   const [indicatorAnimating, setIndicatorAnimating] = useState(false);
 
-  var PickerItem = Picker.Item;
-  const saveNewCategory = () => {};
+  const saveNewCategory = () => {
+    setCategories((prevState) => [...prevState, newItem.category]);
+  };
 
   const saveAndAddMoreTapped = () => {
     navigation.goBack();
@@ -36,7 +40,6 @@ function MenuDetails(props) {
 
   const saveButtonTapped = () => {
     if (params.mode == "add") {
-      console.log("Add item");
       add();
     } else {
       console.log("Edit item");
@@ -47,13 +50,15 @@ function MenuDetails(props) {
   };
 
   const add = () => {
-    ref.doc(userID).collection("menu").add({
-      name: newItem.name,
-      description: newItem.description,
-      price: price,
-      category: category,
-      isVisible: true,
-    });
+    console.log("Number: ", Number(price.replace(/[^a-zA-Z ]/g, "")));
+
+    // ref.doc(userID).collection("menu").add({
+    //   name: newItem.name,
+    //   description: newItem.description,
+    //   price: Number(price.replace(/[^a-zA-Z ]/g, "")),
+    //   category: newItem.category,
+    //   isVisible: true,
+    // });
     //check and Add Image to Firebase Storage
     // if (item.image != null) {
     //   var storage = firebase.storage().ref(item.image.name);
@@ -210,7 +215,7 @@ function MenuDetails(props) {
               value={price}
               defaultValue={`$${item?.price ?? 0.0}`}
               onChangeText={(text) => {
-                newItem.price = text;
+                setPrice(text);
               }}
             />
           </View>
@@ -235,7 +240,7 @@ function MenuDetails(props) {
                 style={[styles.input]}
                 dropdownIconColor={colors.textTertiary}
                 onValueChange={(itemValue, itemIndex) =>
-                  setNewCategory(itemValue)
+                  (newItem.category = itemValue)
                 }
               >
                 {categories.map((s, i) => {
@@ -263,7 +268,7 @@ function MenuDetails(props) {
             <View style={styles.addCategoryContainer}>
               <Input
                 placeholder={"Add new category"}
-                onChangeText={(text) => setNewCategory(text)}
+                onChangeText={(text) => (newItem.category = text)}
               />
               <TouchableOpacity
                 onPress={() => {
