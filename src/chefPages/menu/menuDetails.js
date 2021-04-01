@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import globalStyle from "../../globalStyle";
 import { useTheme } from "@react-navigation/native";
@@ -8,6 +8,7 @@ import { TextInputMask } from "react-native-masked-text";
 import { Picker } from "@react-native-picker/picker";
 
 import firebase from "../../firebase/Firebase";
+import firebase2 from "firebase";
 import "firebase/firestore";
 
 var db = firebase.firestore();
@@ -30,8 +31,35 @@ function MenuDetails(props) {
   const [addCategory, setAddCategory] = useState(false);
   const [indicatorAnimating, setIndicatorAnimating] = useState(false);
 
+  useEffect(() => {
+    async function fetchData() {
+      ref
+        .doc(userID)
+        .collection("settings")
+        .doc("menu")
+        .get()
+        .then((doc) => {
+          if (doc.empty) {
+            // setHasData(false);
+          } else {
+            const data = doc.data().groups;
+            setCategories(data);
+          }
+        });
+    }
+    fetchData();
+  }, []);
+
   const saveNewCategory = () => {
     setCategories((prevState) => [...prevState, newItem.category]);
+
+    ref
+      .doc(userID)
+      .collection("settings")
+      .doc("menu")
+      .update({
+        groups: firebase2.firestore.FieldValue.arrayUnion(newItem.category),
+      });
   };
 
   const saveAndAddMoreTapped = () => {
@@ -50,15 +78,15 @@ function MenuDetails(props) {
   };
 
   const add = () => {
-    console.log("Number: ", Number(price.replace(/[^a-zA-Z ]/g, "")));
+    let priceNumber = Number(price.replace(/\$/g, ""));
 
-    // ref.doc(userID).collection("menu").add({
-    //   name: newItem.name,
-    //   description: newItem.description,
-    //   price: Number(price.replace(/[^a-zA-Z ]/g, "")),
-    //   category: newItem.category,
-    //   isVisible: true,
-    // });
+    ref.doc(userID).collection("menu").add({
+      name: newItem.name,
+      description: newItem.description,
+      price: priceNumber,
+      category: newItem.category,
+      isVisible: true,
+    });
     //check and Add Image to Firebase Storage
     // if (item.image != null) {
     //   var storage = firebase.storage().ref(item.image.name);
